@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace BIUK9000
 {
-    internal class Facer
+    public class Facer
     {
         public static Bitmap FaceSwappedImage(Bitmap backgroundImage, Bitmap substituteImage)
         {

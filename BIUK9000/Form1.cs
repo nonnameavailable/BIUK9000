@@ -19,13 +19,22 @@ namespace BIUK9000
 {
     public partial class Form1 : Form
     {
+        public PictureBox MainPictureBox { get => mainPictureBox; }
         public Form1()
         {
             InitializeComponent();
+            this.MouseEnter += Form1_MouseEnter;
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
-            Testicek();
-            compressGif();
+            string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
+            mainTimelinePanel.AddGifFrames(new Giffer(Path.Combine(imageDirectory, "minions.gif")));
+            //Testicek();
+            //compressGif();
+        }
+
+        private void Form1_MouseEnter(object sender, EventArgs e)
+        {
+            MessageBox.Show("ha");
         }
 
         public void Testicek()

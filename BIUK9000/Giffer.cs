@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BIUK9000
 {
-    internal class Giffer
+    public class Giffer
     {
         public List<Bitmap> Frames {  get; set; }
         private Image originalGif;

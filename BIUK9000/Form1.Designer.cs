@@ -31,29 +31,58 @@ namespace BIUK9000
         {
             saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            mainTimelinePanel = new TimelinePanel();
+            mainPictureBox = new System.Windows.Forms.PictureBox();
+            tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
-            tableLayoutPanel1.ColumnCount = 2;
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel1.Location = new System.Drawing.Point(265, 128);
+            tableLayoutPanel1.ColumnCount = 3;
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            tableLayoutPanel1.Controls.Add(mainTimelinePanel, 1, 2);
+            tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
+            tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 2;
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(200, 100);
+            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            tableLayoutPanel1.Size = new System.Drawing.Size(906, 605);
             tableLayoutPanel1.TabIndex = 0;
+            // 
+            // mainTimelinePanel
+            // 
+            mainTimelinePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            mainTimelinePanel.Location = new System.Drawing.Point(153, 458);
+            mainTimelinePanel.Name = "mainTimelinePanel";
+            mainTimelinePanel.Size = new System.Drawing.Size(600, 144);
+            mainTimelinePanel.TabIndex = 0;
+            // 
+            // mainPictureBox
+            // 
+            mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            mainPictureBox.Location = new System.Drawing.Point(153, 153);
+            mainPictureBox.Name = "mainPictureBox";
+            mainPictureBox.Size = new System.Drawing.Size(600, 299);
+            mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            mainPictureBox.TabIndex = 1;
+            mainPictureBox.TabStop = false;
             // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 450);
+            ClientSize = new System.Drawing.Size(906, 605);
             Controls.Add(tableLayoutPanel1);
             Name = "Form1";
             Text = "Form1";
+            tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
             ResumeLayout(false);
         }
 
@@ -61,6 +90,8 @@ namespace BIUK9000
 
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private TimelinePanel mainTimelinePanel;
+        private System.Windows.Forms.PictureBox mainPictureBox;
     }
 }
 
