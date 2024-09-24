@@ -27,7 +27,7 @@ namespace BIUK9000
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
             string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
-            mainTimelinePanel.AddGifFrames(new Giffer(Path.Combine(imageDirectory, "minions.gif")));
+            mainTimelinePanel.AddGifFrames(new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif")));
             //Testicek();
             //compressGif();
         }

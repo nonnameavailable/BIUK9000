@@ -1,6 +1,6 @@
 ﻿namespace BIUK9000
 {
-    partial class BitmapHolder
+    partial class GifFrameHolder
     {
         /// <summary> 
         /// Required designer variable.

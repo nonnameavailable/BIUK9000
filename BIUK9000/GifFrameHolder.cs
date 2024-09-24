@@ -10,35 +10,48 @@ using System.Windows.Forms;
 
 namespace BIUK9000
 {
-    public partial class BitmapHolder : UserControl
+    public partial class GifFrameHolder : UserControl
     {
         public event EventHandler BitmapHolderClicked;
         protected virtual void OnBitmapHolderClicked()
         {
             BitmapHolderClicked?.Invoke(this, EventArgs.Empty);
         }
-        public Bitmap HeldImage { get => (Bitmap)pictureBox.Image; }
+        public GifFrame HeldGifFrame { get; }
 
         private bool stayHighlighted = false;
-        public BitmapHolder(Bitmap image)
+        public GifFrameHolder(GifFrame gifFrame)
         {
             InitializeComponent();
-            pictureBox.Image = image;
+            HeldGifFrame = gifFrame;
+            pictureBox.Image = gifFrame.CompleteBitmap();
+            pictureBox.MouseEnter += PictureBox_MouseEnter;
+            pictureBox.MouseLeave += PictureBox_MouseLeave;
+            pictureBox.MouseClick += PictureBox_MouseClick;
+        }
+        public GifFrameHolder(Bitmap bitmap)
+        {
+            InitializeComponent();
+            HeldGifFrame = new GifFrame(bitmap);
+            pictureBox.Image = HeldGifFrame.CompleteBitmap();
             pictureBox.MouseEnter += PictureBox_MouseEnter;
             pictureBox.MouseLeave += PictureBox_MouseLeave;
             pictureBox.MouseClick += PictureBox_MouseClick;
         }
 
+        public Bitmap CompleteBitmap { get => HeldGifFrame.CompleteBitmap(); }
+
         public void Highlight(bool highlight)
         {
             if (highlight)
             {
-                this.BorderStyle = BorderStyle.FixedSingle;
-                this.BackColor = Color.Blue;
-            } else
+                BorderStyle = BorderStyle.FixedSingle;
+                BackColor = Color.Blue;
+            }
+            else
             {
-                this.BorderStyle = BorderStyle.None;
-                this.BackColor = SystemColors.Control;
+                BorderStyle = BorderStyle.None;
+                BackColor = SystemColors.Control;
                 stayHighlighted = false;
             }
         }
@@ -51,7 +64,7 @@ namespace BIUK9000
 
         private void PictureBox_MouseLeave(object sender, EventArgs e)
         {
-            if(!stayHighlighted) Highlight(false);
+            if (!stayHighlighted) Highlight(false);
         }
 
         private void PictureBox_MouseEnter(object sender, EventArgs e)

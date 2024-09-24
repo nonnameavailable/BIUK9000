@@ -12,40 +12,40 @@ namespace BIUK9000
 {
     public partial class TimelinePanel : UserControl
     {
-        private List<BitmapHolder> bitmapHolders;
-        private BitmapHolder ClickedBitmapHolder;
+        private List<GifFrameHolder> GifFrameHolders;
+        private GifFrameHolder ClickedGifFrameHolder;
         public TimelinePanel()
         {
             InitializeComponent();
-            bitmapHolders = new();
+            GifFrameHolders = new();
         }
 
-        public void AddImage(Bitmap bitmap)
+        public void AddFrame(Bitmap bitmap)
         {
-            BitmapHolder bmh = new BitmapHolder(bitmap);
-            bmh.BitmapHolderClicked += Bmh_BitmapHolderClicked;
-            bitmapHolders.Add(bmh);
-            timelineFLP.Controls.Add(bmh);
+            GifFrameHolder gfh = new GifFrameHolder(bitmap);
+            gfh.BitmapHolderClicked += Bmh_BitmapHolderClicked;
+            GifFrameHolders.Add(gfh);
+            timelineFLP.Controls.Add(gfh);
         }
 
         private void Bmh_BitmapHolderClicked(object sender, EventArgs e)
         {
-            BitmapHolder bmh = (BitmapHolder)sender;
-            if(ClickedBitmapHolder != null )
+            GifFrameHolder gfh = (GifFrameHolder)sender;
+            if(ClickedGifFrameHolder != null )
             {
-                ClickedBitmapHolder.Highlight(false);
+                ClickedGifFrameHolder.Highlight(false);
             }
-            bmh.Highlight(true);
+            gfh.Highlight(true);
             Form1 f = (Form1)ParentForm;
-            f.MainPictureBox.Image = bmh.HeldImage;
-            ClickedBitmapHolder = bmh;
+            f.MainPictureBox.Image = gfh.CompleteBitmap;
+            ClickedGifFrameHolder = gfh;
         }
 
         public void AddGifFrames(Giffer giffer)
         {
             foreach(Bitmap frame in giffer.Frames)
             {
-                AddImage(frame);
+                AddFrame(frame);
             }
         }
     }
