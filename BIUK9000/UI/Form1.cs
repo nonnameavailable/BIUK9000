@@ -15,7 +15,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 
-namespace BIUK9000
+namespace BIUK9000.UI
 {
     public partial class Form1 : Form
     {

@@ -1,6 +1,6 @@
-﻿namespace BIUK9000
+﻿namespace BIUK9000.UI
 {
-    partial class GifFrameHolder
+    partial class BitmapHolder
     {
         /// <summary> 
         /// Required designer variable.
@@ -35,9 +35,9 @@
             // pictureBox
             // 
             pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            pictureBox.Location = new System.Drawing.Point(0, 0);
+            pictureBox.Location = new System.Drawing.Point(3, 3);
             pictureBox.Name = "pictureBox";
-            pictureBox.Size = new System.Drawing.Size(120, 120);
+            pictureBox.Size = new System.Drawing.Size(105, 103);
             pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             pictureBox.TabIndex = 0;
             pictureBox.TabStop = false;
@@ -48,7 +48,8 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(pictureBox);
             Name = "BitmapHolder";
-            Size = new System.Drawing.Size(120, 120);
+            Padding = new System.Windows.Forms.Padding(3);
+            Size = new System.Drawing.Size(111, 109);
             ((System.ComponentModel.ISupportInitialize)pictureBox).EndInit();
             ResumeLayout(false);
         }

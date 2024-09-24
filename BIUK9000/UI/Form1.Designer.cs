@@ -1,5 +1,5 @@
 ﻿
-namespace BIUK9000
+namespace BIUK9000.UI
 {
     partial class Form1
     {

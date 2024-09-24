@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Emgu.CV.Reg;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,38 +9,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000
+namespace BIUK9000.UI
 {
-    public partial class GifFrameHolder : UserControl
+    public partial class BitmapHolder : UserControl
     {
-        public event EventHandler BitmapHolderClicked;
-        protected virtual void OnBitmapHolderClicked()
+        public BitmapHolder(Bitmap bitmap)
         {
-            BitmapHolderClicked?.Invoke(this, EventArgs.Empty);
+            InitializeComponent();
+            pictureBox.Image = bitmap;
+            pictureBox.MouseEnter += PictureBox_MouseEnter;
+            pictureBox.MouseLeave += PictureBox_MouseLeave;
+            pictureBox.MouseClick += PictureBox_MouseClick;
         }
-        public GifFrame HeldGifFrame { get; }
+        public event EventHandler Clicked;
+        protected virtual void OnClicked()
+        {
+            Clicked?.Invoke(this, EventArgs.Empty);
+        }
+        public Bitmap HeldBitmap { get; }
 
         private bool stayHighlighted = false;
-        public GifFrameHolder(GifFrame gifFrame)
-        {
-            InitializeComponent();
-            HeldGifFrame = gifFrame;
-            pictureBox.Image = gifFrame.CompleteBitmap();
-            pictureBox.MouseEnter += PictureBox_MouseEnter;
-            pictureBox.MouseLeave += PictureBox_MouseLeave;
-            pictureBox.MouseClick += PictureBox_MouseClick;
-        }
-        public GifFrameHolder(Bitmap bitmap)
-        {
-            InitializeComponent();
-            HeldGifFrame = new GifFrame(bitmap);
-            pictureBox.Image = HeldGifFrame.CompleteBitmap();
-            pictureBox.MouseEnter += PictureBox_MouseEnter;
-            pictureBox.MouseLeave += PictureBox_MouseLeave;
-            pictureBox.MouseClick += PictureBox_MouseClick;
-        }
-
-        public Bitmap CompleteBitmap { get => HeldGifFrame.CompleteBitmap(); }
 
         public void Highlight(bool highlight)
         {
@@ -59,7 +48,7 @@ namespace BIUK9000
         private void PictureBox_MouseClick(object sender, MouseEventArgs e)
         {
             stayHighlighted = true;
-            OnBitmapHolderClicked();
+            OnClicked();
         }
 
         private void PictureBox_MouseLeave(object sender, EventArgs e)

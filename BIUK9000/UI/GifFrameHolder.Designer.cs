@@ -1,6 +1,6 @@
-﻿namespace BIUK9000
+﻿namespace BIUK9000.UI
 {
-    partial class TimelinePanel
+    partial class GifFrameHolder
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,31 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            timelineFLP = new System.Windows.Forms.FlowLayoutPanel();
             SuspendLayout();
             // 
-            // timelineFLP
-            // 
-            timelineFLP.AutoScroll = true;
-            timelineFLP.Dock = System.Windows.Forms.DockStyle.Fill;
-            timelineFLP.Location = new System.Drawing.Point(0, 0);
-            timelineFLP.Name = "timelineFLP";
-            timelineFLP.Size = new System.Drawing.Size(413, 150);
-            timelineFLP.TabIndex = 0;
-            timelineFLP.WrapContents = false;
-            // 
-            // TimelinePanel
+            // GifFrameHolder
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(timelineFLP);
-            Name = "TimelinePanel";
-            Size = new System.Drawing.Size(413, 150);
+            Name = "GifFrameHolder";
+            Padding = new System.Windows.Forms.Padding(3);
+            Size = new System.Drawing.Size(120, 120);
             ResumeLayout(false);
         }
 
         #endregion
-
-        private System.Windows.Forms.FlowLayoutPanel timelineFLP;
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000
+namespace BIUK9000.UI
 {
     public partial class TimelinePanel : UserControl
     {
@@ -23,19 +23,16 @@ namespace BIUK9000
         public void AddFrame(Bitmap bitmap)
         {
             GifFrameHolder gfh = new GifFrameHolder(bitmap);
-            gfh.BitmapHolderClicked += Bmh_BitmapHolderClicked;
+            gfh.BMHClicked += Gfh_BMHClicked;
             GifFrameHolders.Add(gfh);
             timelineFLP.Controls.Add(gfh);
         }
 
-        private void Bmh_BitmapHolderClicked(object sender, EventArgs e)
+        private void Gfh_BMHClicked(object sender, EventArgs e)
         {
-            GifFrameHolder gfh = (GifFrameHolder)sender;
-            if(ClickedGifFrameHolder != null )
-            {
-                ClickedGifFrameHolder.Highlight(false);
-            }
-            gfh.Highlight(true);
+            ClickedGifFrameHolder?.BMH.Highlight(false);
+            GifFrameHolder gfh = sender as GifFrameHolder;
+            gfh.BMH.Highlight(true);
             Form1 f = (Form1)ParentForm;
             f.MainPictureBox.Image = gfh.CompleteBitmap;
             ClickedGifFrameHolder = gfh;
