@@ -28,8 +28,9 @@ namespace BIUK9000.UI
 
         private void Gfh_BMHClicked(object sender, EventArgs e)
         {
-            clickedGifFrameHolder?.BMH.Highlight(false);
             GifFrameHolder gfh = sender as GifFrameHolder;
+            if (gfh == clickedGifFrameHolder) return;
+            clickedGifFrameHolder?.BMH.Highlight(false);
             gfh.BMH.Highlight(true);
             Form1 f = (Form1)ParentForm;
             f.MainPictureBox.Image?.Dispose();

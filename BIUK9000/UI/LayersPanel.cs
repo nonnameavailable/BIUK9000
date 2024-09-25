@@ -14,14 +14,19 @@ namespace BIUK9000.UI
     {
         private LayerHolder clickedLayerHolder;
         public GifFrameLayer ActiveLayer { get => clickedLayerHolder.HeldGFL; }
+        public GifFrame ActiveFrame { get; set; }
         public LayersPanel()
         {
             InitializeComponent();
         }
         public void DisplayLayers(GifFrame frame)
         {
-            foreach(Control c in layersFLP.Controls)
+            if (ActiveFrame != null) ActiveFrame.LayersChanged -= Frame_LayersChanged;
+            ActiveFrame = frame;
+            frame.LayersChanged += Frame_LayersChanged;
+            for (int i = layersFLP.Controls.Count - 1; i >= 0; i--)
             {
+                Control c = layersFLP.Controls[i];
                 c.Dispose();
             }
             foreach (var layer in frame.Layers)
@@ -30,6 +35,11 @@ namespace BIUK9000.UI
                 lh.BMHClicked += Lh_BMHClicked;
                 layersFLP.Controls.Add(lh);
             }
+        }
+
+        private void Frame_LayersChanged(object sender, EventArgs e)
+        {
+            DisplayLayers(ActiveFrame);
         }
 
         private void Lh_BMHClicked(object sender, EventArgs e)
