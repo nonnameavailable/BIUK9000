@@ -20,21 +20,17 @@ namespace BIUK9000.UI
     public partial class Form1 : Form
     {
         public PictureBox MainPictureBox { get => mainPictureBox; }
+        public TimelinePanel MainTimelinePanel { get => mainTimelinePanel; }
+        public LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public Form1()
         {
             InitializeComponent();
-            this.MouseEnter += Form1_MouseEnter;
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
             string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
             mainTimelinePanel.AddGifFrames(new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif")));
             //Testicek();
             //compressGif();
-        }
-
-        private void Form1_MouseEnter(object sender, EventArgs e)
-        {
-            MessageBox.Show("ha");
         }
 
         public void Testicek()

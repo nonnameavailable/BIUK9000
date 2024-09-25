@@ -12,30 +12,30 @@ namespace BIUK9000.UI
 {
     public partial class TimelinePanel : UserControl
     {
-        private List<GifFrameHolder> GifFrameHolders;
-        private GifFrameHolder ClickedGifFrameHolder;
+        private GifFrameHolder clickedGifFrameHolder;
+        public GifFrame ActiveGifFrame { get => clickedGifFrameHolder.HeldGifFrame; }
         public TimelinePanel()
         {
             InitializeComponent();
-            GifFrameHolders = new();
         }
 
         public void AddFrame(Bitmap bitmap)
         {
             GifFrameHolder gfh = new GifFrameHolder(bitmap);
             gfh.BMHClicked += Gfh_BMHClicked;
-            GifFrameHolders.Add(gfh);
             timelineFLP.Controls.Add(gfh);
         }
 
         private void Gfh_BMHClicked(object sender, EventArgs e)
         {
-            ClickedGifFrameHolder?.BMH.Highlight(false);
+            clickedGifFrameHolder?.BMH.Highlight(false);
             GifFrameHolder gfh = sender as GifFrameHolder;
             gfh.BMH.Highlight(true);
             Form1 f = (Form1)ParentForm;
+            f.MainPictureBox.Image?.Dispose();
             f.MainPictureBox.Image = gfh.CompleteBitmap;
-            ClickedGifFrameHolder = gfh;
+            clickedGifFrameHolder = gfh;
+            f.MainLayersPanel.DisplayLayers(ActiveGifFrame);
         }
 
         public void AddGifFrames(Giffer giffer)

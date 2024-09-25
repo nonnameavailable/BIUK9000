@@ -10,6 +10,8 @@ namespace BIUK9000
 {
     public class GifFrame
     {
+        public event EventHandler LayersChanged;
+
         public List<GifFrameLayer> Layers { get; } = new List<GifFrameLayer>();
         public int Width { get; set; }
         public int Height { get; set; }
@@ -34,6 +36,15 @@ namespace BIUK9000
                 layer.DrawLayer(g);
             }
             return result;
+        }
+
+        public void AddLayer(Bitmap bitmap)
+        {
+            Layers.Add(new GifFrameLayer(bitmap));
+        }
+        public void AddLayer(int width, int height)
+        {
+            Layers.Add(new GifFrameLayer(new Bitmap(width, height)));
         }
     }
 }

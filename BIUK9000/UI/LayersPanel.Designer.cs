@@ -28,31 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            layersFLP = new System.Windows.Forms.FlowLayoutPanel();
             SuspendLayout();
             // 
-            // flowLayoutPanel1
+            // layersFLP
             // 
-            flowLayoutPanel1.AutoScroll = true;
-            flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new System.Drawing.Size(150, 150);
-            flowLayoutPanel1.TabIndex = 0;
-            flowLayoutPanel1.WrapContents = false;
+            layersFLP.AutoScroll = true;
+            layersFLP.Dock = System.Windows.Forms.DockStyle.Fill;
+            layersFLP.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            layersFLP.Location = new System.Drawing.Point(0, 0);
+            layersFLP.Name = "layersFLP";
+            layersFLP.Size = new System.Drawing.Size(150, 150);
+            layersFLP.TabIndex = 0;
+            layersFLP.WrapContents = false;
             // 
             // LayersPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(flowLayoutPanel1);
+            Controls.Add(layersFLP);
             Name = "LayersPanel";
             ResumeLayout(false);
         }
 
         #endregion
 
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel layersFLP;
     }
 }

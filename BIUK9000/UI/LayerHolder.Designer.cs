@@ -28,32 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            layerImagePB = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)layerImagePB).BeginInit();
             SuspendLayout();
-            // 
-            // layerImagePB
-            // 
-            layerImagePB.Dock = System.Windows.Forms.DockStyle.Fill;
-            layerImagePB.Location = new System.Drawing.Point(0, 0);
-            layerImagePB.Name = "layerImagePB";
-            layerImagePB.Size = new System.Drawing.Size(121, 56);
-            layerImagePB.TabIndex = 0;
-            layerImagePB.TabStop = false;
             // 
             // LayerHolder
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(layerImagePB);
             Name = "LayerHolder";
             Size = new System.Drawing.Size(121, 56);
-            ((System.ComponentModel.ISupportInitialize)layerImagePB).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox layerImagePB;
     }
 }

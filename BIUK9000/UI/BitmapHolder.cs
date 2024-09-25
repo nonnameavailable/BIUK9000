@@ -13,13 +13,15 @@ namespace BIUK9000.UI
 {
     public partial class BitmapHolder : UserControl
     {
-        public BitmapHolder(Bitmap bitmap)
+        private Color highlightColor;
+        public BitmapHolder(Bitmap bitmap, Color highlightColor)
         {
             InitializeComponent();
             pictureBox.Image = bitmap;
             pictureBox.MouseEnter += PictureBox_MouseEnter;
             pictureBox.MouseLeave += PictureBox_MouseLeave;
             pictureBox.MouseClick += PictureBox_MouseClick;
+            this.highlightColor = highlightColor;
         }
         public event EventHandler Clicked;
         protected virtual void OnClicked()
@@ -35,7 +37,7 @@ namespace BIUK9000.UI
             if (highlight)
             {
                 BorderStyle = BorderStyle.FixedSingle;
-                BackColor = Color.Blue;
+                BackColor = highlightColor;
             }
             else
             {

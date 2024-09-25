@@ -31,7 +31,7 @@ namespace BIUK9000.UI
         }
         private void CreateBitmapHolder()
         {
-            BMH = new BitmapHolder(HeldGifFrame.CompleteBitmap());
+            BMH = new BitmapHolder(HeldGifFrame.CompleteBitmap(), Color.Indigo);
             BMH.Dock = DockStyle.Fill;
             Controls.Add(BMH);
             BMH.Clicked += (sender, args) => BMHClicked?.Invoke(this, EventArgs.Empty);
