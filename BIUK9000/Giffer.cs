@@ -12,7 +12,7 @@ namespace BIUK9000
 {
     public class Giffer
     {
-        public List<Bitmap> Frames {  get; set; }
+        public List<GifFrame> Frames {  get; set; }
         private Image originalGif;
 
         public Giffer(string path)
@@ -22,16 +22,16 @@ namespace BIUK9000
             Frames = FramesFromGif(gif);
         }
 
-        private List<Bitmap> FramesFromGif(Image gif)
+        private List<GifFrame> FramesFromGif(Image gif)
         {
-            List<Bitmap> result = new();
+            List<GifFrame> result = new();
 
             int frameCount = gif.GetFrameCount(FrameDimension.Time);
 
             for (int i = 0; i < frameCount; i++)
             {
                 gif.SelectActiveFrame(FrameDimension.Time, i);
-                result.Add(new Bitmap(gif));
+                result.Add(new GifFrame(new Bitmap(gif)));
             }
             return result;
         }
@@ -47,9 +47,9 @@ namespace BIUK9000
             MemoryStream stream = new MemoryStream();
             int frameDelay = FrameDelay(originalGif);
             AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
-            foreach(Bitmap frame in Frames)
+            foreach(GifFrame frame in Frames)
             {
-                agc.AddFrame(frame, frameDelay, GifQuality.Bit8);
+                agc.AddFrame(frame.CompleteBitmap(), frameDelay, GifQuality.Bit8);
             }
             return Image.FromStream(stream);
         }

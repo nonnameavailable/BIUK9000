@@ -41,9 +41,9 @@ namespace BIUK9000.UI
 
         public void AddGifFrames(Giffer giffer)
         {
-            foreach(Bitmap frame in giffer.Frames)
+            foreach(GifFrame frame in giffer.Frames)
             {
-                AddFrame(frame);
+                AddFrame(frame.CompleteBitmap());
             }
         }
     }

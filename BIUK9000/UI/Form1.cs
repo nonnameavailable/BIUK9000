@@ -48,7 +48,7 @@ namespace BIUK9000.UI
 
             Giffer giffer = new Giffer(inputPath);
             Bitmap faceImage = (Bitmap)Image.FromFile(Path.Combine(imageDirectory, "faces.jpg"));
-            giffer.Frames = Facer.FaceSwappedBitmapList(giffer.Frames, faceImage);
+            giffer.Frames = Facer.FaceSwappedFrameList(giffer.Frames, faceImage);
             giffer.GifFromFrames().Save(testOutputPath);
 
 

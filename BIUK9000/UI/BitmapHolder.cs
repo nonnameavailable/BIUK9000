@@ -36,13 +36,11 @@ namespace BIUK9000.UI
         {
             if (highlight)
             {
-                BorderStyle = BorderStyle.FixedSingle;
-                BackColor = highlightColor;
+                Parent.BackColor = highlightColor;
             }
             else
             {
-                BorderStyle = BorderStyle.None;
-                BackColor = SystemColors.Control;
+                Parent.BackColor = SystemColors.Control;
                 stayHighlighted = false;
             }
         }

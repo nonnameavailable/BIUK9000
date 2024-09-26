@@ -36,7 +36,7 @@ namespace BIUK9000.UI
         {
             BMH = new BitmapHolder(HeldGifFrame.CompleteBitmap(), Color.Indigo);
             BMH.Dock = DockStyle.Fill;
-            Controls.Add(BMH);
+            tableLayoutPanel.Controls.Add(BMH);
             BMH.Clicked += (sender, args) => BMHClicked?.Invoke(this, EventArgs.Empty);
         }
         private void CreateContextMenu()

@@ -53,14 +53,13 @@ namespace BIUK9000
             maxSize: Size.Empty);
             return faces.ToList();
         }
-
-        public static List<Bitmap> FaceSwappedBitmapList(List<Bitmap> bitmaps, Bitmap substituteImage)
+        public static List<GifFrame> FaceSwappedFrameList(List<GifFrame> frames, Bitmap substituteImage)
         {
-            List<Bitmap> result = new();
-            for (int i = 0; i < bitmaps.Count; i++)
+            List<GifFrame> result = new();
+            for (int i = 0; i < frames.Count; i++)
             {
-                Bitmap frame = bitmaps[i];
-                result.Add(Facer.FaceSwappedImage(frame, substituteImage));
+                GifFrame frame = frames[i];
+                result.Add(new GifFrame(FaceSwappedImage(frame.CompleteBitmap(), substituteImage)));
             }
             return result;
         }
