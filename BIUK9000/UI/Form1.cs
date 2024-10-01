@@ -20,80 +20,48 @@ namespace BIUK9000.UI
     public partial class Form1 : Form
     {
         public PictureBox MainPictureBox { get => mainPictureBox; }
-        public TimelinePanel MainTimelinePanel { get => mainTimelinePanel; }
+        //public TimelinePanel MainTimelinePanel { get => mainTimelinePanel; }
         public LayersPanel MainLayersPanel { get => mainLayersPanel; }
+        public Giffer MainGiffer { get; set; }
         public Form1()
         {
             InitializeComponent();
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
             string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
-            mainTimelinePanel.AddGifFrames(new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif")));
-            //Testicek();
-            //compressGif();
+            //mainTimelinePanel.AddGifFrames(new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif")));
+            MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
+            mainTimelineSlider.Giffer = MainGiffer;
+            mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
         }
-
-        public void Testicek()
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // This will get the current WORKING directory (i.e. \bin\Debug)
-            string workingDirectory = Environment.CurrentDirectory;
-            // or: Directory.GetCurrentDirectory() gives the same result
+            const int WM_KEYDOWN = 0x100;
+            const int WM_SYSKEYDOWN = 0x104;
 
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
-            string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
-
-            string inputPath = imageDirectory + "/dancing.gif";
-            string outputPath = imageDirectory + "/output.gif";
-            string testOutputPath = imageDirectory + "/testOutput.gif";
-
-            Giffer giffer = new Giffer(inputPath);
-            Bitmap faceImage = (Bitmap)Image.FromFile(Path.Combine(imageDirectory, "faces.jpg"));
-            giffer.Frames = Facer.FaceSwappedFrameList(giffer.Frames, faceImage);
-            giffer.GifFromFrames().Save(testOutputPath);
-
-
-        }
-
-        private void compressGif()
-        {
-            // This will get the current WORKING directory (i.e. \bin\Debug)
-            string workingDirectory = Environment.CurrentDirectory;
-            // or: Directory.GetCurrentDirectory() gives the same result
-
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
-            string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
-
-            string outputPath = imageDirectory + "/output.gif";
-            string testOutputPath = imageDirectory + "/testOutput.gif";
-            string gifsiclePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "gifsicle.exe");
-
-            string cmd = $"/C {gifsiclePath} -O3 --colors 256 --lossy=30 -o {testOutputPath} {testOutputPath}";
-            Process.Start("CMD.exe", cmd);
-        }
-
-        static void SaveJpeg(string path, Bitmap img, long quality)
-        {
-            // Encoder parameter for image quality
-            EncoderParameter qualityParam = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
-            ImageCodecInfo jpegCodec = GetEncoderInfo("image/jpeg");
-
-            if (jpegCodec == null)
-                return;
-
-            EncoderParameters encoderParams = new EncoderParameters(1);
-            encoderParams.Param[0] = qualityParam;
-            img.Save(path, jpegCodec, encoderParams);
-        }
-
-        static ImageCodecInfo GetEncoderInfo(string mimeType)
-        {
-            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-            foreach (ImageCodecInfo codec in codecs)
+            if (msg.Msg == WM_KEYDOWN || msg.Msg == WM_SYSKEYDOWN)
             {
-                if (codec.MimeType == mimeType)
-                    return codec;
+                if (keyData == Keys.Right)
+                {
+                    TrackBar mts = mainTimelineSlider.Slider;
+                    if (mts.Value < mts.Maximum) mts.Value += 1;
+                }
+                else if (keyData == Keys.Left)
+                {
+                    TrackBar mts = mainTimelineSlider.Slider;
+                    if (mts.Value > 0) mts.Value -= 1;
+                }
+
+                return true; // Indicate that the key has been processed
             }
-            return null;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
+        {
+            mainPictureBox.Image?.Dispose();
+            mainPictureBox.Image = mainTimelineSlider.SelectedFrame.CompleteBitmap();
         }
     }
 }

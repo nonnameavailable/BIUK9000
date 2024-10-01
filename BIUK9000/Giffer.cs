@@ -14,12 +14,22 @@ namespace BIUK9000
     {
         public List<GifFrame> Frames {  get; set; }
         private Image originalGif;
+        public event EventHandler FrameCountChanged;
+        protected virtual void OnFrameCountChanged()
+        {
+            FrameCountChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public Giffer(string path)
         {
             Image gif = Image.FromFile(path);
             originalGif = gif;
             Frames = FramesFromGif(gif);
+        }
+
+        public Giffer()
+        {
+            Frames = new List<GifFrame>();
         }
 
         private List<GifFrame> FramesFromGif(Image gif)
@@ -52,6 +62,16 @@ namespace BIUK9000
                 agc.AddFrame(frame.CompleteBitmap(), frameDelay, GifQuality.Bit8);
             }
             return Image.FromStream(stream);
+        }
+        public void AddFrame(GifFrame frame)
+        {
+            Frames.Add(frame);
+            OnFrameCountChanged();
+        }
+        public void RemoveFrame(GifFrame frame)
+        {
+            Frames.Remove(frame);
+            OnFrameCountChanged();
         }
     }
 }
