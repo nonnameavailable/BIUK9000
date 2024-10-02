@@ -19,7 +19,7 @@ namespace BIUK9000.UI
             set
             {
                 _giffer = value;
-                timeLineTrackBar.Maximum = value.Frames.Count - 1;
+                if(value != null) timeLineTrackBar.Maximum = value.Frames.Count - 1;
             }
         }
         public TrackBar Slider { get => timeLineTrackBar; }

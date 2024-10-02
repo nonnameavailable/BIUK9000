@@ -59,6 +59,8 @@ namespace BIUK9000.UI
             // 
             // mainPictureBox
             // 
+            mainPictureBox.BackColor = System.Drawing.SystemColors.Control;
+            mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             mainPictureBox.Location = new System.Drawing.Point(153, 153);
             mainPictureBox.Name = "mainPictureBox";
@@ -79,6 +81,7 @@ namespace BIUK9000.UI
             // mainTimelineSlider
             // 
             mainTimelineSlider.Dock = System.Windows.Forms.DockStyle.Fill;
+            mainTimelineSlider.Giffer = null;
             mainTimelineSlider.Location = new System.Drawing.Point(153, 508);
             mainTimelineSlider.Name = "mainTimelineSlider";
             mainTimelineSlider.Size = new System.Drawing.Size(600, 94);

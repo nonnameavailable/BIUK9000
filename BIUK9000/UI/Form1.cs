@@ -22,6 +22,7 @@ namespace BIUK9000.UI
         public LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public Giffer MainGiffer { get; set; }
         private int mouseX, mouseY;
+        private int mouseClickedX, mouseClickedY;
         private bool isDragging;
         public Form1()
         {
@@ -31,7 +32,10 @@ namespace BIUK9000.UI
             string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
             MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
             mainTimelineSlider.Giffer = MainGiffer;
-
+            foreach(GifFrame gifFrame in MainGiffer.Frames)
+            {
+                gifFrame.LayersChanged += GifFrame_LayersChanged;
+            }
 
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
             mainLayersPanel.LayerChanged += MainLayersPanel_LayerChanged;
@@ -40,6 +44,13 @@ namespace BIUK9000.UI
             mainPictureBox.MouseDown += MainPictureBox_MouseDown;
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
+
+            mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap();
+        }
+
+        private void GifFrame_LayersChanged(object sender, EventArgs e)
+        {
+            UpdateMainPicturebox();
         }
 
         private void MainLayersPanel_LayerChanged(object sender, EventArgs e)
@@ -53,11 +64,21 @@ namespace BIUK9000.UI
             int yDif = e.Y - mouseY;
             mouseX = e.X;
             mouseY = e.Y;
+
+            int pbHeight = mainPictureBox.Height;
+            int pbWidth = mainPictureBox.Width;
+            int imgHeight = mainPictureBox.Image.Height;
+            int imgWidth = mainPictureBox.Image.Width;
+            double widthScale = (double)pbWidth / (double)imgWidth;
+            double heightScale = (double)pbHeight / (double)imgHeight;
+            double zoom = Math.Min(widthScale, heightScale);
             if (isDragging)
             {
                 GifFrameLayer gfl = mainLayersPanel.ActiveLayer;
-                gfl.X += xDif;
-                gfl.Y += yDif;
+                //gfl.X += (int)(xDif / zoom);
+                //gfl.Y += (int)(yDif / zoom);
+                gfl.X = (int)((mouseX - mouseClickedX) / zoom);
+                gfl.Y = (int)((mouseY - mouseClickedY) / zoom);
             }
         }
 
@@ -70,6 +91,8 @@ namespace BIUK9000.UI
         {
             mouseX = e.X;
             mouseY = e.Y;
+            mouseClickedX = e.X;
+            mouseClickedY = e.Y;
             if(e.Button == MouseButtons.Left)
             {
                 isDragging = true;
@@ -93,7 +116,7 @@ namespace BIUK9000.UI
                     TrackBar mts = mainTimelineSlider.Slider;
                     if (mts.Value > 0) mts.Value -= 1;
                 }
-                else if (keyData == Keys.P) ;
+                else if (keyData == Keys.P)
                 {
                     mainTimelineSlider.SelectedFrame.AddLayer(50, 50);
                 }
@@ -108,15 +131,10 @@ namespace BIUK9000.UI
             UpdateMainPicturebox();
             MainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
         }
-        private int _updateCounter = 0;
         private void UpdateMainPicturebox()
         {
             mainPictureBox.Image?.Dispose();
             mainPictureBox.Image = mainTimelineSlider.SelectedFrame.CompleteBitmap();
-            mainPictureBox.Invalidate();
-            mainPictureBox.Update();
-            _updateCounter++;
-            Debug.Print(_updateCounter.ToString());
         }
     }
 }
