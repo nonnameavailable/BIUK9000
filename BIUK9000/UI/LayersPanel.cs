@@ -13,8 +13,9 @@ namespace BIUK9000.UI
     public partial class LayersPanel : UserControl
     {
         private LayerHolder clickedLayerHolder;
-        public GifFrameLayer ActiveLayer { get => clickedLayerHolder.HeldGFL; }
+        public GifFrameLayer ActiveLayer { get => clickedLayerHolder.HeldLayer; }
         public GifFrame ActiveFrame { get; set; }
+        public event EventHandler LayerChanged;
         public LayersPanel()
         {
             InitializeComponent();
@@ -32,7 +33,8 @@ namespace BIUK9000.UI
             foreach (var layer in frame.Layers)
             {
                 LayerHolder lh = new LayerHolder(layer);
-                lh.BMHClicked += Lh_BMHClicked;
+                lh.LayerClicked += Lh_LayerClicked;
+                lh.LayerChanged += (sender, args) => LayerChanged?.Invoke(this, EventArgs.Empty);
                 layersFLP.Controls.Add(lh);
             }
         }
@@ -42,12 +44,13 @@ namespace BIUK9000.UI
             DisplayLayers(ActiveFrame);
         }
 
-        private void Lh_BMHClicked(object sender, EventArgs e)
+        private void Lh_LayerClicked(object sender, EventArgs e)
         {
-            clickedLayerHolder?.BMH.Highlight(false);
+            clickedLayerHolder?.Highlight(false);
             LayerHolder lh = sender as LayerHolder;
-            lh.BMH.Highlight(true);
+            lh.Highlight(true);
             clickedLayerHolder = lh;
+            if (clickedLayerHolder != null) clickedLayerHolder.StayHighlighted = true;
         }
     }
 }

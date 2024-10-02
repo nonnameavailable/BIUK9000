@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Emgu.CV.Reg;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -21,15 +22,19 @@ namespace BIUK9000
         public int Height { get; set; }
         public GifFrame(Bitmap bitmap)
         {
-            Layers.Add(new GifFrameLayer(bitmap));
+            GifFrameLayer gfl = new GifFrameLayer(bitmap);
+            Layers.Add(gfl);
             Width = bitmap.Width;
             Height = bitmap.Height;
+            //gfl.ParameterChanged += (sender, args) => LayersChanged?.Invoke(this, EventArgs.Empty);
         }
         public GifFrame(int width, int height)
         {
-            Layers.Add(new GifFrameLayer(new Bitmap(width, height)));
+            GifFrameLayer gfl = new GifFrameLayer(new Bitmap(width, height));
+            Layers.Add(gfl);
             Width = width;
             Height = height;
+            gfl.ParameterChanged += (sender, args) => LayersChanged?.Invoke(this, EventArgs.Empty);
         }
         public Bitmap CompleteBitmap()
         {
