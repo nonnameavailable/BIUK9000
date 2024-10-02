@@ -37,6 +37,9 @@ namespace BIUK9000.UI
                 lh.LayerChanged += (sender, args) => LayerChanged?.Invoke(this, EventArgs.Empty);
                 layersFLP.Controls.Add(lh);
             }
+            clickedLayerHolder = (LayerHolder)(layersFLP.Controls[0]);
+            clickedLayerHolder.Highlight(true);
+            clickedLayerHolder.StayHighlighted = true;
         }
 
         private void Frame_LayersChanged(object sender, EventArgs e)

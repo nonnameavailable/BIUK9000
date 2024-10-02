@@ -21,9 +21,9 @@ namespace BIUK9000.UI
     {
         public LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public Giffer MainGiffer { get; set; }
-        private int mouseX, mouseY;
-        private int mouseClickedX, mouseClickedY;
+        private Point mousePosition, mouseClickedPosition, originalLayerPosition;
         private bool isDragging;
+        private Timer updateTimer;
         public Form1()
         {
             InitializeComponent();
@@ -32,13 +32,8 @@ namespace BIUK9000.UI
             string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
             MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
             mainTimelineSlider.Giffer = MainGiffer;
-            foreach(GifFrame gifFrame in MainGiffer.Frames)
-            {
-                gifFrame.LayersChanged += GifFrame_LayersChanged;
-            }
 
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
-            mainLayersPanel.LayerChanged += MainLayersPanel_LayerChanged;
 
             isDragging = false;
             mainPictureBox.MouseDown += MainPictureBox_MouseDown;
@@ -46,24 +41,23 @@ namespace BIUK9000.UI
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
 
             mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap();
+            
+            updateTimer = new Timer();
+            updateTimer.Interval = 17;
+            updateTimer.Tick += UpdateTimer_Tick;
         }
 
-        private void GifFrame_LayersChanged(object sender, EventArgs e)
-        {
-            UpdateMainPicturebox();
-        }
-
-        private void MainLayersPanel_LayerChanged(object sender, EventArgs e)
+        private void UpdateTimer_Tick(object sender, EventArgs e)
         {
             UpdateMainPicturebox();
         }
 
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            int xDif = e.X - mouseX;
-            int yDif = e.Y - mouseY;
-            mouseX = e.X;
-            mouseY = e.Y;
+            int xDif = e.X - mouseClickedPosition.X;
+            int yDif = e.Y - mouseClickedPosition.Y;
+            mousePosition.X = e.X;
+            mousePosition.Y = e.Y;
 
             int pbHeight = mainPictureBox.Height;
             int pbWidth = mainPictureBox.Width;
@@ -75,24 +69,25 @@ namespace BIUK9000.UI
             if (isDragging)
             {
                 GifFrameLayer gfl = mainLayersPanel.ActiveLayer;
-                //gfl.X += (int)(xDif / zoom);
-                //gfl.Y += (int)(yDif / zoom);
-                gfl.X = (int)((mouseX - mouseClickedX) / zoom);
-                gfl.Y = (int)((mouseY - mouseClickedY) / zoom);
+                int newX = (int)(xDif / zoom + originalLayerPosition.X);
+                int newY = (int)(yDif / zoom + originalLayerPosition.Y);
+                Point pos = new Point(newX, newY);
+                gfl.Position = pos;
             }
         }
 
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
             isDragging = false;
+            updateTimer.Stop();
+            UpdateMainPicturebox();
         }
 
         private void MainPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
-            mouseX = e.X;
-            mouseY = e.Y;
-            mouseClickedX = e.X;
-            mouseClickedY = e.Y;
+            mouseClickedPosition = e.Location;
+            originalLayerPosition = mainLayersPanel.ActiveLayer.Position;
+            updateTimer.Start();
             if(e.Button == MouseButtons.Left)
             {
                 isDragging = true;
@@ -131,6 +126,7 @@ namespace BIUK9000.UI
             UpdateMainPicturebox();
             MainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
         }
+        private Stopwatch stopwatch = new Stopwatch();
         private void UpdateMainPicturebox()
         {
             mainPictureBox.Image?.Dispose();
