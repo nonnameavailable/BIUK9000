@@ -11,10 +11,10 @@ namespace BIUK9000
 {
     public class GifFrame
     {
-        public event EventHandler LayersChanged;
-        protected virtual void OnLayersChanged()
+        public event EventHandler LayerCountChanged;
+        protected virtual void OnLayerCountChanged()
         {
-            LayersChanged?.Invoke(this, EventArgs.Empty);
+            LayerCountChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public List<GifFrameLayer> Layers { get; } = new List<GifFrameLayer>();
@@ -26,7 +26,6 @@ namespace BIUK9000
             Layers.Add(gfl);
             Width = bitmap.Width;
             Height = bitmap.Height;
-            //gfl.ParameterChanged += (sender, args) => LayersChanged?.Invoke(this, EventArgs.Empty);
         }
         public GifFrame(int width, int height)
         {
@@ -34,7 +33,6 @@ namespace BIUK9000
             Layers.Add(gfl);
             Width = width;
             Height = height;
-            gfl.ParameterChanged += (sender, args) => LayersChanged?.Invoke(this, EventArgs.Empty);
         }
         public Bitmap CompleteBitmap()
         {
@@ -50,7 +48,7 @@ namespace BIUK9000
         public void AddLayer(Bitmap bitmap)
         {
             Layers.Add(new GifFrameLayer(bitmap));
-            OnLayersChanged();
+            OnLayerCountChanged();
         }
         public void AddLayer(int width, int height)
         {
@@ -58,7 +56,7 @@ namespace BIUK9000
             using Graphics graphics = Graphics.FromImage(bitmap);
             graphics.FillRectangle(Brushes.Black, 0, 0, width,height);
             Layers.Add(new GifFrameLayer(bitmap));
-            OnLayersChanged();
+            OnLayerCountChanged();
         }
     }
 }

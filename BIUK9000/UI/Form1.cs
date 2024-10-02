@@ -41,10 +41,20 @@ namespace BIUK9000.UI
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
 
             mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap();
-            
             updateTimer = new Timer();
             updateTimer.Interval = 17;
             updateTimer.Tick += UpdateTimer_Tick;
+
+            foreach(GifFrame gifFrame in MainGiffer.Frames)
+            {
+                gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
+            }
+            mainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
+        }
+
+        private void GifFrame_LayerCountChanged(object sender, EventArgs e)
+        {
+            UpdateMainPicturebox();
         }
 
         private void UpdateTimer_Tick(object sender, EventArgs e)
