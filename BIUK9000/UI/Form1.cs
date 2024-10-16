@@ -125,6 +125,11 @@ namespace BIUK9000.UI
                 {
                     mainTimelineSlider.SelectedFrame.AddLayer(50, 50);
                 }
+                else if (keyData == Keys.A)
+                {
+                    //mainTimelineSlider.Giffer.AddSpace(0, 0, 0, 50); //FUNGUJE
+                    //MainLayersPanel.ActiveLayer.Rotation += 10; //FUNGUJE
+                }
 
                 return true; // Indicate that the key has been processed
             }
@@ -136,7 +141,6 @@ namespace BIUK9000.UI
             UpdateMainPicturebox();
             MainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
         }
-        private Stopwatch stopwatch = new Stopwatch();
         private void UpdateMainPicturebox()
         {
             mainPictureBox.Image?.Dispose();

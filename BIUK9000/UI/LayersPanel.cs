@@ -15,7 +15,7 @@ namespace BIUK9000.UI
         private LayerHolder clickedLayerHolder;
         public GifFrameLayer ActiveLayer { get => clickedLayerHolder.HeldLayer; }
         public GifFrame ActiveFrame { get; set; }
-        public event EventHandler LayerChanged;
+        //public event EventHandler LayerChanged;
         public LayersPanel()
         {
             InitializeComponent();
@@ -34,7 +34,7 @@ namespace BIUK9000.UI
             {
                 LayerHolder lh = new LayerHolder(layer);
                 lh.LayerClicked += Lh_LayerClicked;
-                lh.LayerChanged += (sender, args) => LayerChanged?.Invoke(this, EventArgs.Empty);
+                //lh.LayerChanged += (sender, args) => LayerChanged?.Invoke(this, EventArgs.Empty);
                 layersFLP.Controls.Add(lh);
             }
             clickedLayerHolder = (LayerHolder)(layersFLP.Controls[0]);

@@ -32,6 +32,14 @@ namespace BIUK9000
             Frames = new List<GifFrame>();
         }
 
+        public void AddSpace(int up, int right, int down, int left)
+        {
+            foreach (GifFrame gf in Frames)
+            {
+                gf.AddSpace(up, right, down, left);
+            }
+        }
+
         private List<GifFrame> FramesFromGif(Image gif)
         {
             List<GifFrame> result = new();

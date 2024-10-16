@@ -1,4 +1,5 @@
 ﻿using Emgu.CV.Reg;
+using Emgu.CV.XImgproc;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -22,10 +23,38 @@ namespace BIUK9000
         public int Height { get; set; }
         public GifFrame(Bitmap bitmap)
         {
+            Bitmap background = new Bitmap(bitmap.Width, bitmap.Height);
+            using Graphics g = Graphics.FromImage(background);
+            g.Clear(Color.White);
+            GifFrameLayer bgfl = new GifFrameLayer(background);
+            Layers.Add(bgfl);
             GifFrameLayer gfl = new GifFrameLayer(bitmap);
             Layers.Add(gfl);
             Width = bitmap.Width;
             Height = bitmap.Height;
+        }
+
+        public void AddSpace(int up, int right, int down,  int left)
+        {
+            GifFrameLayer bgfl = Layers[0];
+            int oWidth = bgfl.OriginalBitmap.Width;
+            int oHeight = bgfl.OriginalBitmap.Height;
+            Bitmap replacementBitmap = new Bitmap(oWidth + left + right, oHeight + up + down);
+            using Graphics g = Graphics.FromImage(replacementBitmap);
+            g.Clear(Color.White);
+            bgfl.ReplaceOriginalBitmap(replacementBitmap);
+            Width = replacementBitmap.Width;
+            Height = replacementBitmap.Height;
+
+            for(int i = 0; i < Layers.Count; i++)
+            {
+                GifFrameLayer cl = Layers[i];
+                if(i > 0)
+                {
+                    cl.Move(left, up);
+                }
+            }
+            OnLayerCountChanged();
         }
         public GifFrame(int width, int height)
         {

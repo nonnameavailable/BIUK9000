@@ -15,7 +15,7 @@ namespace BIUK9000.UI
         public GifFrameLayer HeldLayer { get; set; }
         public bool StayHighlighted { get; set; }
         public event EventHandler LayerClicked;
-        public event EventHandler LayerChanged;
+        //public event EventHandler LayerChanged;
         public LayerHolder(GifFrameLayer layer)
         {
             InitializeComponent();
@@ -25,13 +25,13 @@ namespace BIUK9000.UI
             mainPictureBox.MouseClick += (sender, args) => LayerClicked?.Invoke(this, EventArgs.Empty);
             mainPictureBox.Image = layer.OriginalBitmap;
             StayHighlighted = false;
-            HeldLayer.ParameterChanged += HeldLayer_ParameterChanged;
+            //HeldLayer.ParameterChanged += HeldLayer_ParameterChanged;
         }
 
-        private void HeldLayer_ParameterChanged(object sender, EventArgs e)
-        {
-            LayerChanged?.Invoke(this, EventArgs.Empty);
-        }
+        //private void HeldLayer_ParameterChanged(object sender, EventArgs e)
+        //{
+        //    LayerChanged?.Invoke(this, EventArgs.Empty);
+        //}
 
         private void MainPictureBox_MouseLeave(object sender, EventArgs e)
         {
