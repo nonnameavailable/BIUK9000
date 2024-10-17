@@ -16,6 +16,13 @@ namespace BIUK9000
         public int Height { get => _height; set { _height = value; OnParameterChanged(); } }
         public bool Visible { get => _visible; set { _visible = value; OnParameterChanged(); } }
         public float Rotation { get => _rotation; set { _rotation = value; OnParameterChanged(); } }
+        public Point Center
+        { 
+            get
+            {
+                return new Point(Position.X + Width / 2, Position.Y + Height / 2);
+            }
+        }
 
         private int _width, _height;
         private bool _visible;

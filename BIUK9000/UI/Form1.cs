@@ -22,8 +22,10 @@ namespace BIUK9000.UI
         public LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public Giffer MainGiffer { get; set; }
         private Point mousePosition, mouseClickedPosition, originalLayerPosition;
-        private bool isDragging;
+        private float originalLayerRotation, mouseClickedRotation;
+        private OVector originalLCtM;
         private Timer updateTimer;
+        private bool isLMBDown, isRMBDown;
         public Form1()
         {
             InitializeComponent();
@@ -32,10 +34,11 @@ namespace BIUK9000.UI
             string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
             MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
             mainTimelineSlider.Giffer = MainGiffer;
+            isRMBDown = false;
+            isLMBDown = false;
 
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
 
-            isDragging = false;
             mainPictureBox.MouseDown += MainPictureBox_MouseDown;
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
@@ -68,28 +71,76 @@ namespace BIUK9000.UI
             int yDif = e.Y - mouseClickedPosition.Y;
             mousePosition.X = e.X;
             mousePosition.Y = e.Y;
+            double zoom = Zoom();
+            if(isRMBDown || isLMBDown)
+            {
+                GifFrameLayer gfl = mainLayersPanel.ActiveLayer;
+                if (isLMBDown && !isRMBDown)
+                {
+                    //MOVE
+                    int newX = (int)(xDif / zoom + originalLayerPosition.X);
+                    int newY = (int)(yDif / zoom + originalLayerPosition.Y);
+                    Point pos = new Point(newX, newY);
+                    gfl.Position = pos;
+                }
+                else if (!isLMBDown && isRMBDown)
+                {
+                    //ROTATE
+                    double angle = LayerCenterToMouse().RotationInDegrees;
+                    gfl.Rotation = originalLayerRotation + (float)angle - (float)mouseClickedRotation;
+                }
+                else if (isLMBDown && isRMBDown)
+                {
+                    //RESIZE
+                    //Debug.Print((LayerCenterToMouse().Magnitude / originalLCtM.Magnitude).ToString());
 
+                }
+            }
+
+        }
+        private double Zoom()
+        {
             int pbHeight = mainPictureBox.Height;
             int pbWidth = mainPictureBox.Width;
             int imgHeight = mainPictureBox.Image.Height;
             int imgWidth = mainPictureBox.Image.Width;
             double widthScale = (double)pbWidth / (double)imgWidth;
             double heightScale = (double)pbHeight / (double)imgHeight;
-            double zoom = Math.Min(widthScale, heightScale);
-            if (isDragging)
-            {
-                GifFrameLayer gfl = mainLayersPanel.ActiveLayer;
-                int newX = (int)(xDif / zoom + originalLayerPosition.X);
-                int newY = (int)(yDif / zoom + originalLayerPosition.Y);
-                Point pos = new Point(newX, newY);
-                gfl.Position = pos;
-            }
+            return Math.Min(widthScale, heightScale);
         }
-
+        private OVector LayerCenterToMouse()
+        {
+            GifFrameLayer gfl = MainLayersPanel.ActiveLayer;
+            Point LayerCenter = gfl.Center;
+            double pbAspect = (double)mainPictureBox.Width / mainPictureBox.Height;
+            double frameAspect = (double)mainTimelineSlider.SelectedFrame.Width / mainTimelineSlider.SelectedFrame.Height;
+            int scaledWidth, scaledHeight;
+            if (frameAspect > pbAspect)
+            {
+                scaledWidth = mainPictureBox.Width;
+                scaledHeight = (int)(mainPictureBox.Width / frameAspect);
+            }
+            else
+            {
+                scaledWidth = (int)(mainPictureBox.Height * frameAspect);
+                scaledHeight = mainPictureBox.Height;
+            }
+            int horizontalBlankSpace = mainPictureBox.Width - scaledWidth;
+            int verticalBlankSpace = mainPictureBox.Height - scaledHeight;
+            double zoom = Zoom();
+            return new OVector(LayerCenter.X * zoom, LayerCenter.Y * zoom).Subtract(new OVector(mousePosition.X - horizontalBlankSpace / 2, mousePosition.Y - verticalBlankSpace / 2));
+        }
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
-            isDragging = false;
             updateTimer.Stop();
+            if(e.Button == MouseButtons.Left )
+            {
+                isLMBDown = false;
+            } else if(e.Button == MouseButtons.Right)
+            {
+                isRMBDown = false;
+            }
+
             UpdateMainPicturebox();
         }
 
@@ -97,10 +148,16 @@ namespace BIUK9000.UI
         {
             mouseClickedPosition = e.Location;
             originalLayerPosition = mainLayersPanel.ActiveLayer.Position;
+            originalLayerRotation = mainLayersPanel.ActiveLayer.Rotation;
+            originalLCtM = LayerCenterToMouse();
             updateTimer.Start();
+            mouseClickedRotation = (float)LayerCenterToMouse().RotationInDegrees;
             if(e.Button == MouseButtons.Left)
             {
-                isDragging = true;
+                isLMBDown = true;
+            } else if(e.Button == MouseButtons.Right)
+            {
+                isRMBDown = true;
             }
         }
 
@@ -108,7 +165,6 @@ namespace BIUK9000.UI
         {
             const int WM_KEYDOWN = 0x100;
             const int WM_SYSKEYDOWN = 0x104;
-
             if (msg.Msg == WM_KEYDOWN || msg.Msg == WM_SYSKEYDOWN)
             {
                 if (keyData == Keys.Right)
