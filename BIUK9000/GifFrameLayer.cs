@@ -16,6 +16,20 @@ namespace BIUK9000
         public int Height { get => _height; set { _height = value; OnParameterChanged(); } }
         public bool Visible { get => _visible; set { _visible = value; OnParameterChanged(); } }
         public float Rotation { get => _rotation; set { _rotation = value; OnParameterChanged(); } }
+
+        public Rectangle BoundingRectangle
+        {
+            get
+            {
+                return new Rectangle(Position.X, Position.Y, Width, Height);
+            }
+            set
+            {
+                Position = new Point(value.X, value.Y);
+                Width = value.Width;
+                Height = value.Height;
+            }
+        }
         public Point Center
         { 
             get
@@ -66,6 +80,13 @@ namespace BIUK9000
             _height = bitmap.Height;
             _visible = true;
             _rotation = 0;
+        }
+
+        public void ResizeCentered(int pixels)
+        {
+            Position = new Point(Position.X - pixels, Position.Y - pixels);
+            Width = Width + pixels * 2;
+            Height = Height + pixels * 2;
         }
 
         public void ReplaceOriginalBitmap(Bitmap bitmap)

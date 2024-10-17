@@ -29,19 +29,7 @@ namespace BIUK9000.UI
         public TimelineSlider()
         {
             InitializeComponent();
-            timeLineTrackBar.ValueChanged += TimeLineTrackBar_ValueChanged;
-        }
-
-        private void TimeLineTrackBar_ValueChanged(object sender, EventArgs e)
-        {
-            SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
-            SetFramePreview(SelectedFrame);
-        }
-
-        private void SetFramePreview(GifFrame frame)
-        {
-            framePreviewPictureBox.Image?.Dispose();
-            framePreviewPictureBox.Image = frame.CompleteBitmap();
+            timeLineTrackBar.ValueChanged += (sender, args) => SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

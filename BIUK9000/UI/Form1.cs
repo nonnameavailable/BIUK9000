@@ -21,11 +21,12 @@ namespace BIUK9000.UI
     {
         public LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public Giffer MainGiffer { get; set; }
-        private Point mousePosition, mouseClickedPosition, originalLayerPosition;
-        private float originalLayerRotation, mouseClickedRotation;
+        private Point mousePosition, mouseClickedPosition;
+        private Rectangle originalLayerBR;
+        private float originalLayerRotation;
         private OVector originalLCtM;
         private Timer updateTimer;
-        private bool isLMBDown, isRMBDown;
+        private bool isLMBDown, isRMBDown, isMMBDown;
         public Form1()
         {
             InitializeComponent();
@@ -72,28 +73,32 @@ namespace BIUK9000.UI
             mousePosition.X = e.X;
             mousePosition.Y = e.Y;
             double zoom = Zoom();
-            if(isRMBDown || isLMBDown)
+            OVector currentLCtM = LayerCenterToMouse();
+            if(isRMBDown || isLMBDown || isMMBDown)
             {
                 GifFrameLayer gfl = mainLayersPanel.ActiveLayer;
                 if (isLMBDown && !isRMBDown)
                 {
                     //MOVE
-                    int newX = (int)(xDif / zoom + originalLayerPosition.X);
-                    int newY = (int)(yDif / zoom + originalLayerPosition.Y);
+                    int newX = (int)(xDif / zoom + originalLayerBR.X);
+                    int newY = (int)(yDif / zoom + originalLayerBR.Y);
                     Point pos = new Point(newX, newY);
                     gfl.Position = pos;
                 }
                 else if (!isLMBDown && isRMBDown)
                 {
                     //ROTATE
-                    double angle = LayerCenterToMouse().RotationInDegrees;
-                    gfl.Rotation = originalLayerRotation + (float)angle - (float)mouseClickedRotation;
+                    double angle = currentLCtM.RotationInDegrees;
+                    gfl.Rotation = originalLayerRotation + (float)angle - (float)originalLCtM.RotationInDegrees;
                 }
-                else if (isLMBDown && isRMBDown)
+                else if (isMMBDown)
                 {
                     //RESIZE
                     //Debug.Print((LayerCenterToMouse().Magnitude / originalLCtM.Magnitude).ToString());
-
+                    Rectangle gflBR = gfl.BoundingRectangle;
+                    int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
+                    double aspect = (double)gfl.OriginalBitmap.Width / gfl.OriginalBitmap.Height;
+                    gfl.BoundingRectangle = new Rectangle(originalLayerBR.X - sizeDif, (int)(originalLayerBR.Y - sizeDif / aspect), originalLayerBR.Width + sizeDif * 2, (int)((originalLayerBR.Width + sizeDif * 2) / aspect));
                 }
             }
 
@@ -132,32 +137,40 @@ namespace BIUK9000.UI
         }
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
-            updateTimer.Stop();
+            
             if(e.Button == MouseButtons.Left )
             {
                 isLMBDown = false;
             } else if(e.Button == MouseButtons.Right)
             {
                 isRMBDown = false;
+            } else if(e.Button == MouseButtons.Middle)
+            {
+                isMMBDown = false;
             }
-
+            if(!isLMBDown && !isRMBDown)
+            {
+                updateTimer.Stop();
+            }
             UpdateMainPicturebox();
         }
 
         private void MainPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
             mouseClickedPosition = e.Location;
-            originalLayerPosition = mainLayersPanel.ActiveLayer.Position;
+            originalLayerBR = mainLayersPanel.ActiveLayer.BoundingRectangle;
             originalLayerRotation = mainLayersPanel.ActiveLayer.Rotation;
             originalLCtM = LayerCenterToMouse();
             updateTimer.Start();
-            mouseClickedRotation = (float)LayerCenterToMouse().RotationInDegrees;
             if(e.Button == MouseButtons.Left)
             {
                 isLMBDown = true;
             } else if(e.Button == MouseButtons.Right)
             {
                 isRMBDown = true;
+            } else if (e.Button == MouseButtons.Middle)
+            {
+                isMMBDown = true;
             }
         }
 
