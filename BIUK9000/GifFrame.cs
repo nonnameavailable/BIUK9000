@@ -87,5 +87,10 @@ namespace BIUK9000
             Layers.Add(new GifFrameLayer(bitmap));
             OnLayerCountChanged();
         }
+        public void AddLayer(GifFrameLayer layer)
+        {
+            Layers.Add(layer);
+            OnLayerCountChanged();
+        }
     }
 }

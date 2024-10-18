@@ -19,7 +19,7 @@ namespace BIUK9000
             }
         }
 
-        public double RotationInDegrees
+        public double Rotation
         {
             get
             {
@@ -29,7 +29,7 @@ namespace BIUK9000
                 if (X > 0 && Y <= 0) quad = 3;
                 double helpRot = Math.PI / 2 * (quad + 1);
 
-                OVector help = Copy().Rotate(-Math.PI / 2 * quad);
+                OVector help = Copy().Rotate(-90 * quad);
                 double angle = Math.Asin(help.Y / help.Magnitude);
 
                 return (angle + helpRot) * 180 / Math.PI;
@@ -74,8 +74,9 @@ namespace BIUK9000
             X /= scalar; Y /= scalar; return this;
         }
 
-        public OVector Rotate (double angleInRadians)
+        public OVector Rotate (double angle)
         {
+            double angleInRadians = angle / 180 * Math.PI;
             double xb = X;
             X = X * Math.Cos(angleInRadians) - Y * Math.Sin(angleInRadians);
             Y = xb * Math.Sin(angleInRadians) + Y * Math.Cos(angleInRadians);

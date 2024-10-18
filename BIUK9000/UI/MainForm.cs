@@ -18,7 +18,7 @@ using Microsoft.VisualBasic;
 
 namespace BIUK9000.UI
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         public LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public Giffer MainGiffer { get; set; }
@@ -28,7 +28,7 @@ namespace BIUK9000.UI
         private OVector originalLCtM;
         private Timer updateTimer;
         private bool isLMBDown, isRMBDown, isMMBDown, isShiftDown;
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
             string workingDirectory = Environment.CurrentDirectory;
@@ -89,22 +89,24 @@ namespace BIUK9000.UI
                 else if (!isLMBDown && isRMBDown)
                 {
                     //ROTATE
-                    double angle = currentLCtM.RotationInDegrees;
-                    gfl.Rotation = originalLayerRotation + (float)angle - (float)originalLCtM.RotationInDegrees;
+                    double angle = currentLCtM.Rotation;
+                    gfl.Rotation = originalLayerRotation + (float)angle - (float)originalLCtM.Rotation;
                 }
                 else if (isMMBDown && !isShiftDown)
                 {
                     //RESIZE
                     int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
-                    double aspect = (double)gfl.OriginalBitmap.Width / gfl.OriginalBitmap.Height;
+                    //double aspect = (double)gfl.OriginalBitmap.Width / gfl.OriginalBitmap.Height;
+                    double aspect = (double)originalLayerBR.Width / originalLayerBR.Height;
                     gfl.BoundingRectangle = new Rectangle(originalLayerBR.X - sizeDif, (int)(originalLayerBR.Y - sizeDif / aspect), originalLayerBR.Width + sizeDif * 2, (int)((originalLayerBR.Width + sizeDif * 2) / aspect));
                 } else if (isMMBDown && isShiftDown)
                 {
                     //RESIZE WITHOUT ASPECT
-                    Debug.Print("shiftpressed");
-                    int xSizeDif = (int)(mousePosition.X - mouseClickedPosition.X);
-                    int ySizeDif = (int)(mousePosition.Y - mouseClickedPosition.Y);
-                    Rectangle gflbr = gfl.BoundingRectangle;
+                    OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
+                    sdv.Rotate(gfl.Rotation);
+                    int xSizeDif = (int)sdv.X;
+                    int ySizeDif = (int)sdv.Y;
+                    Rectangle gflbr = originalLayerBR;
                     gfl.BoundingRectangle = new Rectangle(gflbr.X - xSizeDif, gflbr.Y - ySizeDif, gflbr.Width + xSizeDif * 2, gflbr.Height + ySizeDif * 2);
                 }
             }
@@ -180,37 +182,50 @@ namespace BIUK9000.UI
                 isMMBDown = true;
             }
         }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override bool ProcessKeyPreview(ref Message m)
         {
             const int WM_KEYDOWN = 0x100;
-            const int WM_SYSKEYDOWN = 0x104;
             const int WM_KEYUP = 0x101;
-            const int WM_SYSKEYUP = 0x105;
-            if (msg.Msg == WM_KEYDOWN || msg.Msg == WM_SYSKEYDOWN)
+            Keys keyData = (Keys)m.WParam.ToInt32();
+            if (m.Msg == WM_KEYDOWN)
             {
-                if (keyData == Keys.Right)
+                if (keyData == Keys.D)
                 {
                     TrackBar mts = mainTimelineSlider.Slider;
                     if (mts.Value < mts.Maximum) mts.Value += 1;
+                    return true;
                 }
-                else if (keyData == Keys.Left)
+                else if (keyData == Keys.A)
                 {
                     TrackBar mts = mainTimelineSlider.Slider;
                     if (mts.Value > 0) mts.Value -= 1;
-                } else if ((keyData & Keys.Shift) == Keys.Shift)
+                    return true;
+                }
+                else if (keyData == Keys.ShiftKey)
                 {
                     isShiftDown = true;
-                }
-            } else if (msg.Msg == WM_KEYUP ||  msg.Msg == WM_SYSKEYUP)
-            {
-                MessageBox.Show("keyup");
-                if((keyData & Keys.Shift) == Keys.Shift)
+                    return true;
+                } else if(keyData == Keys.T)
                 {
-                    isShiftDown = false;
+                    GifFrameLayer tgfl = new GifFrameLayer("durrr");
+                    tgfl.Font = "Impact";
+                    tgfl.FontBorderColor = Color.Black;
+                    tgfl.FontColor = Color.White;
+                    tgfl.FontBorderWidth = 20;
+                    mainTimelineSlider.SelectedFrame.AddLayer(tgfl);
                 }
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            else if (m.Msg == WM_KEYUP)
+            {
+                if (keyData == Keys.ShiftKey)
+                {
+                    
+                    isShiftDown = false;
+                    return true;
+                }
+            }
+
+            return base.ProcessKeyPreview(ref m);
         }
 
         private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
