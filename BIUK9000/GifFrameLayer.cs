@@ -11,11 +11,12 @@ namespace BIUK9000
 {
     public class GifFrameLayer
     {
-        public Point Position { get => _position; set { _position = value; OnParameterChanged(); } }
-        public int Width { get => _width; set { _width = value; OnParameterChanged(); } }
-        public int Height { get => _height; set { _height = value; OnParameterChanged(); } }
-        public bool Visible { get => _visible; set { _visible = value; OnParameterChanged(); } }
-        public float Rotation { get => _rotation; set { _rotation = value; OnParameterChanged(); } }
+        public Point Position { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public bool Visible { get; set; }
+        public float Rotation { get; set; }
+        public string Text { get; set; }
 
         public Rectangle BoundingRectangle
         {
@@ -38,13 +39,7 @@ namespace BIUK9000
             }
         }
 
-        private int _width, _height;
-        private bool _visible;
-        private Point _position;
-        private float _rotation;
-
-        private Bitmap _originalBitmap;
-        public Bitmap OriginalBitmap { get => _originalBitmap; }
+        public Bitmap OriginalBitmap { get; set; }
         public Bitmap MorphedBitmap
         {
             get
@@ -57,10 +52,7 @@ namespace BIUK9000
         }
 
         public event EventHandler ParameterChanged;
-        protected virtual void OnParameterChanged()
-        {
-            ParameterChanged?.Invoke(this, EventArgs.Empty);
-        }
+
         public GifFrameLayer(Bitmap bitmap)
         {
             Initialize(bitmap);
@@ -72,26 +64,20 @@ namespace BIUK9000
             if(Visible)g.DrawImage(OriginalBitmap, -Width / 2, -Height / 2, Width, Height);
             g.ResetTransform();
         }
+
         private void Initialize(Bitmap bitmap)
         {
-            _originalBitmap = bitmap;
-            _position = new Point(0, 0);
-            _width = bitmap.Width;
-            _height = bitmap.Height;
-            _visible = true;
-            _rotation = 0;
-        }
-
-        public void ResizeCentered(int pixels)
-        {
-            Position = new Point(Position.X - pixels, Position.Y - pixels);
-            Width = Width + pixels * 2;
-            Height = Height + pixels * 2;
+            OriginalBitmap = bitmap;
+            Position = new Point(0, 0);
+            Width = bitmap.Width;
+            Height = bitmap.Height;
+            Visible = true;
+            Rotation = 0;
         }
 
         public void ReplaceOriginalBitmap(Bitmap bitmap)
         {
-            _originalBitmap.Dispose();
+            OriginalBitmap.Dispose();
             Initialize(bitmap);
         }
 

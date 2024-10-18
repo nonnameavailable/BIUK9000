@@ -14,6 +14,7 @@ using System.Diagnostics;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
+using Microsoft.VisualBasic;
 
 namespace BIUK9000.UI
 {
@@ -26,7 +27,7 @@ namespace BIUK9000.UI
         private float originalLayerRotation;
         private OVector originalLCtM;
         private Timer updateTimer;
-        private bool isLMBDown, isRMBDown, isMMBDown;
+        private bool isLMBDown, isRMBDown, isMMBDown, isShiftDown;
         public Form1()
         {
             InitializeComponent();
@@ -35,8 +36,6 @@ namespace BIUK9000.UI
             string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
             MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
             mainTimelineSlider.Giffer = MainGiffer;
-            isRMBDown = false;
-            isLMBDown = false;
 
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
 
@@ -49,11 +48,13 @@ namespace BIUK9000.UI
             updateTimer.Interval = 17;
             updateTimer.Tick += UpdateTimer_Tick;
 
-            foreach(GifFrame gifFrame in MainGiffer.Frames)
+            foreach (GifFrame gifFrame in MainGiffer.Frames)
             {
                 gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
             }
             mainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
+            this.KeyPreview = true;
+
         }
 
         private void GifFrame_LayerCountChanged(object sender, EventArgs e)
@@ -74,7 +75,7 @@ namespace BIUK9000.UI
             mousePosition.Y = e.Y;
             double zoom = Zoom();
             OVector currentLCtM = LayerCenterToMouse();
-            if(isRMBDown || isLMBDown || isMMBDown)
+            if (isRMBDown || isLMBDown || isMMBDown)
             {
                 GifFrameLayer gfl = mainLayersPanel.ActiveLayer;
                 if (isLMBDown && !isRMBDown)
@@ -91,14 +92,20 @@ namespace BIUK9000.UI
                     double angle = currentLCtM.RotationInDegrees;
                     gfl.Rotation = originalLayerRotation + (float)angle - (float)originalLCtM.RotationInDegrees;
                 }
-                else if (isMMBDown)
+                else if (isMMBDown && !isShiftDown)
                 {
                     //RESIZE
-                    //Debug.Print((LayerCenterToMouse().Magnitude / originalLCtM.Magnitude).ToString());
-                    Rectangle gflBR = gfl.BoundingRectangle;
                     int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
                     double aspect = (double)gfl.OriginalBitmap.Width / gfl.OriginalBitmap.Height;
                     gfl.BoundingRectangle = new Rectangle(originalLayerBR.X - sizeDif, (int)(originalLayerBR.Y - sizeDif / aspect), originalLayerBR.Width + sizeDif * 2, (int)((originalLayerBR.Width + sizeDif * 2) / aspect));
+                } else if (isMMBDown && isShiftDown)
+                {
+                    //RESIZE WITHOUT ASPECT
+                    Debug.Print("shiftpressed");
+                    int xSizeDif = (int)(mousePosition.X - mouseClickedPosition.X);
+                    int ySizeDif = (int)(mousePosition.Y - mouseClickedPosition.Y);
+                    Rectangle gflbr = gfl.BoundingRectangle;
+                    gfl.BoundingRectangle = new Rectangle(gflbr.X - xSizeDif, gflbr.Y - ySizeDif, gflbr.Width + xSizeDif * 2, gflbr.Height + ySizeDif * 2);
                 }
             }
 
@@ -137,18 +144,18 @@ namespace BIUK9000.UI
         }
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
-            
-            if(e.Button == MouseButtons.Left )
+
+            if (e.Button == MouseButtons.Left)
             {
                 isLMBDown = false;
-            } else if(e.Button == MouseButtons.Right)
+            } else if (e.Button == MouseButtons.Right)
             {
                 isRMBDown = false;
-            } else if(e.Button == MouseButtons.Middle)
+            } else if (e.Button == MouseButtons.Middle)
             {
                 isMMBDown = false;
             }
-            if(!isLMBDown && !isRMBDown)
+            if (!isLMBDown && !isRMBDown)
             {
                 updateTimer.Stop();
             }
@@ -162,10 +169,10 @@ namespace BIUK9000.UI
             originalLayerRotation = mainLayersPanel.ActiveLayer.Rotation;
             originalLCtM = LayerCenterToMouse();
             updateTimer.Start();
-            if(e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 isLMBDown = true;
-            } else if(e.Button == MouseButtons.Right)
+            } else if (e.Button == MouseButtons.Right)
             {
                 isRMBDown = true;
             } else if (e.Button == MouseButtons.Middle)
@@ -178,6 +185,8 @@ namespace BIUK9000.UI
         {
             const int WM_KEYDOWN = 0x100;
             const int WM_SYSKEYDOWN = 0x104;
+            const int WM_KEYUP = 0x101;
+            const int WM_SYSKEYUP = 0x105;
             if (msg.Msg == WM_KEYDOWN || msg.Msg == WM_SYSKEYDOWN)
             {
                 if (keyData == Keys.Right)
@@ -189,18 +198,17 @@ namespace BIUK9000.UI
                 {
                     TrackBar mts = mainTimelineSlider.Slider;
                     if (mts.Value > 0) mts.Value -= 1;
-                }
-                else if (keyData == Keys.P)
+                } else if ((keyData & Keys.Shift) == Keys.Shift)
                 {
-                    mainTimelineSlider.SelectedFrame.AddLayer(50, 50);
+                    isShiftDown = true;
                 }
-                else if (keyData == Keys.A)
+            } else if (msg.Msg == WM_KEYUP ||  msg.Msg == WM_SYSKEYUP)
+            {
+                MessageBox.Show("keyup");
+                if((keyData & Keys.Shift) == Keys.Shift)
                 {
-                    //mainTimelineSlider.Giffer.AddSpace(0, 0, 0, 50); //FUNGUJE
-                    //MainLayersPanel.ActiveLayer.Rotation += 10; //FUNGUJE
+                    isShiftDown = false;
                 }
-
-                return true; // Indicate that the key has been processed
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
