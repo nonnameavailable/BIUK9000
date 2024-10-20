@@ -7,23 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BIUK9000.GifferComponents;
 
 namespace BIUK9000.UI
 {
     public partial class LayerHolder : UserControl
     {
-        public GifFrameLayer HeldLayer { get; set; }
+        public GFL HeldLayer { get; set; }
         public bool StayHighlighted { get; set; }
         public event EventHandler LayerClicked;
         //public event EventHandler LayerChanged;
-        public LayerHolder(GifFrameLayer layer)
+        public LayerHolder(GFL layer)
         {
             InitializeComponent();
             HeldLayer = layer;
             mainPictureBox.MouseEnter += MainPictureBox_MouseEnter;
             mainPictureBox.MouseLeave += MainPictureBox_MouseLeave;
             mainPictureBox.MouseClick += (sender, args) => LayerClicked?.Invoke(this, EventArgs.Empty);
-            mainPictureBox.Image = layer.OriginalBitmap;
+            mainPictureBox.Image = layer.MorphedBitmap;
             StayHighlighted = false;
             //HeldLayer.ParameterChanged += HeldLayer_ParameterChanged;
         }

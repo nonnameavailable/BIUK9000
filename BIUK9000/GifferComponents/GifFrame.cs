@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BIUK9000
+namespace BIUK9000.GifferComponents
 {
     public class GifFrame
     {
@@ -18,7 +18,7 @@ namespace BIUK9000
             LayerCountChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public List<GifFrameLayer> Layers { get; } = new List<GifFrameLayer>();
+        public List<GFL> Layers { get; } = new List<GFL>();
         public int Width { get; set; }
         public int Height { get; set; }
         public GifFrame(Bitmap bitmap)
@@ -26,17 +26,17 @@ namespace BIUK9000
             Bitmap background = new Bitmap(bitmap.Width, bitmap.Height);
             using Graphics g = Graphics.FromImage(background);
             g.Clear(Color.White);
-            GifFrameLayer bgfl = new GifFrameLayer(background);
+            GFL bgfl = new BitmapGFL(background);
             Layers.Add(bgfl);
-            GifFrameLayer gfl = new GifFrameLayer(bitmap);
+            GFL gfl = new BitmapGFL(bitmap);
             Layers.Add(gfl);
             Width = bitmap.Width;
             Height = bitmap.Height;
         }
 
-        public void AddSpace(int up, int right, int down,  int left)
+        public void AddSpace(int up, int right, int down, int left)
         {
-            GifFrameLayer bgfl = Layers[0];
+            BitmapGFL bgfl = (BitmapGFL)Layers[0];
             int oWidth = bgfl.OriginalBitmap.Width;
             int oHeight = bgfl.OriginalBitmap.Height;
             Bitmap replacementBitmap = new Bitmap(oWidth + left + right, oHeight + up + down);
@@ -46,10 +46,10 @@ namespace BIUK9000
             Width = replacementBitmap.Width;
             Height = replacementBitmap.Height;
 
-            for(int i = 0; i < Layers.Count; i++)
+            for (int i = 0; i < Layers.Count; i++)
             {
-                GifFrameLayer cl = Layers[i];
-                if(i > 0)
+                GFL cl = Layers[i];
+                if (i > 0)
                 {
                     cl.Move(left, up);
                 }
@@ -58,7 +58,7 @@ namespace BIUK9000
         }
         public GifFrame(int width, int height)
         {
-            GifFrameLayer gfl = new GifFrameLayer(new Bitmap(width, height));
+            GFL gfl = new BitmapGFL(new Bitmap(width, height));
             Layers.Add(gfl);
             Width = width;
             Height = height;
@@ -67,7 +67,7 @@ namespace BIUK9000
         {
             Bitmap result = new Bitmap(Width, Height);
             using Graphics g = Graphics.FromImage(result);
-            foreach (GifFrameLayer layer in Layers)
+            foreach (GFL layer in Layers)
             {
                 layer.DrawLayer(g);
             }
@@ -76,18 +76,18 @@ namespace BIUK9000
 
         public void AddLayer(Bitmap bitmap)
         {
-            Layers.Add(new GifFrameLayer(bitmap));
+            Layers.Add(new BitmapGFL(bitmap));
             OnLayerCountChanged();
         }
         public void AddLayer(int width, int height)
         {
             Bitmap bitmap = new Bitmap(width, height);
             using Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.FillRectangle(Brushes.Black, 0, 0, width,height);
-            Layers.Add(new GifFrameLayer(bitmap));
+            graphics.FillRectangle(Brushes.Black, 0, 0, width, height);
+            Layers.Add(new BitmapGFL(bitmap));
             OnLayerCountChanged();
         }
-        public void AddLayer(GifFrameLayer layer)
+        public void AddLayer(GFL layer)
         {
             Layers.Add(layer);
             OnLayerCountChanged();

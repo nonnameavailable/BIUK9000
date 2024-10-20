@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BIUK9000.GifferComponents;
 
 namespace BIUK9000.UI
 {

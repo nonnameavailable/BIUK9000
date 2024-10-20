@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BIUK9000.GifferComponents;
 
 namespace BIUK9000.UI
 {
     public partial class LayersPanel : UserControl
     {
         private LayerHolder clickedLayerHolder;
-        public GifFrameLayer ActiveLayer { get => clickedLayerHolder.HeldLayer; }
+        public GFL ActiveLayer { get => clickedLayerHolder.HeldLayer; }
         public GifFrame ActiveFrame { get; set; }
         //public event EventHandler LayerChanged;
         public LayersPanel()

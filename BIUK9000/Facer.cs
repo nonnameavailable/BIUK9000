@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using Emgu.CV.Reg;
 using System.Linq;
+using BIUK9000.GifferComponents;
 
 namespace BIUK9000
 {

@@ -54,7 +54,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(906, 605);
+            tableLayoutPanel1.Size = new System.Drawing.Size(906, 561);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // mainPictureBox
@@ -64,7 +64,7 @@ namespace BIUK9000.UI
             mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             mainPictureBox.Location = new System.Drawing.Point(153, 153);
             mainPictureBox.Name = "mainPictureBox";
-            mainPictureBox.Size = new System.Drawing.Size(600, 349);
+            mainPictureBox.Size = new System.Drawing.Size(600, 305);
             mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             mainPictureBox.TabIndex = 1;
             mainPictureBox.TabStop = false;
@@ -75,25 +75,25 @@ namespace BIUK9000.UI
             mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             mainLayersPanel.Location = new System.Drawing.Point(759, 153);
             mainLayersPanel.Name = "mainLayersPanel";
-            mainLayersPanel.Size = new System.Drawing.Size(144, 349);
+            mainLayersPanel.Size = new System.Drawing.Size(144, 305);
             mainLayersPanel.TabIndex = 2;
             // 
             // mainTimelineSlider
             // 
             mainTimelineSlider.Dock = System.Windows.Forms.DockStyle.Fill;
             mainTimelineSlider.Giffer = null;
-            mainTimelineSlider.Location = new System.Drawing.Point(153, 508);
+            mainTimelineSlider.Location = new System.Drawing.Point(153, 464);
             mainTimelineSlider.Name = "mainTimelineSlider";
             mainTimelineSlider.Size = new System.Drawing.Size(600, 94);
             mainTimelineSlider.TabIndex = 3;
             // 
-            // Form1
+            // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(906, 605);
+            ClientSize = new System.Drawing.Size(906, 561);
             Controls.Add(tableLayoutPanel1);
-            Name = "Form1";
+            Name = "MainForm";
             Text = "Form1";
             tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();

@@ -15,6 +15,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using Microsoft.VisualBasic;
+using BIUK9000.GifferComponents;
 
 namespace BIUK9000.UI
 {
@@ -77,7 +78,7 @@ namespace BIUK9000.UI
             OVector currentLCtM = LayerCenterToMouse();
             if (isRMBDown || isLMBDown || isMMBDown)
             {
-                GifFrameLayer gfl = mainLayersPanel.ActiveLayer;
+                GFL gfl = mainLayersPanel.ActiveLayer;
                 if (isLMBDown && !isRMBDown)
                 {
                     //MOVE
@@ -96,7 +97,6 @@ namespace BIUK9000.UI
                 {
                     //RESIZE
                     int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
-                    //double aspect = (double)gfl.OriginalBitmap.Width / gfl.OriginalBitmap.Height;
                     double aspect = (double)originalLayerBR.Width / originalLayerBR.Height;
                     gfl.BoundingRectangle = new Rectangle(originalLayerBR.X - sizeDif, (int)(originalLayerBR.Y - sizeDif / aspect), originalLayerBR.Width + sizeDif * 2, (int)((originalLayerBR.Width + sizeDif * 2) / aspect));
                 } else if (isMMBDown && isShiftDown)
@@ -124,8 +124,8 @@ namespace BIUK9000.UI
         }
         private OVector LayerCenterToMouse()
         {
-            GifFrameLayer gfl = MainLayersPanel.ActiveLayer;
-            Point LayerCenter = gfl.Center;
+            GFL gfl = MainLayersPanel.ActiveLayer;
+            Point LayerCenter = gfl.Center();
             double pbAspect = (double)mainPictureBox.Width / mainPictureBox.Height;
             double frameAspect = (double)mainTimelineSlider.SelectedFrame.Width / mainTimelineSlider.SelectedFrame.Height;
             int scaledWidth, scaledHeight;
@@ -207,12 +207,23 @@ namespace BIUK9000.UI
                     return true;
                 } else if(keyData == Keys.T)
                 {
-                    GifFrameLayer tgfl = new GifFrameLayer("durrr");
+                    TextGFL tgfl = new TextGFL("ffa" + System.Environment.NewLine + "herffasdfasdfasdfas" + System.Environment.NewLine + "her" + System.Environment.NewLine + "her" + System.Environment.NewLine + "her");
                     tgfl.Font = "Impact";
                     tgfl.FontBorderColor = Color.Black;
                     tgfl.FontColor = Color.White;
-                    tgfl.FontBorderWidth = 20;
+                    tgfl.FontBorderWidth = 5;
+                    tgfl.FontSize = 20;
                     mainTimelineSlider.SelectedFrame.AddLayer(tgfl);
+                } else if(keyData == Keys.L)
+                {
+                    //Bitmap bmp = new Bitmap(500, 500);
+                    //using Graphics g = Graphics.FromImage(bmp);
+                    //g.Clear(Color.Black);
+                    //g.DrawString("fuuuuuuuuu", new Font("Impact", 50), new SolidBrush(Color.White), new Point(0, 0));
+                    //Size s = TextRenderer.MeasureText("fuuuuuuuuu", new Font("Impact", 50));
+                    //g.DrawRectangle(Pens.Red, 0, 0, s.Width, s.Height);
+                    //mainPictureBox.Image = bmp;
+
                 }
             }
             else if (m.Msg == WM_KEYUP)
@@ -237,6 +248,8 @@ namespace BIUK9000.UI
         {
             mainPictureBox.Image?.Dispose();
             mainPictureBox.Image = mainTimelineSlider.SelectedFrame.CompleteBitmap();
+            using Graphics g = Graphics.FromImage(mainPictureBox.Image);
+            g.DrawLine(Pens.Red, new Point(0, 0), new Point(0, 0));
         }
     }
 }

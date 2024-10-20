@@ -8,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BIUK9000
+namespace BIUK9000.GifferComponents
 {
     public class Giffer
     {
-        public List<GifFrame> Frames {  get; set; }
+        public List<GifFrame> Frames { get; set; }
         private Image originalGif;
         public event EventHandler FrameCountChanged;
         protected virtual void OnFrameCountChanged()
@@ -65,7 +65,7 @@ namespace BIUK9000
             MemoryStream stream = new MemoryStream();
             int frameDelay = FrameDelay(originalGif);
             AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
-            foreach(GifFrame frame in Frames)
+            foreach (GifFrame frame in Frames)
             {
                 agc.AddFrame(frame.CompleteBitmap(), frameDelay, GifQuality.Bit8);
             }
