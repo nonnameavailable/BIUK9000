@@ -15,34 +15,32 @@ namespace BIUK9000.GifferComponents
     {
         public Bitmap OriginalBitmap { get; set; }
 
-        public override Bitmap MorphedBitmap
+        public override Bitmap MorphedBitmap()
         {
-            get
-            {
-                return new Bitmap(OriginalBitmap, Width, Height);
-            }
+            return new Bitmap(OriginalBitmap, Math.Max(Math.Abs(Width), 1), Math.Max(Math.Abs(Height), 1));
         }
 
         public override Point Center()
         {
             return new Point(Position.X + Width / 2, Position.Y + Height / 2);
         }
+        public override Rectangle BoundingRectangle
+        {
+            get
+            {
+                return new Rectangle(Position.X, Position.Y, Width, Height);
+            }
+            set
+            {
+                Position = new Point(value.X, value.Y);
+                Width = value.Width;
+                Height = value.Height;
+            }
+        }
 
         public BitmapGFL(Bitmap bitmap)
         {
             Initialize(bitmap);
-        }
-        public override void DrawLayer(Graphics g)
-        {
-            GraphicsState gs = g.Save();
-            Point c = Center();
-            g.TranslateTransform(c.X, c.Y);
-            g.RotateTransform(Rotation);
-            if (Visible)
-            {
-                g.DrawImage(OriginalBitmap, -Width / 2, -Height / 2, Width, Height);
-            }
-            g.Restore(gs);
         }
 
         private void Initialize(Bitmap bitmap)

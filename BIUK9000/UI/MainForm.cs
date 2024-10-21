@@ -16,6 +16,7 @@ using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using Microsoft.VisualBasic;
 using BIUK9000.GifferComponents;
+using Emgu.CV.XImgproc;
 
 namespace BIUK9000.UI
 {
@@ -25,7 +26,7 @@ namespace BIUK9000.UI
         public Giffer MainGiffer { get; set; }
         private Point mousePosition, mouseClickedPosition;
         private Rectangle originalLayerBR;
-        private float originalLayerRotation;
+        private float originalLayerRotation, originalFontSize;
         private OVector originalLCtM;
         private Timer updateTimer;
         private bool isLMBDown, isRMBDown, isMMBDown, isShiftDown;
@@ -44,7 +45,7 @@ namespace BIUK9000.UI
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
 
-            mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap();
+            mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
             updateTimer = new Timer();
             updateTimer.Interval = 17;
             updateTimer.Tick += UpdateTimer_Tick;
@@ -97,17 +98,32 @@ namespace BIUK9000.UI
                 {
                     //RESIZE
                     int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
-                    double aspect = (double)originalLayerBR.Width / originalLayerBR.Height;
-                    gfl.BoundingRectangle = new Rectangle(originalLayerBR.X - sizeDif, (int)(originalLayerBR.Y - sizeDif / aspect), originalLayerBR.Width + sizeDif * 2, (int)((originalLayerBR.Width + sizeDif * 2) / aspect));
+                    if (gfl.IsTextLayer)
+                    {
+                        TextGFL tgfl = gfl as TextGFL;
+                        float tSizeDif = mouseClickedPosition.X - e.X;
+                        tgfl.FontSize = originalFontSize - tSizeDif / 10;
+
+                    } else
+                    {
+                        double aspect = (double)originalLayerBR.Width / originalLayerBR.Height;
+                        gfl.BoundingRectangle = new Rectangle(originalLayerBR.X - sizeDif, (int)(originalLayerBR.Y - sizeDif / aspect), originalLayerBR.Width + sizeDif * 2, (int)((originalLayerBR.Width + sizeDif * 2) / aspect));
+                    }
                 } else if (isMMBDown && isShiftDown)
                 {
                     //RESIZE WITHOUT ASPECT
-                    OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
-                    sdv.Rotate(gfl.Rotation);
-                    int xSizeDif = (int)sdv.X;
-                    int ySizeDif = (int)sdv.Y;
-                    Rectangle gflbr = originalLayerBR;
-                    gfl.BoundingRectangle = new Rectangle(gflbr.X - xSizeDif, gflbr.Y - ySizeDif, gflbr.Width + xSizeDif * 2, gflbr.Height + ySizeDif * 2);
+                    if (gfl.IsTextLayer)
+                    {
+
+                    } else
+                    {
+                        OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
+                        sdv.Rotate(gfl.Rotation);
+                        int xSizeDif = (int)sdv.X;
+                        int ySizeDif = (int)sdv.Y;
+                        Rectangle gflbr = originalLayerBR;
+                        gfl.BoundingRectangle = new Rectangle(gflbr.X - xSizeDif, gflbr.Y - ySizeDif, gflbr.Width + xSizeDif * 2, gflbr.Height + ySizeDif * 2);
+                    }
                 }
             }
 
@@ -166,11 +182,13 @@ namespace BIUK9000.UI
 
         private void MainPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
+            GFL cgfl = mainLayersPanel.ActiveLayer;
             mouseClickedPosition = e.Location;
-            originalLayerBR = mainLayersPanel.ActiveLayer.BoundingRectangle;
-            originalLayerRotation = mainLayersPanel.ActiveLayer.Rotation;
+            originalLayerBR = cgfl.BoundingRectangle;
+            originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
             updateTimer.Start();
+            if(cgfl.IsTextLayer)originalFontSize = (cgfl as TextGFL).FontSize;
             if (e.Button == MouseButtons.Left)
             {
                 isLMBDown = true;
@@ -247,7 +265,7 @@ namespace BIUK9000.UI
         private void UpdateMainPicturebox()
         {
             mainPictureBox.Image?.Dispose();
-            mainPictureBox.Image = mainTimelineSlider.SelectedFrame.CompleteBitmap();
+            mainPictureBox.Image = mainTimelineSlider.SelectedFrame.CompleteBitmap(true);
             using Graphics g = Graphics.FromImage(mainPictureBox.Image);
             g.DrawLine(Pens.Red, new Point(0, 0), new Point(0, 0));
         }

@@ -60,7 +60,7 @@ namespace BIUK9000
             for (int i = 0; i < frames.Count; i++)
             {
                 GifFrame frame = frames[i];
-                result.Add(new GifFrame(FaceSwappedImage(frame.CompleteBitmap(), substituteImage)));
+                result.Add(new GifFrame(FaceSwappedImage(frame.CompleteBitmap(true), substituteImage)));
             }
             return result;
         }

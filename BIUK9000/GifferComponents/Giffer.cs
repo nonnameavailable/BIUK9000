@@ -67,7 +67,7 @@ namespace BIUK9000.GifferComponents
             AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
             foreach (GifFrame frame in Frames)
             {
-                agc.AddFrame(frame.CompleteBitmap(), frameDelay, GifQuality.Bit8);
+                agc.AddFrame(frame.CompleteBitmap(false), frameDelay, GifQuality.Bit8);
             }
             return Image.FromStream(stream);
         }

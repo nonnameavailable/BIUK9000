@@ -17,7 +17,21 @@ namespace BIUK9000.GifferComponents
         public Color FontColor { get; set; }
         public Color FontBorderColor { get; set; }
         public float FontBorderWidth { get; set; }
-        public float FontSize { get; set; }
+        public float FontSize
+        {
+            get
+            {
+                return _fontSize;
+            }
+            set
+            {
+                if(value > 1 && value < 300)
+                {
+                    _fontSize = value;
+                }
+            }
+        }
+        private float _fontSize;
         public Size TextSize()
         {
             using Font font = new Font(Font, FontSize);
@@ -29,13 +43,44 @@ namespace BIUK9000.GifferComponents
             SizeF textSize = TextSize();
             return new Point((int)(Position.X + textSize.Width / 2), (int)(Position.Y + textSize.Height / 2));
         }
-
-        public override Bitmap MorphedBitmap
+        public override Rectangle BoundingRectangle
         {
             get
             {
-                return new Bitmap(50, 50);
+                Size size = TextSize();
+                return new Rectangle(Position.X, Position.Y, size.Width, size.Height);
             }
+            set
+            {
+
+            }
+        }
+
+        public override Bitmap MorphedBitmap()
+        {
+            Size ts = TextSize();
+            Bitmap bitmap = new Bitmap(Math.Max(ts.Width, 1), Math.Max(ts.Height, 1));
+            using Graphics g = Graphics.FromImage(bitmap);
+
+            float scaledFs = FontSize * g.DpiY / 72f; //FUCKING FINALLY FUCK THIS FUCKING SHIT WHY??
+            // Font and brush for the text
+            using Font font = new Font(Font, scaledFs);
+            using Brush textBrush = new SolidBrush(FontColor);
+
+            // Pen for the border
+            using Pen borderPen = new Pen(FontBorderColor, FontBorderWidth);
+            borderPen.LineJoin = LineJoin.Round; // Smooth the corners
+
+            using GraphicsPath path = new GraphicsPath();
+            path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
+
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            // Draw the border
+            g.DrawPath(borderPen, path);
+            // Fill the text
+            g.FillPath(textBrush, path);
+
+            return bitmap;
         }
 
         public TextGFL(string text)
@@ -44,38 +89,7 @@ namespace BIUK9000.GifferComponents
             Position = new Point(0, 0);
             Visible = true;
             Rotation = 0;
-        }
-        public override void DrawLayer(Graphics g)
-        {
-
-            if (Visible)
-            {
-                GraphicsState gs = g.Save();
-
-                SizeF ts = TextSize();
-                Point c = Center();
-                float scaledFs = FontSize * g.DpiY / 72f; //FUCKING FINALLY FUCK THIS FUCKING SHIT WHY??
-                g.TranslateTransform(c.X, c.Y);
-                g.RotateTransform(Rotation);
-                g.DrawRectangle(Pens.Red, -ts.Width / 2, -ts.Height / 2, ts.Width, ts.Height);
-                // Font and brush for the text
-                using Font font = new Font(Font, scaledFs);
-                using Brush textBrush = new SolidBrush(FontColor);
-
-                // Pen for the border
-                using Pen borderPen = new Pen(FontBorderColor, FontBorderWidth);
-                borderPen.LineJoin = LineJoin.Round; // Smooth the corners
-                // Create a GraphicsPath
-                using GraphicsPath path = new GraphicsPath();
-                path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point((int)(-ts.Width / 2), (int)(-ts.Height / 2)), StringFormat.GenericDefault);
-
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                // Draw the border
-                g.DrawPath(borderPen, path);
-                // Fill the text
-                g.FillPath(textBrush, path);
-                g.Restore(gs);
-            }
+            IsTextLayer = true;
         }
     }
 }

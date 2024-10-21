@@ -15,6 +15,7 @@
         {
             if (disposing && (components != null))
             {
+                mainPictureBox.Image?.Dispose();
                 components.Dispose();
             }
             base.Dispose(disposing);

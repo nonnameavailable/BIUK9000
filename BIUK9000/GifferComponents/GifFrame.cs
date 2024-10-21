@@ -63,13 +63,13 @@ namespace BIUK9000.GifferComponents
             Width = width;
             Height = height;
         }
-        public Bitmap CompleteBitmap()
+        public Bitmap CompleteBitmap(bool drawHelp)
         {
             Bitmap result = new Bitmap(Width, Height);
             using Graphics g = Graphics.FromImage(result);
             foreach (GFL layer in Layers)
             {
-                layer.DrawLayer(g);
+                layer.DrawLayer(g, drawHelp);
             }
             return result;
         }

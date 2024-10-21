@@ -24,7 +24,7 @@ namespace BIUK9000.UI
             mainPictureBox.MouseEnter += MainPictureBox_MouseEnter;
             mainPictureBox.MouseLeave += MainPictureBox_MouseLeave;
             mainPictureBox.MouseClick += (sender, args) => LayerClicked?.Invoke(this, EventArgs.Empty);
-            mainPictureBox.Image = layer.MorphedBitmap;
+            mainPictureBox.Image = layer.MorphedBitmap();
             StayHighlighted = false;
             //HeldLayer.ParameterChanged += HeldLayer_ParameterChanged;
         }
