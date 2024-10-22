@@ -20,7 +20,6 @@ namespace BIUK9000.UI
         private MainForm mainForm { get => ParentForm as MainForm; }
         private OVector originalLCtM;
         private bool isLMBDown, isRMBDown, isMMBDown;
-        public Giffer MainGiffer { get; set; }
 
         public MyPictureBox()
         {
@@ -32,6 +31,7 @@ namespace BIUK9000.UI
 
         private void MyPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
+            if(mainForm.MainGiffer == null) return;
             if (e.Button == MouseButtons.Left)
             {
                 isLMBDown = false;
@@ -48,10 +48,12 @@ namespace BIUK9000.UI
             {
                 mainForm.UpdateTimer.Stop();
             }
+            mainForm.ApplyCurrentLayerParamsToSubsequentLayers();
         }
 
         private void MyPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
+            if (mainForm.MainGiffer == null) return;
             GFL cgfl = mainForm.MainLayersPanel.SelectedLayer;
             mouseClickedPosition = e.Location;
             originalLayerBR = cgfl.BoundingRectangle;

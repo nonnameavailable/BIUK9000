@@ -80,7 +80,6 @@ namespace BIUK9000.UI
             mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             mainPictureBox.Image = null;
             mainPictureBox.Location = new System.Drawing.Point(153, 153);
-            mainPictureBox.MainGiffer = null;
             mainPictureBox.Name = "mainPictureBox";
             mainPictureBox.Size = new System.Drawing.Size(600, 305);
             mainPictureBox.TabIndex = 4;

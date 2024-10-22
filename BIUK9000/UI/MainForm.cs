@@ -56,7 +56,6 @@ namespace BIUK9000.UI
 
             SaveButton.MouseDown += SaveButton_MouseDown;
             SaveButton.MouseUp += SaveButton_MouseUp;
-
         }
 
         private void SaveButton_MouseUp(object sender, MouseEventArgs e)
@@ -71,16 +70,41 @@ namespace BIUK9000.UI
             if (e.Button == MouseButtons.Left)
             {
                 using Bitmap bitmap = mainTimelineSlider.SelectedFrame.CompleteBitmap(false);
-                bitmap.Save(TempJpegPath);
-                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { TempJpegPath });
+                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".jpeg");
+                bitmap.Save(tempPath);
+                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath});
                 DoDragDrop(data, DragDropEffects.Copy);
+                if (File.Exists(tempPath))
+                {
+                    File.Delete(tempPath);
+                }
             } else if(e.Button == MouseButtons.Right)
             {
                 using Image gif = MainGiffer.GifFromFrames();
-                gif.Save(TempGifPath);
-                OBIMP.CompressGif(TempGifPath, TempGifPath, 50, 100);
-                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { TempGifPath });
+                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
+                gif.Save(tempPath);
+                OBIMP.CompressGif(tempPath, tempPath, 50, 100);
+                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath});
                 DoDragDrop(data, DragDropEffects.Copy);
+                if (File.Exists(tempPath))
+                {
+                    File.Delete(tempPath);
+                }
+            }
+        }
+        public void ApplyCurrentLayerParamsToSubsequentLayers()
+        {
+            GFL cgfl = mainLayersPanel.SelectedLayer;
+            GifFrame cgf = MainTimelineSlider.SelectedFrame;
+            int cli = cgf.Layers.IndexOf(cgfl);
+            int cgfi = MainGiffer.Frames.IndexOf(cgf);
+            for (int i = cgfi + 1; i < MainGiffer.Frames.Count; i++)
+            {
+                GifFrame gf = MainGiffer.Frames[i];
+                if(cli > 0 && cli < gf.Layers.Count)
+                {
+                    gf.Layers[cli].CopyParameters(cgfl);
+                }
             }
         }
 
@@ -178,22 +202,40 @@ namespace BIUK9000.UI
             if(filePaths.Length > 0)
             {
                 string fullPath = filePaths[0];
-                Giffer newGiffer = new Giffer(fullPath);
-                if(MainGiffer == null)
+                string ext = Path.GetExtension(fullPath);
+
+                if(ext == ".gif")
                 {
-                    MainGiffer = newGiffer;
-                    mainTimelineSlider.Giffer = newGiffer;
-                    mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
-                    foreach (GifFrame gifFrame in MainGiffer.Frames)
+                    Giffer newGiffer = new Giffer(fullPath);
+                    if (MainGiffer == null)
                     {
-                        gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
+                        MainGiffer = newGiffer;
+                        mainTimelineSlider.Giffer = newGiffer;
+                        mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
+                        foreach (GifFrame gifFrame in MainGiffer.Frames)
+                        {
+                            gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
+                        }
+                        mainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
                     }
-                    mainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
+                    else
+                    {
+                        MainGiffer.AddGifferAsLayers(newGiffer);
+                    }
                 } else
                 {
-                    MainGiffer.AddGifferAsLayers(newGiffer);
+                    try
+                    {
+                        Bitmap bitmap = new Bitmap(fullPath);
+                        foreach(GifFrame gifFrame in MainGiffer.Frames)
+                        {
+                            gifFrame.AddLayer(bitmap);
+                        }
+                    } catch (Exception ex)
+                    {
+                        MessageBox.Show("This is not an image file!");
+                    }
                 }
-
             }
         }
     }

@@ -16,10 +16,12 @@ namespace BIUK9000.UI
         private LayerHolder clickedLayerHolder;
         public GFL SelectedLayer { get => clickedLayerHolder.HeldLayer; }
         private GifFrame ActiveFrame { get; set; }
+        public int SelectedLayerIndex { get; set; }
         public LayersPanel()
         {
             InitializeComponent();
             ActiveFrame = null;
+            SelectedLayerIndex = 1;
         }
         public void DisplayLayers(GifFrame frame)
         {
@@ -37,14 +39,16 @@ namespace BIUK9000.UI
                 lh.LayerClicked += Lh_LayerClicked;
                 layersFLP.Controls.Add(lh);
             }
-            if(layersFLP.Controls.Count > 1)
+            SelectLayerHolder(SelectedLayerIndex);
+        }
+
+        public void SelectLayerHolder(int i)
+        {
+            if (layersFLP.Controls.Count > 0 && i < layersFLP.Controls.Count)
             {
-                clickedLayerHolder = (LayerHolder)(layersFLP.Controls[1]);
-            } else
-            {
-                clickedLayerHolder = (LayerHolder)(layersFLP.Controls[0]);
+                clickedLayerHolder = (LayerHolder)(layersFLP.Controls[i]);
             }
-            
+
             clickedLayerHolder.Highlight(true);
             clickedLayerHolder.StayHighlighted = true;
         }
@@ -60,6 +64,7 @@ namespace BIUK9000.UI
             LayerHolder lh = sender as LayerHolder;
             lh.Highlight(true);
             clickedLayerHolder = lh;
+            SelectedLayerIndex = layersFLP.Controls.IndexOf(lh);
             if (clickedLayerHolder != null) clickedLayerHolder.StayHighlighted = true;
         }
     }
