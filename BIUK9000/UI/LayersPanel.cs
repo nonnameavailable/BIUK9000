@@ -14,12 +14,12 @@ namespace BIUK9000.UI
     public partial class LayersPanel : UserControl
     {
         private LayerHolder clickedLayerHolder;
-        public GFL ActiveLayer { get => clickedLayerHolder.HeldLayer; }
-        public GifFrame ActiveFrame { get; set; }
-        //public event EventHandler LayerChanged;
+        public GFL SelectedLayer { get => clickedLayerHolder.HeldLayer; }
+        private GifFrame ActiveFrame { get; set; }
         public LayersPanel()
         {
             InitializeComponent();
+            ActiveFrame = null;
         }
         public void DisplayLayers(GifFrame frame)
         {
@@ -35,7 +35,6 @@ namespace BIUK9000.UI
             {
                 LayerHolder lh = new LayerHolder(layer);
                 lh.LayerClicked += Lh_LayerClicked;
-                //lh.LayerChanged += (sender, args) => LayerChanged?.Invoke(this, EventArgs.Empty);
                 layersFLP.Controls.Add(lh);
             }
             if(layersFLP.Controls.Count > 1)

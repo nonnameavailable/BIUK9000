@@ -23,185 +23,47 @@ namespace BIUK9000.UI
     public partial class MainForm : Form
     {
         public LayersPanel MainLayersPanel { get => mainLayersPanel; }
+        public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
+        public bool IsShiftDown { get => isShiftDown; }
+        public Timer UpdateTimer { get => updateTimer; }
         public Giffer MainGiffer { get; set; }
-        private Point mousePosition, mouseClickedPosition;
-        private Rectangle originalLayerBR;
-        private float originalLayerRotation, originalFontSize;
-        private OVector originalLCtM;
+        private bool isShiftDown;
         private Timer updateTimer;
-        private bool isLMBDown, isRMBDown, isMMBDown, isShiftDown;
         public MainForm()
         {
             InitializeComponent();
-            string workingDirectory = Environment.CurrentDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
-            string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
-            MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
-            mainTimelineSlider.Giffer = MainGiffer;
-
+            //string workingDirectory = Environment.CurrentDirectory;
+            //string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
+            //string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
+            //MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
+            //mainTimelineSlider.Giffer = MainGiffer;
+            
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
 
-            mainPictureBox.MouseDown += MainPictureBox_MouseDown;
-            mainPictureBox.MouseUp += MainPictureBox_MouseUp;
-            mainPictureBox.MouseMove += MainPictureBox_MouseMove;
+            DragDrop += MainForm_DragDrop;
+            DragEnter += MainForm_DragEnter;
 
-            mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
             updateTimer = new Timer();
             updateTimer.Interval = 17;
             updateTimer.Tick += UpdateTimer_Tick;
 
-            foreach (GifFrame gifFrame in MainGiffer.Frames)
-            {
-                gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
-            }
-            mainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
-            this.KeyPreview = true;
+            KeyPreview = true;
 
         }
 
         private void GifFrame_LayerCountChanged(object sender, EventArgs e)
         {
-            UpdateMainPicturebox();
+            mainPictureBox.UpdatePictureBox();
         }
 
         private void UpdateTimer_Tick(object sender, EventArgs e)
         {
-            UpdateMainPicturebox();
+            mainPictureBox.UpdatePictureBox();
         }
 
-        private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            int xDif = e.X - mouseClickedPosition.X;
-            int yDif = e.Y - mouseClickedPosition.Y;
-            mousePosition.X = e.X;
-            mousePosition.Y = e.Y;
-            double zoom = Zoom();
-            OVector currentLCtM = LayerCenterToMouse();
-            if (isRMBDown || isLMBDown || isMMBDown)
-            {
-                GFL gfl = mainLayersPanel.ActiveLayer;
-                if (isLMBDown && !isRMBDown)
-                {
-                    //MOVE
-                    int newX = (int)(xDif / zoom + originalLayerBR.X);
-                    int newY = (int)(yDif / zoom + originalLayerBR.Y);
-                    Point pos = new Point(newX, newY);
-                    gfl.Position = pos;
-                }
-                else if (!isLMBDown && isRMBDown)
-                {
-                    //ROTATE
-                    double angle = currentLCtM.Rotation;
-                    gfl.Rotation = originalLayerRotation + (float)angle - (float)originalLCtM.Rotation;
-                }
-                else if (isMMBDown && !isShiftDown)
-                {
-                    //RESIZE
-                    int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
-                    if (gfl.IsTextLayer)
-                    {
-                        TextGFL tgfl = gfl as TextGFL;
-                        float tSizeDif = mouseClickedPosition.X - e.X;
-                        tgfl.FontSize = originalFontSize - tSizeDif / 10;
-
-                    } else
-                    {
-                        double aspect = (double)originalLayerBR.Width / originalLayerBR.Height;
-                        gfl.BoundingRectangle = new Rectangle(originalLayerBR.X - sizeDif, (int)(originalLayerBR.Y - sizeDif / aspect), originalLayerBR.Width + sizeDif * 2, (int)((originalLayerBR.Width + sizeDif * 2) / aspect));
-                    }
-                } else if (isMMBDown && isShiftDown)
-                {
-                    //RESIZE WITHOUT ASPECT
-                    if (gfl.IsTextLayer)
-                    {
-
-                    } else
-                    {
-                        OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
-                        sdv.Rotate(gfl.Rotation);
-                        int xSizeDif = (int)sdv.X;
-                        int ySizeDif = (int)sdv.Y;
-                        Rectangle gflbr = originalLayerBR;
-                        gfl.BoundingRectangle = new Rectangle(gflbr.X - xSizeDif, gflbr.Y - ySizeDif, gflbr.Width + xSizeDif * 2, gflbr.Height + ySizeDif * 2);
-                    }
-                }
-            }
-
-        }
-        private double Zoom()
-        {
-            int pbHeight = mainPictureBox.Height;
-            int pbWidth = mainPictureBox.Width;
-            int imgHeight = mainPictureBox.Image.Height;
-            int imgWidth = mainPictureBox.Image.Width;
-            double widthScale = (double)pbWidth / (double)imgWidth;
-            double heightScale = (double)pbHeight / (double)imgHeight;
-            return Math.Min(widthScale, heightScale);
-        }
-        private OVector LayerCenterToMouse()
-        {
-            GFL gfl = MainLayersPanel.ActiveLayer;
-            Point LayerCenter = gfl.Center();
-            double pbAspect = (double)mainPictureBox.Width / mainPictureBox.Height;
-            double frameAspect = (double)mainTimelineSlider.SelectedFrame.Width / mainTimelineSlider.SelectedFrame.Height;
-            int scaledWidth, scaledHeight;
-            if (frameAspect > pbAspect)
-            {
-                scaledWidth = mainPictureBox.Width;
-                scaledHeight = (int)(mainPictureBox.Width / frameAspect);
-            }
-            else
-            {
-                scaledWidth = (int)(mainPictureBox.Height * frameAspect);
-                scaledHeight = mainPictureBox.Height;
-            }
-            int horizontalBlankSpace = mainPictureBox.Width - scaledWidth;
-            int verticalBlankSpace = mainPictureBox.Height - scaledHeight;
-            double zoom = Zoom();
-            return new OVector(LayerCenter.X * zoom, LayerCenter.Y * zoom).Subtract(new OVector(mousePosition.X - horizontalBlankSpace / 2, mousePosition.Y - verticalBlankSpace / 2));
-        }
-        private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
-        {
-
-            if (e.Button == MouseButtons.Left)
-            {
-                isLMBDown = false;
-            } else if (e.Button == MouseButtons.Right)
-            {
-                isRMBDown = false;
-            } else if (e.Button == MouseButtons.Middle)
-            {
-                isMMBDown = false;
-            }
-            if (!isLMBDown && !isRMBDown)
-            {
-                updateTimer.Stop();
-            }
-            UpdateMainPicturebox();
-        }
-
-        private void MainPictureBox_MouseDown(object sender, MouseEventArgs e)
-        {
-            GFL cgfl = mainLayersPanel.ActiveLayer;
-            mouseClickedPosition = e.Location;
-            originalLayerBR = cgfl.BoundingRectangle;
-            originalLayerRotation = cgfl.Rotation;
-            originalLCtM = LayerCenterToMouse();
-            updateTimer.Start();
-            if(cgfl.IsTextLayer)originalFontSize = (cgfl as TextGFL).FontSize;
-            if (e.Button == MouseButtons.Left)
-            {
-                isLMBDown = true;
-            } else if (e.Button == MouseButtons.Right)
-            {
-                isRMBDown = true;
-            } else if (e.Button == MouseButtons.Middle)
-            {
-                isMMBDown = true;
-            }
-        }
         protected override bool ProcessKeyPreview(ref Message m)
         {
+            if(MainGiffer == null) return base.ProcessKeyPreview(ref m);
             const int WM_KEYDOWN = 0x100;
             const int WM_KEYUP = 0x101;
             Keys keyData = (Keys)m.WParam.ToInt32();
@@ -225,13 +87,14 @@ namespace BIUK9000.UI
                     return true;
                 } else if(keyData == Keys.T)
                 {
-                    TextGFL tgfl = new TextGFL("ffa" + System.Environment.NewLine + "herffasdfasdfasdfas" + System.Environment.NewLine + "her" + System.Environment.NewLine + "her" + System.Environment.NewLine + "her");
-                    tgfl.Font = "Impact";
+                    TextGFL tgfl = new TextGFL("YOUR TEXT");
+                    tgfl.FontName = "Impact";
                     tgfl.FontBorderColor = Color.Black;
                     tgfl.FontColor = Color.White;
                     tgfl.FontBorderWidth = 5;
                     tgfl.FontSize = 20;
                     mainTimelineSlider.SelectedFrame.AddLayer(tgfl);
+                    return true;
                 } else if(keyData == Keys.L)
                 {
                     //Bitmap bmp = new Bitmap(500, 500);
@@ -259,15 +122,44 @@ namespace BIUK9000.UI
 
         private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
         {
-            UpdateMainPicturebox();
+            if (MainGiffer == null) return;
             MainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
         }
-        private void UpdateMainPicturebox()
+        private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
-            mainPictureBox.Image?.Dispose();
-            mainPictureBox.Image = mainTimelineSlider.SelectedFrame.CompleteBitmap(true);
-            using Graphics g = Graphics.FromImage(mainPictureBox.Image);
-            g.DrawLine(Pens.Red, new Point(0, 0), new Point(0, 0));
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void MainForm_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            if(filePaths.Length > 0)
+            {
+                string fullPath = filePaths[0];
+                Giffer newGiffer = new Giffer(fullPath);
+                if(MainGiffer == null)
+                {
+                    MainGiffer = newGiffer;
+                    mainTimelineSlider.Giffer = newGiffer;
+                    mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
+                    foreach (GifFrame gifFrame in MainGiffer.Frames)
+                    {
+                        gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
+                    }
+                    mainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
+                } else
+                {
+                    MainGiffer.AddGifferAsLayers(newGiffer);
+                }
+
+            }
         }
     }
 }

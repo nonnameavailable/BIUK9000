@@ -30,12 +30,6 @@ namespace BIUK9000.GifferComponents
             {
                 return new Rectangle(Position.X, Position.Y, Width, Height);
             }
-            set
-            {
-                Position = new Point(value.X, value.Y);
-                Width = value.Width;
-                Height = value.Height;
-            }
         }
 
         public BitmapGFL(Bitmap bitmap)
@@ -57,6 +51,18 @@ namespace BIUK9000.GifferComponents
         {
             OriginalBitmap.Dispose();
             Initialize(bitmap);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (OriginalBitmap != null)
+                {
+                    OriginalBitmap.Dispose();
+                    OriginalBitmap = null;
+                }
+            }
+            base.Dispose(disposing);
         }
     }
 }

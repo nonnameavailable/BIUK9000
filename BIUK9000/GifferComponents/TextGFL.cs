@@ -13,7 +13,7 @@ namespace BIUK9000.GifferComponents
     public class TextGFL : GFL
     {
         public string Text { get; set; }
-        public string Font { get; set; }
+        public string FontName { get; set; }
         public Color FontColor { get; set; }
         public Color FontBorderColor { get; set; }
         public float FontBorderWidth { get; set; }
@@ -32,9 +32,24 @@ namespace BIUK9000.GifferComponents
             }
         }
         private float _fontSize;
+        public override void CopyParameters(GFL layer)
+        {
+            if (layer.IsTextLayer)
+            {
+                TextGFL tl = (TextGFL)layer;
+                base.CopyParameters(layer);
+                Text = tl.Text;
+                FontName = tl.FontName;
+                FontColor = tl.FontColor;
+                FontBorderColor = tl.FontBorderColor;
+                FontBorderWidth = tl.FontBorderWidth;
+                FontSize = tl.FontSize;
+            }
+
+        }
         public Size TextSize()
         {
-            using Font font = new Font(Font, FontSize);
+            using Font font = new Font(FontName, FontSize);
             return TextRenderer.MeasureText(Text, font);
         }
 
@@ -50,10 +65,6 @@ namespace BIUK9000.GifferComponents
                 Size size = TextSize();
                 return new Rectangle(Position.X, Position.Y, size.Width, size.Height);
             }
-            set
-            {
-
-            }
         }
 
         public override Bitmap MorphedBitmap()
@@ -64,7 +75,7 @@ namespace BIUK9000.GifferComponents
 
             float scaledFs = FontSize * g.DpiY / 72f; //FUCKING FINALLY FUCK THIS FUCKING SHIT WHY??
             // Font and brush for the text
-            using Font font = new Font(Font, scaledFs);
+            using Font font = new Font(FontName, scaledFs);
             using Brush textBrush = new SolidBrush(FontColor);
 
             // Pen for the border
@@ -91,5 +102,10 @@ namespace BIUK9000.GifferComponents
             Rotation = 0;
             IsTextLayer = true;
         }
+        public TextGFL(TextGFL textGFL)
+        {
+            CopyParameters(textGFL);
+        }
+
     }
 }

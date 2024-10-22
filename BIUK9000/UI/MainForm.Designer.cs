@@ -31,11 +31,10 @@ namespace BIUK9000.UI
         {
             saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            mainPictureBox = new System.Windows.Forms.PictureBox();
             mainLayersPanel = new LayersPanel();
             mainTimelineSlider = new TimelineSlider();
+            mainPictureBox = new MyPictureBox();
             tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -44,9 +43,9 @@ namespace BIUK9000.UI
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 1);
             tableLayoutPanel1.Controls.Add(mainTimelineSlider, 1, 2);
+            tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -57,21 +56,8 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Size = new System.Drawing.Size(906, 561);
             tableLayoutPanel1.TabIndex = 0;
             // 
-            // mainPictureBox
-            // 
-            mainPictureBox.BackColor = System.Drawing.SystemColors.Control;
-            mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainPictureBox.Location = new System.Drawing.Point(153, 153);
-            mainPictureBox.Name = "mainPictureBox";
-            mainPictureBox.Size = new System.Drawing.Size(600, 305);
-            mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            mainPictureBox.TabIndex = 1;
-            mainPictureBox.TabStop = false;
-            // 
             // mainLayersPanel
             // 
-            mainLayersPanel.ActiveFrame = null;
             mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             mainLayersPanel.Location = new System.Drawing.Point(759, 153);
             mainLayersPanel.Name = "mainLayersPanel";
@@ -87,8 +73,19 @@ namespace BIUK9000.UI
             mainTimelineSlider.Size = new System.Drawing.Size(600, 94);
             mainTimelineSlider.TabIndex = 3;
             // 
+            // mainPictureBox
+            // 
+            mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            mainPictureBox.Image = null;
+            mainPictureBox.Location = new System.Drawing.Point(153, 153);
+            mainPictureBox.MainGiffer = null;
+            mainPictureBox.Name = "mainPictureBox";
+            mainPictureBox.Size = new System.Drawing.Size(600, 305);
+            mainPictureBox.TabIndex = 4;
+            // 
             // MainForm
             // 
+            AllowDrop = true;
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(906, 561);
@@ -96,7 +93,6 @@ namespace BIUK9000.UI
             Name = "MainForm";
             Text = "Form1";
             tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
             ResumeLayout(false);
         }
 
@@ -104,9 +100,9 @@ namespace BIUK9000.UI
 
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.PictureBox mainPictureBox;
         private LayersPanel mainLayersPanel;
         private TimelineSlider mainTimelineSlider;
+        private MyPictureBox mainPictureBox;
     }
 }
 

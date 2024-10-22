@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace BIUK9000.GifferComponents
 {
-    public class GifFrame
+    public class GifFrame : IDisposable
     {
+        private bool disposedValue;
+
         public event EventHandler LayerCountChanged;
         protected virtual void OnLayerCountChanged()
         {
@@ -91,6 +93,47 @@ namespace BIUK9000.GifferComponents
         {
             Layers.Add(layer);
             OnLayerCountChanged();
+        }
+
+        public void RemoveLayer(int index)
+        {
+            if(index > 0 && index < Layers.Count)
+            {
+                Layers[index].Dispose();
+                Layers.RemoveAt(index);
+                OnLayerCountChanged();
+            }
+        }
+        public void RemoveLayer(GFL layer)
+        {
+            Layers.Remove(layer);
+            layer.Dispose();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    for(int i = 0; i < Layers.Count; i++)
+                    {
+                        Layers[i].Dispose();
+                        Layers[i] = null;
+                    }
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
