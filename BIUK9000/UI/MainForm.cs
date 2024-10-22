@@ -26,15 +26,12 @@ namespace BIUK9000.UI
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
         public bool IsShiftDown { get => isShiftDown; }
         public Timer UpdateTimer { get => updateTimer; }
-        public string WorkingDirectory { get => Environment.CurrentDirectory; }
-        public string ProjectDirectory { get => Directory.GetParent(WorkingDirectory).Parent.Parent.Parent.FullName; }
-        public string TempJpegPath { get => Path.Combine(ProjectDirectory, "tempJpeg.jpeg"); }
-        public string TempGifPath { get => Path.Combine(ProjectDirectory, "tempGif.gif"); }
-        public string TempCompressedGifPath { get => Path.Combine(ProjectDirectory, "tempGifc.gif"); }
         public Giffer MainGiffer { get; set; }
         private bool isShiftDown;
         private Timer updateTimer;
         private bool draggingFileForExport;
+        public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
+        public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
         public MainForm()
         {
             InitializeComponent();
@@ -71,7 +68,7 @@ namespace BIUK9000.UI
             {
                 using Bitmap bitmap = mainTimelineSlider.SelectedFrame.CompleteBitmap(false);
                 string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".jpeg");
-                bitmap.Save(tempPath);
+                OBIMP.SaveJpeg(tempPath, bitmap, 80);
                 DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath});
                 DoDragDrop(data, DragDropEffects.Copy);
                 if (File.Exists(tempPath))
@@ -83,7 +80,7 @@ namespace BIUK9000.UI
                 using Image gif = MainGiffer.GifFromFrames();
                 string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
                 gif.Save(tempPath);
-                OBIMP.CompressGif(tempPath, tempPath, 50, 100);
+                OBIMP.CompressGif(tempPath, tempPath, GifExportColors, GifExportLossy);
                 DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath});
                 DoDragDrop(data, DragDropEffects.Copy);
                 if (File.Exists(tempPath))
