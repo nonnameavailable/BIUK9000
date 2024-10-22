@@ -26,15 +26,20 @@ namespace BIUK9000.UI
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
         public bool IsShiftDown { get => isShiftDown; }
         public Timer UpdateTimer { get => updateTimer; }
+        public string WorkingDirectory { get => Environment.CurrentDirectory; }
+        public string ProjectDirectory { get => Directory.GetParent(WorkingDirectory).Parent.Parent.Parent.FullName; }
+        public string TempJpegPath { get => Path.Combine(ProjectDirectory, "tempJpeg.jpeg"); }
+        public string TempGifPath { get => Path.Combine(ProjectDirectory, "tempGif.gif"); }
+        public string TempCompressedGifPath { get => Path.Combine(ProjectDirectory, "tempGifc.gif"); }
         public Giffer MainGiffer { get; set; }
         private bool isShiftDown;
         private Timer updateTimer;
+        private bool draggingFileForExport;
         public MainForm()
         {
             InitializeComponent();
             //string workingDirectory = Environment.CurrentDirectory;
             //string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
-            //string imageDirectory = Path.Combine(Directory.GetParent(projectDirectory).FullName, "images");
             //MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
             //mainTimelineSlider.Giffer = MainGiffer;
             
@@ -49,6 +54,34 @@ namespace BIUK9000.UI
 
             KeyPreview = true;
 
+            SaveButton.MouseDown += SaveButton_MouseDown;
+            SaveButton.MouseUp += SaveButton_MouseUp;
+
+        }
+
+        private void SaveButton_MouseUp(object sender, MouseEventArgs e)
+        {
+            draggingFileForExport = false;
+        }
+
+        private void SaveButton_MouseDown(object sender, MouseEventArgs e)
+        {
+            draggingFileForExport = true;
+            if (MainGiffer == null) return;
+            if (e.Button == MouseButtons.Left)
+            {
+                using Bitmap bitmap = mainTimelineSlider.SelectedFrame.CompleteBitmap(false);
+                bitmap.Save(TempJpegPath);
+                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { TempJpegPath });
+                DoDragDrop(data, DragDropEffects.Copy);
+            } else if(e.Button == MouseButtons.Right)
+            {
+                using Image gif = MainGiffer.GifFromFrames();
+                gif.Save(TempGifPath);
+                OBIMP.CompressGif(TempGifPath, TempGifPath, 50, 100);
+                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { TempGifPath });
+                DoDragDrop(data, DragDropEffects.Copy);
+            }
         }
 
         private void GifFrame_LayerCountChanged(object sender, EventArgs e)
@@ -124,6 +157,7 @@ namespace BIUK9000.UI
         {
             if (MainGiffer == null) return;
             MainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
+            mainPictureBox.UpdatePictureBox();
         }
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
@@ -139,6 +173,7 @@ namespace BIUK9000.UI
 
         private void MainForm_DragDrop(object sender, DragEventArgs e)
         {
+            if (draggingFileForExport) return;
             string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             if(filePaths.Length > 0)
             {

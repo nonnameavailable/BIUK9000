@@ -44,7 +44,10 @@ namespace BIUK9000.UI
             {
                 isMMBDown = false;
             }
-            OnMouseUp(e);
+            if(!isLMBDown && !isMMBDown & !isRMBDown)
+            {
+                mainForm.UpdateTimer.Stop();
+            }
         }
 
         private void MyPictureBox_MouseDown(object sender, MouseEventArgs e)

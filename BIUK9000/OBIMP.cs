@@ -12,15 +12,11 @@ namespace BIUK9000
 {
     public class OBIMP
     {
-        public void compressGif(string originalGifPath)
+        public static void CompressGif(string originalPath, string targetPath, int colors, int lossy)
         {
-            string ogpDirectory = Path.GetDirectoryName(originalGifPath);
-            string ogpFileName = Path.GetFileNameWithoutExtension(originalGifPath);
-            string compressedGifPath = Path.Combine(ogpDirectory, ogpFileName + "_compressed.gif");
-
             string gifsiclePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "gifsicle.exe");
 
-            string cmd = $"/C {gifsiclePath} -O3 --colors 256 --lossy=30 -o {compressedGifPath} {originalGifPath}";
+            string cmd = $"/C {gifsiclePath} -O3 --colors {colors} --lossy={lossy} -o {targetPath} {originalPath}";
             Process.Start("CMD.exe", cmd);
         }
 

@@ -34,6 +34,7 @@ namespace BIUK9000.UI
             mainLayersPanel = new LayersPanel();
             mainTimelineSlider = new TimelineSlider();
             mainPictureBox = new MyPictureBox();
+            SaveButton = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -46,6 +47,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 1);
             tableLayoutPanel1.Controls.Add(mainTimelineSlider, 1, 2);
             tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
+            tableLayoutPanel1.Controls.Add(SaveButton, 0, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -83,6 +85,17 @@ namespace BIUK9000.UI
             mainPictureBox.Size = new System.Drawing.Size(600, 305);
             mainPictureBox.TabIndex = 4;
             // 
+            // SaveButton
+            // 
+            SaveButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            SaveButton.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            SaveButton.Location = new System.Drawing.Point(3, 3);
+            SaveButton.Name = "SaveButton";
+            SaveButton.Size = new System.Drawing.Size(144, 144);
+            SaveButton.TabIndex = 5;
+            SaveButton.Text = "Save";
+            SaveButton.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AllowDrop = true;
@@ -103,6 +116,7 @@ namespace BIUK9000.UI
         private LayersPanel mainLayersPanel;
         private TimelineSlider mainTimelineSlider;
         private MyPictureBox mainPictureBox;
+        private System.Windows.Forms.Button SaveButton;
     }
 }
 
