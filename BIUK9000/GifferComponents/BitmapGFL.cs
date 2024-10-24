@@ -20,18 +20,6 @@ namespace BIUK9000.GifferComponents
             return new Bitmap(OriginalBitmap, Math.Max(Math.Abs(Width), 1), Math.Max(Math.Abs(Height), 1));
         }
 
-        public override Point Center()
-        {
-            return new Point(Position.X + Width / 2, Position.Y + Height / 2);
-        }
-        public override Rectangle BoundingRectangle
-        {
-            get
-            {
-                return new Rectangle(Position.X, Position.Y, Width, Height);
-            }
-        }
-
         public BitmapGFL(Bitmap bitmap)
         {
             Initialize(bitmap);

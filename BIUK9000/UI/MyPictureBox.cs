@@ -17,7 +17,8 @@ namespace BIUK9000.UI
         private Point mousePosition, mouseClickedPosition;
         private Rectangle originalLayerBR;
         private float originalLayerRotation, originalFontSize;
-        private MainForm mainForm { get => ParentForm as MainForm; }
+        private MainForm MF { get => ParentForm as MainForm; }
+        private Giffer MG { get => MF.MainGiffer; }
         private OVector originalLCtM;
         private bool isLMBDown, isRMBDown, isMMBDown;
 
@@ -31,7 +32,7 @@ namespace BIUK9000.UI
 
         private void MyPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
-            if(mainForm.MainGiffer == null) return;
+            if(MG == null) return;
             if (e.Button == MouseButtons.Left)
             {
                 isLMBDown = false;
@@ -46,20 +47,20 @@ namespace BIUK9000.UI
             }
             if(!isLMBDown && !isMMBDown & !isRMBDown)
             {
-                mainForm.UpdateTimer.Stop();
+                MF.UpdateTimer.Stop();
             }
-            mainForm.ApplyCurrentLayerParamsToSubsequentLayers();
+            MF.ApplyCurrentLayerParamsToSubsequentLayers();
         }
 
         private void MyPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (mainForm.MainGiffer == null) return;
-            GFL cgfl = mainForm.MainLayersPanel.SelectedLayer;
+            if (MG == null) return;
+            GFL cgfl = MF.MainLayersPanel.SelectedLayer;
             mouseClickedPosition = e.Location;
             originalLayerBR = cgfl.BoundingRectangle;
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
-            mainForm.UpdateTimer.Start();
+            MF.UpdateTimer.Start();
             if (cgfl.IsTextLayer) originalFontSize = (cgfl as TextGFL).FontSize;
             if (e.Button == MouseButtons.Left)
             {
@@ -77,7 +78,7 @@ namespace BIUK9000.UI
 
         private void MyPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (mainForm.MainGiffer == null) return;
+            if (MG == null) return;
             int xDif = e.X - mouseClickedPosition.X;
             int yDif = e.Y - mouseClickedPosition.Y;
             mousePosition.X = e.X;
@@ -99,9 +100,9 @@ namespace BIUK9000.UI
                 {
                     //ROTATE
                     double angle = currentLCtM.Rotation;
-                    gfl.Rotation = originalLayerRotation + (float)angle - (float)originalLCtM.Rotation;
+                    gfl.Rotation = SnappedRotation(originalLayerRotation + (float)angle - (float)originalLCtM.Rotation);
                 }
-                else if (isMMBDown && !mainForm.IsShiftDown)
+                else if (isMMBDown && !MF.IsShiftDown)
                 {
                     //RESIZE
                     int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
@@ -120,7 +121,7 @@ namespace BIUK9000.UI
                         gfl.Height = (int)((originalLayerBR.Width + sizeDif * 2) / aspect);
                     }
                 }
-                else if (isMMBDown && mainForm.IsShiftDown)
+                else if (isMMBDown && MF.IsShiftDown)
                 {
                     //RESIZE WITHOUT ASPECT
                     if (gfl.IsTextLayer)
@@ -153,10 +154,10 @@ namespace BIUK9000.UI
         }
         private OVector LayerCenterToMouse()
         {
-            GFL gfl = mainForm.MainLayersPanel.SelectedLayer;
+            GFL gfl = MF.MainLayersPanel.SelectedLayer;
             Point LayerCenter = gfl.Center();
             double pbAspect = (double)pictureBox.Width / pictureBox.Height;
-            double frameAspect = (double)mainForm.MainTimelineSlider.SelectedFrame.Width / mainForm.MainTimelineSlider.SelectedFrame.Height;
+            double frameAspect = (double)MF.MainTimelineSlider.SelectedFrame.Width / MF.MainTimelineSlider.SelectedFrame.Height;
             int scaledWidth, scaledHeight;
             if (frameAspect > pbAspect)
             {
@@ -177,8 +178,18 @@ namespace BIUK9000.UI
         public void UpdatePictureBox()
         {
             Image.Dispose();
-            Image = mainForm.MainTimelineSlider.SelectedFrame.CompleteBitmap(true);
-
+            Image = MF.MainTimelineSlider.SelectedFrame.CompleteBitmap(true);
+        }
+        private float SnappedRotation(float rotation)
+        {
+            if (Math.Abs(rotation) % 90 > 10)
+            {
+                return rotation;
+            }
+            else
+            {
+                return (float)(Math.Round(rotation / 90f, 0) * 90);
+            }
         }
     }
 }

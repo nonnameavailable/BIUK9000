@@ -16,7 +16,6 @@ using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using Microsoft.VisualBasic;
 using BIUK9000.GifferComponents;
-using Emgu.CV.XImgproc;
 
 namespace BIUK9000.UI
 {
@@ -29,9 +28,7 @@ namespace BIUK9000.UI
         public Giffer MainGiffer { get; set; }
         private bool isShiftDown;
         private Timer updateTimer;
-        private bool draggingFileForExport;
-        public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
-        public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
+
         public MainForm()
         {
             InitializeComponent();
@@ -50,45 +47,8 @@ namespace BIUK9000.UI
             updateTimer.Tick += UpdateTimer_Tick;
 
             KeyPreview = true;
-
-            SaveButton.MouseDown += SaveButton_MouseDown;
-            SaveButton.MouseUp += SaveButton_MouseUp;
         }
 
-        private void SaveButton_MouseUp(object sender, MouseEventArgs e)
-        {
-            draggingFileForExport = false;
-        }
-
-        private void SaveButton_MouseDown(object sender, MouseEventArgs e)
-        {
-            draggingFileForExport = true;
-            if (MainGiffer == null) return;
-            if (e.Button == MouseButtons.Left)
-            {
-                using Bitmap bitmap = mainTimelineSlider.SelectedFrame.CompleteBitmap(false);
-                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".jpeg");
-                OBIMP.SaveJpeg(tempPath, bitmap, 80);
-                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath});
-                DoDragDrop(data, DragDropEffects.Copy);
-                if (File.Exists(tempPath))
-                {
-                    File.Delete(tempPath);
-                }
-            } else if(e.Button == MouseButtons.Right)
-            {
-                using Image gif = MainGiffer.GifFromFrames();
-                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-                gif.Save(tempPath);
-                OBIMP.CompressGif(tempPath, tempPath, GifExportColors, GifExportLossy);
-                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath});
-                DoDragDrop(data, DragDropEffects.Copy);
-                if (File.Exists(tempPath))
-                {
-                    File.Delete(tempPath);
-                }
-            }
-        }
         public void ApplyCurrentLayerParamsToSubsequentLayers()
         {
             GFL cgfl = mainLayersPanel.SelectedLayer;
@@ -158,7 +118,7 @@ namespace BIUK9000.UI
                     //Size s = TextRenderer.MeasureText("fuuuuuuuuu", new Font("Impact", 50));
                     //g.DrawRectangle(Pens.Red, 0, 0, s.Width, s.Height);
                     //mainPictureBox.Image = bmp;
-
+                    mainTimelineSlider.SelectedFrame.AddLayer(new CropGFL(100, 100));
                 }
             }
             else if (m.Msg == WM_KEYUP)
@@ -194,7 +154,7 @@ namespace BIUK9000.UI
 
         private void MainForm_DragDrop(object sender, DragEventArgs e)
         {
-            if (draggingFileForExport) return;
+            //if (draggingFileForExport) return;
             string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             if(filePaths.Length > 0)
             {

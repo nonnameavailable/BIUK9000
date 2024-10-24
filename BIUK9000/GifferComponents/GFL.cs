@@ -19,7 +19,10 @@ namespace BIUK9000.GifferComponents
         public float Rotation { get; set; }
         public bool IsTextLayer { get; set; }
         public abstract Bitmap MorphedBitmap();
-        public abstract Point Center();
+        public virtual Point Center()
+        {
+            return new Point(Position.X + Width / 2, Position.Y + Height / 2);
+        }
         public void DrawLayer(Graphics g, bool drawHelp)
         {
             if (Visible)
@@ -42,7 +45,13 @@ namespace BIUK9000.GifferComponents
                 g.Restore(gs);
             }
         }
-        public abstract Rectangle BoundingRectangle { get; }
+        public virtual Rectangle BoundingRectangle
+        {
+            get
+            {
+                return new Rectangle(Position.X, Position.Y, Width, Height);
+            }
+        }
         public void Rotate(float angle)
         {
             Rotation += angle;
