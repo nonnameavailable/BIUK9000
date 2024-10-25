@@ -119,6 +119,12 @@ namespace BIUK9000.UI
                     //g.DrawRectangle(Pens.Red, 0, 0, s.Width, s.Height);
                     //mainPictureBox.Image = bmp;
                     mainTimelineSlider.SelectedFrame.AddLayer(new CropGFL(100, 100));
+                    return true;
+                } else if(keyData == Keys.C)
+                {
+                    MainGiffer.Crop(mainTimelineSlider.SelectedFrame);
+                    mainPictureBox.Update(); //NOT UPDATING, MUST FIX LATER
+                    return true;
                 }
             }
             else if (m.Msg == WM_KEYUP)

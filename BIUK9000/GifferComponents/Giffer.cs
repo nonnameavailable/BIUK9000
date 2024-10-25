@@ -84,7 +84,23 @@ namespace BIUK9000.GifferComponents
             frame.Dispose();
             OnFrameCountChanged();
         }
-
+        public void Crop(GifFrame frameWithCropLayer)
+        {
+            GFL cl = frameWithCropLayer.Layers.Last();
+            if (cl is not CropGFL) return;
+            Rectangle newRectangle = cl.BoundingRectangle;
+            frameWithCropLayer.RemoveLayer(cl);
+            foreach(GifFrame frame in Frames)
+            {
+                foreach(GFL layer in frame.Layers)
+                {
+                    layer.Move(-newRectangle.X + layer.Position.X, -newRectangle.Y + layer.Position.Y);
+                }
+                frame.Width = newRectangle.Width;
+                frame.Height = newRectangle.Height;
+            }
+            OnFrameCountChanged();
+        }
         public void AddGifferAsLayers(Giffer newGiffer)
         {
             for(int i = 0; i < Frames.Count; i++)

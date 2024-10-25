@@ -17,6 +17,7 @@ namespace BIUK9000.GifferComponents
         public Color FontColor { get; set; }
         public Color FontBorderColor { get; set; }
         public float FontBorderWidth { get; set; }
+        public float _savedFontSize;
         public float FontSize
         {
             get
@@ -34,18 +35,30 @@ namespace BIUK9000.GifferComponents
         private float _fontSize;
         public override void CopyParameters(GFL layer)
         {
-            if (layer.IsTextLayer)
-            {
-                TextGFL tl = (TextGFL)layer;
-                base.CopyParameters(layer);
-                Text = tl.Text;
-                FontName = tl.FontName;
-                FontColor = tl.FontColor;
-                FontBorderColor = tl.FontBorderColor;
-                FontBorderWidth = tl.FontBorderWidth;
-                FontSize = tl.FontSize;
-            }
-
+            TextGFL tl = (TextGFL)layer;
+            base.CopyParameters(layer);
+            Text = tl.Text;
+            FontName = tl.FontName;
+            FontColor = tl.FontColor;
+            FontBorderColor = tl.FontBorderColor;
+            FontBorderWidth = tl.FontBorderWidth;
+            FontSize = tl.FontSize;
+        }
+        public override void Save()
+        {
+            base.Save();
+            _savedFontSize = FontSize;
+        }
+        public override void Resize(int sizeDif)
+        {
+            FontSize = _savedFontSize + sizeDif / 5;
+            int Xbsd = BoundingRectangle.Width - OBR.Width;
+            int Ybsd = BoundingRectangle.Height - OBR.Height;
+            Position = new Point(OBR.X - Xbsd / 2, OBR.Y - Ybsd / 2);
+        }
+        public override void Resize(int xSizeDif, int ySizeDif)
+        {
+            //DO NOTHING, NOT IMPLEMENTED AND PROBABLY WILL NEVER BE
         }
         public Size TextSize()
         {
@@ -100,7 +113,6 @@ namespace BIUK9000.GifferComponents
             Position = new Point(0, 0);
             Visible = true;
             Rotation = 0;
-            IsTextLayer = true;
         }
         public TextGFL(TextGFL textGFL)
         {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BIUK9000.GifferComponents
 {
-    internal class CropGFL : GFL
+    public class CropGFL : GFL
     {
 
         public override Bitmap MorphedBitmap()

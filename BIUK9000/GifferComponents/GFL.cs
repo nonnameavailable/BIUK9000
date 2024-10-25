@@ -17,8 +17,26 @@ namespace BIUK9000.GifferComponents
         public int Height { get; set; }
         public bool Visible { get; set; }
         public float Rotation { get; set; }
-        public bool IsTextLayer { get; set; }
+        //public bool IsTextLayer { get; set; }
         public abstract Bitmap MorphedBitmap();
+        protected Rectangle OBR { get; set; }
+        public virtual void Save()
+        {
+            OBR = BoundingRectangle;
+        }
+        public virtual void Resize(int sizeDif)
+        {
+            double aspect = (double)OBR.Width / OBR.Height;
+            Position = new Point(OBR.X - sizeDif, (int)(OBR.Y - sizeDif / aspect));
+            Width = OBR.Width + sizeDif * 2;
+            Height = (int)((OBR.Width + sizeDif * 2) / aspect);
+        }
+        public virtual void Resize(int xSizeDif, int ySizeDif)
+        {
+            Position = new Point(OBR.X - xSizeDif, OBR.Y - ySizeDif);
+            Width = OBR.Width + xSizeDif * 2;
+            Height = OBR.Height + ySizeDif * 2;
+        }
         public virtual Point Center()
         {
             return new Point(Position.X + Width / 2, Position.Y + Height / 2);
@@ -60,6 +78,13 @@ namespace BIUK9000.GifferComponents
         public void Move(int x, int y)
         {
             Position = new Point(Position.X + x, Position.Y + y);
+        }
+        public void MoveFromOBR(int x, int y)
+        {
+            //this method sets the position depending on the saved bounding rectangle
+            int newX = x + OBR.X;
+            int newY = y + OBR.Y;
+            Position = new Point(newX, newY);
         }
 
         protected virtual void Dispose(bool disposing)

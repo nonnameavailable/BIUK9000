@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,8 @@ namespace BIUK9000.UI
     public partial class MyPictureBox : UserControl
     {
         public Image Image { get => pictureBox.Image; set => pictureBox.Image = value; }
-        private Point mousePosition, mouseClickedPosition;
-        private Rectangle originalLayerBR;
-        private float originalLayerRotation, originalFontSize;
+        private Point prevMousePosition, mousePosition, mouseClickedPosition;
+        private float originalLayerRotation;
         private MainForm MF { get => ParentForm as MainForm; }
         private Giffer MG { get => MF.MainGiffer; }
         private OVector originalLCtM;
@@ -56,12 +56,11 @@ namespace BIUK9000.UI
         {
             if (MG == null) return;
             GFL cgfl = MF.MainLayersPanel.SelectedLayer;
+            cgfl.Save();
             mouseClickedPosition = e.Location;
-            originalLayerBR = cgfl.BoundingRectangle;
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
             MF.UpdateTimer.Start();
-            if (cgfl.IsTextLayer) originalFontSize = (cgfl as TextGFL).FontSize;
             if (e.Button == MouseButtons.Left)
             {
                 isLMBDown = true;
@@ -79,10 +78,12 @@ namespace BIUK9000.UI
         private void MyPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
             if (MG == null) return;
-            int xDif = e.X - mouseClickedPosition.X;
-            int yDif = e.Y - mouseClickedPosition.Y;
-            mousePosition.X = e.X;
-            mousePosition.Y = e.Y;
+            mousePosition = new Point(e.X, e.Y);
+            int xDragDif = mousePosition.X - mouseClickedPosition.X;
+            int yDragDif = mousePosition.Y - mouseClickedPosition.Y;
+            int xMoveDif = mousePosition.X - prevMousePosition.X;
+            int yMoveDif = mousePosition.Y - prevMousePosition.Y;
+            
             double zoom = Zoom();
             OVector currentLCtM = LayerCenterToMouse();
             if (isRMBDown || isLMBDown || isMMBDown)
@@ -91,10 +92,8 @@ namespace BIUK9000.UI
                 if (isLMBDown && !isRMBDown)
                 {
                     //MOVE
-                    int newX = (int)(xDif / zoom + originalLayerBR.X);
-                    int newY = (int)(yDif / zoom + originalLayerBR.Y);
-                    Point pos = new Point(newX, newY);
-                    gfl.Position = pos;
+                    gfl.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
+                    //gfl.Move((int)(xMoveDif / zoom), (int)(yMoveDif / zoom));
                 }
                 else if (!isLMBDown && isRMBDown)
                 {
@@ -106,41 +105,19 @@ namespace BIUK9000.UI
                 {
                     //RESIZE
                     int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
-                    if (gfl.IsTextLayer)
-                    {
-                        TextGFL tgfl = gfl as TextGFL;
-                        float tSizeDif = mouseClickedPosition.X - e.X;
-                        tgfl.FontSize = originalFontSize - tSizeDif / 10;
-
-                    }
-                    else
-                    {
-                        double aspect = (double)originalLayerBR.Width / originalLayerBR.Height;
-                        gfl.Position = new Point(originalLayerBR.X - sizeDif, (int)(originalLayerBR.Y - sizeDif / aspect));
-                        gfl.Width = originalLayerBR.Width + sizeDif * 2;
-                        gfl.Height = (int)((originalLayerBR.Width + sizeDif * 2) / aspect);
-                    }
+                    gfl.Resize(sizeDif);
                 }
                 else if (isMMBDown && MF.IsShiftDown)
                 {
                     //RESIZE WITHOUT ASPECT
-                    if (gfl.IsTextLayer)
-                    {
-                        //IMPLEMENT LATER MAYBE
-                    }
-                    else
-                    {
-                        OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
-                        sdv.Rotate(gfl.Rotation);
-                        int xSizeDif = (int)sdv.X;
-                        int ySizeDif = (int)sdv.Y;
-                        Rectangle gflbr = originalLayerBR;
-                        gfl.Position = new Point(gflbr.X - xSizeDif, gflbr.Y - ySizeDif);
-                        gfl.Width = gflbr.Width + xSizeDif * 2;
-                        gfl.Height = gflbr.Height + ySizeDif * 2;
-                    }
+                    OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
+                    sdv.Rotate(gfl.Rotation);
+                    int xSizeDif = (int)sdv.X;
+                    int ySizeDif = (int)sdv.Y;
+                    gfl.Resize(xSizeDif, ySizeDif);
                 }
             }
+            prevMousePosition = new Point(mousePosition.X, mousePosition.Y);
         }
         private double Zoom()
         {
@@ -177,7 +154,7 @@ namespace BIUK9000.UI
 
         public void UpdatePictureBox()
         {
-            Image.Dispose();
+            Image?.Dispose();
             Image = MF.MainTimelineSlider.SelectedFrame.CompleteBitmap(true);
         }
         private float SnappedRotation(float rotation, float snapAngle)
