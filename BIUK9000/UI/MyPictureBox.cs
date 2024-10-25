@@ -100,7 +100,7 @@ namespace BIUK9000.UI
                 {
                     //ROTATE
                     double angle = currentLCtM.Rotation;
-                    gfl.Rotation = SnappedRotation(originalLayerRotation + (float)angle - (float)originalLCtM.Rotation);
+                    gfl.Rotation = SnappedRotation(originalLayerRotation + (float)angle - (float)originalLCtM.Rotation, 20);
                 }
                 else if (isMMBDown && !MF.IsShiftDown)
                 {
@@ -180,15 +180,17 @@ namespace BIUK9000.UI
             Image.Dispose();
             Image = MF.MainTimelineSlider.SelectedFrame.CompleteBitmap(true);
         }
-        private float SnappedRotation(float rotation)
+        private float SnappedRotation(float rotation, float snapAngle)
         {
-            if (Math.Abs(rotation) % 90 > 10)
+            if (rotation < 0) rotation += 360;
+            float roundedRotation = (float)(Math.Round(rotation / 90f, 0) * 90);
+            float mod90 = rotation % 90;
+            if(mod90 > 90 - snapAngle || mod90 < snapAngle)
+            {
+                return roundedRotation; 
+            } else
             {
                 return rotation;
-            }
-            else
-            {
-                return (float)(Math.Round(rotation / 90f, 0) * 90);
             }
         }
     }
