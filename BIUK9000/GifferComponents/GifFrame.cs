@@ -19,34 +19,43 @@ namespace BIUK9000.GifferComponents
         {
             LayerCountChanged?.Invoke(this, EventArgs.Empty);
         }
+        public Rectangle OBR { get; set; }
+        public virtual void Save()
+        {
+            OBR = new Rectangle(Position, new Size(Width, Height));
+            Layers.ForEach(layer => layer.Save());
+        }
+        public void MoveFromOBR(int x, int y)
+        {
+            Layers.ForEach(layer => layer.MoveFromOBR(x, y));
+        }
+        public Point Center()
+        {
+            return new Point(Position.X + Width / 2, Position.Y + Height / 2);
+        }
+        public virtual void Resize(int xSizeDif, int ySizeDif)
+        {
+            Width = OBR.Width + xSizeDif * 2;
+            Height = OBR.Height + ySizeDif * 2;
+        }
 
         public List<GFL> Layers { get; } = new List<GFL>();
         public int Width { get; set; }
         public int Height { get; set; }
+        public Point Position { get; set; }
         public GifFrame(Bitmap bitmap)
         {
-            Bitmap background = new Bitmap(bitmap.Width, bitmap.Height);
-            using Graphics g = Graphics.FromImage(background);
-            g.Clear(Color.White);
-            GFL bgfl = new BitmapGFL(background);
-            Layers.Add(bgfl);
             GFL gfl = new BitmapGFL(bitmap);
             Layers.Add(gfl);
             Width = bitmap.Width;
             Height = bitmap.Height;
+            Position = new Point(0, 0);
         }
 
         public void AddSpace(int up, int right, int down, int left)
         {
-            BitmapGFL bgfl = (BitmapGFL)Layers[0];
-            int oWidth = bgfl.OriginalBitmap.Width;
-            int oHeight = bgfl.OriginalBitmap.Height;
-            Bitmap replacementBitmap = new Bitmap(oWidth + left + right, oHeight + up + down);
-            using Graphics g = Graphics.FromImage(replacementBitmap);
-            g.Clear(Color.White);
-            bgfl.ReplaceOriginalBitmap(replacementBitmap);
-            Width = replacementBitmap.Width;
-            Height = replacementBitmap.Height;
+            Width += left + right;
+            Height += up + down;
 
             for (int i = 0; i < Layers.Count; i++)
             {
@@ -67,11 +76,19 @@ namespace BIUK9000.GifferComponents
         }
         public Bitmap CompleteBitmap(bool drawHelp)
         {
-            Bitmap result = new Bitmap(Width, Height);
+            int absWidth = Math.Abs(Width);
+            int absHeight = Math.Abs(Height);
+            Bitmap result = new Bitmap(absWidth, absHeight);
             using Graphics g = Graphics.FromImage(result);
+            //g.TranslateTransform(Position.X, Position.Y);
             foreach (GFL layer in Layers)
             {
                 layer.DrawLayer(g, drawHelp);
+            }
+            if (drawHelp)
+            {
+                using Pen boundsPen = new Pen(Color.Red, 2f);
+                g.DrawRectangle(boundsPen, 0, 0, absWidth, absHeight);
             }
             return result;
         }

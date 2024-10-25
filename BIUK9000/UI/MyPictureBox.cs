@@ -55,8 +55,8 @@ namespace BIUK9000.UI
         private void MyPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
             if (MG == null) return;
-            GFL cgfl = MF.MainLayersPanel.SelectedLayer;
-            cgfl.Save();
+            GFL cgfl = MF.SelectedLayer;
+            MF.MainGiffer.Save();
             mouseClickedPosition = e.Location;
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
@@ -88,11 +88,20 @@ namespace BIUK9000.UI
             OVector currentLCtM = LayerCenterToMouse();
             if (isRMBDown || isLMBDown || isMMBDown)
             {
-                GFL gfl = (ParentForm as MainForm).MainLayersPanel.SelectedLayer;
+                GFL gfl = MF.SelectedLayer;
                 if (isLMBDown && !isRMBDown)
                 {
                     //MOVE
-                    gfl.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
+                    if (MF.IsCtrlDown)
+                    {
+                        //MOVE WHOLE GIF (ALL LAYERS, ALL FRAMES)
+                        //MF.SelectedFrame.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
+                        MF.MainGiffer.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
+                    } else
+                    {
+                        //MOVE JUST LAYER
+                        gfl.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
+                    }
                     //gfl.Move((int)(xMoveDif / zoom), (int)(yMoveDif / zoom));
                 }
                 else if (!isLMBDown && isRMBDown)
@@ -101,20 +110,34 @@ namespace BIUK9000.UI
                     double angle = currentLCtM.Rotation;
                     gfl.Rotation = SnappedRotation(originalLayerRotation + (float)angle - (float)originalLCtM.Rotation, 20);
                 }
-                else if (isMMBDown && !MF.IsShiftDown)
+                else if (isMMBDown)
                 {
                     //RESIZE
-                    int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
-                    gfl.Resize(sizeDif);
-                }
-                else if (isMMBDown && MF.IsShiftDown)
-                {
-                    //RESIZE WITHOUT ASPECT
                     OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
-                    sdv.Rotate(gfl.Rotation);
                     int xSizeDif = (int)sdv.X;
                     int ySizeDif = (int)sdv.Y;
-                    gfl.Resize(xSizeDif, ySizeDif);
+                    if (MF.IsCtrlDown)
+                    {
+                        //RESIZE GIF FREE (ALL FRAMES)
+                        MF.MainGiffer.Resize(xSizeDif, ySizeDif);
+                    } else
+                    {
+                        //RESIZE LAYER
+                        if (!MF.IsShiftDown)
+                        {
+                            //RESIZE LAYER KEEP RATIO
+                            int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
+                            gfl.Resize(sizeDif);
+                        }
+                        else
+                        {
+                            //RESIZE LAYER FREE
+                            sdv.Rotate(gfl.Rotation);
+                            gfl.Resize(xSizeDif, ySizeDif);
+                        }
+                    }
+
+
                 }
             }
             prevMousePosition = new Point(mousePosition.X, mousePosition.Y);

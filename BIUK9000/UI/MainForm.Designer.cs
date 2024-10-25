@@ -63,7 +63,6 @@ namespace BIUK9000.UI
             mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             mainLayersPanel.Location = new System.Drawing.Point(759, 153);
             mainLayersPanel.Name = "mainLayersPanel";
-            mainLayersPanel.SelectedLayerIndex = 1;
             mainLayersPanel.Size = new System.Drawing.Size(144, 305);
             mainLayersPanel.TabIndex = 2;
             // 

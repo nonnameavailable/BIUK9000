@@ -23,44 +23,41 @@ namespace BIUK9000.UI
     {
         public LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
-        public bool IsShiftDown { get => isShiftDown; }
-        public Timer UpdateTimer { get => updateTimer; }
+        public GifFrame SelectedFrame { get => MainTimelineSlider.SelectedFrame; }
+        public GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
+        public bool IsShiftDown { get => _isShiftDown; }
+        public bool IsCtrlDown { get => _isCtrlDown; }
+        public Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
-        private bool isShiftDown;
-        private Timer updateTimer;
+        private bool _isShiftDown, _isCtrlDown;
+        private Timer _updateTimer;
 
         public MainForm()
         {
             InitializeComponent();
-            //string workingDirectory = Environment.CurrentDirectory;
-            //string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName;
-            //MainGiffer = new Giffer(Path.Combine(imageDirectory, "tldr-didnt.gif"));
-            //mainTimelineSlider.Giffer = MainGiffer;
             
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
 
             DragDrop += MainForm_DragDrop;
             DragEnter += MainForm_DragEnter;
 
-            updateTimer = new Timer();
-            updateTimer.Interval = 17;
-            updateTimer.Tick += UpdateTimer_Tick;
+            _updateTimer = new Timer();
+            _updateTimer.Interval = 17;
+            _updateTimer.Tick += UpdateTimer_Tick;
 
             KeyPreview = true;
         }
 
         public void ApplyCurrentLayerParamsToSubsequentLayers()
         {
-            GFL cgfl = mainLayersPanel.SelectedLayer;
-            GifFrame cgf = MainTimelineSlider.SelectedFrame;
-            int cli = cgf.Layers.IndexOf(cgfl);
-            int cgfi = MainGiffer.Frames.IndexOf(cgf);
+            int cli = SelectedFrame.Layers.IndexOf(SelectedLayer);
+            int cgfi = MainGiffer.Frames.IndexOf(SelectedFrame);
             for (int i = cgfi + 1; i < MainGiffer.Frames.Count; i++)
             {
                 GifFrame gf = MainGiffer.Frames[i];
-                if(cli > 0 && cli < gf.Layers.Count)
+                if(cli >= 0 && cli < gf.Layers.Count)
                 {
-                    gf.Layers[cli].CopyParameters(cgfl);
+                    gf.Layers[cli].CopyParameters(SelectedLayer);
                 }
             }
         }
@@ -95,11 +92,7 @@ namespace BIUK9000.UI
                     if (mts.Value > 0) mts.Value -= 1;
                     return true;
                 }
-                else if (keyData == Keys.ShiftKey)
-                {
-                    isShiftDown = true;
-                    return true;
-                } else if(keyData == Keys.T)
+                else if(keyData == Keys.T)
                 {
                     TextGFL tgfl = new TextGFL("YOUR TEXT");
                     tgfl.FontName = "Impact";
@@ -107,7 +100,7 @@ namespace BIUK9000.UI
                     tgfl.FontColor = Color.White;
                     tgfl.FontBorderWidth = 5;
                     tgfl.FontSize = 20;
-                    mainTimelineSlider.SelectedFrame.AddLayer(tgfl);
+                    SelectedFrame.AddLayer(tgfl);
                     return true;
                 } else if(keyData == Keys.L)
                 {
@@ -118,12 +111,30 @@ namespace BIUK9000.UI
                     //Size s = TextRenderer.MeasureText("fuuuuuuuuu", new Font("Impact", 50));
                     //g.DrawRectangle(Pens.Red, 0, 0, s.Width, s.Height);
                     //mainPictureBox.Image = bmp;
-                    mainTimelineSlider.SelectedFrame.AddLayer(new CropGFL(100, 100));
+                    //SelectedFrame.AddLayer(new CropGFL(100, 100));
+                    //SelectedFrame.AddSpace(100, 0, 0, 0);
+                    TextGFL tl = new TextGFL("WHEN I TAKE PRE-WORKOUT" + Environment.NewLine + "FOR THE FIRST TIME");
+                    tl.FontName = "Impact";
+                    tl.FontColor = Color.White;
+                    tl.FontBorderColor = Color.Black;
+                    tl.FontBorderWidth = 3;
+                    tl.FontSize = 20;
+                    MainGiffer.Frames.ForEach(frame => frame.AddLayer(tl));
                     return true;
                 } else if(keyData == Keys.C)
                 {
-                    MainGiffer.Crop(mainTimelineSlider.SelectedFrame);
-                    mainPictureBox.Update(); //NOT UPDATING, MUST FIX LATER
+                    MainGiffer.Crop(SelectedFrame);
+                    MainLayersPanel.DisplayLayers(SelectedFrame);
+                    mainPictureBox.UpdatePictureBox();
+                    return true;
+                }
+                else if (keyData == Keys.ShiftKey)
+                {
+                    _isShiftDown = true;
+                    return true;
+                } else if(keyData == Keys.ControlKey)
+                {
+                    _isCtrlDown = true;
                     return true;
                 }
             }
@@ -132,7 +143,11 @@ namespace BIUK9000.UI
                 if (keyData == Keys.ShiftKey)
                 {
                     
-                    isShiftDown = false;
+                    _isShiftDown = false;
+                    return true;
+                } if(keyData == Keys.ControlKey)
+                {
+                    _isCtrlDown = false;
                     return true;
                 }
             }
@@ -143,7 +158,7 @@ namespace BIUK9000.UI
         private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
         {
             if (MainGiffer == null) return;
-            MainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
+            MainLayersPanel.DisplayLayers(SelectedFrame);
             mainPictureBox.UpdatePictureBox();
         }
         private void MainForm_DragEnter(object sender, DragEventArgs e)
@@ -179,7 +194,7 @@ namespace BIUK9000.UI
                         {
                             gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
                         }
-                        mainLayersPanel.DisplayLayers(mainTimelineSlider.SelectedFrame);
+                        mainLayersPanel.DisplayLayers(SelectedFrame);
                     }
                     else
                     {

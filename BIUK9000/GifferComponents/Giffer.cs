@@ -41,6 +41,18 @@ namespace BIUK9000.GifferComponents
                 gf.AddSpace(up, right, down, left);
             }
         }
+        public void MoveFromOBR(int x, int y)
+        {
+            Frames.ForEach(frame => frame.MoveFromOBR(x, y));
+        }
+        public void Resize(int xSizeDif, int ySizeDif)
+        {
+            Frames.ForEach(frame => frame.Resize(xSizeDif, ySizeDif));
+        }
+        public void Save()
+        {
+            Frames.ForEach(frame => frame.Save());
+        }
 
         private List<GifFrame> FramesFromGif(Image gif)
         {
@@ -89,17 +101,17 @@ namespace BIUK9000.GifferComponents
             GFL cl = frameWithCropLayer.Layers.Last();
             if (cl is not CropGFL) return;
             Rectangle newRectangle = cl.BoundingRectangle;
-            frameWithCropLayer.RemoveLayer(cl);
             foreach(GifFrame frame in Frames)
             {
-                foreach(GFL layer in frame.Layers)
+                foreach (GFL layer in frame.Layers)
                 {
                     layer.Move(-newRectangle.X + layer.Position.X, -newRectangle.Y + layer.Position.Y);
                 }
                 frame.Width = newRectangle.Width;
                 frame.Height = newRectangle.Height;
+                //frame.AddSpace(-newRectangle.Y, newRectangle.Right - frame.Width, newRectangle.Bottom - frame.Height, -newRectangle.X);
             }
-            OnFrameCountChanged();
+            frameWithCropLayer.RemoveLayer(cl);
         }
         public void AddGifferAsLayers(Giffer newGiffer)
         {

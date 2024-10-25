@@ -21,7 +21,7 @@ namespace BIUK9000.UI
         {
             InitializeComponent();
             ActiveFrame = null;
-            SelectedLayerIndex = 1;
+            SelectedLayerIndex = 0;
         }
         public void DisplayLayers(GifFrame frame)
         {
