@@ -216,5 +216,9 @@ namespace BIUK9000.UI
                 }
             }
         }
+        public void UpdatePicture()
+        {
+            mainPictureBox.UpdatePictureBox();
+        }
     }
 }

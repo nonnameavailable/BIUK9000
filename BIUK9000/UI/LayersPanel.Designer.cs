@@ -33,6 +33,7 @@
             // 
             // layersFLP
             // 
+            layersFLP.AllowDrop = true;
             layersFLP.AutoScroll = true;
             layersFLP.Dock = System.Windows.Forms.DockStyle.Fill;
             layersFLP.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
