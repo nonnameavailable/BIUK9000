@@ -17,6 +17,7 @@ namespace BIUK9000.UI
         public GFL SelectedLayer { get => clickedLayerHolder.HeldLayer; }
         private GifFrame ActiveFrame { get; set; }
         public int SelectedLayerIndex { get; set; }
+        public event EventHandler<LayerOrderEventArgs> LayerOrderChanged;
         public LayersPanel()
         {
             InitializeComponent();
@@ -37,9 +38,19 @@ namespace BIUK9000.UI
             {
                 LayerHolder lh = new LayerHolder(layer);
                 lh.LayerClicked += Lh_LayerClicked;
+                lh.DragDropped += Lh_DragDropped;
                 layersFLP.Controls.Add(lh);
             }
             SelectLayerHolder(SelectedLayerIndex);
+        }
+
+        private void Lh_DragDropped(object sender, DragEventArgs e)
+        {
+            LayerHolder droppedLh = (LayerHolder)e.Data.GetData(typeof(LayerHolder));
+            int originalIndex = layersFLP.Controls.IndexOf(droppedLh);
+            int targetIndex = layersFLP.Controls.IndexOf(sender as LayerHolder);
+            LayerOrderEventArgs loea = new LayerOrderEventArgs(originalIndex, targetIndex);
+            LayerOrderChanged?.Invoke(this, loea);
         }
 
         public void SelectLayerHolder(int i)
@@ -66,6 +77,17 @@ namespace BIUK9000.UI
             clickedLayerHolder = lh;
             SelectedLayerIndex = layersFLP.Controls.IndexOf(lh);
             if (clickedLayerHolder != null) clickedLayerHolder.StayHighlighted = true;
+        }
+        public class LayerOrderEventArgs : EventArgs
+        {
+            public int TargetIndex { get; }
+            public int OriginalIndex { get; }
+
+            public LayerOrderEventArgs(int originalIndex, int targetIndex)
+            {
+                TargetIndex = targetIndex;
+                OriginalIndex = originalIndex;
+            }
         }
     }
 }

@@ -33,9 +33,10 @@ namespace BIUK9000.UI
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             mainLayersPanel = new LayersPanel();
             mainTimelineSlider = new TimelineSlider();
-            mainPictureBox = new MyPictureBox();
             controlsPanel1 = new ControlsPanel();
+            mainPictureBox = new System.Windows.Forms.PictureBox();
             tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -46,8 +47,8 @@ namespace BIUK9000.UI
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 1);
             tableLayoutPanel1.Controls.Add(mainTimelineSlider, 1, 2);
-            tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Controls.Add(controlsPanel1, 0, 0);
+            tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -63,6 +64,7 @@ namespace BIUK9000.UI
             mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             mainLayersPanel.Location = new System.Drawing.Point(759, 153);
             mainLayersPanel.Name = "mainLayersPanel";
+            mainLayersPanel.SelectedLayerIndex = 0;
             mainLayersPanel.Size = new System.Drawing.Size(144, 305);
             mainLayersPanel.TabIndex = 2;
             // 
@@ -75,15 +77,6 @@ namespace BIUK9000.UI
             mainTimelineSlider.Size = new System.Drawing.Size(593, 94);
             mainTimelineSlider.TabIndex = 3;
             // 
-            // mainPictureBox
-            // 
-            mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainPictureBox.Image = null;
-            mainPictureBox.Location = new System.Drawing.Point(160, 153);
-            mainPictureBox.Name = "mainPictureBox";
-            mainPictureBox.Size = new System.Drawing.Size(593, 305);
-            mainPictureBox.TabIndex = 4;
-            // 
             // controlsPanel1
             // 
             controlsPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -93,6 +86,16 @@ namespace BIUK9000.UI
             tableLayoutPanel1.SetRowSpan(controlsPanel1, 2);
             controlsPanel1.Size = new System.Drawing.Size(151, 455);
             controlsPanel1.TabIndex = 5;
+            // 
+            // mainPictureBox
+            // 
+            mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            mainPictureBox.Location = new System.Drawing.Point(160, 153);
+            mainPictureBox.Name = "mainPictureBox";
+            mainPictureBox.Size = new System.Drawing.Size(593, 305);
+            mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            mainPictureBox.TabIndex = 6;
+            mainPictureBox.TabStop = false;
             // 
             // MainForm
             // 
@@ -104,6 +107,7 @@ namespace BIUK9000.UI
             Name = "MainForm";
             Text = "Form1";
             tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
             ResumeLayout(false);
         }
 
@@ -113,8 +117,8 @@ namespace BIUK9000.UI
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private LayersPanel mainLayersPanel;
         private TimelineSlider mainTimelineSlider;
-        private MyPictureBox mainPictureBox;
         private ControlsPanel controlsPanel1;
+        private System.Windows.Forms.PictureBox mainPictureBox;
     }
 }
 

@@ -1,9 +1,6 @@
 ﻿using BIUK9000.GifferComponents;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,27 +9,17 @@ using System.Windows.Forms;
 
 namespace BIUK9000.UI
 {
-    public partial class MyPictureBox : UserControl
+    partial class MainForm
     {
-        public Image Image { get => pictureBox.Image; set => pictureBox.Image = value; }
+        public Image MainImage { get => mainPictureBox.Image; set => mainPictureBox.Image = value; }
         private Point prevMousePosition, mousePosition, mouseClickedPosition;
         private float originalLayerRotation;
-        private MainForm MF { get => ParentForm as MainForm; }
-        private Giffer MG { get => MF.MainGiffer; }
         private OVector originalLCtM;
         private bool isLMBDown, isRMBDown, isMMBDown;
 
-        public MyPictureBox()
+        private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
-            InitializeComponent();
-            pictureBox.MouseMove += MyPictureBox_MouseMove;
-            pictureBox.MouseDown += MyPictureBox_MouseDown;
-            pictureBox.MouseUp += MyPictureBox_MouseUp;
-        }
-
-        private void MyPictureBox_MouseUp(object sender, MouseEventArgs e)
-        {
-            if(MG == null) return;
+            if (MainGiffer == null) return;
             if (e.Button == MouseButtons.Left)
             {
                 isLMBDown = false;
@@ -45,22 +32,22 @@ namespace BIUK9000.UI
             {
                 isMMBDown = false;
             }
-            if(!isLMBDown && !isMMBDown & !isRMBDown)
+            if (!isLMBDown && !isMMBDown & !isRMBDown)
             {
-                MF.UpdateTimer.Stop();
+                UpdateTimer.Stop();
             }
-            MF.ApplyCurrentLayerParamsToSubsequentLayers();
+            ApplyCurrentLayerParamsToSubsequentLayers();
         }
 
-        private void MyPictureBox_MouseDown(object sender, MouseEventArgs e)
+        private void MainPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
-            if (MG == null) return;
-            GFL cgfl = MF.SelectedLayer;
-            MF.MainGiffer.Save();
+            if (MainGiffer == null) return;
+            GFL cgfl = SelectedLayer;
+            MainGiffer.Save();
             mouseClickedPosition = e.Location;
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
-            MF.UpdateTimer.Start();
+            UpdateTimer.Start();
             if (e.Button == MouseButtons.Left)
             {
                 isLMBDown = true;
@@ -75,29 +62,30 @@ namespace BIUK9000.UI
             }
         }
 
-        private void MyPictureBox_MouseMove(object sender, MouseEventArgs e)
+        private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (MG == null) return;
+            if (MainGiffer == null) return;
             mousePosition = new Point(e.X, e.Y);
             int xDragDif = mousePosition.X - mouseClickedPosition.X;
             int yDragDif = mousePosition.Y - mouseClickedPosition.Y;
             int xMoveDif = mousePosition.X - prevMousePosition.X;
             int yMoveDif = mousePosition.Y - prevMousePosition.Y;
-            
+
             double zoom = Zoom();
             OVector currentLCtM = LayerCenterToMouse();
             if (isRMBDown || isLMBDown || isMMBDown)
             {
-                GFL gfl = MF.SelectedLayer;
+                GFL gfl = SelectedLayer;
                 if (isLMBDown && !isRMBDown)
                 {
                     //MOVE
-                    if (MF.IsCtrlDown)
+                    if (IsCtrlDown)
                     {
                         //MOVE WHOLE GIF (ALL LAYERS, ALL FRAMES)
-                        //MF.SelectedFrame.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
-                        MF.MainGiffer.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
-                    } else
+                        //SelectedFrame.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
+                        MainGiffer.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
+                    }
+                    else
                     {
                         //MOVE JUST LAYER
                         gfl.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
@@ -116,14 +104,15 @@ namespace BIUK9000.UI
                     OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
                     int xSizeDif = (int)sdv.X;
                     int ySizeDif = (int)sdv.Y;
-                    if (MF.IsCtrlDown)
+                    if (IsCtrlDown)
                     {
                         //RESIZE GIF FREE (ALL FRAMES)
-                        MF.MainGiffer.Resize(xSizeDif, ySizeDif);
-                    } else
+                        MainGiffer.Resize(xSizeDif, ySizeDif);
+                    }
+                    else
                     {
                         //RESIZE LAYER
-                        if (!MF.IsShiftDown)
+                        if (!IsShiftDown)
                         {
                             //RESIZE LAYER KEEP RATIO
                             int sizeDif = (int)(currentLCtM.Magnitude - originalLCtM.Magnitude);
@@ -144,54 +133,56 @@ namespace BIUK9000.UI
         }
         private double Zoom()
         {
-            int pbHeight = pictureBox.Height;
-            int pbWidth = pictureBox.Width;
-            int imgHeight = pictureBox.Image.Height;
-            int imgWidth = pictureBox.Image.Width;
-            double widthScale = (double)pbWidth / (double)imgWidth;
-            double heightScale = (double)pbHeight / (double)imgHeight;
+            int pbHeight = mainPictureBox.Height;
+            int pbWidth = mainPictureBox.Width;
+            int iMainGifferHeight = mainPictureBox.Image.Height;
+            int iMainGifferWidth = mainPictureBox.Image.Width;
+            double widthScale = (double)pbWidth / (double)iMainGifferWidth;
+            double heightScale = (double)pbHeight / (double)iMainGifferHeight;
             return Math.Min(widthScale, heightScale);
         }
         private OVector LayerCenterToMouse()
         {
-            GFL gfl = MF.MainLayersPanel.SelectedLayer;
+            GFL gfl = MainLayersPanel.SelectedLayer;
             Point LayerCenter = gfl.Center();
-            double pbAspect = (double)pictureBox.Width / pictureBox.Height;
-            double frameAspect = (double)MF.MainTimelineSlider.SelectedFrame.Width / MF.MainTimelineSlider.SelectedFrame.Height;
+            double pbAspect = (double)mainPictureBox.Width / mainPictureBox.Height;
+            double frameAspect = (double)MainTimelineSlider.SelectedFrame.Width / MainTimelineSlider.SelectedFrame.Height;
             int scaledWidth, scaledHeight;
             if (frameAspect > pbAspect)
             {
-                scaledWidth = pictureBox.Width;
-                scaledHeight = (int)(pictureBox.Width / frameAspect);
+                scaledWidth = mainPictureBox.Width;
+                scaledHeight = (int)(mainPictureBox.Width / frameAspect);
             }
             else
             {
-                scaledWidth = (int)(pictureBox.Height * frameAspect);
-                scaledHeight = pictureBox.Height;
+                scaledWidth = (int)(mainPictureBox.Height * frameAspect);
+                scaledHeight = mainPictureBox.Height;
             }
-            int horizontalBlankSpace = pictureBox.Width - scaledWidth;
-            int verticalBlankSpace = pictureBox.Height - scaledHeight;
+            int horizontalBlankSpace = mainPictureBox.Width - scaledWidth;
+            int verticalBlankSpace = mainPictureBox.Height - scaledHeight;
             double zoom = Zoom();
             return new OVector(LayerCenter.X * zoom, LayerCenter.Y * zoom).Subtract(new OVector(mousePosition.X - horizontalBlankSpace / 2, mousePosition.Y - verticalBlankSpace / 2));
         }
 
-        public void UpdatePictureBox()
+        public void UpdateMainPictureBox()
         {
-            Image?.Dispose();
-            Image = MF.MainTimelineSlider.SelectedFrame.CompleteBitmap(true);
+            MainImage?.Dispose();
+            MainImage = MainTimelineSlider.SelectedFrame.CompleteBitmap(true);
         }
         private float SnappedRotation(float rotation, float snapAngle)
         {
             if (rotation < 0) rotation += 360;
             float roundedRotation = (float)(Math.Round(rotation / 90f, 0) * 90);
             float mod90 = rotation % 90;
-            if(mod90 > 90 - snapAngle || mod90 < snapAngle)
+            if (mod90 > 90 - snapAngle || mod90 < snapAngle)
             {
-                return roundedRotation; 
-            } else
+                return roundedRotation;
+            }
+            else
             {
                 return rotation;
             }
         }
+
     }
 }

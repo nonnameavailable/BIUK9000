@@ -46,6 +46,25 @@ namespace BIUK9000.UI
             _updateTimer.Tick += UpdateTimer_Tick;
 
             KeyPreview = true;
+
+            mainPictureBox.MouseMove += MainPictureBox_MouseMove;
+            mainPictureBox.MouseDown += MainPictureBox_MouseDown;
+            mainPictureBox.MouseUp += MainPictureBox_MouseUp;
+
+            MainLayersPanel.LayerOrderChanged += MainLayersPanel_LayerOrderChanged;
+        }
+
+        private void MainLayersPanel_LayerOrderChanged(object sender, LayersPanel.LayerOrderEventArgs e)
+        {
+            for (int i = mainTimelineSlider.Slider.Value; i < MainGiffer.Frames.Count; i++)
+            {
+                GifFrame cf = MainGiffer.Frames[i];
+                GFL gflToInsert = cf.Layers[e.OriginalIndex];
+                cf.Layers.RemoveAt(e.OriginalIndex);
+                cf.Layers.Insert(e.TargetIndex, gflToInsert);
+            }
+            UpdateMainPictureBox();
+            MainLayersPanel.DisplayLayers(SelectedFrame);
         }
 
         public void ApplyCurrentLayerParamsToSubsequentLayers()
@@ -62,14 +81,9 @@ namespace BIUK9000.UI
             }
         }
 
-        private void GifFrame_LayerCountChanged(object sender, EventArgs e)
-        {
-            mainPictureBox.UpdatePictureBox();
-        }
-
         private void UpdateTimer_Tick(object sender, EventArgs e)
         {
-            mainPictureBox.UpdatePictureBox();
+            UpdateMainPictureBox();
         }
 
         protected override bool ProcessKeyPreview(ref Message m)
@@ -125,7 +139,7 @@ namespace BIUK9000.UI
                 {
                     MainGiffer.Crop(SelectedFrame);
                     MainLayersPanel.DisplayLayers(SelectedFrame);
-                    mainPictureBox.UpdatePictureBox();
+                    UpdateMainPictureBox();
                     return true;
                 }
                 else if (keyData == Keys.ShiftKey)
@@ -159,7 +173,7 @@ namespace BIUK9000.UI
         {
             if (MainGiffer == null) return;
             MainLayersPanel.DisplayLayers(SelectedFrame);
-            mainPictureBox.UpdatePictureBox();
+            UpdateMainPictureBox();
         }
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
@@ -192,7 +206,7 @@ namespace BIUK9000.UI
                         mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
                         foreach (GifFrame gifFrame in MainGiffer.Frames)
                         {
-                            gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
+                            gifFrame.LayerCountChanged += UpdateTimer_Tick;
                         }
                         mainLayersPanel.DisplayLayers(SelectedFrame);
                     }
@@ -215,10 +229,6 @@ namespace BIUK9000.UI
                     }
                 }
             }
-        }
-        public void UpdatePicture()
-        {
-            mainPictureBox.UpdatePictureBox();
         }
     }
 }

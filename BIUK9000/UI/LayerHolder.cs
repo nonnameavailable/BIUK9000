@@ -15,10 +15,10 @@ namespace BIUK9000.UI
     {
         public GFL HeldLayer { get; set; }
         public bool StayHighlighted { get; set; }
-        public OVector OriginalMousePosition { get; set; }
+        private OVector OriginalMousePosition { get; set; }
         private MainForm MF { get => ParentForm as MainForm; }
         public event EventHandler LayerClicked;
-        public event MouseEventHandler LayerMouseMove;
+        public event DragEventHandler DragDropped;
         private bool _isLmbDown;
         //public event EventHandler LayerChanged;
         public LayerHolder(GFL layer)
@@ -32,7 +32,7 @@ namespace BIUK9000.UI
             mainPictureBox.MouseDown += MainPictureBox_MouseDown;
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
             mainPictureBox.Image = layer.MorphedBitmap();
-            DragDrop += LayerHolder_DragDrop;
+            DragDrop += (sender, args) => DragDropped?.Invoke(this, args);
             DragEnter += LayerHolder_DragEnter;
             StayHighlighted = false;
             this.AllowDrop = true;
@@ -49,27 +49,6 @@ namespace BIUK9000.UI
             {
                 e.Effect = DragDropEffects.None;
             }
-        }
-
-        private void LayerHolder_DragDrop(object sender, DragEventArgs e)
-        {
-            //horrible, shouldn't use MF
-            LayerHolder draggedLH = (LayerHolder)e.Data.GetData(typeof(LayerHolder));
-            FlowLayoutPanel pFlp = Parent as FlowLayoutPanel;
-            int originalIndex = pFlp.Controls.IndexOf(draggedLH);
-            int targetIndex = pFlp.Controls.IndexOf(this);
-            //pFlp.Controls.SetChildIndex(draggedLH, desiredIndex);
-            GifFrame sf = MF.SelectedFrame;
-            for (int i = MF.MainGiffer.Frames.IndexOf(sf); i < MF.MainGiffer.Frames.Count; i++)
-            {
-                GifFrame cf = MF.MainGiffer.Frames[i];
-                GFL gflToInsert = cf.Layers[originalIndex];
-                cf.Layers.RemoveAt(originalIndex);
-                cf.Layers.Insert(targetIndex, gflToInsert);
-            }
-            MF.UpdatePicture();
-            MF.MainLayersPanel.DisplayLayers(sf);
-            //MessageBox.Show(pFlp.Controls.IndexOf(draggedLH) + "x" + pFlp.Controls.IndexOf(this));
         }
 
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
