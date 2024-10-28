@@ -9,9 +9,8 @@ using System.Windows.Forms;
 
 namespace BIUK9000.UI
 {
-    partial class MainForm
+    public partial class MainForm
     {
-        public Image MainImage { get => mainPictureBox.Image; set => mainPictureBox.Image = value; }
         private Point prevMousePosition, mousePosition, mouseClickedPosition;
         private float originalLayerRotation;
         private OVector originalLCtM;
@@ -37,6 +36,7 @@ namespace BIUK9000.UI
                 UpdateTimer.Stop();
             }
             ApplyCurrentLayerParamsToSubsequentLayers();
+            UpdateMainPictureBox();
         }
 
         private void MainPictureBox_MouseDown(object sender, MouseEventArgs e)

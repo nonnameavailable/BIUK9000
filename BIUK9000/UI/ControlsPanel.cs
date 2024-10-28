@@ -19,21 +19,31 @@ namespace BIUK9000.UI
         private Giffer MG { get => MF.MainGiffer; }
         public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
         public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
+        public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
         public ControlsPanel()
         {
             InitializeComponent();
             SaveButton.MouseDown += SaveButton_MouseDown;
+            ImageExportFormatCBB.SelectedIndex = 0;
         }
 
         private void SaveButton_MouseDown(object sender, MouseEventArgs e)
         {
-            DraggingFileForExport = true;
             if (MG == null) return;
             if (e.Button == MouseButtons.Left)
             {
+                DraggingFileForExport = true;
                 using Bitmap bitmap = MF.MainTimelineSlider.SelectedFrame.CompleteBitmap(false);
-                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".jpeg");
-                OBIMP.SaveJpeg(tempPath, bitmap, 80);
+                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ImageExportFormat);
+                switch (ImageExportFormat)
+                {
+                    case ".jpeg":
+                        OBIMP.SaveJpeg(tempPath, bitmap, 80);
+                        break;
+                    default:
+                        bitmap.Save(tempPath);
+                        break;
+                }
                 DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
                 DoDragDrop(data, DragDropEffects.Copy);
                 if (File.Exists(tempPath))
@@ -43,6 +53,7 @@ namespace BIUK9000.UI
             }
             else if (e.Button == MouseButtons.Right)
             {
+                DraggingFileForExport = true;
                 using Image gif = MG.GifFromFrames();
                 string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
                 gif.Save(tempPath);
@@ -54,6 +65,7 @@ namespace BIUK9000.UI
                     File.Delete(tempPath);
                 }
             }
+            DraggingFileForExport = false;
         }
         private void SaveButton_MouseUp(object sender, MouseEventArgs e)
         {

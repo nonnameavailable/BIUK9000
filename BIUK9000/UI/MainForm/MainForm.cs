@@ -16,26 +16,28 @@ using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using Microsoft.VisualBasic;
 using BIUK9000.GifferComponents;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Drawing.Text;
 
 namespace BIUK9000.UI
 {
     public partial class MainForm : Form
     {
-        public LayersPanel MainLayersPanel { get => mainLayersPanel; }
+        public Image MainImage { get => mainPictureBox.Image; set => mainPictureBox.Image = value; }
+        private LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
-        public GifFrame SelectedFrame { get => MainTimelineSlider.SelectedFrame; }
-        public GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
-        public bool IsShiftDown { get => _isShiftDown; }
-        public bool IsCtrlDown { get => _isCtrlDown; }
-        public Timer UpdateTimer { get => _updateTimer; }
+        private GifFrame SelectedFrame { get => MainTimelineSlider.SelectedFrame; }
+        private GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
+        private Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
-        private bool _isShiftDown, _isCtrlDown;
+
         private Timer _updateTimer;
+        private bool _draggingFileForExport;
 
         public MainForm()
         {
             InitializeComponent();
-            
+
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
 
             DragDrop += MainForm_DragDrop;
@@ -52,6 +54,44 @@ namespace BIUK9000.UI
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
 
             MainLayersPanel.LayerOrderChanged += MainLayersPanel_LayerOrderChanged;
+            MainLayersPanel.SelectedLayerChanged += MainLayersPanel_SelectedLayerChanged;
+            textLayerParamsGB.Visible = false;
+            PopulateFontComboBox();
+
+            TextLayerFontCBB.SelectedIndexChanged += TextLayerFontCBB_SelectedIndexChanged;
+            TextLayerTextTB.TextChanged += TextLayerTextTB_TextChanged;
+        }
+
+        private void MainLayersPanel_SelectedLayerChanged(object sender, EventArgs e)
+        {
+            if (sender is TextGFL)
+            {
+                TextGFL tgfl = (TextGFL)sender;
+                textLayerParamsGB.Visible = true;
+                TextLayerTextTB.Text = tgfl.Text;
+                TextLayerFontCBB.SelectedItem = tgfl.FontName;
+            }
+            else
+            {
+                textLayerParamsGB.Visible = false;
+            }
+        }
+
+        private void PopulateFontComboBox()
+        {
+            InstalledFontCollection installedFonts = new InstalledFontCollection();
+            foreach (FontFamily fontFamily in installedFonts.Families)
+            {
+                TextLayerFontCBB.Items.Add(fontFamily.Name);
+            }
+            if (TextLayerFontCBB.Items.Contains("Impact"))
+            {
+                TextLayerFontCBB.SelectedItem = "Impact";
+            }
+            else
+            {
+                TextLayerFontCBB.SelectedIndex = 0;
+            }
         }
 
         private void MainLayersPanel_LayerOrderChanged(object sender, LayersPanel.LayerOrderEventArgs e)
@@ -74,7 +114,7 @@ namespace BIUK9000.UI
             for (int i = cgfi + 1; i < MainGiffer.Frames.Count; i++)
             {
                 GifFrame gf = MainGiffer.Frames[i];
-                if(cli >= 0 && cli < gf.Layers.Count)
+                if (cli >= 0 && cli < gf.Layers.Count)
                 {
                     gf.Layers[cli].CopyParameters(SelectedLayer);
                 }
@@ -84,89 +124,6 @@ namespace BIUK9000.UI
         private void UpdateTimer_Tick(object sender, EventArgs e)
         {
             UpdateMainPictureBox();
-        }
-
-        protected override bool ProcessKeyPreview(ref Message m)
-        {
-            if(MainGiffer == null) return base.ProcessKeyPreview(ref m);
-            const int WM_KEYDOWN = 0x100;
-            const int WM_KEYUP = 0x101;
-            Keys keyData = (Keys)m.WParam.ToInt32();
-            if (m.Msg == WM_KEYDOWN)
-            {
-                if (keyData == Keys.D)
-                {
-                    TrackBar mts = mainTimelineSlider.Slider;
-                    if (mts.Value < mts.Maximum) mts.Value += 1;
-                    return true;
-                }
-                else if (keyData == Keys.A)
-                {
-                    TrackBar mts = mainTimelineSlider.Slider;
-                    if (mts.Value > 0) mts.Value -= 1;
-                    return true;
-                }
-                else if(keyData == Keys.T)
-                {
-                    TextGFL tgfl = new TextGFL("YOUR TEXT");
-                    tgfl.FontName = "Impact";
-                    tgfl.FontBorderColor = Color.Black;
-                    tgfl.FontColor = Color.White;
-                    tgfl.FontBorderWidth = 5;
-                    tgfl.FontSize = 20;
-                    SelectedFrame.AddLayer(tgfl);
-                    return true;
-                } else if(keyData == Keys.L)
-                {
-                    //Bitmap bmp = new Bitmap(500, 500);
-                    //using Graphics g = Graphics.FromImage(bmp);
-                    //g.Clear(Color.Black);
-                    //g.DrawString("fuuuuuuuuu", new Font("Impact", 50), new SolidBrush(Color.White), new Point(0, 0));
-                    //Size s = TextRenderer.MeasureText("fuuuuuuuuu", new Font("Impact", 50));
-                    //g.DrawRectangle(Pens.Red, 0, 0, s.Width, s.Height);
-                    //mainPictureBox.Image = bmp;
-                    //SelectedFrame.AddLayer(new CropGFL(100, 100));
-                    //SelectedFrame.AddSpace(100, 0, 0, 0);
-                    TextGFL tl = new TextGFL("WHEN I TAKE PRE-WORKOUT" + Environment.NewLine + "FOR THE FIRST TIME");
-                    tl.FontName = "Impact";
-                    tl.FontColor = Color.White;
-                    tl.FontBorderColor = Color.Black;
-                    tl.FontBorderWidth = 3;
-                    tl.FontSize = 20;
-                    MainGiffer.Frames.ForEach(frame => frame.AddLayer(tl));
-                    return true;
-                } else if(keyData == Keys.C)
-                {
-                    MainGiffer.Crop(SelectedFrame);
-                    MainLayersPanel.DisplayLayers(SelectedFrame);
-                    UpdateMainPictureBox();
-                    return true;
-                }
-                else if (keyData == Keys.ShiftKey)
-                {
-                    _isShiftDown = true;
-                    return true;
-                } else if(keyData == Keys.ControlKey)
-                {
-                    _isCtrlDown = true;
-                    return true;
-                }
-            }
-            else if (m.Msg == WM_KEYUP)
-            {
-                if (keyData == Keys.ShiftKey)
-                {
-                    
-                    _isShiftDown = false;
-                    return true;
-                } if(keyData == Keys.ControlKey)
-                {
-                    _isCtrlDown = false;
-                    return true;
-                }
-            }
-
-            return base.ProcessKeyPreview(ref m);
         }
 
         private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
@@ -189,46 +146,66 @@ namespace BIUK9000.UI
 
         private void MainForm_DragDrop(object sender, DragEventArgs e)
         {
-            //if (draggingFileForExport) return;
+            if (controlsPanel1.DraggingFileForExport) return;
             string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            if(filePaths.Length > 0)
+            if (filePaths.Length > 0)
             {
-                string fullPath = filePaths[0];
-                string ext = Path.GetExtension(fullPath);
-
-                if(ext == ".gif")
+                foreach (string filePath in filePaths)
                 {
-                    Giffer newGiffer = new Giffer(fullPath);
-                    if (MainGiffer == null)
+                    string ext = Path.GetExtension(filePath);
+
+                    if (ext == ".gif")
                     {
-                        MainGiffer = newGiffer;
-                        mainTimelineSlider.Giffer = newGiffer;
-                        mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
-                        foreach (GifFrame gifFrame in MainGiffer.Frames)
+                        Giffer newGiffer = new Giffer(filePath);
+                        if (MainGiffer == null)
                         {
-                            gifFrame.LayerCountChanged += UpdateTimer_Tick;
+                            MainGiffer = newGiffer;
+                            mainTimelineSlider.Giffer = newGiffer;
+                            mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
+                            foreach (GifFrame gifFrame in MainGiffer.Frames)
+                            {
+                                gifFrame.LayerCountChanged += UpdateTimer_Tick;
+                            }
+                            mainLayersPanel.DisplayLayers(SelectedFrame);
                         }
-                        mainLayersPanel.DisplayLayers(SelectedFrame);
+                        else
+                        {
+                            MainGiffer.AddGifferAsLayers(newGiffer);
+                        }
                     }
                     else
                     {
-                        MainGiffer.AddGifferAsLayers(newGiffer);
-                    }
-                } else
-                {
-                    try
-                    {
-                        Bitmap bitmap = new Bitmap(fullPath);
-                        foreach(GifFrame gifFrame in MainGiffer.Frames)
+                        try
                         {
-                            gifFrame.AddLayer(bitmap);
+                            Bitmap bitmap = new Bitmap(filePath);
+                            foreach (GifFrame gifFrame in MainGiffer.Frames)
+                            {
+                                gifFrame.AddLayer(bitmap);
+                            }
                         }
-                    } catch (Exception ex)
-                    {
-                        MessageBox.Show("This is not an image file!");
+                        catch
+                        {
+                            MessageBox.Show(Path.GetFileName(filePath) + "is not an image file!");
+                        }
                     }
                 }
+
+                mainLayersPanel.SelectNewestLayer();
             }
+        }
+
+        private void TextLayerTextTB_TextChanged(object sender, EventArgs e)
+        {
+            TextGFL tgfl = SelectedLayer as TextGFL;
+            tgfl.Text = TextLayerTextTB.Text;
+            UpdateMainPictureBox();
+        }
+
+        private void TextLayerFontCBB_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TextGFL tgfl = SelectedLayer as TextGFL;
+            tgfl.FontName = TextLayerFontCBB.Text;
+            UpdateMainPictureBox();
         }
     }
 }

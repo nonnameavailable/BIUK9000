@@ -16,11 +16,9 @@ namespace BIUK9000.UI
         public GFL HeldLayer { get; set; }
         public bool StayHighlighted { get; set; }
         private OVector OriginalMousePosition { get; set; }
-        private MainForm MF { get => ParentForm as MainForm; }
         public event EventHandler LayerClicked;
         public event DragEventHandler DragDropped;
         private bool _isLmbDown;
-        //public event EventHandler LayerChanged;
         public LayerHolder(GFL layer)
         {
             InitializeComponent();
@@ -36,7 +34,6 @@ namespace BIUK9000.UI
             DragEnter += LayerHolder_DragEnter;
             StayHighlighted = false;
             this.AllowDrop = true;
-            //HeldLayer.ParameterChanged += HeldLayer_ParameterChanged;
         }
 
         private void LayerHolder_DragEnter(object sender, DragEventArgs e)
@@ -82,11 +79,6 @@ namespace BIUK9000.UI
             double draggedDist = currentPosOV.Subtract(OriginalMousePosition).Magnitude;
             return draggedDist > distanceLimit;
         }
-
-        //private void HeldLayer_ParameterChanged(object sender, EventArgs e)
-        //{
-        //    LayerChanged?.Invoke(this, EventArgs.Empty);
-        //}
 
         private void MainPictureBox_MouseLeave(object sender, EventArgs e)
         {

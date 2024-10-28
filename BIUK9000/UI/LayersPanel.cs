@@ -18,6 +18,7 @@ namespace BIUK9000.UI
         private GifFrame ActiveFrame { get; set; }
         public int SelectedLayerIndex { get; set; }
         public event EventHandler<LayerOrderEventArgs> LayerOrderChanged;
+        public event EventHandler SelectedLayerChanged;
         public LayersPanel()
         {
             InitializeComponent();
@@ -50,11 +51,14 @@ namespace BIUK9000.UI
             int originalIndex = layersFLP.Controls.IndexOf(droppedLh);
             int targetIndex = layersFLP.Controls.IndexOf(sender as LayerHolder);
             LayerOrderEventArgs loea = new LayerOrderEventArgs(originalIndex, targetIndex);
+            clickedLayerHolder = layersFLP.Controls[SelectedLayerIndex] as LayerHolder;
             LayerOrderChanged?.Invoke(this, loea);
+            SelectedLayerChanged?.Invoke(clickedLayerHolder.HeldLayer, EventArgs.Empty);
         }
 
-        public void SelectLayerHolder(int i)
+        private void SelectLayerHolder(int i)
         {
+            clickedLayerHolder?.Highlight(false);
             if (layersFLP.Controls.Count > 0 && i < layersFLP.Controls.Count)
             {
                 clickedLayerHolder = (LayerHolder)(layersFLP.Controls[i]);
@@ -71,12 +75,23 @@ namespace BIUK9000.UI
 
         private void Lh_LayerClicked(object sender, EventArgs e)
         {
-            clickedLayerHolder?.Highlight(false);
             LayerHolder lh = sender as LayerHolder;
+            if (lh == clickedLayerHolder) return;
+            clickedLayerHolder?.Highlight(false);
             lh.Highlight(true);
             clickedLayerHolder = lh;
             SelectedLayerIndex = layersFLP.Controls.IndexOf(lh);
             if (clickedLayerHolder != null) clickedLayerHolder.StayHighlighted = true;
+            SelectedLayerChanged?.Invoke(clickedLayerHolder.HeldLayer, EventArgs.Empty);
+        }
+
+        public void SelectNewestLayer()
+        {
+            int lhIndex = layersFLP.Controls.Count - 1;
+            SelectLayerHolder(lhIndex);
+            SelectedLayerIndex = lhIndex;
+            clickedLayerHolder = layersFLP.Controls[lhIndex] as LayerHolder;
+            SelectedLayerChanged?.Invoke(clickedLayerHolder.HeldLayer, EventArgs.Empty);
         }
         public class LayerOrderEventArgs : EventArgs
         {
