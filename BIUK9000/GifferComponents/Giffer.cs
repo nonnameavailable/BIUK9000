@@ -15,6 +15,7 @@ namespace BIUK9000.GifferComponents
         public List<GifFrame> Frames { get; set; }
         private Image originalGif;
         private bool disposedValue;
+        private bool _createdEmpty;
 
         public event EventHandler FrameCountChanged;
         protected virtual void OnFrameCountChanged()
@@ -27,11 +28,13 @@ namespace BIUK9000.GifferComponents
             Image gif = Image.FromFile(path);
             originalGif = gif;
             Frames = FramesFromGif(gif);
+            _createdEmpty = false;
         }
 
         public Giffer()
         {
             Frames = new List<GifFrame>();
+            _createdEmpty = true;
         }
 
         public void AddSpace(int up, int right, int down, int left)
@@ -70,6 +73,7 @@ namespace BIUK9000.GifferComponents
 
         private int FrameDelay(Image gif)
         {
+            if (_createdEmpty) return 20;
             PropertyItem propertyItem = gif.GetPropertyItem(0x5100);
             return BitConverter.ToInt32(propertyItem.Value, 0) * 10;
         }

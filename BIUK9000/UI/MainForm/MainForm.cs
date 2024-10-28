@@ -60,6 +60,24 @@ namespace BIUK9000.UI
 
             TextLayerFontCBB.SelectedIndexChanged += TextLayerFontCBB_SelectedIndexChanged;
             TextLayerTextTB.TextChanged += TextLayerTextTB_TextChanged;
+            borderColorButton.ColorChanged += BorderColorButton_ColorChanged;
+            fontColorButton.ColorChanged += FontColorButton_ColorChanged;
+
+            controlsPanel1.MustRedraw += (sender, args) => UpdateMainPictureBox();
+        }
+
+        private void FontColorButton_ColorChanged(object sender, EventArgs e)
+        {
+            TextGFL tgfl = SelectedLayer as TextGFL;
+            tgfl.FontColor = (sender as ColorButton).Color;
+            UpdateMainPictureBox();
+        }
+
+        private void BorderColorButton_ColorChanged(object sender, EventArgs e)
+        {
+            TextGFL tgfl = SelectedLayer as TextGFL;
+            tgfl.FontBorderColor = (sender as ColorButton).Color;
+            UpdateMainPictureBox();
         }
 
         private void MainLayersPanel_SelectedLayerChanged(object sender, EventArgs e)
@@ -159,18 +177,27 @@ namespace BIUK9000.UI
                         Giffer newGiffer = new Giffer(filePath);
                         if (MainGiffer == null)
                         {
-                            MainGiffer = newGiffer;
-                            mainTimelineSlider.Giffer = newGiffer;
-                            mainPictureBox.Image = MainGiffer.Frames[0].CompleteBitmap(true);
-                            foreach (GifFrame gifFrame in MainGiffer.Frames)
-                            {
-                                gifFrame.LayerCountChanged += UpdateTimer_Tick;
-                            }
-                            mainLayersPanel.DisplayLayers(SelectedFrame);
+                            SetNewGiffer(newGiffer);
                         }
                         else
                         {
-                            MainGiffer.AddGifferAsLayers(newGiffer);
+                            ImportQuestionForm iqf = new ImportQuestionForm();
+                            if(iqf.ShowDialog() == DialogResult.OK)
+                            {
+                                switch(iqf.SelectedImportType)
+                                {
+                                    case ImportQuestionForm.IMPORT_AS_LAYERS:
+                                        MainGiffer.AddGifferAsLayers(newGiffer);
+                                        break;
+                                    case ImportQuestionForm.IMPORT_INSERT:
+                                        MessageBox.Show("Not implemented yet :)");
+                                        break;
+                                    default: //FRESH
+                                        SetNewGiffer(newGiffer);
+                                        break;
+                                }
+                            }
+                            
                         }
                     }
                     else
@@ -178,10 +205,21 @@ namespace BIUK9000.UI
                         try
                         {
                             Bitmap bitmap = new Bitmap(filePath);
-                            foreach (GifFrame gifFrame in MainGiffer.Frames)
+                            if(MainGiffer == null)
                             {
-                                gifFrame.AddLayer(bitmap);
+                                MainGiffer = new Giffer();
+                                MainGiffer.AddFrame(new GifFrame(bitmap));
+                                mainLayersPanel.DisplayLayers(MainGiffer.Frames[0]);
+                                mainTimelineSlider.Giffer = MainGiffer;
+                                UpdateMainPictureBox();
+                            } else
+                            {
+                                foreach (GifFrame gifFrame in MainGiffer.Frames)
+                                {
+                                    gifFrame.AddLayer(bitmap);
+                                }
                             }
+
                         }
                         catch
                         {
@@ -189,11 +227,24 @@ namespace BIUK9000.UI
                         }
                     }
                 }
-
                 mainLayersPanel.SelectNewestLayer();
             }
         }
 
+        private void SetNewGiffer(Giffer newGiffer)
+        {
+            Giffer oldGiffer = MainGiffer;
+            MainGiffer = newGiffer;
+            mainTimelineSlider.Giffer = newGiffer;
+            UpdateMainPictureBox();
+            foreach (GifFrame gifFrame in MainGiffer.Frames)
+            {
+                gifFrame.LayerCountChanged += UpdateTimer_Tick;
+            }
+            MainLayersPanel.SelectedLayerIndex = 0;
+            mainLayersPanel.DisplayLayers(SelectedFrame);
+            oldGiffer?.Dispose();
+        }
         private void TextLayerTextTB_TextChanged(object sender, EventArgs e)
         {
             TextGFL tgfl = SelectedLayer as TextGFL;
@@ -206,6 +257,18 @@ namespace BIUK9000.UI
             TextGFL tgfl = SelectedLayer as TextGFL;
             tgfl.FontName = TextLayerFontCBB.Text;
             UpdateMainPictureBox();
+        }
+
+        private void TextLayerBorderWidthNUD_ValueChanged(object sender, EventArgs e)
+        {
+            TextGFL tgfl = SelectedLayer as TextGFL;
+            tgfl.FontBorderWidth = (float)TextLayerBorderWidthNUD.Value;
+            UpdateMainPictureBox();
+        }
+        public void UpdateMainPictureBox()
+        {
+            MainImage?.Dispose();
+            MainImage = SelectedFrame.CompleteBitmap(controlsPanel1.DrawHelp);
         }
     }
 }

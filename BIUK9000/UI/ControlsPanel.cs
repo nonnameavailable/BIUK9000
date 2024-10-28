@@ -20,11 +20,20 @@ namespace BIUK9000.UI
         public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
         public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
+        public bool RotationSnap { get => rotationSnapCB.Checked; }
+        public bool DrawHelp { get => drawHelpCB.Checked; }
+        public event EventHandler MustRedraw;
         public ControlsPanel()
         {
             InitializeComponent();
             SaveButton.MouseDown += SaveButton_MouseDown;
             ImageExportFormatCBB.SelectedIndex = 0;
+            drawHelpCB.CheckedChanged += DrawHelpCB_CheckedChanged;
+        }
+
+        private void DrawHelpCB_CheckedChanged(object sender, EventArgs e)
+        {
+            MustRedraw?.Invoke(this, EventArgs.Empty);
         }
 
         private void SaveButton_MouseDown(object sender, MouseEventArgs e)

@@ -30,26 +30,29 @@
         {
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             SaveButton = new System.Windows.Forms.Button();
-            tabControl1 = new System.Windows.Forms.TabControl();
+            exportTC = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
             groupBox2 = new System.Windows.Forms.GroupBox();
+            ImageExportJpegQualNUD = new System.Windows.Forms.NumericUpDown();
+            label3 = new System.Windows.Forms.Label();
             ImageExportFormatCBB = new System.Windows.Forms.ComboBox();
             groupBox1 = new System.Windows.Forms.GroupBox();
             GifExportLossyNUD = new System.Windows.Forms.NumericUpDown();
             label2 = new System.Windows.Forms.Label();
             GifExportColorsNUD = new System.Windows.Forms.NumericUpDown();
             label1 = new System.Windows.Forms.Label();
-            tabPage2 = new System.Windows.Forms.TabPage();
-            ImageExportJpegQualNUD = new System.Windows.Forms.NumericUpDown();
-            label3 = new System.Windows.Forms.Label();
+            settingsTC = new System.Windows.Forms.TabPage();
+            rotationSnapCB = new System.Windows.Forms.CheckBox();
+            drawHelpCB = new System.Windows.Forms.CheckBox();
             tableLayoutPanel1.SuspendLayout();
-            tabControl1.SuspendLayout();
+            exportTC.SuspendLayout();
             tabPage1.SuspendLayout();
             groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ImageExportJpegQualNUD).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)ImageExportJpegQualNUD).BeginInit();
+            settingsTC.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -57,7 +60,7 @@
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.Controls.Add(SaveButton, 0, 0);
-            tableLayoutPanel1.Controls.Add(tabControl1, 0, 1);
+            tableLayoutPanel1.Controls.Add(exportTC, 0, 1);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -78,16 +81,16 @@
             SaveButton.Text = "Save";
             SaveButton.UseVisualStyleBackColor = true;
             // 
-            // tabControl1
+            // exportTC
             // 
-            tabControl1.Controls.Add(tabPage1);
-            tabControl1.Controls.Add(tabPage2);
-            tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            tabControl1.Location = new System.Drawing.Point(3, 146);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(144, 285);
-            tabControl1.TabIndex = 7;
+            exportTC.Controls.Add(tabPage1);
+            exportTC.Controls.Add(settingsTC);
+            exportTC.Dock = System.Windows.Forms.DockStyle.Fill;
+            exportTC.Location = new System.Drawing.Point(3, 146);
+            exportTC.Name = "exportTC";
+            exportTC.SelectedIndex = 0;
+            exportTC.Size = new System.Drawing.Size(144, 285);
+            exportTC.TabIndex = 7;
             // 
             // tabPage1
             // 
@@ -113,6 +116,27 @@
             groupBox2.TabIndex = 3;
             groupBox2.TabStop = false;
             groupBox2.Text = "Single image";
+            // 
+            // ImageExportJpegQualNUD
+            // 
+            ImageExportJpegQualNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            ImageExportJpegQualNUD.Increment = new decimal(new int[] { 10, 0, 0, 0 });
+            ImageExportJpegQualNUD.Location = new System.Drawing.Point(71, 51);
+            ImageExportJpegQualNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            ImageExportJpegQualNUD.Name = "ImageExportJpegQualNUD";
+            ImageExportJpegQualNUD.Size = new System.Drawing.Size(47, 25);
+            ImageExportJpegQualNUD.TabIndex = 5;
+            ImageExportJpegQualNUD.Value = new decimal(new int[] { 100, 0, 0, 0 });
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            label3.Location = new System.Drawing.Point(6, 57);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(59, 17);
+            label3.TabIndex = 4;
+            label3.Text = "jpg qual.";
             // 
             // ImageExportFormatCBB
             // 
@@ -178,36 +202,39 @@
             label1.TabIndex = 0;
             label1.Text = "colors";
             // 
-            // tabPage2
+            // settingsTC
             // 
-            tabPage2.Location = new System.Drawing.Point(4, 24);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(136, 257);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "tabPage2";
-            tabPage2.UseVisualStyleBackColor = true;
+            settingsTC.Controls.Add(drawHelpCB);
+            settingsTC.Controls.Add(rotationSnapCB);
+            settingsTC.Location = new System.Drawing.Point(4, 24);
+            settingsTC.Name = "settingsTC";
+            settingsTC.Padding = new System.Windows.Forms.Padding(3);
+            settingsTC.Size = new System.Drawing.Size(136, 257);
+            settingsTC.TabIndex = 1;
+            settingsTC.Text = "settings";
+            settingsTC.UseVisualStyleBackColor = true;
             // 
-            // ImageExportJpegQualNUD
+            // rotationSnapCB
             // 
-            ImageExportJpegQualNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            ImageExportJpegQualNUD.Increment = new decimal(new int[] { 10, 0, 0, 0 });
-            ImageExportJpegQualNUD.Location = new System.Drawing.Point(71, 51);
-            ImageExportJpegQualNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            ImageExportJpegQualNUD.Name = "ImageExportJpegQualNUD";
-            ImageExportJpegQualNUD.Size = new System.Drawing.Size(47, 25);
-            ImageExportJpegQualNUD.TabIndex = 5;
-            ImageExportJpegQualNUD.Value = new decimal(new int[] { 100, 0, 0, 0 });
+            rotationSnapCB.AutoSize = true;
+            rotationSnapCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            rotationSnapCB.Location = new System.Drawing.Point(6, 6);
+            rotationSnapCB.Name = "rotationSnapCB";
+            rotationSnapCB.Size = new System.Drawing.Size(105, 21);
+            rotationSnapCB.TabIndex = 0;
+            rotationSnapCB.Text = "rotation snap";
+            rotationSnapCB.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // drawHelpCB
             // 
-            label3.AutoSize = true;
-            label3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            label3.Location = new System.Drawing.Point(6, 57);
-            label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(59, 17);
-            label3.TabIndex = 4;
-            label3.Text = "jpg qual.";
+            drawHelpCB.AutoSize = true;
+            drawHelpCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            drawHelpCB.Location = new System.Drawing.Point(6, 33);
+            drawHelpCB.Name = "drawHelpCB";
+            drawHelpCB.Size = new System.Drawing.Size(85, 21);
+            drawHelpCB.TabIndex = 1;
+            drawHelpCB.Text = "draw help";
+            drawHelpCB.UseVisualStyleBackColor = true;
             // 
             // ControlsPanel
             // 
@@ -217,22 +244,24 @@
             Name = "ControlsPanel";
             Size = new System.Drawing.Size(150, 434);
             tableLayoutPanel1.ResumeLayout(false);
-            tabControl1.ResumeLayout(false);
+            exportTC.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)ImageExportJpegQualNUD).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).EndInit();
-            ((System.ComponentModel.ISupportInitialize)ImageExportJpegQualNUD).EndInit();
+            settingsTC.ResumeLayout(false);
+            settingsTC.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl exportTC;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ComboBox ImageExportFormatCBB;
@@ -241,9 +270,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown GifExportColorsNUD;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage settingsTC;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.NumericUpDown ImageExportJpegQualNUD;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox rotationSnapCB;
+        private System.Windows.Forms.CheckBox drawHelpCB;
     }
 }

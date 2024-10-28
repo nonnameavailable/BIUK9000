@@ -96,7 +96,15 @@ namespace BIUK9000.UI
                 {
                     //ROTATE
                     double angle = currentLCtM.Rotation;
-                    gfl.Rotation = SnappedRotation(originalLayerRotation + (float)angle - (float)originalLCtM.Rotation, 20);
+                    float newRotation = originalLayerRotation + (float)angle - (float)originalLCtM.Rotation;
+                    if (controlsPanel1.RotationSnap)
+                    {
+                        gfl.Rotation = SnappedRotation(newRotation, 10);
+                    } else
+                    {
+                        gfl.Rotation = newRotation;
+                    }
+                    
                 }
                 else if (isMMBDown)
                 {
@@ -162,12 +170,6 @@ namespace BIUK9000.UI
             int verticalBlankSpace = mainPictureBox.Height - scaledHeight;
             double zoom = Zoom();
             return new OVector(LayerCenter.X * zoom, LayerCenter.Y * zoom).Subtract(new OVector(mousePosition.X - horizontalBlankSpace / 2, mousePosition.Y - verticalBlankSpace / 2));
-        }
-
-        public void UpdateMainPictureBox()
-        {
-            MainImage?.Dispose();
-            MainImage = MainTimelineSlider.SelectedFrame.CompleteBitmap(true);
         }
         private float SnappedRotation(float rotation, float snapAngle)
         {
