@@ -8,17 +8,16 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;1416</NoWarn>
+    <DefineConstants>$(DefineConstants);EXCLUDE_EMGU</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <NoWarn>1701;1702;1416</NoWarn>
+    <DefineConstants>$(DefineConstants);EXCLUDE_EMGU</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AnimatedGif" Version="1.0.5" />
-    <PackageReference Include="Emgu.CV" Version="4.9.0.5494" />
-    <PackageReference Include="Emgu.CV.Bitmap" Version="4.9.0.5494" />
-    <PackageReference Include="Emgu.CV.runtime.windows" Version="4.9.0.5494" />
+	<PackageReference Include="AnimatedGif" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>

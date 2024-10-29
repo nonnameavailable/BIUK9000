@@ -1,6 +1,4 @@
-﻿using Emgu.CV.Reg;
-using Emgu.CV.XImgproc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;

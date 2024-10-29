@@ -1,4 +1,5 @@
-﻿using Emgu.CV.CvEnum;
+﻿#if !EXCLUDE_EMGU
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV;
 using System;
@@ -11,6 +12,7 @@ using BIUK9000.GifferComponents;
 
 namespace BIUK9000
 {
+
     public class Facer
     {
         public static Bitmap FaceSwappedImage(Bitmap backgroundImage, Bitmap substituteImage)
@@ -66,3 +68,4 @@ namespace BIUK9000
         }
     }
 }
+#endif
