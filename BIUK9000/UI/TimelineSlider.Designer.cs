@@ -78,7 +78,6 @@
             frameDelayNUD.Increment = new decimal(new int[] { 10, 0, 0, 0 });
             frameDelayNUD.Location = new System.Drawing.Point(6, 22);
             frameDelayNUD.Maximum = new decimal(new int[] { 50000, 0, 0, 0 });
-            frameDelayNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             frameDelayNUD.Name = "frameDelayNUD";
             frameDelayNUD.Size = new System.Drawing.Size(82, 25);
             frameDelayNUD.TabIndex = 0;

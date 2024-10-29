@@ -94,12 +94,12 @@ namespace BIUK9000.UI
             mainTimelineSlider.Size = new System.Drawing.Size(593, 94);
             mainTimelineSlider.TabIndex = 3;
             // 
-            // controlsPanel1
+            // controlsPanel
             // 
             controlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             controlsPanel.DraggingFileForExport = false;
             controlsPanel.Location = new System.Drawing.Point(3, 3);
-            controlsPanel.Name = "controlsPanel1";
+            controlsPanel.Name = "controlsPanel";
             tableLayoutPanel1.SetRowSpan(controlsPanel, 2);
             controlsPanel.Size = new System.Drawing.Size(151, 455);
             controlsPanel.TabIndex = 5;
@@ -215,13 +215,13 @@ namespace BIUK9000.UI
             label2.TabIndex = 2;
             label2.Text = "border width";
             // 
-            // TextLayerFontCBB
+            // textLayerFontCBB
             // 
             textLayerFontCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             textLayerFontCBB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             textLayerFontCBB.FormattingEnabled = true;
             textLayerFontCBB.Location = new System.Drawing.Point(47, 3);
-            textLayerFontCBB.Name = "TextLayerFontCBB";
+            textLayerFontCBB.Name = "textLayerFontCBB";
             textLayerFontCBB.Size = new System.Drawing.Size(121, 25);
             textLayerFontCBB.TabIndex = 1;
             // 
@@ -235,13 +235,13 @@ namespace BIUK9000.UI
             label1.TabIndex = 0;
             label1.Text = "font";
             // 
-            // TextLayerTextTB
+            // textLayerTextTB
             // 
             textLayerTextTB.Dock = System.Windows.Forms.DockStyle.Fill;
             textLayerTextTB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             textLayerTextTB.Location = new System.Drawing.Point(203, 3);
             textLayerTextTB.Multiline = true;
-            textLayerTextTB.Name = "TextLayerTextTB";
+            textLayerTextTB.Name = "textLayerTextTB";
             textLayerTextTB.Size = new System.Drawing.Size(381, 121);
             textLayerTextTB.TabIndex = 1;
             // 

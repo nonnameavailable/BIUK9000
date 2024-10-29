@@ -11,9 +11,9 @@ namespace BIUK9000.UI
 {
     public partial class MainForm
     {
-        //private bool _isShiftDown, _isCtrlDown;
         private bool IsShiftDown { get; set; }
         private bool IsCtrlDown { get; set; }
+
         protected override bool ProcessKeyPreview(ref Message m)
         {
             if (MainGiffer == null || ActiveControl is TextBox) return base.ProcessKeyPreview(ref m);

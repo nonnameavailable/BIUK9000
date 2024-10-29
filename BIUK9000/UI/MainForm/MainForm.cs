@@ -29,7 +29,6 @@ namespace BIUK9000.UI
         public Giffer MainGiffer { get; set; }
 
         private Timer _updateTimer;
-        private bool _draggingFileForExport;
 
         public MainForm()
         {

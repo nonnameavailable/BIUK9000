@@ -35,6 +35,13 @@ namespace BIUK9000.UI
                 SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
                 UpdateDelayNUD();
             };
+            frameDelayNUD.KeyPress += FrameDelayNUD_KeyPress;
+        }
+
+        private void FrameDelayNUD_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+            e.KeyChar = e.KeyChar = (char)Keys.D2;
         }
 
         private void frameDelayNUD_ValueChanged(object sender, EventArgs e)

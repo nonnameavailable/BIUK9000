@@ -29,7 +29,7 @@ namespace BIUK9000.GifferComponents
         {
             get
             {
-                return _width;
+                return _height;
             }
             set
             {
