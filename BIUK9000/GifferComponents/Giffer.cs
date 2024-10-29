@@ -16,6 +16,7 @@ namespace BIUK9000.GifferComponents
         private Image originalGif;
         private bool disposedValue;
         private bool _createdEmpty;
+        public string OriginalImagePath {  get; set; }
 
         public event EventHandler FrameCountChanged;
         protected virtual void OnFrameCountChanged()
@@ -29,12 +30,14 @@ namespace BIUK9000.GifferComponents
             originalGif = gif;
             Frames = FramesFromGif(gif);
             _createdEmpty = false;
+            OriginalImagePath = path;
         }
 
         public Giffer()
         {
             Frames = new List<GifFrame>();
             _createdEmpty = true;
+            OriginalImagePath = "";
         }
 
         public void AddSpace(int up, int right, int down, int left)
@@ -66,7 +69,7 @@ namespace BIUK9000.GifferComponents
             for (int i = 0; i < frameCount; i++)
             {
                 gif.SelectActiveFrame(FrameDimension.Time, i);
-                result.Add(new GifFrame(new Bitmap(gif)));
+                result.Add(new GifFrame(new Bitmap(gif), FrameDelay(gif)));
             }
             return result;
         }
@@ -85,7 +88,7 @@ namespace BIUK9000.GifferComponents
             AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
             foreach (GifFrame frame in Frames)
             {
-                agc.AddFrame(frame.CompleteBitmap(false), frameDelay, GifQuality.Bit8);
+                agc.AddFrame(frame.CompleteBitmap(false), frame.FrameDelay, GifQuality.Bit8);
             }
             return Image.FromStream(stream);
         }

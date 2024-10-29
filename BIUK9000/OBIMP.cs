@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BIUK9000
 {
@@ -16,8 +17,34 @@ namespace BIUK9000
         {
             string gifsiclePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "gifsicle.exe");
 
-            string cmd = $"/C {gifsiclePath} -O3 --colors {colors} --lossy={lossy} -o {targetPath} {originalPath}";
-            Process.Start("CMD.exe", cmd);
+            if (!File.Exists(gifsiclePath))
+            {
+                throw new FileNotFoundException("Gifsicle executable not found.", gifsiclePath);
+            }
+
+            string message = "Gifsicle is compressing the file";
+            string cmd = $"/C echo {message} && {gifsiclePath} -O3 --colors {colors} --lossy={lossy} -o \"{targetPath}\" \"{originalPath}\"";
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "CMD.exe",
+                    Arguments = cmd,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = false // Set to false if you want to see the CMD window
+                }
+            };
+
+            process.Start();
+            process.WaitForExit(); // Wait for the process to complete
+
+            if (process.ExitCode != 0)
+            {
+                string error = process.StandardError.ReadToEnd();
+                MessageBox.Show("Gifsicle error, file will not be compressed because:" + Environment.NewLine + error);
+            }
         }
 
         public static void SaveJpeg(string path, Bitmap img, long quality)

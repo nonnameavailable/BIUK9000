@@ -16,7 +16,7 @@ namespace BIUK9000.UI
         private bool IsCtrlDown { get; set; }
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            if (MainGiffer == null) return base.ProcessKeyPreview(ref m);
+            if (MainGiffer == null || ActiveControl is TextBox) return base.ProcessKeyPreview(ref m);
             const int WM_KEYDOWN = 0x100;
             const int WM_KEYUP = 0x101;
             Keys keyData = (Keys)m.WParam.ToInt32();
@@ -42,7 +42,8 @@ namespace BIUK9000.UI
                     tgfl.FontColor = Color.White;
                     tgfl.FontBorderWidth = 5;
                     tgfl.FontSize = 20;
-                    MainGiffer.Frames.ForEach(frame => frame.AddLayer(tgfl));
+                    tgfl.Visible = true;
+                    MainGiffer.Frames.ForEach(frame => frame.AddLayer(new TextGFL(tgfl)));
                     mainLayersPanel.SelectNewestLayer();
                     return true;
                 }

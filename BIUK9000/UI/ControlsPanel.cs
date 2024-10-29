@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,10 @@ namespace BIUK9000.UI
 {
     public partial class ControlsPanel : UserControl
     {
-        public bool DraggingFileForExport {  get; set; }
+        private OVector OriginalMousePosition { get; set; }
+        private bool IsLMBDown {  get; set; }
+        private bool IsRMBDown {  get; set; }
+        public bool DraggingFileForExport { get; set; }
         private MainForm MF { get => ParentForm as MainForm; }
         private Giffer MG { get => MF.MainGiffer; }
         public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
@@ -23,14 +27,73 @@ namespace BIUK9000.UI
         public bool RotationSnap { get => rotationSnapCB.Checked; }
         public bool DrawHelp { get => drawHelpCB.Checked; }
         public event EventHandler MustRedraw;
+        public event EventHandler SaveGifDialogOKed;
         public ControlsPanel()
         {
             InitializeComponent();
             SaveButton.MouseDown += SaveButton_MouseDown;
+            SaveButton.MouseUp += SaveButton_MouseUp;
+            SaveButton.MouseMove += SaveButton_MouseMove;
             ImageExportFormatCBB.SelectedIndex = 0;
             drawHelpCB.CheckedChanged += DrawHelpCB_CheckedChanged;
+            OriginalMousePosition = new OVector(0, 0);
+            IsLMBDown = false;
+            IsRMBDown = false;
         }
 
+        private void SaveButton_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (MG == null) return;
+            if (ShouldStartDragdrop(e, 10))
+            {
+                if (IsLMBDown)
+                {
+                    DraggingFileForExport = true;
+                    using Bitmap bitmap = MF.MainTimelineSlider.SelectedFrame.CompleteBitmap(false);
+                    string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ImageExportFormat);
+                    switch (ImageExportFormat)
+                    {
+                        case ".jpeg":
+                            OBIMP.SaveJpeg(tempPath, bitmap, 80);
+                            break;
+                        default:
+                            bitmap.Save(tempPath);
+                            break;
+                    }
+                    DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
+                    DoDragDrop(data, DragDropEffects.Copy);
+                    IsLMBDown = false;
+                    if (File.Exists(tempPath))
+                    {
+                        File.Delete(tempPath);
+                    }
+                    DraggingFileForExport = false;
+                }
+                else if (IsRMBDown)
+                {
+                    DraggingFileForExport = true;
+                    using Image gif = MG.GifFromFrames();
+                    string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
+                    gif.Save(tempPath);
+                    OBIMP.CompressGif(tempPath, tempPath, GifExportColors, GifExportLossy);
+                    DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
+                    DoDragDrop(data, DragDropEffects.Copy);
+                    IsRMBDown = false;
+                    if (File.Exists(tempPath))
+                    {
+                        File.Delete(tempPath);
+                    }
+                    DraggingFileForExport = false;
+                }
+            }
+        }
+
+        private bool ShouldStartDragdrop(MouseEventArgs e, double distanceLimit)
+        {
+            OVector currentPosOV = new OVector(e.X, e.Y);
+            double draggedDist = currentPosOV.Subtract(OriginalMousePosition).Magnitude;
+            return draggedDist > distanceLimit;
+        }
         private void DrawHelpCB_CheckedChanged(object sender, EventArgs e)
         {
             MustRedraw?.Invoke(this, EventArgs.Empty);
@@ -38,47 +101,36 @@ namespace BIUK9000.UI
 
         private void SaveButton_MouseDown(object sender, MouseEventArgs e)
         {
-            if (MG == null) return;
-            if (e.Button == MouseButtons.Left)
+            OriginalMousePosition = new OVector(e.X, e.Y);
+            if(e.Button == MouseButtons.Left)
             {
-                DraggingFileForExport = true;
-                using Bitmap bitmap = MF.MainTimelineSlider.SelectedFrame.CompleteBitmap(false);
-                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ImageExportFormat);
-                switch (ImageExportFormat)
-                {
-                    case ".jpeg":
-                        OBIMP.SaveJpeg(tempPath, bitmap, 80);
-                        break;
-                    default:
-                        bitmap.Save(tempPath);
-                        break;
-                }
-                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
-                DoDragDrop(data, DragDropEffects.Copy);
-                if (File.Exists(tempPath))
-                {
-                    File.Delete(tempPath);
-                }
-            }
-            else if (e.Button == MouseButtons.Right)
+                IsLMBDown = true;
+            } else if(e.Button == MouseButtons.Right)
             {
-                DraggingFileForExport = true;
-                using Image gif = MG.GifFromFrames();
-                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-                gif.Save(tempPath);
-                OBIMP.CompressGif(tempPath, tempPath, GifExportColors, GifExportLossy);
-                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
-                DoDragDrop(data, DragDropEffects.Copy);
-                if (File.Exists(tempPath))
-                {
-                    File.Delete(tempPath);
-                }
+                IsRMBDown = true;
             }
-            DraggingFileForExport = false;
+            
         }
         private void SaveButton_MouseUp(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Left)
+            {
+                IsLMBDown = false;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                IsRMBDown = false;
+            }
             DraggingFileForExport = false;
+        }
+
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            if(saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                SaveGifDialogOKed?.Invoke(saveFileDialog, EventArgs.Empty);
+            }
         }
     }
 }

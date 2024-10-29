@@ -43,6 +43,7 @@ namespace BIUK9000.GifferComponents
             FontBorderColor = tl.FontBorderColor;
             FontBorderWidth = tl.FontBorderWidth;
             FontSize = tl.FontSize;
+            Visible = tl.Visible;
         }
         public override void Save()
         {

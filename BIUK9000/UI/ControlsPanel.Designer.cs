@@ -42,8 +42,9 @@
             GifExportColorsNUD = new System.Windows.Forms.NumericUpDown();
             label1 = new System.Windows.Forms.Label();
             settingsTC = new System.Windows.Forms.TabPage();
-            rotationSnapCB = new System.Windows.Forms.CheckBox();
             drawHelpCB = new System.Windows.Forms.CheckBox();
+            rotationSnapCB = new System.Windows.Forms.CheckBox();
+            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1.SuspendLayout();
             exportTC.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -80,6 +81,7 @@
             SaveButton.TabIndex = 8;
             SaveButton.Text = "Save";
             SaveButton.UseVisualStyleBackColor = true;
+            SaveButton.Click += SaveButton_Click;
             // 
             // exportTC
             // 
@@ -214,6 +216,17 @@
             settingsTC.Text = "settings";
             settingsTC.UseVisualStyleBackColor = true;
             // 
+            // drawHelpCB
+            // 
+            drawHelpCB.AutoSize = true;
+            drawHelpCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            drawHelpCB.Location = new System.Drawing.Point(6, 33);
+            drawHelpCB.Name = "drawHelpCB";
+            drawHelpCB.Size = new System.Drawing.Size(85, 21);
+            drawHelpCB.TabIndex = 1;
+            drawHelpCB.Text = "draw help";
+            drawHelpCB.UseVisualStyleBackColor = true;
+            // 
             // rotationSnapCB
             // 
             rotationSnapCB.AutoSize = true;
@@ -225,16 +238,9 @@
             rotationSnapCB.Text = "rotation snap";
             rotationSnapCB.UseVisualStyleBackColor = true;
             // 
-            // drawHelpCB
+            // saveFileDialog
             // 
-            drawHelpCB.AutoSize = true;
-            drawHelpCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            drawHelpCB.Location = new System.Drawing.Point(6, 33);
-            drawHelpCB.Name = "drawHelpCB";
-            drawHelpCB.Size = new System.Drawing.Size(85, 21);
-            drawHelpCB.TabIndex = 1;
-            drawHelpCB.Text = "draw help";
-            drawHelpCB.UseVisualStyleBackColor = true;
+            saveFileDialog.Filter = "GIF files|*.gif";
             // 
             // ControlsPanel
             // 
@@ -276,5 +282,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox rotationSnapCB;
         private System.Windows.Forms.CheckBox drawHelpCB;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }

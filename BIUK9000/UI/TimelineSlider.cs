@@ -20,7 +20,7 @@ namespace BIUK9000.UI
             set
             {
                 _giffer = value;
-                if(value != null) timeLineTrackBar.Maximum = value.Frames.Count - 1;
+                if (value != null) timeLineTrackBar.Maximum = value.Frames.Count - 1;
             }
         }
         public TrackBar Slider { get => timeLineTrackBar; }
@@ -30,7 +30,20 @@ namespace BIUK9000.UI
         public TimelineSlider()
         {
             InitializeComponent();
-            timeLineTrackBar.ValueChanged += (sender, args) => SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
+            timeLineTrackBar.ValueChanged += (sender, args) =>
+            {
+                SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
+                UpdateDelayNUD();
+            };
+        }
+
+        private void frameDelayNUD_ValueChanged(object sender, EventArgs e)
+        {
+            SelectedFrame.FrameDelay = (int)frameDelayNUD.Value;
+        }
+        public void UpdateDelayNUD()
+        {
+            frameDelayNUD.Value = SelectedFrame.FrameDelay;
         }
     }
 }

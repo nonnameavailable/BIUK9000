@@ -97,7 +97,7 @@ namespace BIUK9000.UI
                     //ROTATE
                     double angle = currentLCtM.Rotation;
                     float newRotation = originalLayerRotation + (float)angle - (float)originalLCtM.Rotation;
-                    if (controlsPanel1.RotationSnap)
+                    if (controlsPanel.RotationSnap)
                     {
                         gfl.Rotation = SnappedRotation(newRotation, 10);
                     } else

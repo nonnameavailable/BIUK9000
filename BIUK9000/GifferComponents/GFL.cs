@@ -13,11 +13,31 @@ namespace BIUK9000.GifferComponents
         private bool disposedValue;
 
         public Point Position { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        private int _width, _height;
+        public int Width
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _width = Math.Max(1, value);
+            }
+        }
+        public int Height
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _height = Math.Max(1, value);
+            }
+        }
         public bool Visible { get; set; }
         public float Rotation { get; set; }
-        //public bool IsTextLayer { get; set; }
         public abstract Bitmap MorphedBitmap();
         protected Rectangle OBR { get; set; }
         public virtual void Save()

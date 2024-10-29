@@ -33,7 +33,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             mainLayersPanel = new LayersPanel();
             mainTimelineSlider = new TimelineSlider();
-            controlsPanel1 = new ControlsPanel();
+            controlsPanel = new ControlsPanel();
             mainPictureBox = new System.Windows.Forms.PictureBox();
             textLayerParamsGB = new System.Windows.Forms.GroupBox();
             tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -44,9 +44,9 @@ namespace BIUK9000.UI
             label3 = new System.Windows.Forms.Label();
             TextLayerBorderWidthNUD = new System.Windows.Forms.NumericUpDown();
             label2 = new System.Windows.Forms.Label();
-            TextLayerFontCBB = new System.Windows.Forms.ComboBox();
+            textLayerFontCBB = new System.Windows.Forms.ComboBox();
             label1 = new System.Windows.Forms.Label();
-            TextLayerTextTB = new System.Windows.Forms.TextBox();
+            textLayerTextTB = new System.Windows.Forms.TextBox();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             textLayerParamsGB.SuspendLayout();
@@ -63,7 +63,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 1);
             tableLayoutPanel1.Controls.Add(mainTimelineSlider, 1, 2);
-            tableLayoutPanel1.Controls.Add(controlsPanel1, 0, 0);
+            tableLayoutPanel1.Controls.Add(controlsPanel, 0, 0);
             tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Controls.Add(textLayerParamsGB, 1, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -96,13 +96,13 @@ namespace BIUK9000.UI
             // 
             // controlsPanel1
             // 
-            controlsPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            controlsPanel1.DraggingFileForExport = false;
-            controlsPanel1.Location = new System.Drawing.Point(3, 3);
-            controlsPanel1.Name = "controlsPanel1";
-            tableLayoutPanel1.SetRowSpan(controlsPanel1, 2);
-            controlsPanel1.Size = new System.Drawing.Size(151, 455);
-            controlsPanel1.TabIndex = 5;
+            controlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            controlsPanel.DraggingFileForExport = false;
+            controlsPanel.Location = new System.Drawing.Point(3, 3);
+            controlsPanel.Name = "controlsPanel1";
+            tableLayoutPanel1.SetRowSpan(controlsPanel, 2);
+            controlsPanel.Size = new System.Drawing.Size(151, 455);
+            controlsPanel.TabIndex = 5;
             // 
             // mainPictureBox
             // 
@@ -132,7 +132,7 @@ namespace BIUK9000.UI
             tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel2.Controls.Add(panel1, 0, 0);
-            tableLayoutPanel2.Controls.Add(TextLayerTextTB, 1, 0);
+            tableLayoutPanel2.Controls.Add(textLayerTextTB, 1, 0);
             tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel2.Location = new System.Drawing.Point(3, 19);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -150,7 +150,7 @@ namespace BIUK9000.UI
             panel1.Controls.Add(label3);
             panel1.Controls.Add(TextLayerBorderWidthNUD);
             panel1.Controls.Add(label2);
-            panel1.Controls.Add(TextLayerFontCBB);
+            panel1.Controls.Add(textLayerFontCBB);
             panel1.Controls.Add(label1);
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             panel1.Location = new System.Drawing.Point(3, 3);
@@ -217,13 +217,13 @@ namespace BIUK9000.UI
             // 
             // TextLayerFontCBB
             // 
-            TextLayerFontCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            TextLayerFontCBB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            TextLayerFontCBB.FormattingEnabled = true;
-            TextLayerFontCBB.Location = new System.Drawing.Point(47, 3);
-            TextLayerFontCBB.Name = "TextLayerFontCBB";
-            TextLayerFontCBB.Size = new System.Drawing.Size(121, 25);
-            TextLayerFontCBB.TabIndex = 1;
+            textLayerFontCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            textLayerFontCBB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            textLayerFontCBB.FormattingEnabled = true;
+            textLayerFontCBB.Location = new System.Drawing.Point(47, 3);
+            textLayerFontCBB.Name = "TextLayerFontCBB";
+            textLayerFontCBB.Size = new System.Drawing.Size(121, 25);
+            textLayerFontCBB.TabIndex = 1;
             // 
             // label1
             // 
@@ -237,13 +237,13 @@ namespace BIUK9000.UI
             // 
             // TextLayerTextTB
             // 
-            TextLayerTextTB.Dock = System.Windows.Forms.DockStyle.Fill;
-            TextLayerTextTB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            TextLayerTextTB.Location = new System.Drawing.Point(203, 3);
-            TextLayerTextTB.Multiline = true;
-            TextLayerTextTB.Name = "TextLayerTextTB";
-            TextLayerTextTB.Size = new System.Drawing.Size(381, 121);
-            TextLayerTextTB.TabIndex = 1;
+            textLayerTextTB.Dock = System.Windows.Forms.DockStyle.Fill;
+            textLayerTextTB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            textLayerTextTB.Location = new System.Drawing.Point(203, 3);
+            textLayerTextTB.Multiline = true;
+            textLayerTextTB.Name = "TextLayerTextTB";
+            textLayerTextTB.Size = new System.Drawing.Size(381, 121);
+            textLayerTextTB.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -271,14 +271,14 @@ namespace BIUK9000.UI
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private LayersPanel mainLayersPanel;
         private TimelineSlider mainTimelineSlider;
-        private ControlsPanel controlsPanel1;
+        private ControlsPanel controlsPanel;
         private System.Windows.Forms.PictureBox mainPictureBox;
         private System.Windows.Forms.GroupBox textLayerParamsGB;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.ComboBox TextLayerFontCBB;
+        private System.Windows.Forms.ComboBox textLayerFontCBB;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox TextLayerTextTB;
+        private System.Windows.Forms.TextBox textLayerTextTB;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown TextLayerBorderWidthNUD;

@@ -15,6 +15,7 @@ namespace BIUK9000.GifferComponents
         private bool disposedValue;
 
         public event EventHandler LayerCountChanged;
+        public int FrameDelay {  get; set; }
         protected virtual void OnLayerCountChanged()
         {
             LayerCountChanged?.Invoke(this, EventArgs.Empty);
@@ -43,13 +44,14 @@ namespace BIUK9000.GifferComponents
         public int Width { get; set; }
         public int Height { get; set; }
         public Point Position { get; set; }
-        public GifFrame(Bitmap bitmap)
+        public GifFrame(Bitmap bitmap, int frameDelay)
         {
             GFL gfl = new BitmapGFL(bitmap);
             Layers.Add(gfl);
             Width = bitmap.Width;
             Height = bitmap.Height;
             Position = new Point(0, 0);
+            FrameDelay = frameDelay;
         }
 
         public void AddSpace(int up, int right, int down, int left)
