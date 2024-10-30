@@ -50,7 +50,7 @@ namespace BIUK9000.UI
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
 
             MainLayersPanel.LayerOrderChanged += MainLayersPanel_LayerOrderChanged;
-            MainLayersPanel.SelectedLayerChanged += MainLayersPanel_SelectedLayerChanged;
+            MainLayersPanel.SelectedLayerChanged += (sender, args) => UpdateLayerParamsUI();
             textLayerParamsGB.Visible = false;
             PopulateFontComboBox();
 
@@ -80,54 +80,6 @@ namespace BIUK9000.UI
             }
         }
 
-        private void FontColorButton_ColorChanged(object sender, EventArgs e)
-        {
-            TextGFL tgfl = SelectedLayer as TextGFL;
-            tgfl.FontColor = (sender as ColorButton).Color;
-            UpdateMainPictureBox();
-            ApplyCurrentLayerParamsToSubsequentLayers();
-        }
-
-        private void BorderColorButton_ColorChanged(object sender, EventArgs e)
-        {
-            TextGFL tgfl = SelectedLayer as TextGFL;
-            tgfl.FontBorderColor = (sender as ColorButton).Color;
-            UpdateMainPictureBox();
-            ApplyCurrentLayerParamsToSubsequentLayers();
-        }
-
-        private void MainLayersPanel_SelectedLayerChanged(object sender, EventArgs e)
-        {
-            if (sender is TextGFL)
-            {
-                TextGFL tgfl = (TextGFL)sender;
-                textLayerParamsGB.Visible = true;
-                textLayerTextTB.Text = tgfl.Text;
-                textLayerFontCBB.SelectedItem = tgfl.FontName;
-            }
-            else
-            {
-                textLayerParamsGB.Visible = false;
-            }
-        }
-
-        private void PopulateFontComboBox()
-        {
-            InstalledFontCollection installedFonts = new InstalledFontCollection();
-            foreach (FontFamily fontFamily in installedFonts.Families)
-            {
-                textLayerFontCBB.Items.Add(fontFamily.Name);
-            }
-            if (textLayerFontCBB.Items.Contains("Impact"))
-            {
-                textLayerFontCBB.SelectedItem = "Impact";
-            }
-            else
-            {
-                textLayerFontCBB.SelectedIndex = 0;
-            }
-        }
-
         private void MainLayersPanel_LayerOrderChanged(object sender, LayersPanel.LayerOrderEventArgs e)
         {
             for (int i = mainTimelineSlider.Slider.Value; i < MainGiffer.Frames.Count; i++)
@@ -143,14 +95,25 @@ namespace BIUK9000.UI
 
         public void ApplyCurrentLayerParamsToSubsequentLayers()
         {
-            int cli = SelectedFrame.Layers.IndexOf(SelectedLayer);
+            //int cli = SelectedFrame.Layers.IndexOf(SelectedLayer);
+            int cli = mainLayersPanel.SelectedLayerIndex;
             int cgfi = MainGiffer.Frames.IndexOf(SelectedFrame);
             for (int i = cgfi + 1; i < MainGiffer.Frames.Count; i++)
             {
                 GifFrame gf = MainGiffer.Frames[i];
                 if (cli >= 0 && cli < gf.Layers.Count)
                 {
-                    gf.Layers[cli].CopyParameters(SelectedLayer);
+                    if (gf.Layers[cli].LayerID != SelectedLayer.LayerID)
+                    {
+                        GFL foundGFL = gf.Layers.Find(gfl => gfl.LayerID == SelectedLayer.LayerID);
+                        if(foundGFL != null)
+                        {
+                            foundGFL.CopyParameters(SelectedLayer);
+                        }
+                    } else
+                    {
+                        gf.Layers[cli].CopyParameters(SelectedLayer);
+                    }
                 }
             }
         }
@@ -165,7 +128,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             MainLayersPanel.DisplayLayers(SelectedFrame);
             UpdateMainPictureBox();
-            UpdateTextUI();
+            UpdateLayerParamsUI();
         }
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
@@ -225,15 +188,16 @@ namespace BIUK9000.UI
                             if(MainGiffer == null)
                             {
                                 MainGiffer = new Giffer();
-                                MainGiffer.AddFrame(new GifFrame(bitmap, 20));
+                                MainGiffer.AddFrame(new GifFrame(bitmap, 20, MainGiffer.NextLayerID()));
                                 mainLayersPanel.DisplayLayers(MainGiffer.Frames[0]);
                                 mainTimelineSlider.Giffer = MainGiffer;
                                 UpdateMainPictureBox();
                             } else
                             {
+                                int nextLayerID = MainGiffer.NextLayerID();
                                 foreach (GifFrame gifFrame in MainGiffer.Frames)
                                 {
-                                    gifFrame.AddLayer(bitmap);
+                                    gifFrame.AddLayer(bitmap, nextLayerID);
                                 }
                             }
 
@@ -261,48 +225,12 @@ namespace BIUK9000.UI
             MainLayersPanel.SelectedLayerIndex = 0;
             mainLayersPanel.DisplayLayers(SelectedFrame);
             oldGiffer?.Dispose();
-        }
-        private void TextLayerTextTB_TextChanged(object sender, EventArgs e)
-        {
-            TextGFL tgfl = SelectedLayer as TextGFL;
-            tgfl.Text = textLayerTextTB.Text;
-            UpdateMainPictureBox();
-            ApplyCurrentLayerParamsToSubsequentLayers();
-        }
-
-        private void TextLayerFontCBB_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            TextGFL tgfl = SelectedLayer as TextGFL;
-            tgfl.FontName = textLayerFontCBB.Text;
-            UpdateMainPictureBox();
-            ApplyCurrentLayerParamsToSubsequentLayers();
-        }
-
-        private void TextLayerBorderWidthNUD_ValueChanged(object sender, EventArgs e)
-        {
-            TextGFL tgfl = SelectedLayer as TextGFL;
-            tgfl.FontBorderWidth = (float)TextLayerBorderWidthNUD.Value;
-            UpdateMainPictureBox();
-            ApplyCurrentLayerParamsToSubsequentLayers();
-        }
-        private void UpdateTextUI()
-        {
-            if (SelectedLayer == null) return;
-            if(SelectedLayer is TextGFL)
-            {
-                TextGFL tgfl = SelectedLayer as TextGFL;
-                TextLayerBorderWidthNUD.Value = (decimal)tgfl.FontBorderWidth;
-                textLayerTextTB.Text = tgfl.Text;
-                textLayerFontCBB.SelectedItem = tgfl.FontName;
-                fontColorButton.Color = tgfl.FontColor;
-                borderColorButton.Color = tgfl.FontBorderColor;
-            }
+            mainTimelineSlider.UpdateDelayNUD();
         }
         public void UpdateMainPictureBox()
         {
             MainImage?.Dispose();
             MainImage = SelectedFrame.CompleteBitmap(controlsPanel.DrawHelp);
-            mainTimelineSlider.UpdateDelayNUD();
         }
     }
 }

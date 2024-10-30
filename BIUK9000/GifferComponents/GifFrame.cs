@@ -42,9 +42,9 @@ namespace BIUK9000.GifferComponents
         public int Width { get; set; }
         public int Height { get; set; }
         public Point Position { get; set; }
-        public GifFrame(Bitmap bitmap, int frameDelay)
+        public GifFrame(Bitmap bitmap, int frameDelay, int firstLayerID)
         {
-            GFL gfl = new BitmapGFL(bitmap);
+            GFL gfl = new BitmapGFL(bitmap, firstLayerID);
             Layers.Add(gfl);
             Width = bitmap.Width;
             Height = bitmap.Height;
@@ -67,9 +67,9 @@ namespace BIUK9000.GifferComponents
             }
             OnLayerCountChanged();
         }
-        public GifFrame(int width, int height)
+        public GifFrame(int width, int height, int firstLayerID)
         {
-            GFL gfl = new BitmapGFL(new Bitmap(width, height));
+            GFL gfl = new BitmapGFL(new Bitmap(width, height), firstLayerID);
             Layers.Add(gfl);
             Width = width;
             Height = height;
@@ -93,17 +93,17 @@ namespace BIUK9000.GifferComponents
             return result;
         }
 
-        public void AddLayer(Bitmap bitmap)
+        public void AddLayer(Bitmap bitmap, int newLayerID)
         {
-            Layers.Add(new BitmapGFL(bitmap));
+            Layers.Add(new BitmapGFL(bitmap, newLayerID));
             OnLayerCountChanged();
         }
-        public void AddLayer(int width, int height)
+        public void AddLayer(int width, int height, int newLayerID)
         {
             Bitmap bitmap = new Bitmap(width, height);
             using Graphics graphics = Graphics.FromImage(bitmap);
             graphics.FillRectangle(Brushes.Black, 0, 0, width, height);
-            Layers.Add(new BitmapGFL(bitmap));
+            Layers.Add(new BitmapGFL(bitmap, newLayerID));
             OnLayerCountChanged();
         }
         public void AddLayer(GFL layer)

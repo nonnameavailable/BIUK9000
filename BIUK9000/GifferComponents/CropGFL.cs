@@ -17,7 +17,7 @@ namespace BIUK9000.GifferComponents
             g.Clear(Color.FromArgb(120, 120, 0, 120));
             return result;
         }
-        public CropGFL(int width, int height)
+        public CropGFL(int width, int height, int layerID) :  base(layerID)
         {
             Position = new Point(0, 0);
             Width = width;

@@ -108,14 +108,14 @@ namespace BIUK9000.GifferComponents
             return bitmap;
         }
 
-        public TextGFL(string text)
+        public TextGFL(string text, int layerID) : base(layerID)
         {
             Text = text;
             Position = new Point(0, 0);
             Visible = true;
             Rotation = 0;
         }
-        public TextGFL(TextGFL textGFL)
+        public TextGFL(TextGFL textGFL, int layerID) : base(layerID)
         {
             CopyParameters(textGFL);
         }

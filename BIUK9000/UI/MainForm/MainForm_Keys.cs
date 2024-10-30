@@ -36,14 +36,15 @@ namespace BIUK9000.UI
                 }
                 else if (keyData == Keys.T)
                 {
-                    TextGFL tgfl = new TextGFL("YOUR TEXT");
+                    TextGFL tgfl = new TextGFL("YOUR TEXT", 0);
                     tgfl.FontName = "Impact";
                     tgfl.FontBorderColor = Color.Black;
                     tgfl.FontColor = Color.White;
                     tgfl.FontBorderWidth = 5;
                     tgfl.FontSize = 20;
                     tgfl.Visible = true;
-                    MainGiffer.Frames.ForEach(frame => frame.AddLayer(new TextGFL(tgfl)));
+                    int nextLayerID = MainGiffer.NextLayerID();
+                    MainGiffer.Frames.ForEach(frame => frame.AddLayer(new TextGFL(tgfl, nextLayerID)));
                     mainLayersPanel.SelectNewestLayer();
                     return true;
                 }

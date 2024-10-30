@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BIUK9000.GifferComponents
 {
@@ -16,6 +17,7 @@ namespace BIUK9000.GifferComponents
         private Image originalGif;
         private bool disposedValue;
         private bool _createdEmpty;
+        private int _nextLayerID;
         public string OriginalImagePath {  get; set; }
 
         public event EventHandler FrameCountChanged;
@@ -26,6 +28,7 @@ namespace BIUK9000.GifferComponents
 
         public Giffer(string path)
         {
+            _nextLayerID = 0;
             Image gif = Image.FromFile(path);
             originalGif = gif;
             Frames = FramesFromGif(gif);
@@ -35,6 +38,7 @@ namespace BIUK9000.GifferComponents
 
         public Giffer()
         {
+            _nextLayerID = 0;
             Frames = new List<GifFrame>();
             _createdEmpty = true;
             OriginalImagePath = "";
@@ -65,11 +69,11 @@ namespace BIUK9000.GifferComponents
             List<GifFrame> result = new();
 
             int frameCount = gif.GetFrameCount(FrameDimension.Time);
-
+            int firstLayerID = NextLayerID();
             for (int i = 0; i < frameCount; i++)
             {
                 gif.SelectActiveFrame(FrameDimension.Time, i);
-                result.Add(new GifFrame(new Bitmap(gif), FrameDelay(gif)));
+                result.Add(new GifFrame(new Bitmap(gif), FrameDelay(gif), firstLayerID));
             }
             return result;
         }
@@ -122,12 +126,17 @@ namespace BIUK9000.GifferComponents
         }
         public void AddGifferAsLayers(Giffer newGiffer)
         {
+            int nextLayerID = NextLayerID();
             for(int i = 0; i < Frames.Count; i++)
             {
                 int newGifferIndex = (int)(i / (double)Frames.Count * newGiffer.Frames.Count);
                 GifFrame cgf = Frames[i];
-                cgf.AddLayer(newGiffer.Frames[newGifferIndex].CompleteBitmap(false));
+                cgf.AddLayer(newGiffer.Frames[newGifferIndex].CompleteBitmap(false), nextLayerID);
             }
+        }
+        public int NextLayerID()
+        {
+            return _nextLayerID++;
         }
 
         protected virtual void Dispose(bool disposing)

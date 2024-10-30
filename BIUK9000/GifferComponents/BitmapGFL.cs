@@ -20,7 +20,7 @@ namespace BIUK9000.GifferComponents
             return new Bitmap(OriginalBitmap, Math.Max(Math.Abs(Width), 1), Math.Max(Math.Abs(Height), 1));
         }
 
-        public BitmapGFL(Bitmap bitmap)
+        public BitmapGFL(Bitmap bitmap, int layerID) : base(layerID)
         {
             Initialize(bitmap);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -11,9 +12,10 @@ namespace BIUK9000.GifferComponents
     public abstract class GFL : IDisposable
     {
         private bool disposedValue;
-
         public Point Position { get; set; }
         private int _width, _height;
+
+        public int LayerID {  get; set; }
         public int Width
         {
             get
@@ -35,6 +37,10 @@ namespace BIUK9000.GifferComponents
             {
                 _height = Math.Max(1, value);
             }
+        }
+        public GFL (int layerID)
+        {
+            LayerID = layerID;
         }
         public bool Visible { get; set; }
         public float Rotation { get; set; }
