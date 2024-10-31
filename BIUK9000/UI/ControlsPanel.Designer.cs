@@ -45,6 +45,7 @@
             drawHelpCB = new System.Windows.Forms.CheckBox();
             rotationSnapCB = new System.Windows.Forms.CheckBox();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            positionSnapCB = new System.Windows.Forms.CheckBox();
             tableLayoutPanel1.SuspendLayout();
             exportTC.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -206,6 +207,7 @@
             // 
             // settingsTC
             // 
+            settingsTC.Controls.Add(positionSnapCB);
             settingsTC.Controls.Add(drawHelpCB);
             settingsTC.Controls.Add(rotationSnapCB);
             settingsTC.Location = new System.Drawing.Point(4, 24);
@@ -219,8 +221,10 @@
             // drawHelpCB
             // 
             drawHelpCB.AutoSize = true;
+            drawHelpCB.Checked = true;
+            drawHelpCB.CheckState = System.Windows.Forms.CheckState.Checked;
             drawHelpCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            drawHelpCB.Location = new System.Drawing.Point(6, 33);
+            drawHelpCB.Location = new System.Drawing.Point(6, 60);
             drawHelpCB.Name = "drawHelpCB";
             drawHelpCB.Size = new System.Drawing.Size(85, 21);
             drawHelpCB.TabIndex = 1;
@@ -241,6 +245,17 @@
             // saveFileDialog
             // 
             saveFileDialog.Filter = "GIF files|*.gif";
+            // 
+            // positionSnapCB
+            // 
+            positionSnapCB.AutoSize = true;
+            positionSnapCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            positionSnapCB.Location = new System.Drawing.Point(6, 33);
+            positionSnapCB.Name = "positionSnapCB";
+            positionSnapCB.Size = new System.Drawing.Size(106, 21);
+            positionSnapCB.TabIndex = 2;
+            positionSnapCB.Text = "position snap";
+            positionSnapCB.UseVisualStyleBackColor = true;
             // 
             // ControlsPanel
             // 
@@ -283,5 +298,6 @@
         private System.Windows.Forms.CheckBox rotationSnapCB;
         private System.Windows.Forms.CheckBox drawHelpCB;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.CheckBox positionSnapCB;
     }
 }

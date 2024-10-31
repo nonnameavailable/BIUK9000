@@ -25,6 +25,7 @@ namespace BIUK9000.UI
         public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
         public bool RotationSnap { get => rotationSnapCB.Checked; }
+        public bool PositionSnap { get => positionSnapCB.Checked; }
         public bool DrawHelp { get => drawHelpCB.Checked; }
         public event EventHandler MustRedraw;
         public event EventHandler SaveGifDialogOKed;

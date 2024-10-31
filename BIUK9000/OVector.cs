@@ -11,6 +11,8 @@ namespace BIUK9000
     {
         public double X {  get; set; }
         public double Y { get; set; }
+        public int Xint { get => (int)X; }
+        public int Yint { get => (int)Y; }
         public double Magnitude
         {
             get

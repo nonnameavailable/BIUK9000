@@ -116,7 +116,7 @@ namespace BIUK9000.GifferComponents
             {
                 foreach (GFL layer in frame.Layers)
                 {
-                    layer.Move(-newRectangle.X + layer.Position.X, -newRectangle.Y + layer.Position.Y);
+                    layer.Move(-newRectangle.X + layer.Position.Xint, -newRectangle.Y + layer.Position.Yint);
                 }
                 frame.Width = newRectangle.Width;
                 frame.Height = newRectangle.Height;

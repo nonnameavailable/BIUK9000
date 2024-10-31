@@ -19,7 +19,7 @@ namespace BIUK9000.GifferComponents
         }
         public CropGFL(int width, int height, int layerID) :  base(layerID)
         {
-            Position = new Point(0, 0);
+            Position = new OVector(0, 0);
             Width = width;
             Height = height;
             Visible = true;

@@ -28,7 +28,7 @@ namespace BIUK9000.GifferComponents
         private void Initialize(Bitmap bitmap)
         {
             OriginalBitmap = bitmap;
-            Position = new Point(0, 0);
+            Position = new OVector(0, 0);
             Width = bitmap.Width;
             Height = bitmap.Height;
             Visible = true;

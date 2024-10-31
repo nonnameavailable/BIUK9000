@@ -89,6 +89,7 @@ namespace BIUK9000.UI
                     {
                         //MOVE JUST LAYER
                         gfl.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
+                        if(controlsPanel.PositionSnap) gfl.Position = SnappedPosition(gfl.Position, 10);
                     }
                     //gfl.Move((int)(xMoveDif / zoom), (int)(yMoveDif / zoom));
                 }
@@ -152,7 +153,7 @@ namespace BIUK9000.UI
         private OVector LayerCenterToMouse()
         {
             GFL gfl = MainLayersPanel.SelectedLayer;
-            Point LayerCenter = gfl.Center();
+            OVector LayerCenter = gfl.Center();
             double pbAspect = (double)mainPictureBox.Width / mainPictureBox.Height;
             double frameAspect = (double)MainTimelineSlider.SelectedFrame.Width / MainTimelineSlider.SelectedFrame.Height;
             int scaledWidth, scaledHeight;
@@ -171,7 +172,7 @@ namespace BIUK9000.UI
             double zoom = Zoom();
             return new OVector(LayerCenter.X * zoom, LayerCenter.Y * zoom).Subtract(new OVector(mousePosition.X - horizontalBlankSpace / 2, mousePosition.Y - verticalBlankSpace / 2));
         }
-        private float SnappedRotation(float rotation, float snapAngle)
+        private static float SnappedRotation(float rotation, float snapAngle)
         {
             if (rotation < 0) rotation += 360;
             float roundedRotation = (float)(Math.Round(rotation / 90f, 0) * 90);
@@ -183,6 +184,18 @@ namespace BIUK9000.UI
             else
             {
                 return rotation;
+            }
+        }
+
+        private static OVector SnappedPosition(OVector position, double snapDistance)
+        {
+            double realDistance = position.Subtract(new OVector(0, 0)).Magnitude;
+            if(realDistance < snapDistance)
+            {
+                return new OVector(0, 0);
+            } else
+            {
+                return position;
             }
         }
 

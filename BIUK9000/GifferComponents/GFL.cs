@@ -12,7 +12,7 @@ namespace BIUK9000.GifferComponents
     public abstract class GFL : IDisposable
     {
         private bool disposedValue;
-        public Point Position { get; set; }
+        public OVector Position { get; set; }
         private int _width, _height;
 
         public int LayerID {  get; set; }
@@ -53,19 +53,19 @@ namespace BIUK9000.GifferComponents
         public virtual void Resize(int sizeDif)
         {
             double aspect = (double)OBR.Width / OBR.Height;
-            Position = new Point(OBR.X - sizeDif, (int)(OBR.Y - sizeDif / aspect));
+            Position = new OVector(OBR.X - sizeDif, (int)(OBR.Y - sizeDif / aspect));
             Width = OBR.Width + sizeDif * 2;
             Height = (int)((OBR.Width + sizeDif * 2) / aspect);
         }
         public virtual void Resize(int xSizeDif, int ySizeDif)
         {
-            Position = new Point(OBR.X - xSizeDif, OBR.Y - ySizeDif);
+            Position = new OVector(OBR.X - xSizeDif, OBR.Y - ySizeDif);
             Width = OBR.Width + xSizeDif * 2;
             Height = OBR.Height + ySizeDif * 2;
         }
-        public virtual Point Center()
+        public virtual OVector Center()
         {
-            return new Point(Position.X + Width / 2, Position.Y + Height / 2);
+            return new OVector(Position.X + Width / 2, Position.Y + Height / 2);
         }
         public void DrawLayer(Graphics g, bool drawHelp)
         {
@@ -73,8 +73,8 @@ namespace BIUK9000.GifferComponents
             {
                 GraphicsState gs = g.Save();
 
-                Point c = Center();
-                g.TranslateTransform(c.X, c.Y);
+                OVector c = Center();
+                g.TranslateTransform(c.Xint, c.Yint);
                 g.RotateTransform(Rotation);
 
                 using Bitmap morphedBitmap = MorphedBitmap();
@@ -93,7 +93,7 @@ namespace BIUK9000.GifferComponents
         {
             get
             {
-                return new Rectangle(Position.X, Position.Y, Width, Height);
+                return new Rectangle(Position.Xint, Position.Yint, Width, Height);
             }
         }
         public void Rotate(float angle)
@@ -103,14 +103,14 @@ namespace BIUK9000.GifferComponents
 
         public void Move(int x, int y)
         {
-            Position = new Point(Position.X + x, Position.Y + y);
+            Position = new OVector(Position.X + x, Position.Y + y);
         }
         public void MoveFromOBR(int x, int y)
         {
             //this method sets the position depending on the saved bounding rectangle
             int newX = x + OBR.X;
             int newY = y + OBR.Y;
-            Position = new Point(newX, newY);
+            Position = new OVector(newX, newY);
         }
 
         protected virtual void Dispose(bool disposing)

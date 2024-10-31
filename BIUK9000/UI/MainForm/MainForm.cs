@@ -41,7 +41,7 @@ namespace BIUK9000.UI
 
             _updateTimer = new Timer();
             _updateTimer.Interval = 17;
-            _updateTimer.Tick += UpdateTimer_Tick;
+            _updateTimer.Tick += (sender, args) => UpdateMainPictureBox();
 
             KeyPreview = true;
 
@@ -51,13 +51,13 @@ namespace BIUK9000.UI
 
             MainLayersPanel.LayerOrderChanged += MainLayersPanel_LayerOrderChanged;
             MainLayersPanel.SelectedLayerChanged += (sender, args) => UpdateLayerParamsUI();
-            textLayerParamsGB.Visible = false;
-            PopulateFontComboBox();
+            //textLayerParamsGB.Visible = false;
+            //PopulateFontComboBox();
 
-            textLayerFontCBB.SelectedIndexChanged += TextLayerFontCBB_SelectedIndexChanged;
-            textLayerTextTB.TextChanged += TextLayerTextTB_TextChanged;
-            borderColorButton.ColorChanged += BorderColorButton_ColorChanged;
-            fontColorButton.ColorChanged += FontColorButton_ColorChanged;
+            //textLayerFontCBB.SelectedIndexChanged += TextLayerFontCBB_SelectedIndexChanged;
+            //textLayerTextTB.TextChanged += TextLayerTextTB_TextChanged;
+            //borderColorButton.ColorChanged += BorderColorButton_ColorChanged;
+            //fontColorButton.ColorChanged += FontColorButton_ColorChanged;
 
             controlsPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
             controlsPanel.SaveGifDialogOKed += ControlsPanel_SaveGifDialogOKed;
@@ -116,11 +116,6 @@ namespace BIUK9000.UI
                     }
                 }
             }
-        }
-
-        private void UpdateTimer_Tick(object sender, EventArgs e)
-        {
-            UpdateMainPictureBox();
         }
 
         private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
@@ -220,7 +215,11 @@ namespace BIUK9000.UI
             UpdateMainPictureBox();
             foreach (GifFrame gifFrame in MainGiffer.Frames)
             {
-                gifFrame.LayerCountChanged += UpdateTimer_Tick;
+                gifFrame.LayerCountChanged += (sender, args) =>
+                {
+                    UpdateMainPictureBox();
+                    MainLayersPanel.DisplayLayers(SelectedFrame);
+                };
             }
             MainLayersPanel.SelectedLayerIndex = 0;
             mainLayersPanel.DisplayLayers(SelectedFrame);

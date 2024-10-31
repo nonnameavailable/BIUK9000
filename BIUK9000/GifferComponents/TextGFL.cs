@@ -55,7 +55,7 @@ namespace BIUK9000.GifferComponents
             FontSize = _savedFontSize + sizeDif / 5;
             int Xbsd = BoundingRectangle.Width - OBR.Width;
             int Ybsd = BoundingRectangle.Height - OBR.Height;
-            Position = new Point(OBR.X - Xbsd / 2, OBR.Y - Ybsd / 2);
+            Position = new OVector(OBR.X - Xbsd / 2, OBR.Y - Ybsd / 2);
         }
         public override void Resize(int xSizeDif, int ySizeDif)
         {
@@ -67,17 +67,17 @@ namespace BIUK9000.GifferComponents
             return TextRenderer.MeasureText(Text, font);
         }
 
-        public override Point Center()
+        public override OVector Center()
         {
             SizeF textSize = TextSize();
-            return new Point((int)(Position.X + textSize.Width / 2), (int)(Position.Y + textSize.Height / 2));
+            return new OVector((int)(Position.X + textSize.Width / 2), (int)(Position.Y + textSize.Height / 2));
         }
         public override Rectangle BoundingRectangle
         {
             get
             {
                 Size size = TextSize();
-                return new Rectangle(Position.X, Position.Y, size.Width, size.Height);
+                return new Rectangle(Position.Xint, Position.Yint, size.Width, size.Height);
             }
         }
 
@@ -111,7 +111,7 @@ namespace BIUK9000.GifferComponents
         public TextGFL(string text, int layerID) : base(layerID)
         {
             Text = text;
-            Position = new Point(0, 0);
+            Position = new OVector(0, 0);
             Visible = true;
             Rotation = 0;
         }

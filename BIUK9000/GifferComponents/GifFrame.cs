@@ -21,16 +21,12 @@ namespace BIUK9000.GifferComponents
         public Rectangle OBR { get; set; }
         public virtual void Save()
         {
-            OBR = new Rectangle(Position, new Size(Width, Height));
+            OBR = new Rectangle(Position.Xint, Position.Yint, Width, Height);
             Layers.ForEach(layer => layer.Save());
         }
         public void MoveFromOBR(int x, int y)
         {
             Layers.ForEach(layer => layer.MoveFromOBR(x, y));
-        }
-        public Point Center()
-        {
-            return new Point(Position.X + Width / 2, Position.Y + Height / 2);
         }
         public virtual void Resize(int xSizeDif, int ySizeDif)
         {
@@ -41,14 +37,14 @@ namespace BIUK9000.GifferComponents
         public List<GFL> Layers { get; } = new List<GFL>();
         public int Width { get; set; }
         public int Height { get; set; }
-        public Point Position { get; set; }
+        public OVector Position { get; set; }
         public GifFrame(Bitmap bitmap, int frameDelay, int firstLayerID)
         {
             GFL gfl = new BitmapGFL(bitmap, firstLayerID);
             Layers.Add(gfl);
             Width = bitmap.Width;
             Height = bitmap.Height;
-            Position = new Point(0, 0);
+            Position = new OVector(0, 0);
             FrameDelay = frameDelay;
         }
 
