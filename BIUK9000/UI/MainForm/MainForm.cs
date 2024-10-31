@@ -50,7 +50,11 @@ namespace BIUK9000.UI
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
 
             MainLayersPanel.LayerOrderChanged += MainLayersPanel_LayerOrderChanged;
-            MainLayersPanel.SelectedLayerChanged += (sender, args) => UpdateLayerParamsUI();
+            MainLayersPanel.SelectedLayerChanged += (sender, args) =>
+            {
+                UpdateLayerParamsUI(LayerTypeChanged());
+                PreviousSelectedLayer = SelectedLayer;
+            };
             //textLayerParamsGB.Visible = false;
             //PopulateFontComboBox();
 
@@ -61,6 +65,7 @@ namespace BIUK9000.UI
 
             controlsPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
             controlsPanel.SaveGifDialogOKed += ControlsPanel_SaveGifDialogOKed;
+
         }
 
         private void ControlsPanel_SaveGifDialogOKed(object sender, EventArgs e)
@@ -123,7 +128,8 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             MainLayersPanel.DisplayLayers(SelectedFrame);
             UpdateMainPictureBox();
-            UpdateLayerParamsUI();
+            UpdateLayerParamsUI(LayerTypeChanged());
+            PreviousSelectedLayer = SelectedLayer;
         }
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
