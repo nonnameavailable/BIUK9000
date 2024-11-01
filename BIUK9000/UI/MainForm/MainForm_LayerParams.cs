@@ -34,6 +34,7 @@ namespace BIUK9000.UI
                 lpc.LoadParams(SelectedLayer);
                 lpc.ParamsChanged += (sender, args) =>
                 {
+                    SavePreviousState();
                     lpc.SaveParams(SelectedLayer);
                     UpdateMainPictureBox();
                     ApplyCurrentLayerParamsToSubsequentLayers();

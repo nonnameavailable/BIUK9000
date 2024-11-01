@@ -94,6 +94,16 @@ namespace BIUK9000
         {
             return new OVector(X, Y);
         }
-
+        public override bool Equals(object obj)
+        {
+            if(obj is not OVector)
+            {
+                return false;
+            } else
+            {
+                OVector ov = obj as OVector;
+                return ov.X == X && ov.Y == Y;
+            }
+        }
     }
 }

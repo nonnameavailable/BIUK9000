@@ -27,6 +27,7 @@ namespace BIUK9000.UI
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
         public bool RotationSnap { get => rotationSnapCB.Checked; }
         public bool PositionSnap { get => positionSnapCB.Checked; }
+        public ApplyParamsMode SelectedApplyParamsMode { get => (ApplyParamsMode)applyParamsCBB.SelectedItem; }
         public bool DrawHelp { get => drawHelpCB.Checked; }
         public event EventHandler MustRedraw;
         public event EventHandler SaveGifDialogOKed;
@@ -41,9 +42,9 @@ namespace BIUK9000.UI
             OriginalMousePosition = new OVector(0, 0);
             IsLMBDown = false;
             IsRMBDown = false;
-            SaveButton.BackgroundImage?.Dispose();
+            applyParamsCBB.DataSource = Enum.GetValues(typeof(ApplyParamsMode));
+            applyParamsCBB.SelectedIndex = 0;
         }
-
         private void SaveButton_MouseMove(object sender, MouseEventArgs e)
         {
             if (MG == null) return;
@@ -136,5 +137,11 @@ namespace BIUK9000.UI
                 SaveGifDialogOKed?.Invoke(saveFileDialog, EventArgs.Empty);
             }
         }
+    }
+    public enum ApplyParamsMode
+    {
+        applyChanged,
+        applyAll,
+        applyNone
     }
 }

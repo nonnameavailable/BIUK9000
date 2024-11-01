@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlsPanel));
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             SaveButton = new System.Windows.Forms.Button();
             exportTC = new System.Windows.Forms.TabControl();
@@ -42,10 +44,12 @@
             GifExportColorsNUD = new System.Windows.Forms.NumericUpDown();
             label1 = new System.Windows.Forms.Label();
             settingsTC = new System.Windows.Forms.TabPage();
+            applyParamsCBB = new System.Windows.Forms.ComboBox();
+            positionSnapCB = new System.Windows.Forms.CheckBox();
             drawHelpCB = new System.Windows.Forms.CheckBox();
             rotationSnapCB = new System.Windows.Forms.CheckBox();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            positionSnapCB = new System.Windows.Forms.CheckBox();
+            toolTip = new System.Windows.Forms.ToolTip(components);
             tableLayoutPanel1.SuspendLayout();
             exportTC.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -81,6 +85,7 @@
             SaveButton.Size = new System.Drawing.Size(144, 137);
             SaveButton.TabIndex = 8;
             SaveButton.Text = "Save";
+            toolTip.SetToolTip(SaveButton, resources.GetString("SaveButton.ToolTip"));
             SaveButton.UseVisualStyleBackColor = true;
             SaveButton.Click += SaveButton_Click;
             // 
@@ -129,6 +134,7 @@
             ImageExportJpegQualNUD.Name = "ImageExportJpegQualNUD";
             ImageExportJpegQualNUD.Size = new System.Drawing.Size(47, 25);
             ImageExportJpegQualNUD.TabIndex = 5;
+            toolTip.SetToolTip(ImageExportJpegQualNUD, "If .jpeg is selected above, this affects the quality of the export\r\n100 is highest quality\r\nLower means lower quality and smaller file size");
             ImageExportJpegQualNUD.Value = new decimal(new int[] { 100, 0, 0, 0 });
             // 
             // label3
@@ -151,6 +157,7 @@
             ImageExportFormatCBB.Name = "ImageExportFormatCBB";
             ImageExportFormatCBB.Size = new System.Drawing.Size(112, 23);
             ImageExportFormatCBB.TabIndex = 0;
+            toolTip.SetToolTip(ImageExportFormatCBB, "Format of a single frame export");
             // 
             // groupBox1
             // 
@@ -173,6 +180,7 @@
             GifExportLossyNUD.Name = "GifExportLossyNUD";
             GifExportLossyNUD.Size = new System.Drawing.Size(63, 25);
             GifExportLossyNUD.TabIndex = 3;
+            toolTip.SetToolTip(GifExportLossyNUD, "Lossiness of the compression\r\nHigher number means lower quality and smaller file size");
             // 
             // label2
             // 
@@ -193,6 +201,7 @@
             GifExportColorsNUD.Name = "GifExportColorsNUD";
             GifExportColorsNUD.Size = new System.Drawing.Size(63, 25);
             GifExportColorsNUD.TabIndex = 1;
+            toolTip.SetToolTip(GifExportColorsNUD, "Number of colors in the exported gif\r\n 1 - 256, higher means higher quality and bigger file size");
             GifExportColorsNUD.Value = new decimal(new int[] { 256, 0, 0, 0 });
             // 
             // label1
@@ -207,6 +216,7 @@
             // 
             // settingsTC
             // 
+            settingsTC.Controls.Add(applyParamsCBB);
             settingsTC.Controls.Add(positionSnapCB);
             settingsTC.Controls.Add(drawHelpCB);
             settingsTC.Controls.Add(rotationSnapCB);
@@ -217,6 +227,29 @@
             settingsTC.TabIndex = 1;
             settingsTC.Text = "settings";
             settingsTC.UseVisualStyleBackColor = true;
+            // 
+            // applyParamsCBB
+            // 
+            applyParamsCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            applyParamsCBB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            applyParamsCBB.FormattingEnabled = true;
+            applyParamsCBB.Location = new System.Drawing.Point(6, 87);
+            applyParamsCBB.Name = "applyParamsCBB";
+            applyParamsCBB.Size = new System.Drawing.Size(124, 25);
+            applyParamsCBB.TabIndex = 3;
+            toolTip.SetToolTip(applyParamsCBB, resources.GetString("applyParamsCBB.ToolTip"));
+            // 
+            // positionSnapCB
+            // 
+            positionSnapCB.AutoSize = true;
+            positionSnapCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            positionSnapCB.Location = new System.Drawing.Point(6, 33);
+            positionSnapCB.Name = "positionSnapCB";
+            positionSnapCB.Size = new System.Drawing.Size(106, 21);
+            positionSnapCB.TabIndex = 2;
+            positionSnapCB.Text = "position snap";
+            toolTip.SetToolTip(positionSnapCB, "When enabled, the layer position will snap to the top left corner");
+            positionSnapCB.UseVisualStyleBackColor = true;
             // 
             // drawHelpCB
             // 
@@ -229,6 +262,7 @@
             drawHelpCB.Size = new System.Drawing.Size(85, 21);
             drawHelpCB.TabIndex = 1;
             drawHelpCB.Text = "draw help";
+            toolTip.SetToolTip(drawHelpCB, "When enabled, red border will be drawn around all layers and the frame itself");
             drawHelpCB.UseVisualStyleBackColor = true;
             // 
             // rotationSnapCB
@@ -240,22 +274,12 @@
             rotationSnapCB.Size = new System.Drawing.Size(105, 21);
             rotationSnapCB.TabIndex = 0;
             rotationSnapCB.Text = "rotation snap";
+            toolTip.SetToolTip(rotationSnapCB, "If enabled, the layer rotation will snap to the nearest 90°");
             rotationSnapCB.UseVisualStyleBackColor = true;
             // 
             // saveFileDialog
             // 
             saveFileDialog.Filter = "GIF files|*.gif";
-            // 
-            // positionSnapCB
-            // 
-            positionSnapCB.AutoSize = true;
-            positionSnapCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            positionSnapCB.Location = new System.Drawing.Point(6, 33);
-            positionSnapCB.Name = "positionSnapCB";
-            positionSnapCB.Size = new System.Drawing.Size(106, 21);
-            positionSnapCB.TabIndex = 2;
-            positionSnapCB.Text = "position snap";
-            positionSnapCB.UseVisualStyleBackColor = true;
             // 
             // ControlsPanel
             // 
@@ -299,5 +323,7 @@
         private System.Windows.Forms.CheckBox drawHelpCB;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.CheckBox positionSnapCB;
+        private System.Windows.Forms.ComboBox applyParamsCBB;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

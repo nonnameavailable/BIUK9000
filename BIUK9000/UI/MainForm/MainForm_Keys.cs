@@ -1,4 +1,5 @@
 ﻿using BIUK9000.GifferComponents;
+using BIUK9000.UI.LayerParamControls;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,7 +17,7 @@ namespace BIUK9000.UI
 
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            if (MainGiffer == null || ActiveControl is TextBox) return base.ProcessKeyPreview(ref m);
+            if (MainGiffer == null || ActiveControl is TextBox || ActiveControl is IGFLParamControl) return base.ProcessKeyPreview(ref m);
             const int WM_KEYDOWN = 0x100;
             const int WM_KEYUP = 0x101;
             Keys keyData = (Keys)m.WParam.ToInt32();
@@ -44,7 +45,13 @@ namespace BIUK9000.UI
                     tgfl.FontSize = 20;
                     tgfl.Visible = true;
                     int nextLayerID = MainGiffer.NextLayerID();
-                    MainGiffer.Frames.ForEach(frame => frame.AddLayer(new TextGFL(tgfl, nextLayerID)));
+                    foreach(GifFrame frame in MainGiffer.Frames)
+                    {
+                        frame.LayerCountChanged -= GifFrame_LayerCountChanged;
+                        frame.AddLayer(new TextGFL(tgfl, nextLayerID));
+                        frame.LayerCountChanged += GifFrame_LayerCountChanged;
+                    }
+                    GifFrame_LayerCountChanged(null, null);
                     mainLayersPanel.SelectNewestLayer();
                     return true;
                 }

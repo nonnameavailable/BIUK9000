@@ -45,6 +45,19 @@ namespace BIUK9000.GifferComponents
             FontSize = tl.FontSize;
             Visible = tl.Visible;
         }
+        public override void CopyDifferingParams(GFL ogState, GFL newState)
+        {
+            base.CopyDifferingParams(ogState, newState);
+            TextGFL otl = ogState as TextGFL;
+            TextGFL ntl = newState as TextGFL;
+            if(otl.Text != ntl.Text) Text = ntl.Text;
+            if(otl.FontName != ntl.FontName) FontName = ntl.FontName;
+            if(otl.FontColor != ntl.FontColor) FontColor = ntl.FontColor;
+            if(otl.FontBorderColor != ntl.FontBorderColor) FontBorderColor = ntl.FontBorderColor;
+            if(otl.FontBorderWidth != ntl.FontBorderWidth) FontBorderWidth = ntl.FontBorderWidth;
+            if(otl.FontSize != ntl.FontSize) FontSize = ntl.FontSize;
+            if(otl.Visible != ntl.Visible) Visible = ntl.Visible;
+        }
         public override void Save()
         {
             base.Save();
@@ -106,6 +119,13 @@ namespace BIUK9000.GifferComponents
             g.FillPath(textBrush, path);
 
             return bitmap;
+        }
+
+        public override GFL Clone()
+        {
+            TextGFL clone = new TextGFL(Text, LayerID);
+            clone.CopyParameters(this);
+            return clone;
         }
 
         public TextGFL(string text, int layerID) : base(layerID)

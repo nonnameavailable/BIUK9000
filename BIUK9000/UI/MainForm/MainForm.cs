@@ -26,6 +26,7 @@ namespace BIUK9000.UI
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
         private GifFrame SelectedFrame { get => MainTimelineSlider.SelectedFrame; }
         private GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
+        private GFL PreviousLayerState { get; set; }
         private Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
 
@@ -62,6 +63,11 @@ namespace BIUK9000.UI
 
         }
 
+        private void SavePreviousState()
+        {
+            PreviousLayerState = SelectedLayer.Clone();
+        }
+
         private void ControlsPanel_SaveGifDialogOKed(object sender, EventArgs e)
         {
             SaveFileDialog sfd = sender as SaveFileDialog;
@@ -94,6 +100,8 @@ namespace BIUK9000.UI
 
         public void ApplyCurrentLayerParamsToSubsequentLayers()
         {
+            ApplyParamsMode apm = controlsPanel.SelectedApplyParamsMode;
+            if (apm == ApplyParamsMode.applyNone) return;
             //int cli = SelectedFrame.Layers.IndexOf(SelectedLayer);
             int cli = mainLayersPanel.SelectedLayerIndex;
             int cgfi = MainGiffer.Frames.IndexOf(SelectedFrame);
@@ -102,16 +110,20 @@ namespace BIUK9000.UI
                 GifFrame gf = MainGiffer.Frames[i];
                 if (cli >= 0 && cli < gf.Layers.Count)
                 {
+                    GFL layerToUpdate;
                     if (gf.Layers[cli].LayerID != SelectedLayer.LayerID)
                     {
-                        GFL foundGFL = gf.Layers.Find(gfl => gfl.LayerID == SelectedLayer.LayerID);
-                        if(foundGFL != null)
-                        {
-                            foundGFL.CopyParameters(SelectedLayer);
-                        }
+                        layerToUpdate = gf.Layers.Find(gfl => gfl.LayerID == SelectedLayer.LayerID);
                     } else
                     {
-                        gf.Layers[cli].CopyParameters(SelectedLayer);
+                        layerToUpdate = gf.Layers[cli];
+                    }
+                    if(apm == ApplyParamsMode.applyChanged)
+                    {
+                        layerToUpdate.CopyDifferingParams(PreviousLayerState, SelectedLayer);
+                    } else
+                    {
+                        layerToUpdate.CopyParameters(SelectedLayer);
                     }
                 }
             }
@@ -154,8 +166,8 @@ namespace BIUK9000.UI
                         if (MainGiffer == null)
                         {
                             SetNewGiffer(newGiffer);
-                        }
-                        else
+                        } 
+                         else
                         {
                             using ImportQuestionForm iqf = new ImportQuestionForm();
                             if(iqf.ShowDialog() == DialogResult.OK)
@@ -164,6 +176,7 @@ namespace BIUK9000.UI
                                 {
                                     case ImportQuestionForm.IMPORT_AS_LAYERS:
                                         MainGiffer.AddGifferAsLayers(newGiffer);
+                                        newGiffer.Dispose();
                                         break;
                                     case ImportQuestionForm.IMPORT_INSERT:
                                         MessageBox.Show("Not implemented yet :)");
@@ -201,8 +214,12 @@ namespace BIUK9000.UI
                             int nextLayerID = MainGiffer.NextLayerID();
                             foreach (GifFrame gifFrame in MainGiffer.Frames)
                             {
+                                gifFrame.LayerCountChanged -= GifFrame_LayerCountChanged;
                                 gifFrame.AddLayer(bitmap, nextLayerID);
+                                gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
                             }
+                            MainLayersPanel.DisplayLayers(SelectedFrame);
+                            UpdateMainPictureBox();
                         }
                     }
                 }
@@ -218,17 +235,20 @@ namespace BIUK9000.UI
             UpdateMainPictureBox();
             foreach (GifFrame gifFrame in MainGiffer.Frames)
             {
-                gifFrame.LayerCountChanged += (sender, args) =>
-                {
-                    UpdateMainPictureBox();
-                    MainLayersPanel.DisplayLayers(SelectedFrame);
-                };
+                gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
             }
             MainLayersPanel.SelectedLayerIndex = 0;
             mainLayersPanel.DisplayLayers(SelectedFrame);
             oldGiffer?.Dispose();
             mainTimelineSlider.UpdateDelayNUD();
         }
+
+        private void GifFrame_LayerCountChanged(object sender, EventArgs e)
+        {
+            UpdateMainPictureBox();
+            MainLayersPanel.DisplayLayers(SelectedFrame);
+        }
+
         public void UpdateMainPictureBox()
         {
             MainImage?.Dispose();

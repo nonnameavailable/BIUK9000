@@ -44,6 +44,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             GFL cgfl = SelectedLayer;
             MainGiffer.Save();
+            SavePreviousState();
             mouseClickedPosition = e.Location;
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();

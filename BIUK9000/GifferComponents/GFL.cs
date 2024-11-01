@@ -141,5 +141,13 @@ namespace BIUK9000.GifferComponents
             Position = layer.Position;
             Rotation = layer.Rotation;
         }
+        public abstract GFL Clone();
+        public virtual void CopyDifferingParams(GFL ogState, GFL newState)
+        {
+            if (!ogState.Position.Equals(newState.Position)) Position = newState.Position;
+            if(ogState.Rotation != newState.Rotation) Rotation = newState.Rotation;
+            if(ogState.Width != newState.Width) Width = newState.Width;
+            if(ogState.Height != newState.Height) Height = newState.Height;
+        }
     }
 }

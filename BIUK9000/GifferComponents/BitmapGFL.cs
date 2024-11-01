@@ -52,5 +52,12 @@ namespace BIUK9000.GifferComponents
             }
             base.Dispose(disposing);
         }
+
+        public override GFL Clone()
+        {
+            BitmapGFL clone = new BitmapGFL(OriginalBitmap, LayerID);
+            clone.CopyParameters(this);
+            return clone;
+        }
     }
 }

@@ -17,6 +17,14 @@ namespace BIUK9000.GifferComponents
             g.Clear(Color.FromArgb(120, 120, 0, 120));
             return result;
         }
+
+        public override GFL Clone()
+        {
+            CropGFL clone = new CropGFL(Width, Height, LayerID);
+            clone.CopyParameters(this);
+            return clone;
+        }
+
         public CropGFL(int width, int height, int layerID) :  base(layerID)
         {
             Position = new OVector(0, 0);
