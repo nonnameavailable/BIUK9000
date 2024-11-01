@@ -15,6 +15,7 @@ using Microsoft.VisualBasic;
 using BIUK9000.GifferComponents;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Drawing.Text;
+using BIUK9000.Properties;
 
 namespace BIUK9000.UI
 {
@@ -33,7 +34,6 @@ namespace BIUK9000.UI
         public MainForm()
         {
             InitializeComponent();
-
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
 
             DragDrop += MainForm_DragDrop;
@@ -55,13 +55,7 @@ namespace BIUK9000.UI
                 UpdateLayerParamsUI(LayerTypeChanged());
                 PreviousSelectedLayer = SelectedLayer;
             };
-            //textLayerParamsGB.Visible = false;
-            //PopulateFontComboBox();
-
-            //textLayerFontCBB.SelectedIndexChanged += TextLayerFontCBB_SelectedIndexChanged;
-            //textLayerTextTB.TextChanged += TextLayerTextTB_TextChanged;
-            //borderColorButton.ColorChanged += BorderColorButton_ColorChanged;
-            //fontColorButton.ColorChanged += FontColorButton_ColorChanged;
+            mainLayersPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
 
             controlsPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
             controlsPanel.SaveGifDialogOKed += ControlsPanel_SaveGifDialogOKed;
@@ -128,6 +122,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             MainLayersPanel.DisplayLayers(SelectedFrame);
             UpdateMainPictureBox();
+            MainLayersPanel.TrySelectLayerByID(PreviousSelectedLayer.LayerID);
             UpdateLayerParamsUI(LayerTypeChanged());
             PreviousSelectedLayer = SelectedLayer;
         }
@@ -162,7 +157,7 @@ namespace BIUK9000.UI
                         }
                         else
                         {
-                            ImportQuestionForm iqf = new ImportQuestionForm();
+                            using ImportQuestionForm iqf = new ImportQuestionForm();
                             if(iqf.ShowDialog() == DialogResult.OK)
                             {
                                 switch(iqf.SelectedImportType)
@@ -183,29 +178,31 @@ namespace BIUK9000.UI
                     }
                     else
                     {
+                        Bitmap bitmap;
                         try
                         {
-                            Bitmap bitmap = new Bitmap(filePath);
-                            if(MainGiffer == null)
-                            {
-                                MainGiffer = new Giffer();
-                                MainGiffer.AddFrame(new GifFrame(bitmap, 20, MainGiffer.NextLayerID()));
-                                mainLayersPanel.DisplayLayers(MainGiffer.Frames[0]);
-                                mainTimelineSlider.Giffer = MainGiffer;
-                                UpdateMainPictureBox();
-                            } else
-                            {
-                                int nextLayerID = MainGiffer.NextLayerID();
-                                foreach (GifFrame gifFrame in MainGiffer.Frames)
-                                {
-                                    gifFrame.AddLayer(bitmap, nextLayerID);
-                                }
-                            }
-
+                            bitmap = new Bitmap(filePath);
                         }
                         catch
                         {
                             MessageBox.Show(Path.GetFileName(filePath) + "is not an image file!");
+                            return;
+                        }
+                        if (MainGiffer == null)
+                        {
+                            MainGiffer = new Giffer();
+                            MainGiffer.AddFrame(new GifFrame(bitmap, 20, MainGiffer.NextLayerID()));
+                            mainLayersPanel.DisplayLayers(MainGiffer.Frames[0]);
+                            mainTimelineSlider.Giffer = MainGiffer;
+                            UpdateMainPictureBox();
+                        }
+                        else
+                        {
+                            int nextLayerID = MainGiffer.NextLayerID();
+                            foreach (GifFrame gifFrame in MainGiffer.Frames)
+                            {
+                                gifFrame.AddLayer(bitmap, nextLayerID);
+                            }
                         }
                     }
                 }

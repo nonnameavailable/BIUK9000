@@ -33,7 +33,6 @@ namespace BIUK9000.UI
             timeLineTrackBar.ValueChanged += (sender, args) =>
             {
                 SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
-                UpdateDelayNUD();
             };
             frameDelayNUD.KeyPress += FrameDelayNUD_KeyPress;
         }

@@ -1,4 +1,5 @@
 ﻿using BIUK9000.GifferComponents;
+using BIUK9000.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,6 +41,7 @@ namespace BIUK9000.UI
             OriginalMousePosition = new OVector(0, 0);
             IsLMBDown = false;
             IsRMBDown = false;
+            SaveButton.BackgroundImage?.Dispose();
         }
 
         private void SaveButton_MouseMove(object sender, MouseEventArgs e)
@@ -128,6 +130,7 @@ namespace BIUK9000.UI
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
+            if (MF.MainGiffer == null) return;
             if(saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 SaveGifDialogOKed?.Invoke(saveFileDialog, EventArgs.Empty);

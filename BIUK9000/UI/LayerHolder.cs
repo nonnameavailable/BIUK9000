@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BIUK9000.GifferComponents;
+using BIUK9000.Properties;
 
 namespace BIUK9000.UI
 {
@@ -17,8 +20,13 @@ namespace BIUK9000.UI
         public bool StayHighlighted { get; set; }
         private OVector OriginalMousePosition { get; set; }
         public event EventHandler LayerClicked;
+        public event EventHandler MustRedraw;
         public event DragEventHandler DragDropped;
         private bool _isLmbDown;
+        protected void OnMustRedraw()
+        {
+            MustRedraw?.Invoke(this, EventArgs.Empty);
+        }
         public LayerHolder(GFL layer)
         {
             InitializeComponent();
@@ -34,8 +42,30 @@ namespace BIUK9000.UI
             DragEnter += LayerHolder_DragEnter;
             StayHighlighted = false;
             this.AllowDrop = true;
+            visibleButton.Image = Resources.eye_open_icon;
+            visibleButton.Click += VisibleButton_Click;
+            idLabel.Text = layer.LayerID.ToString();
         }
 
+        private void VisibleButton_Click(object sender, EventArgs e)
+        {
+            if (HeldLayer.Visible)
+            {
+                visibleButton.Image = Resources.eye_closed_icon;
+                HeldLayer.Visible = false;
+            }
+            else
+            {
+                visibleButton.Image = Resources.eye_open_icon;
+                HeldLayer.Visible = true;
+            }
+            OnMustRedraw();
+        }
+        public static Image ImageFromByte(byte[] b)
+        {
+            using MemoryStream ms = new MemoryStream(b);
+            return Image.FromStream(ms);
+        }
         private void LayerHolder_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(LayerHolder)))

@@ -19,6 +19,7 @@ namespace BIUK9000.UI
         public int SelectedLayerIndex { get; set; }
         public event EventHandler<LayerOrderEventArgs> LayerOrderChanged;
         public event EventHandler SelectedLayerChanged;
+        public event EventHandler MustRedraw;
         public LayersPanel()
         {
             InitializeComponent();
@@ -40,11 +41,19 @@ namespace BIUK9000.UI
                 LayerHolder lh = new LayerHolder(layer);
                 lh.LayerClicked += Lh_LayerClicked;
                 lh.DragDropped += Lh_DragDropped;
+                lh.MustRedraw += (sender, args) => MustRedraw?.Invoke(sender, args);
                 layersFLP.Controls.Add(lh);
             }
             SelectLayerHolder(SelectedLayerIndex);
         }
-
+        public void TrySelectLayerByID(int layerID)
+        {
+            GFL newSelectedLayer = ActiveFrame.Layers.Find(layer => layer.LayerID == layerID);
+            if(newSelectedLayer != null)
+            {
+                SelectLayerHolder(ActiveFrame.Layers.IndexOf(newSelectedLayer));
+            }
+        }
         private void Lh_DragDropped(object sender, DragEventArgs e)
         {
             LayerHolder droppedLh = (LayerHolder)e.Data.GetData(typeof(LayerHolder));
@@ -62,7 +71,6 @@ namespace BIUK9000.UI
             ClickedLayerHolder.Highlight(true);
             ClickedLayerHolder.StayHighlighted = true;
         }
-
         private void Frame_LayersChanged(object sender, EventArgs e)
         {
             DisplayLayers(ActiveFrame);
