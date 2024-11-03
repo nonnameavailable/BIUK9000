@@ -131,9 +131,6 @@ but will automatically export the gif wherever you drag it.
 If the gif is very large, I strongly recomment using the left click option.
 The post-processing and export can take a while which might cause the drag action to spaz out.</value>
   </data>
-  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>146, 17</value>
-  </metadata>
   <data name="applyParamsCBB.ToolTip" xml:space="preserve">
     <value>Default behavior is that when a layer parameter is changed,
 the change propagates to all subsequent layer of the same ID.

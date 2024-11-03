@@ -39,6 +39,8 @@
             label3 = new System.Windows.Forms.Label();
             ImageExportFormatCBB = new System.Windows.Forms.ComboBox();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            useGifSicleCB = new System.Windows.Forms.CheckBox();
+            useDitheringCB = new System.Windows.Forms.CheckBox();
             GifExportLossyNUD = new System.Windows.Forms.NumericUpDown();
             label2 = new System.Windows.Forms.Label();
             GifExportColorsNUD = new System.Windows.Forms.NumericUpDown();
@@ -118,9 +120,9 @@
             groupBox2.Controls.Add(ImageExportJpegQualNUD);
             groupBox2.Controls.Add(label3);
             groupBox2.Controls.Add(ImageExportFormatCBB);
-            groupBox2.Location = new System.Drawing.Point(6, 90);
+            groupBox2.Location = new System.Drawing.Point(6, 165);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(124, 141);
+            groupBox2.Size = new System.Drawing.Size(124, 86);
             groupBox2.TabIndex = 3;
             groupBox2.TabStop = false;
             groupBox2.Text = "Single image";
@@ -161,16 +163,42 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(useGifSicleCB);
+            groupBox1.Controls.Add(useDitheringCB);
             groupBox1.Controls.Add(GifExportLossyNUD);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(GifExportColorsNUD);
             groupBox1.Controls.Add(label1);
             groupBox1.Location = new System.Drawing.Point(6, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(124, 78);
+            groupBox1.Size = new System.Drawing.Size(124, 153);
             groupBox1.TabIndex = 2;
             groupBox1.TabStop = false;
             groupBox1.Text = "gif";
+            // 
+            // useGifSicleCB
+            // 
+            useGifSicleCB.AutoSize = true;
+            useGifSicleCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            useGifSicleCB.Location = new System.Drawing.Point(6, 102);
+            useGifSicleCB.Name = "useGifSicleCB";
+            useGifSicleCB.Size = new System.Drawing.Size(92, 21);
+            useGifSicleCB.TabIndex = 5;
+            useGifSicleCB.Text = "use Gifsicle";
+            toolTip.SetToolTip(useGifSicleCB, "When checked, gif will be compressed with Gifsicle");
+            useGifSicleCB.UseVisualStyleBackColor = true;
+            // 
+            // useDitheringCB
+            // 
+            useDitheringCB.AutoSize = true;
+            useDitheringCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            useDitheringCB.Location = new System.Drawing.Point(6, 75);
+            useDitheringCB.Name = "useDitheringCB";
+            useDitheringCB.Size = new System.Drawing.Size(103, 21);
+            useDitheringCB.TabIndex = 4;
+            useDitheringCB.Text = "use dithering";
+            toolTip.SetToolTip(useDitheringCB, "When checked, the gif will be dithered");
+            useDitheringCB.UseVisualStyleBackColor = true;
             // 
             // GifExportLossyNUD
             // 
@@ -180,7 +208,7 @@
             GifExportLossyNUD.Name = "GifExportLossyNUD";
             GifExportLossyNUD.Size = new System.Drawing.Size(63, 25);
             GifExportLossyNUD.TabIndex = 3;
-            toolTip.SetToolTip(GifExportLossyNUD, "Lossiness of the compression\r\nHigher number means lower quality and smaller file size");
+            toolTip.SetToolTip(GifExportLossyNUD, "Lossiness of the compression - for Gifsicle\r\nHigher number means lower quality and smaller file size");
             // 
             // label2
             // 
@@ -201,7 +229,7 @@
             GifExportColorsNUD.Name = "GifExportColorsNUD";
             GifExportColorsNUD.Size = new System.Drawing.Size(63, 25);
             GifExportColorsNUD.TabIndex = 1;
-            toolTip.SetToolTip(GifExportColorsNUD, "Number of colors in the exported gif\r\n 1 - 256, higher means higher quality and bigger file size");
+            toolTip.SetToolTip(GifExportColorsNUD, "Number of colors in the exported gif - for Gifsicle and dithering\r\n 1 - 256, higher means higher quality and bigger file size");
             GifExportColorsNUD.Value = new decimal(new int[] { 256, 0, 0, 0 });
             // 
             // label1
@@ -325,5 +353,7 @@
         private System.Windows.Forms.CheckBox positionSnapCB;
         private System.Windows.Forms.ComboBox applyParamsCBB;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.CheckBox useGifSicleCB;
+        private System.Windows.Forms.CheckBox useDitheringCB;
     }
 }

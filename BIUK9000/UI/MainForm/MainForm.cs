@@ -62,6 +62,14 @@ namespace BIUK9000.UI
             controlsPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
             controlsPanel.SaveGifDialogOKed += ControlsPanel_SaveGifDialogOKed;
 
+            MainTimelineSlider.FrameDelayChanged += (sender, args) =>
+            {
+                if (controlsPanel.SelectedApplyParamsMode == ApplyParamsMode.applyNone) return;
+                for (int i = MainGiffer.Frames.IndexOf(SelectedFrame) + 1; i < MainGiffer.Frames.Count; i++)
+                {
+                    MainGiffer.Frames[i].FrameDelay = SelectedFrame.FrameDelay;
+                }
+            };
         }
 
         private void SavePreviousState()
@@ -77,16 +85,46 @@ namespace BIUK9000.UI
                 MessageBox.Show("Do not use the same file name for export as you did for import.");
                 return;
             }
-            string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            //CHANGER LATER
-            List<Color> palette = KMeans.Palette((Bitmap)MainImage, controlsPanel.GifExportColors);
-            Image gif = MainGiffer.GifFromFrames(palette);
-            //////////////
-            gif.Save(tempPath);
-            OBIMP.CompressGif(tempPath, sfd.FileName, controlsPanel.GifExportColors, controlsPanel.GifExportLossy);
-            if (File.Exists(tempPath))
+            string tempPath = SaveGifToTempFile();
+            if(tempPath != null)
             {
-                File.Delete(tempPath);
+                File.Copy(tempPath, sfd.FileName, true);
+            } else
+            {
+                MessageBox.Show("Gif was not created");
+                return;
+            }
+            File.Delete(tempPath);
+        }
+        public string SaveGifToTempFile()
+        {
+            string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
+            Image gif;
+            if (controlsPanel.UseDithering)
+            {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                List<Color> palette = KMeans.Palette((Bitmap)MainImage, controlsPanel.GifExportColors);
+                //List<Color> palette = KMeans.Palette(MainGiffer, controlsPanel.GifExportColors);
+                MessageBox.Show("palette creation took: " + (stopwatch.ElapsedMilliseconds / 1000d).ToString());
+                stopwatch.Restart();
+                gif = MainGiffer.GifFromFrames(palette);
+                MessageBox.Show("dithering took: " + (stopwatch.ElapsedMilliseconds / 1000d).ToString());
+            }
+            else
+            {
+                gif = MainGiffer.GifFromFrames();
+            }
+            gif.Save(tempPath);
+            if (controlsPanel.UseGifsicle)
+            {
+                OBIMP.CompressGif(tempPath, tempPath, controlsPanel.GifExportColors, controlsPanel.GifExportLossy);
+            }
+            if(File.Exists(tempPath))
+            {
+                return tempPath;
+            } else
+            {
+                return null;
             }
         }
 

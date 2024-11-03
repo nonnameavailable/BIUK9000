@@ -29,6 +29,8 @@ namespace BIUK9000.UI
         public bool PositionSnap { get => positionSnapCB.Checked; }
         public ApplyParamsMode SelectedApplyParamsMode { get => (ApplyParamsMode)applyParamsCBB.SelectedItem; }
         public bool DrawHelp { get => drawHelpCB.Checked; }
+        public bool UseGifsicle { get => useGifSicleCB.Checked; }
+        public bool UseDithering { get => useDitheringCB.Checked; }
         public event EventHandler MustRedraw;
         public event EventHandler SaveGifDialogOKed;
         public ControlsPanel()

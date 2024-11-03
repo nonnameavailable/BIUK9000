@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BIUK9000.GifferComponents;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -19,6 +20,41 @@ namespace BIUK9000.Dithering
             }
             fbm.Dispose();
             return result.Select(c => Color.FromArgb(c)).ToList();
+        }
+        public static List<Color> Palette(Giffer giffer, int colorCount)
+        {
+            List<int> result = new List<int>();
+            for (int i = 0; i < colorCount; i++)
+            {
+                List<int> candidates = new();
+                foreach(GifFrame frame in giffer.Frames)
+                {
+                    FastBitmap fbm = new FastBitmap(frame.CompleteBitmap(false));
+                    candidates.Add(NextCentroid(fbm, result));
+                    fbm.Dispose();
+                }
+                result.Add(FurthestCentroidFromList(candidates, result));
+            }
+            return result.Select(c => Color.FromArgb(c)).ToList();
+        }
+        private static int FurthestCentroidFromList(List<int> candidates, List<int> palette)
+        {
+            if(palette.Count == 0) return candidates[new Random().Next(0, candidates.Count)];
+            int result = candidates[0];
+            double maxDist = 0;
+            foreach(int candidate in candidates)
+            {
+                foreach(int paletteColor in palette)
+                {
+                    double dist = ColorDistance(candidate, paletteColor);
+                    if(dist > maxDist)
+                    {
+                        maxDist = dist;
+                        result = candidate;
+                    }
+                }
+            }
+            return result;
         }
         private static int NextCentroid(FastBitmap fbm, List<int> palette)
         {

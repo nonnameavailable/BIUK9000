@@ -32,6 +32,7 @@
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             groupBox1 = new System.Windows.Forms.GroupBox();
             frameDelayNUD = new System.Windows.Forms.NumericUpDown();
+            playButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)timeLineTrackBar).BeginInit();
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -64,6 +65,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(playButton);
             groupBox1.Controls.Add(frameDelayNUD);
             groupBox1.Location = new System.Drawing.Point(3, 3);
             groupBox1.Name = "groupBox1";
@@ -83,6 +85,16 @@
             frameDelayNUD.TabIndex = 0;
             frameDelayNUD.Value = new decimal(new int[] { 10, 0, 0, 0 });
             frameDelayNUD.ValueChanged += frameDelayNUD_ValueChanged;
+            // 
+            // playButton
+            // 
+            playButton.Location = new System.Drawing.Point(6, 53);
+            playButton.Name = "playButton";
+            playButton.Size = new System.Drawing.Size(82, 35);
+            playButton.TabIndex = 1;
+            playButton.Text = "play";
+            playButton.UseVisualStyleBackColor = true;
+            playButton.Click += playButton_Click;
             // 
             // TimelineSlider
             // 
@@ -105,5 +117,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.NumericUpDown frameDelayNUD;
+        private System.Windows.Forms.Button playButton;
     }
 }
