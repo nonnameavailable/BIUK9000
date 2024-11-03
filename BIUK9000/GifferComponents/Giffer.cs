@@ -1,4 +1,5 @@
 ﻿using AnimatedGif;
+using BIUK9000.Dithering;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -93,6 +94,21 @@ namespace BIUK9000.GifferComponents
             foreach (GifFrame frame in Frames)
             {
                 agc.AddFrame(frame.CompleteBitmap(false), frame.FrameDelay, GifQuality.Bit8);
+            }
+            return Image.FromStream(stream);
+        }
+        public Image GifFromFrames(List<Color> paletteForDithering)
+        {
+            MemoryStream stream = new MemoryStream();
+            int frameDelay = FrameDelay(originalGif);
+            AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
+            foreach (GifFrame frame in Frames)
+            {
+                Bitmap cbm = frame.CompleteBitmap(false);
+                Ditherer dtr = new Ditherer(cbm);
+                cbm = dtr.DitheredBitmap(paletteForDithering);
+                agc.AddFrame(cbm, frame.FrameDelay, GifQuality.Bit8);
+                dtr.Dispose();
             }
             return Image.FromStream(stream);
         }

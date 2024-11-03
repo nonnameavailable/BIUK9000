@@ -41,6 +41,7 @@ namespace BIUK9000.UI
 
         private void MainPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
+            mainPictureBox.Focus();
             if (MainGiffer == null) return;
             GFL cgfl = SelectedLayer;
             MainGiffer.Save();

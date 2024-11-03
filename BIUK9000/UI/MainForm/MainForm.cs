@@ -16,6 +16,7 @@ using BIUK9000.GifferComponents;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Drawing.Text;
 using BIUK9000.Properties;
+using BIUK9000.Dithering;
 
 namespace BIUK9000.UI
 {
@@ -77,7 +78,11 @@ namespace BIUK9000.UI
                 return;
             }
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            MainGiffer.GifFromFrames().Save(tempPath);
+            //CHANGER LATER
+            List<Color> palette = KMeans.Palette((Bitmap)MainImage, controlsPanel.GifExportColors);
+            Image gif = MainGiffer.GifFromFrames(palette);
+            //////////////
+            gif.Save(tempPath);
             OBIMP.CompressGif(tempPath, sfd.FileName, controlsPanel.GifExportColors, controlsPanel.GifExportLossy);
             if (File.Exists(tempPath))
             {
@@ -252,7 +257,12 @@ namespace BIUK9000.UI
         public void UpdateMainPictureBox()
         {
             MainImage?.Dispose();
-            MainImage = SelectedFrame.CompleteBitmap(controlsPanel.DrawHelp);
+            Bitmap bitmap = SelectedFrame.CompleteBitmap(controlsPanel.DrawHelp);
+            //List<Color> palette = KMeans.Palette(bitmap, 10);
+            //Ditherer dtr = new Ditherer(bitmap);
+            //MainImage = dtr.DitheredBitmap(palette);
+            //dtr.Dispose();
+            MainImage = bitmap;
         }
     }
 }
