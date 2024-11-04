@@ -25,7 +25,8 @@ namespace BIUK9000.UI
         public Image MainImage { get => mainPictureBox.Image; set => mainPictureBox.Image = value; }
         private LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
-        private GifFrame SelectedFrame { get => MainTimelineSlider.SelectedFrame; }
+        //private GifFrame SelectedFrame { get => MainTimelineSlider.SelectedFrame; }
+        public GifFrame SelectedFrame { get => MainGiffer.Frames[MainTimelineSlider.SelectedFrameIndex]; }
         private GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
         private GFL PreviousLayerState { get; set; }
         private Timer UpdateTimer { get => _updateTimer; }
@@ -60,16 +61,10 @@ namespace BIUK9000.UI
             mainLayersPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
 
             controlsPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
-            controlsPanel.SaveGifDialogOKed += ControlsPanel_SaveGifDialogOKed;
+            controlsPanel.ShouldStartDragDrop += ControlsPanel_ShouldStartDragDrop;
+            controlsPanel.SaveButtonClicked += ControlsPanel_SaveButtonClicked;
 
-            MainTimelineSlider.FrameDelayChanged += (sender, args) =>
-            {
-                if (controlsPanel.SelectedApplyParamsMode == ApplyParamsMode.applyNone) return;
-                for (int i = MainGiffer.Frames.IndexOf(SelectedFrame) + 1; i < MainGiffer.Frames.Count; i++)
-                {
-                    MainGiffer.Frames[i].FrameDelay = SelectedFrame.FrameDelay;
-                }
-            };
+            MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
         }
 
         private void SavePreviousState()
@@ -77,25 +72,6 @@ namespace BIUK9000.UI
             PreviousLayerState = SelectedLayer.Clone();
         }
 
-        private void ControlsPanel_SaveGifDialogOKed(object sender, EventArgs e)
-        {
-            SaveFileDialog sfd = sender as SaveFileDialog;
-            if(sfd.FileName == MainGiffer.OriginalImagePath)
-            {
-                MessageBox.Show("Do not use the same file name for export as you did for import.");
-                return;
-            }
-            string tempPath = SaveGifToTempFile();
-            if(tempPath != null)
-            {
-                File.Copy(tempPath, sfd.FileName, true);
-            } else
-            {
-                MessageBox.Show("Gif was not created");
-                return;
-            }
-            File.Delete(tempPath);
-        }
         public string SaveGifToTempFile()
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
@@ -128,19 +104,6 @@ namespace BIUK9000.UI
             }
         }
 
-        private void MainLayersPanel_LayerOrderChanged(object sender, LayersPanel.LayerOrderEventArgs e)
-        {
-            for (int i = mainTimelineSlider.Slider.Value; i < MainGiffer.Frames.Count; i++)
-            {
-                GifFrame cf = MainGiffer.Frames[i];
-                GFL gflToInsert = cf.Layers[e.OriginalIndex];
-                cf.Layers.RemoveAt(e.OriginalIndex);
-                cf.Layers.Insert(e.TargetIndex, gflToInsert);
-            }
-            UpdateMainPictureBox();
-            MainLayersPanel.DisplayLayers(SelectedFrame);
-        }
-
         public void ApplyCurrentLayerParamsToSubsequentLayers()
         {
             ApplyParamsMode apm = controlsPanel.SelectedApplyParamsMode;
@@ -170,16 +133,6 @@ namespace BIUK9000.UI
                     }
                 }
             }
-        }
-
-        private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
-        {
-            if (MainGiffer == null) return;
-            MainLayersPanel.DisplayLayers(SelectedFrame);
-            UpdateMainPictureBox();
-            MainLayersPanel.TrySelectLayerByID(PreviousSelectedLayer.LayerID);
-            UpdateLayerParamsUI(LayerTypeChanged());
-            PreviousSelectedLayer = SelectedLayer;
         }
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
@@ -249,7 +202,7 @@ namespace BIUK9000.UI
                             MainGiffer = new Giffer();
                             MainGiffer.AddFrame(new GifFrame(bitmap, 20, MainGiffer.NextLayerID()));
                             mainLayersPanel.DisplayLayers(MainGiffer.Frames[0]);
-                            mainTimelineSlider.Giffer = MainGiffer;
+                            //mainTimelineSlider.Giffer = MainGiffer;
                             UpdateMainPictureBox();
                         }
                         else
@@ -274,7 +227,7 @@ namespace BIUK9000.UI
         {
             Giffer oldGiffer = MainGiffer;
             MainGiffer = newGiffer;
-            mainTimelineSlider.Giffer = newGiffer;
+            //mainTimelineSlider.Giffer = newGiffer;
             UpdateMainPictureBox();
             foreach (GifFrame gifFrame in MainGiffer.Frames)
             {
@@ -283,12 +236,9 @@ namespace BIUK9000.UI
             MainLayersPanel.SelectedLayerIndex = 0;
             mainLayersPanel.DisplayLayers(SelectedFrame);
             oldGiffer?.Dispose();
-            mainTimelineSlider.UpdateDelayNUD();
-            ColorPalette cp = MainGiffer.GifColorPalette();
-            if (cp != null)
-            {
-                controlsPanel.GifExportColors = cp.Entries.Length;
-            }
+            MainTimelineSlider.Maximum = MainGiffer.Frames.Count - 1;
+            MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
+            //mainTimelineSlider.UpdateDelayNUD();
         }
 
         private void GifFrame_LayerCountChanged(object sender, EventArgs e)

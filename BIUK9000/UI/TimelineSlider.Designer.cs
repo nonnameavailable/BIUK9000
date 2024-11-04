@@ -84,7 +84,6 @@
             frameDelayNUD.Size = new System.Drawing.Size(82, 25);
             frameDelayNUD.TabIndex = 0;
             frameDelayNUD.Value = new decimal(new int[] { 10, 0, 0, 0 });
-            frameDelayNUD.ValueChanged += frameDelayNUD_ValueChanged;
             // 
             // playButton
             // 

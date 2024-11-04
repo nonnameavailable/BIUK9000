@@ -50,7 +50,6 @@
             positionSnapCB = new System.Windows.Forms.CheckBox();
             drawHelpCB = new System.Windows.Forms.CheckBox();
             rotationSnapCB = new System.Windows.Forms.CheckBox();
-            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
             tableLayoutPanel1.SuspendLayout();
             exportTC.SuspendLayout();
@@ -89,7 +88,6 @@
             SaveButton.Text = "Save";
             toolTip.SetToolTip(SaveButton, resources.GetString("SaveButton.ToolTip"));
             SaveButton.UseVisualStyleBackColor = true;
-            SaveButton.Click += SaveButton_Click;
             // 
             // exportTC
             // 
@@ -305,10 +303,6 @@
             toolTip.SetToolTip(rotationSnapCB, "If enabled, the layer rotation will snap to the nearest 90°");
             rotationSnapCB.UseVisualStyleBackColor = true;
             // 
-            // saveFileDialog
-            // 
-            saveFileDialog.Filter = "GIF files|*.gif";
-            // 
             // ControlsPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -349,7 +343,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox rotationSnapCB;
         private System.Windows.Forms.CheckBox drawHelpCB;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.CheckBox positionSnapCB;
         private System.Windows.Forms.ComboBox applyParamsCBB;
         private System.Windows.Forms.ToolTip toolTip;

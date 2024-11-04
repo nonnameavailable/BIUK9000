@@ -17,13 +17,11 @@ namespace BIUK9000.UI
     public partial class ControlsPanel : UserControl
     {
         private OVector OriginalMousePosition { get; set; }
-        private bool IsLMBDown {  get; set; }
-        private bool IsRMBDown {  get; set; }
+        public bool IsLMBDown {  get; set; }
+        public bool IsRMBDown {  get; set; }
         public bool DraggingFileForExport { get; set; }
-        private MainForm MF { get => ParentForm as MainForm; }
-        private Giffer MG { get => MF.MainGiffer; }
         public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
-        public int GifExportColors { get => (int)GifExportColorsNUD.Value; set => GifExportColorsNUD.Value = value; }
+        public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
         public bool RotationSnap { get => rotationSnapCB.Checked; }
         public bool PositionSnap { get => positionSnapCB.Checked; }
@@ -33,6 +31,8 @@ namespace BIUK9000.UI
         public bool UseDithering { get => useDitheringCB.Checked; }
         public event EventHandler MustRedraw;
         public event EventHandler SaveGifDialogOKed;
+        public event EventHandler ShouldStartDragDrop;
+        public event EventHandler SaveButtonClicked;
         public ControlsPanel()
         {
             InitializeComponent();
@@ -46,51 +46,13 @@ namespace BIUK9000.UI
             IsRMBDown = false;
             applyParamsCBB.DataSource = Enum.GetValues(typeof(ApplyParamsMode));
             applyParamsCBB.SelectedIndex = 0;
+            SaveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
         }
         private void SaveButton_MouseMove(object sender, MouseEventArgs e)
         {
-            if (MG == null) return;
             if (ShouldStartDragdrop(e, 10))
             {
-                if (IsLMBDown)
-                {
-                    DraggingFileForExport = true;
-                    using Bitmap bitmap = MF.MainTimelineSlider.SelectedFrame.CompleteBitmap(false);
-                    string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ImageExportFormat);
-                    switch (ImageExportFormat)
-                    {
-                        case ".jpeg":
-                            OBIMP.SaveJpeg(tempPath, bitmap, 80);
-                            break;
-                        default:
-                            bitmap.Save(tempPath);
-                            break;
-                    }
-                    DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
-                    DoDragDrop(data, DragDropEffects.Copy);
-                    IsLMBDown = false;
-                    if (File.Exists(tempPath))
-                    {
-                        File.Delete(tempPath);
-                    }
-                    DraggingFileForExport = false;
-                }
-                else if (IsRMBDown)
-                {
-                    DraggingFileForExport = true;
-                    using Image gif = MG.GifFromFrames();
-                    string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-                    gif.Save(tempPath);
-                    OBIMP.CompressGif(tempPath, tempPath, GifExportColors, GifExportLossy);
-                    DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
-                    DoDragDrop(data, DragDropEffects.Copy);
-                    IsRMBDown = false;
-                    if (File.Exists(tempPath))
-                    {
-                        File.Delete(tempPath);
-                    }
-                    DraggingFileForExport = false;
-                }
+                ShouldStartDragDrop?.Invoke(this, e);
             }
         }
 
@@ -128,16 +90,6 @@ namespace BIUK9000.UI
                 IsRMBDown = false;
             }
             DraggingFileForExport = false;
-        }
-
-
-        private void SaveButton_Click(object sender, EventArgs e)
-        {
-            if (MF.MainGiffer == null) return;
-            if(saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                SaveGifDialogOKed?.Invoke(saveFileDialog, EventArgs.Empty);
-            }
         }
     }
     public enum ApplyParamsMode

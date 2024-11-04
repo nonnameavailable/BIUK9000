@@ -157,7 +157,7 @@ namespace BIUK9000.UI
             GFL gfl = MainLayersPanel.SelectedLayer;
             OVector LayerCenter = gfl.Center();
             double pbAspect = (double)mainPictureBox.Width / mainPictureBox.Height;
-            double frameAspect = (double)MainTimelineSlider.SelectedFrame.Width / MainTimelineSlider.SelectedFrame.Height;
+            double frameAspect = (double)SelectedFrame.Width / SelectedFrame.Height;
             int scaledWidth, scaledHeight;
             if (frameAspect > pbAspect)
             {

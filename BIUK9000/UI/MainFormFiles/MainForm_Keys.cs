@@ -25,14 +25,12 @@ namespace BIUK9000.UI
             {
                 if (keyData == Keys.D)
                 {
-                    TrackBar mts = mainTimelineSlider.Slider;
-                    if (mts.Value < mts.Maximum) mts.Value += 1;
+                    if (MainTimelineSlider.SelectedFrameIndex < MainTimelineSlider.Maximum) MainTimelineSlider.SelectedFrameIndex += 1;
                     return true;
                 }
                 else if (keyData == Keys.A)
                 {
-                    TrackBar mts = mainTimelineSlider.Slider;
-                    if (mts.Value > 0) mts.Value -= 1;
+                    if (MainTimelineSlider.SelectedFrameIndex > 0) MainTimelineSlider.SelectedFrameIndex -= 1;
                     return true;
                 }
                 else if (keyData == Keys.T)

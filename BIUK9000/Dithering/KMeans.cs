@@ -32,7 +32,6 @@ namespace BIUK9000.Dithering
                 RecalculatePalette(fbm, result);
                 counter++;
             }
-            MessageBox.Show("exiting palette");
             return result.Select(c => Color.FromArgb(c)).ToList();
         }
         public static List<Color> Palette(Giffer giffer, int colorCount)
