@@ -1,24 +1,38 @@
 ﻿using BIUK9000.GifferComponents;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BIUK9000.Dithering
 {
     public class KMeans
     {
-        public static List<Color> Palette(Bitmap bmp, int colorCount)
+        public static List<Color> Palette(Bitmap bmp, int colorCount, bool usePlusInit)
         {
             FastBitmap fbm = new FastBitmap(bmp);
-            List<int> result = new List<int>();
-            for(int i = 0; i < colorCount; i++)
+            List<int> result;
+            if (usePlusInit)
             {
-                result.Add(NextCentroid(fbm, result));
+                result = PaletteInitPlus(bmp, colorCount);
+            } else
+            {
+                result = PaletteInitRandom(bmp, colorCount);
             }
-            fbm.Dispose();
+            List<int> oldPalette = result.ToList();
+            RecalculatePalette(fbm, result);
+            int counter = 0;
+            while (!HasConverged(oldPalette, result, 1))
+            {
+                oldPalette = result.ToList();
+                RecalculatePalette(fbm, result);
+                counter++;
+            }
+            MessageBox.Show("exiting palette");
             return result.Select(c => Color.FromArgb(c)).ToList();
         }
         public static List<Color> Palette(Giffer giffer, int colorCount)
@@ -36,6 +50,87 @@ namespace BIUK9000.Dithering
                 result.Add(FurthestCentroidFromList(candidates, result));
             }
             return result.Select(c => Color.FromArgb(c)).ToList();
+        }
+        private static List<int> PaletteInitPlus(Bitmap bmp, int colorCount)
+        {
+            FastBitmap fbm = new FastBitmap(bmp);
+            List<int> result = new List<int>();
+            for (int i = 0; i < colorCount; i++)
+            {
+                result.Add(NextCentroid(fbm, result));
+            }
+            fbm.Dispose();
+            return result;
+        }
+        private static List<int> PaletteInitRandom(Bitmap bmp, int colorCount)
+        {
+            FastBitmap fbm = new FastBitmap(bmp);
+            List<int> result = new List<int>();
+            Random rnd = new Random();
+            int counter = 0;
+            while (result.Count < colorCount)
+            {
+                counter++;
+                int randomX = rnd.Next(0, fbm.Width);
+                int randomY = rnd.Next(0, fbm.Height);
+                int randomColorFromImage = fbm.GetPixelAsInt(randomX, randomY);
+
+                if (!result.Contains(randomColorFromImage))
+                {
+                    result.Add(randomColorFromImage);
+                    counter = 0;
+                }
+                if (counter > 10) break;
+            }
+            fbm.Dispose();
+            return result;
+        }
+        private static bool HasConverged(List<int> oldPalette, List<int> newPalette, double threshold)
+        {
+            for(int i = 0; i < oldPalette.Count; i++)
+            {
+                double dist = ColorDistance(oldPalette[i], newPalette[i]);
+                if (dist > threshold) return false;
+            }
+            return true;
+        }
+        private static void RecalculatePalette(FastBitmap fbm, List<int> palette)
+        {
+            // Initialize lists to store the sum of RGB values and counts
+            List<int[]> sumRGB = new List<int[]>();
+            List<int> count = new List<int>();
+
+            for (int i = 0; i < palette.Count; i++)
+            {
+                sumRGB.Add(new int[3]); // [sumR, sumG, sumB]
+                count.Add(0);
+            }
+
+            // Assign each pixel to the nearest centroid and update sums and counts
+            for (int i = 0; i < fbm.Width; i++)
+            {
+                for (int j = 0; j < fbm.Height; j++)
+                {
+                    int pixelColor = fbm.GetPixelAsInt(i, j);
+                    int nearestCentroidIndex = ClosestPaletteColorIndex(pixelColor, palette);
+                    sumRGB[nearestCentroidIndex][0] += (pixelColor >> 16) & 0xFF;
+                    sumRGB[nearestCentroidIndex][1] += (pixelColor >> 8) & 0xFF;
+                    sumRGB[nearestCentroidIndex][2] += pixelColor & 0xFF;
+                    count[nearestCentroidIndex]++;
+                }
+            }
+
+            // Calculate new centroids
+            for (int i = 0; i < palette.Count; i++)
+            {
+                if (count[i] > 0)
+                {
+                    int newR = sumRGB[i][0] / count[i];
+                    int newG = sumRGB[i][1] / count[i];
+                    int newB = sumRGB[i][2] / count[i];
+                    palette[i] = Color.FromArgb(newR, newG, newB).ToArgb();
+                }
+            }
         }
         private static int FurthestCentroidFromList(List<int> candidates, List<int> palette)
         {
@@ -144,6 +239,22 @@ namespace BIUK9000.Dithering
                 {
                     minDist = newDist;
                     result = d;
+                }
+            }
+            return result;
+        }
+        private static int ClosestPaletteColorIndex(int color, List<int> palette)
+        {
+            double minDist = 100000;
+            int result = 0;
+            for (int i = 0; i < palette.Count; i++)
+            {
+                int d = palette[i];
+                double newDist = ColorDistance(d, color);
+                if (newDist < minDist)
+                {
+                    minDist = newDist;
+                    result = i;
                 }
             }
             return result;

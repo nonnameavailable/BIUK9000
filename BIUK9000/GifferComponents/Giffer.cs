@@ -154,6 +154,10 @@ namespace BIUK9000.GifferComponents
         {
             return _nextLayerID++;
         }
+        public ColorPalette GifColorPalette()
+        {
+            return originalGif.Palette;
+        }
 
         protected virtual void Dispose(bool disposing)
         {

@@ -103,12 +103,12 @@ namespace BIUK9000.UI
             if (controlsPanel.UseDithering)
             {
                 Stopwatch stopwatch = Stopwatch.StartNew();
-                List<Color> palette = KMeans.Palette((Bitmap)MainImage, controlsPanel.GifExportColors);
+                List<Color> palette = KMeans.Palette((Bitmap)MainImage, controlsPanel.GifExportColors, false);
                 //List<Color> palette = KMeans.Palette(MainGiffer, controlsPanel.GifExportColors);
                 MessageBox.Show("palette creation took: " + (stopwatch.ElapsedMilliseconds / 1000d).ToString());
                 stopwatch.Restart();
                 gif = MainGiffer.GifFromFrames(palette);
-                MessageBox.Show("dithering took: " + (stopwatch.ElapsedMilliseconds / 1000d).ToString());
+                //MessageBox.Show("dithering took: " + (stopwatch.ElapsedMilliseconds / 1000d).ToString());
             }
             else
             {
@@ -284,6 +284,11 @@ namespace BIUK9000.UI
             mainLayersPanel.DisplayLayers(SelectedFrame);
             oldGiffer?.Dispose();
             mainTimelineSlider.UpdateDelayNUD();
+            ColorPalette cp = MainGiffer.GifColorPalette();
+            if (cp != null)
+            {
+                controlsPanel.GifExportColors = cp.Entries.Length;
+            }
         }
 
         private void GifFrame_LayerCountChanged(object sender, EventArgs e)

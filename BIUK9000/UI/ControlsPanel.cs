@@ -23,7 +23,7 @@ namespace BIUK9000.UI
         private MainForm MF { get => ParentForm as MainForm; }
         private Giffer MG { get => MF.MainGiffer; }
         public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
-        public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
+        public int GifExportColors { get => (int)GifExportColorsNUD.Value; set => GifExportColorsNUD.Value = value; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
         public bool RotationSnap { get => rotationSnapCB.Checked; }
         public bool PositionSnap { get => positionSnapCB.Checked; }

@@ -45,7 +45,8 @@ namespace BIUK9000.Dithering
                     double[] currentColor = GetDoublePixel(i, j, doubleBitmap);
                     double[] closestPaletteColor = ClosestPaletteColor(currentColor, palette);
 
-                    double randomFactor = (new Random().NextDouble() - 0.5) * 0.1;
+                    //double randomFactor = (new Random().NextDouble() - 0.5) * 0.1;
+                    double randomFactor = 0;
 
                     double rDist = currentColor[0] - closestPaletteColor[0] + randomFactor;
                     double gDist = currentColor[1] - closestPaletteColor[1] + randomFactor;
