@@ -51,6 +51,7 @@
             drawHelpCB = new System.Windows.Forms.CheckBox();
             rotationSnapCB = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            groupBox3 = new System.Windows.Forms.GroupBox();
             tableLayoutPanel1.SuspendLayout();
             exportTC.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -60,6 +61,7 @@
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).BeginInit();
             settingsTC.SuspendLayout();
+            groupBox3.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -74,7 +76,7 @@
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 143F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(150, 434);
+            tableLayoutPanel1.Size = new System.Drawing.Size(150, 673);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // SaveButton
@@ -86,7 +88,7 @@
             SaveButton.Size = new System.Drawing.Size(144, 137);
             SaveButton.TabIndex = 8;
             SaveButton.Text = "Save";
-            toolTip.SetToolTip(SaveButton, resources.GetString("SaveButton.ToolTip"));
+            toolTip.SetToolTip(SaveButton, "Left click - save dialog will open, allowing you to save the gif\r\n\r\nLeft mouse down and drag to desktop / explorer - export current frame as jpeg / png");
             SaveButton.UseVisualStyleBackColor = true;
             // 
             // exportTC
@@ -97,18 +99,19 @@
             exportTC.Location = new System.Drawing.Point(3, 146);
             exportTC.Name = "exportTC";
             exportTC.SelectedIndex = 0;
-            exportTC.Size = new System.Drawing.Size(144, 285);
+            exportTC.Size = new System.Drawing.Size(144, 524);
             exportTC.TabIndex = 7;
             // 
             // tabPage1
             // 
             tabPage1.AutoScroll = true;
+            tabPage1.Controls.Add(groupBox3);
             tabPage1.Controls.Add(groupBox2);
             tabPage1.Controls.Add(groupBox1);
             tabPage1.Location = new System.Drawing.Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(136, 257);
+            tabPage1.Size = new System.Drawing.Size(136, 496);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "export";
             tabPage1.UseVisualStyleBackColor = true;
@@ -118,7 +121,7 @@
             groupBox2.Controls.Add(ImageExportJpegQualNUD);
             groupBox2.Controls.Add(label3);
             groupBox2.Controls.Add(ImageExportFormatCBB);
-            groupBox2.Location = new System.Drawing.Point(6, 165);
+            groupBox2.Location = new System.Drawing.Point(6, 124);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new System.Drawing.Size(124, 86);
             groupBox2.TabIndex = 3;
@@ -162,23 +165,22 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(useGifSicleCB);
-            groupBox1.Controls.Add(useDitheringCB);
             groupBox1.Controls.Add(GifExportLossyNUD);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(GifExportColorsNUD);
             groupBox1.Controls.Add(label1);
             groupBox1.Location = new System.Drawing.Point(6, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(124, 153);
+            groupBox1.Size = new System.Drawing.Size(124, 112);
             groupBox1.TabIndex = 2;
             groupBox1.TabStop = false;
-            groupBox1.Text = "gif";
+            groupBox1.Text = "Gifsicle";
             // 
             // useGifSicleCB
             // 
             useGifSicleCB.AutoSize = true;
             useGifSicleCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            useGifSicleCB.Location = new System.Drawing.Point(6, 102);
+            useGifSicleCB.Location = new System.Drawing.Point(6, 21);
             useGifSicleCB.Name = "useGifSicleCB";
             useGifSicleCB.Size = new System.Drawing.Size(92, 21);
             useGifSicleCB.TabIndex = 5;
@@ -190,29 +192,29 @@
             // 
             useDitheringCB.AutoSize = true;
             useDitheringCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            useDitheringCB.Location = new System.Drawing.Point(6, 75);
+            useDitheringCB.Location = new System.Drawing.Point(6, 22);
             useDitheringCB.Name = "useDitheringCB";
             useDitheringCB.Size = new System.Drawing.Size(103, 21);
             useDitheringCB.TabIndex = 4;
             useDitheringCB.Text = "use dithering";
-            toolTip.SetToolTip(useDitheringCB, "When checked, the gif will be dithered");
+            toolTip.SetToolTip(useDitheringCB, "Enables dithering for both the Gif and single image.\r\nThis is my own, idiotic implementation of Floyd-Steinberg dithering and it is very slow.");
             useDitheringCB.UseVisualStyleBackColor = true;
             // 
             // GifExportLossyNUD
             // 
             GifExportLossyNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            GifExportLossyNUD.Location = new System.Drawing.Point(55, 44);
+            GifExportLossyNUD.Location = new System.Drawing.Point(55, 79);
             GifExportLossyNUD.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
             GifExportLossyNUD.Name = "GifExportLossyNUD";
             GifExportLossyNUD.Size = new System.Drawing.Size(63, 25);
             GifExportLossyNUD.TabIndex = 3;
-            toolTip.SetToolTip(GifExportLossyNUD, "Lossiness of the compression - for Gifsicle\r\nHigher number means lower quality and smaller file size");
+            toolTip.SetToolTip(GifExportLossyNUD, "Lossiness of the compression\r\nHigher number means lower quality and smaller file size");
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            label2.Location = new System.Drawing.Point(6, 50);
+            label2.Location = new System.Drawing.Point(6, 85);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(37, 17);
             label2.TabIndex = 2;
@@ -221,20 +223,20 @@
             // GifExportColorsNUD
             // 
             GifExportColorsNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            GifExportColorsNUD.Location = new System.Drawing.Point(55, 13);
+            GifExportColorsNUD.Location = new System.Drawing.Point(55, 48);
             GifExportColorsNUD.Maximum = new decimal(new int[] { 256, 0, 0, 0 });
             GifExportColorsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             GifExportColorsNUD.Name = "GifExportColorsNUD";
             GifExportColorsNUD.Size = new System.Drawing.Size(63, 25);
             GifExportColorsNUD.TabIndex = 1;
-            toolTip.SetToolTip(GifExportColorsNUD, "Number of colors in the exported gif - for Gifsicle and dithering\r\n 1 - 256, higher means higher quality and bigger file size");
+            toolTip.SetToolTip(GifExportColorsNUD, "Number of colors in the compressed gif");
             GifExportColorsNUD.Value = new decimal(new int[] { 256, 0, 0, 0 });
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            label1.Location = new System.Drawing.Point(6, 19);
+            label1.Location = new System.Drawing.Point(6, 54);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(44, 17);
             label1.TabIndex = 0;
@@ -303,13 +305,23 @@
             toolTip.SetToolTip(rotationSnapCB, "If enabled, the layer rotation will snap to the nearest 90°");
             rotationSnapCB.UseVisualStyleBackColor = true;
             // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(useDitheringCB);
+            groupBox3.Location = new System.Drawing.Point(6, 216);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new System.Drawing.Size(124, 100);
+            groupBox3.TabIndex = 5;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "My dithering";
+            // 
             // ControlsPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(tableLayoutPanel1);
             Name = "ControlsPanel";
-            Size = new System.Drawing.Size(150, 434);
+            Size = new System.Drawing.Size(150, 673);
             tableLayoutPanel1.ResumeLayout(false);
             exportTC.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
@@ -322,6 +334,8 @@
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).EndInit();
             settingsTC.ResumeLayout(false);
             settingsTC.PerformLayout();
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -348,5 +362,6 @@
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.CheckBox useGifSicleCB;
         private System.Windows.Forms.CheckBox useDitheringCB;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }

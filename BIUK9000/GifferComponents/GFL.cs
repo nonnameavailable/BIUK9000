@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -148,6 +149,8 @@ namespace BIUK9000.GifferComponents
             if(ogState.Rotation != newState.Rotation) Rotation = newState.Rotation;
             if(ogState.Width != newState.Width) Width = newState.Width;
             if(ogState.Height != newState.Height) Height = newState.Height;
+            if(ogState.Visible != newState.Visible) Visible = newState.Visible;
+            Debug.Print("checkingparams  " + Visible.ToString());
         }
     }
 }

@@ -58,7 +58,8 @@ namespace BIUK9000.UI
                 UpdateLayerParamsUI(LayerTypeChanged());
                 PreviousSelectedLayer = SelectedLayer;
             };
-            mainLayersPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
+            mainLayersPanel.LayerVisibilityChanged += MainLayersPanel_LayerVisibilityChanged;
+            mainLayersPanel.LayerDeleteButtonClicked += MainLayersPanel_LayerDeleteButtonClicked;
 
             controlsPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
             controlsPanel.ShouldStartDragDrop += ControlsPanel_ShouldStartDragDrop;
@@ -201,9 +202,6 @@ namespace BIUK9000.UI
                         {
                             MainGiffer = new Giffer();
                             MainGiffer.AddFrame(new GifFrame(bitmap, 20, MainGiffer.NextLayerID()));
-                            mainLayersPanel.DisplayLayers(MainGiffer.Frames[0]);
-                            //mainTimelineSlider.Giffer = MainGiffer;
-                            UpdateMainPictureBox();
                         }
                         else
                         {
@@ -214,11 +212,11 @@ namespace BIUK9000.UI
                                 gifFrame.AddLayer(bitmap, nextLayerID);
                                 gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
                             }
-                            MainLayersPanel.DisplayLayers(SelectedFrame);
-                            UpdateMainPictureBox();
                         }
                     }
                 }
+                UpdateMainPictureBox();
+                mainLayersPanel.DisplayLayers(SelectedFrame);
                 mainLayersPanel.SelectNewestLayer();
             }
         }
@@ -238,6 +236,7 @@ namespace BIUK9000.UI
             oldGiffer?.Dispose();
             MainTimelineSlider.Maximum = MainGiffer.Frames.Count - 1;
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
+            SavePreviousState();
             //mainTimelineSlider.UpdateDelayNUD();
         }
 

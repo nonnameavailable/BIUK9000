@@ -19,7 +19,8 @@ namespace BIUK9000.UI
         public int SelectedLayerIndex { get; set; }
         public event EventHandler<LayerOrderEventArgs> LayerOrderChanged;
         public event EventHandler SelectedLayerChanged;
-        public event EventHandler MustRedraw;
+        public event EventHandler LayerVisibilityChanged;
+        public event EventHandler LayerDeleteButtonClicked;
         public LayersPanel()
         {
             InitializeComponent();
@@ -28,9 +29,9 @@ namespace BIUK9000.UI
         }
         public void DisplayLayers(GifFrame frame)
         {
-            if (ActiveFrame != null) ActiveFrame.LayerCountChanged -= Frame_LayersChanged;
+            //if (ActiveFrame != null) ActiveFrame.LayerCountChanged -= Frame_LayerCountChanged;
             ActiveFrame = frame;
-            frame.LayerCountChanged += Frame_LayersChanged;
+            //frame.LayerCountChanged += Frame_LayerCountChanged;
             for (int i = layersFLP.Controls.Count - 1; i >= 0; i--)
             {
                 Control c = layersFLP.Controls[i];
@@ -41,11 +42,22 @@ namespace BIUK9000.UI
                 LayerHolder lh = new LayerHolder(layer);
                 lh.LayerClicked += Lh_LayerClicked;
                 lh.DragDropped += Lh_DragDropped;
-                lh.MustRedraw += (sender, args) => MustRedraw?.Invoke(sender, args);
+                lh.LayerVisibilityChanged += (sender, args) => LayerVisibilityChanged?.Invoke(sender, args);
+                lh.DeleteButtonClicked += Lh_DeleteButtonClicked;
                 layersFLP.Controls.Add(lh);
             }
             SelectLayerHolder(SelectedLayerIndex);
         }
+
+        private void Lh_DeleteButtonClicked(object sender, EventArgs e)
+        {
+            if (layersFLP.Controls.Count > 1)
+            {
+                SelectedLayerIndex = 0;
+                LayerDeleteButtonClicked?.Invoke(sender, e);
+            }
+        }
+
         public void TrySelectLayerByID(int layerID)
         {
             GFL newSelectedLayer = ActiveFrame.Layers.Find(layer => layer.LayerID == layerID);
@@ -70,10 +82,6 @@ namespace BIUK9000.UI
             SelectedLayerIndex = i;
             ClickedLayerHolder.Highlight(true);
             ClickedLayerHolder.StayHighlighted = true;
-        }
-        private void Frame_LayersChanged(object sender, EventArgs e)
-        {
-            DisplayLayers(ActiveFrame);
         }
 
         private void Lh_LayerClicked(object sender, EventArgs e)
