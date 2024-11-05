@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.IO;
 using BIUK9000.GifferComponents;
 using System.Drawing;
+using BIUK9000.Dithering;
 
 namespace BIUK9000.UI
 {
@@ -23,6 +24,25 @@ namespace BIUK9000.UI
             }
             UpdateMainPictureBox();
             MainLayersPanel.DisplayLayers(SelectedFrame);
+        }
+        private void MainLayersPanel_LayerDeleteButtonClicked(object sender, EventArgs e)
+        {
+            if(MessageBox.Show("Are you sure you want to delete this layer?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return;
+            int layerIDToDelete = (sender as LayerHolder).HeldLayer.LayerID;
+            foreach (GifFrame gf in MainGiffer.Frames)
+            {
+                GFL layerToDelete = gf.Layers.Find(layer => layer.LayerID == layerIDToDelete);
+                if (layerToDelete != null) gf.Layers.Remove(layerToDelete);
+            }
+            UpdateMainPictureBox();
+            MainLayersPanel.DisplayLayers(SelectedFrame);
+        }
+        private void MainLayersPanel_LayerVisibilityChanged(object sender, EventArgs e)
+        {
+            UpdateMainPictureBox();
+            SavePreviousState();
+            PreviousLayerState.Visible = !SelectedLayer.Visible;
+            ApplyCurrentLayerParamsToSubsequentLayers();
         }
         private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
         {
@@ -55,7 +75,14 @@ namespace BIUK9000.UI
             if (cp.IsLMBDown)
             {
                 cp.DraggingFileForExport = true;
-                using Bitmap bitmap = SelectedFrame.CompleteBitmap(false);
+                Bitmap bitmap = SelectedFrame.CompleteBitmap(false);
+                if (controlsPanel.UseDithering)
+                {
+                    Bitmap bitmapRefBackup = bitmap;
+                    using Ditherer dtr = new Ditherer(bitmap);
+                    bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, controlsPanel.GifExportColors, false));
+                    bitmapRefBackup.Dispose();
+                }
                 string tempPath = Path.ChangeExtension(Path.GetTempFileName(), cp.ImageExportFormat);
                 switch (cp.ImageExportFormat)
                 {
@@ -75,22 +102,22 @@ namespace BIUK9000.UI
                 }
                 cp.DraggingFileForExport = false;
             }
-            else if (cp.IsRMBDown)
-            {
-                cp.DraggingFileForExport = true;
-                using Image gif = MainGiffer.GifFromFrames();
-                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-                gif.Save(tempPath);
-                OBIMP.CompressGif(tempPath, tempPath, cp.GifExportColors, cp.GifExportLossy);
-                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
-                DoDragDrop(data, DragDropEffects.Copy);
-                cp.IsRMBDown = false;
-                if (File.Exists(tempPath))
-                {
-                    File.Delete(tempPath);
-                }
-                cp.DraggingFileForExport = false;
-            }
+            //else if (cp.IsRMBDown)
+            //{
+            //    cp.DraggingFileForExport = true;
+            //    using Image gif = MainGiffer.GifFromFrames();
+            //    string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
+            //    gif.Save(tempPath);
+            //    OBIMP.CompressGif(tempPath, tempPath, cp.GifExportColors, cp.GifExportLossy);
+            //    DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
+            //    DoDragDrop(data, DragDropEffects.Copy);
+            //    cp.IsRMBDown = false;
+            //    if (File.Exists(tempPath))
+            //    {
+            //        File.Delete(tempPath);
+            //    }
+            //    cp.DraggingFileForExport = false;
+            //}
         }
         private void ControlsPanel_SaveButtonClicked(object sender, EventArgs e)
         {

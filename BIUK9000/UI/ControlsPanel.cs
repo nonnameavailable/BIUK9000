@@ -30,7 +30,6 @@ namespace BIUK9000.UI
         public bool UseGifsicle { get => useGifSicleCB.Checked; }
         public bool UseDithering { get => useDitheringCB.Checked; }
         public event EventHandler MustRedraw;
-        public event EventHandler SaveGifDialogOKed;
         public event EventHandler ShouldStartDragDrop;
         public event EventHandler SaveButtonClicked;
         public ControlsPanel()
@@ -47,7 +46,14 @@ namespace BIUK9000.UI
             applyParamsCBB.DataSource = Enum.GetValues(typeof(ApplyParamsMode));
             applyParamsCBB.SelectedIndex = 0;
             SaveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
+            useDitheringCB.CheckedChanged += UseDitheringCB_CheckedChanged;
         }
+
+        private void UseDitheringCB_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UseDithering) ImageExportFormatCBB.SelectedItem = ".png";
+        }
+
         private void SaveButton_MouseMove(object sender, MouseEventArgs e)
         {
             if (ShouldStartDragdrop(e, 10))

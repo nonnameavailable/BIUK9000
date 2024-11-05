@@ -20,13 +20,10 @@ namespace BIUK9000.UI
         public bool StayHighlighted { get; set; }
         private OVector OriginalMousePosition { get; set; }
         public event EventHandler LayerClicked;
-        public event EventHandler MustRedraw;
+        public event EventHandler LayerVisibilityChanged;
         public event DragEventHandler DragDropped;
+        public event EventHandler DeleteButtonClicked;
         private bool _isLmbDown;
-        protected void OnMustRedraw()
-        {
-            MustRedraw?.Invoke(this, EventArgs.Empty);
-        }
         public LayerHolder(GFL layer)
         {
             InitializeComponent();
@@ -42,9 +39,10 @@ namespace BIUK9000.UI
             DragEnter += LayerHolder_DragEnter;
             StayHighlighted = false;
             this.AllowDrop = true;
-            visibleButton.Image = Resources.eye_open_icon;
+            visibleButton.Image = (layer.Visible ? Resources.eye_open_icon : Resources.eye_closed_icon);
             visibleButton.Click += VisibleButton_Click;
-            idLabel.Text = layer.LayerID.ToString();
+            deleteButton.Image = Resources.dustbin_icon;
+            deleteButton.Click += (sender, args) => DeleteButtonClicked?.Invoke(this, args);
         }
 
         private void VisibleButton_Click(object sender, EventArgs e)
@@ -59,7 +57,11 @@ namespace BIUK9000.UI
                 visibleButton.Image = Resources.eye_open_icon;
                 HeldLayer.Visible = true;
             }
-            OnMustRedraw();
+            OnLayerVisChanged();
+        }
+        protected void OnLayerVisChanged()
+        {
+            LayerVisibilityChanged?.Invoke(this, EventArgs.Empty);
         }
         public static Image ImageFromByte(byte[] b)
         {
