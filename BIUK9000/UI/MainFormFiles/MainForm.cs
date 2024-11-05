@@ -13,7 +13,6 @@ using System.IO;
 using System.Diagnostics;
 using Microsoft.VisualBasic;
 using BIUK9000.GifferComponents;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Drawing.Text;
 using BIUK9000.Properties;
 using BIUK9000.Dithering;
@@ -25,7 +24,6 @@ namespace BIUK9000.UI
         public Image MainImage { get => mainPictureBox.Image; set => mainPictureBox.Image = value; }
         private LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
-        //private GifFrame SelectedFrame { get => MainTimelineSlider.SelectedFrame; }
         public GifFrame SelectedFrame { get => MainGiffer.Frames[MainTimelineSlider.SelectedFrameIndex]; }
         private GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
         private GFL PreviousLayerState { get; set; }
@@ -79,13 +77,10 @@ namespace BIUK9000.UI
             Image gif;
             if (controlsPanel.UseDithering)
             {
-                Stopwatch stopwatch = Stopwatch.StartNew();
-                List<Color> palette = KMeans.Palette((Bitmap)MainImage, controlsPanel.GifExportColors, false);
+                using Bitmap bmpForPalette = SelectedFrame.CompleteBitmap(false);
+                List<Color> palette = KMeans.Palette(bmpForPalette, controlsPanel.GifExportColors, false);
                 //List<Color> palette = KMeans.Palette(MainGiffer, controlsPanel.GifExportColors);
-                MessageBox.Show("palette creation took: " + (stopwatch.ElapsedMilliseconds / 1000d).ToString());
-                stopwatch.Restart();
                 gif = MainGiffer.GifFromFrames(palette);
-                //MessageBox.Show("dithering took: " + (stopwatch.ElapsedMilliseconds / 1000d).ToString());
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using AnimatedGif;
 using BIUK9000.Dithering;
+using BIUK9000.GifferComponents.GFLVariants;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

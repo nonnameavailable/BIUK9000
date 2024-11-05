@@ -60,6 +60,7 @@ namespace BIUK9000.UI
         }
         private void MainTimelineSlider_FrameDelayChanged(object sender, EventArgs e)
         {
+            if (MainGiffer == null) return; 
             TimelineSlider ts = sender as TimelineSlider;
             SelectedFrame.FrameDelay = ts.FrameDelay;
             if (controlsPanel.SelectedApplyParamsMode == ApplyParamsMode.applyNone) return;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -21,6 +22,7 @@ namespace BIUK9000.Dithering
 
         public Bitmap DitheredBitmap(List<Color> palette)
         {
+            Stopwatch sw = Stopwatch.StartNew();
             List<double[]> doublePalette = palette.Select(c => doubleFromColor(c)).ToList();
             double[] doubleBitmap = DoubleBitmap();
             double[] ditheredBitmap = DitheredDoubleBitmap(doubleBitmap, doublePalette);
@@ -33,6 +35,8 @@ namespace BIUK9000.Dithering
                     obm.SetPixel(i, j, cc);
                 }
             }
+            Debug.Print("Dithering with " + palette.Count.ToString() + " colors took " + (sw.ElapsedMilliseconds / 1000d).ToString() + " seconds");
+            sw.Stop();
             return new Bitmap(obm.Bitmap);
         }
 

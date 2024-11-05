@@ -1,4 +1,5 @@
 ﻿using BIUK9000.GifferComponents;
+using BIUK9000.GifferComponents.GFLVariants;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,7 +32,6 @@ namespace BIUK9000.UI.LayerParamControls
 
         public void LoadParams(GFL gfl)
         {
-            if (gfl is not TextGFL) return;
             _suppressLayerParamsEvents = true;
             TextGFL tgfl = gfl as TextGFL;
             TextLayerBorderWidthNUD.Value = (decimal)tgfl.FontBorderWidth;

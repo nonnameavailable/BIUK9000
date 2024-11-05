@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000.GifferComponents
+namespace BIUK9000.GifferComponents.GFLVariants
 {
     public class TextGFL : GFL
     {
@@ -26,7 +26,7 @@ namespace BIUK9000.GifferComponents
             }
             set
             {
-                if(value > 1 && value < 300)
+                if (value > 1 && value < 300)
                 {
                     _fontSize = value;
                 }
@@ -50,13 +50,13 @@ namespace BIUK9000.GifferComponents
             base.CopyDifferingParams(ogState, newState);
             TextGFL otl = ogState as TextGFL;
             TextGFL ntl = newState as TextGFL;
-            if(otl.Text != ntl.Text) Text = ntl.Text;
-            if(otl.FontName != ntl.FontName) FontName = ntl.FontName;
-            if(otl.FontColor != ntl.FontColor) FontColor = ntl.FontColor;
-            if(otl.FontBorderColor != ntl.FontBorderColor) FontBorderColor = ntl.FontBorderColor;
-            if(otl.FontBorderWidth != ntl.FontBorderWidth) FontBorderWidth = ntl.FontBorderWidth;
-            if(otl.FontSize != ntl.FontSize) FontSize = ntl.FontSize;
-            if(otl.Visible != ntl.Visible) Visible = ntl.Visible;
+            if (otl.Text != ntl.Text) Text = ntl.Text;
+            if (otl.FontName != ntl.FontName) FontName = ntl.FontName;
+            if (otl.FontColor != ntl.FontColor) FontColor = ntl.FontColor;
+            if (otl.FontBorderColor != ntl.FontBorderColor) FontBorderColor = ntl.FontBorderColor;
+            if (otl.FontBorderWidth != ntl.FontBorderWidth) FontBorderWidth = ntl.FontBorderWidth;
+            if (otl.FontSize != ntl.FontSize) FontSize = ntl.FontSize;
+            if (otl.Visible != ntl.Visible) Visible = ntl.Visible;
         }
         public override void Save()
         {
@@ -131,9 +131,6 @@ namespace BIUK9000.GifferComponents
         public TextGFL(string text, int layerID) : base(layerID)
         {
             Text = text;
-            Position = new OVector(0, 0);
-            Visible = true;
-            Rotation = 0;
         }
         public TextGFL(TextGFL textGFL, int layerID) : base(layerID)
         {

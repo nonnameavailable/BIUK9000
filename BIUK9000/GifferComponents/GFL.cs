@@ -42,6 +42,9 @@ namespace BIUK9000.GifferComponents
         public GFL (int layerID)
         {
             LayerID = layerID;
+            Position = new OVector(0, 0);
+            Visible = true;
+            Rotation = 0;
         }
         public bool Visible { get; set; }
         public float Rotation { get; set; }

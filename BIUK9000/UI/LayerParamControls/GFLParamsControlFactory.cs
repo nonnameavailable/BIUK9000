@@ -1,4 +1,5 @@
 ﻿using BIUK9000.GifferComponents;
+using BIUK9000.GifferComponents.GFLVariants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,12 @@ namespace BIUK9000.UI.LayerParamControls
             if(gfl is TextGFL)
             {
                 return new TextGFLParamControl();
-            } else
+            }
+            else if (gfl is PlainGFL)
+            {
+                return new PlainGFLParamControl();
+            }
+            else
             {
                 return new EmptyGFLParamControl();
             } 

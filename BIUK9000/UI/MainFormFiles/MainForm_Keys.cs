@@ -1,4 +1,5 @@
 ﻿using BIUK9000.GifferComponents;
+using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI.LayerParamControls;
 using System;
 using System.Collections.Generic;
@@ -49,17 +50,31 @@ namespace BIUK9000.UI
                         frame.AddLayer(new TextGFL(tgfl, nextLayerID));
                         frame.LayerCountChanged += GifFrame_LayerCountChanged;
                     }
-                    GifFrame_LayerCountChanged(null, null);
+                    UpdateMainPictureBox();
+                    mainLayersPanel.DisplayLayers(SelectedFrame);
+                    mainLayersPanel.SelectNewestLayer();
+                    return true;
+                } else if(keyData == Keys.B)
+                {
+                    PlainGFL pgfl = new PlainGFL(Color.White, SelectedFrame.Width, SelectedFrame.Height, MainGiffer.NextLayerID());
+                    foreach (GifFrame frame in MainGiffer.Frames)
+                    {
+                        frame.LayerCountChanged -= GifFrame_LayerCountChanged;
+                        frame.AddLayer(pgfl.Clone());
+                        frame.LayerCountChanged += GifFrame_LayerCountChanged;
+                    }
+                    UpdateMainPictureBox();
+                    mainLayersPanel.DisplayLayers(SelectedFrame);
                     mainLayersPanel.SelectNewestLayer();
                     return true;
                 }
-                else if (keyData == Keys.C)
-                {
-                    MainGiffer.Crop(SelectedFrame);
-                    MainLayersPanel.DisplayLayers(SelectedFrame);
-                    UpdateMainPictureBox();
-                    return true;
-                }
+                //else if (keyData == Keys.C)
+                //{
+                //    MainGiffer.Crop(SelectedFrame);
+                //    MainLayersPanel.DisplayLayers(SelectedFrame);
+                //    UpdateMainPictureBox();
+                //    return true;
+                //}
                 else if (keyData == Keys.ShiftKey)
                 {
                     IsShiftDown = true;

@@ -14,6 +14,7 @@ namespace BIUK9000.Dithering
     {
         public static List<Color> Palette(Bitmap bmp, int colorCount, bool usePlusInit)
         {
+            Stopwatch sw = Stopwatch.StartNew();
             FastBitmap fbm = new FastBitmap(bmp);
             List<int> result;
             if (usePlusInit)
@@ -32,6 +33,8 @@ namespace BIUK9000.Dithering
                 RecalculatePalette(fbm, result);
                 counter++;
             }
+            Debug.Print("Creating a palette of " + result.Count.ToString() + " colors took " + (sw.ElapsedMilliseconds / 1000d).ToString() + " seconds");
+            sw.Stop();
             return result.Select(c => Color.FromArgb(c)).ToList();
         }
         public static List<Color> Palette(Giffer giffer, int colorCount)

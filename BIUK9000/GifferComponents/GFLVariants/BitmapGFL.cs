@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000.GifferComponents
+namespace BIUK9000.GifferComponents.GFLVariants
 {
     public class BitmapGFL : GFL
     {
@@ -28,11 +28,8 @@ namespace BIUK9000.GifferComponents
         private void Initialize(Bitmap bitmap)
         {
             OriginalBitmap = bitmap;
-            Position = new OVector(0, 0);
             Width = bitmap.Width;
             Height = bitmap.Height;
-            Visible = true;
-            Rotation = 0;
         }
 
         public void ReplaceOriginalBitmap(Bitmap bitmap)

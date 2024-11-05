@@ -25,12 +25,10 @@ namespace BIUK9000.GifferComponents
             return clone;
         }
 
-        public CropGFL(int width, int height, int layerID) :  base(layerID)
+        public CropGFL(int width, int height, int layerID) : base(layerID)
         {
-            Position = new OVector(0, 0);
             Width = width;
             Height = height;
-            Visible = true;
         }
     }
 }

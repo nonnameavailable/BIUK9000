@@ -29,9 +29,7 @@ namespace BIUK9000.UI
         }
         public void DisplayLayers(GifFrame frame)
         {
-            //if (ActiveFrame != null) ActiveFrame.LayerCountChanged -= Frame_LayerCountChanged;
             ActiveFrame = frame;
-            //frame.LayerCountChanged += Frame_LayerCountChanged;
             for (int i = layersFLP.Controls.Count - 1; i >= 0; i--)
             {
                 Control c = layersFLP.Controls[i];
