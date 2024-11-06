@@ -94,6 +94,7 @@ namespace BIUK9000.UI
                         bitmap.Save(tempPath);
                         break;
                 }
+                bitmap.Dispose();
                 DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
                 DoDragDrop(data, DragDropEffects.Copy);
                 cp.IsLMBDown = false;

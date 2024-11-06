@@ -29,7 +29,6 @@ namespace BIUK9000.UI
         /// </summary>
         private void InitializeComponent()
         {
-            saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             mainLayersPanel = new LayersPanel();
             mainTimelineSlider = new TimelineSlider();
@@ -44,7 +43,7 @@ namespace BIUK9000.UI
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 3;
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 145F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 1);
@@ -75,30 +74,32 @@ namespace BIUK9000.UI
             // 
             mainTimelineSlider.Dock = System.Windows.Forms.DockStyle.Fill;
             mainTimelineSlider.FrameDelay = 10;
-            mainTimelineSlider.Location = new System.Drawing.Point(160, 464);
+            mainTimelineSlider.Location = new System.Drawing.Point(148, 464);
             mainTimelineSlider.Maximum = 100;
             mainTimelineSlider.Name = "mainTimelineSlider";
             mainTimelineSlider.SelectedFrameIndex = 0;
-            mainTimelineSlider.Size = new System.Drawing.Size(559, 94);
+            mainTimelineSlider.Size = new System.Drawing.Size(571, 94);
             mainTimelineSlider.TabIndex = 3;
             // 
             // controlsPanel
             // 
             controlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             controlsPanel.DraggingFileForExport = false;
+            controlsPanel.IsLMBDown = false;
+            controlsPanel.IsRMBDown = false;
             controlsPanel.Location = new System.Drawing.Point(3, 3);
             controlsPanel.Name = "controlsPanel";
-            tableLayoutPanel1.SetRowSpan(controlsPanel, 2);
-            controlsPanel.Size = new System.Drawing.Size(151, 455);
+            tableLayoutPanel1.SetRowSpan(controlsPanel, 3);
+            controlsPanel.Size = new System.Drawing.Size(139, 555);
             controlsPanel.TabIndex = 5;
             // 
             // mainPictureBox
             // 
             mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainPictureBox.Location = new System.Drawing.Point(160, 158);
+            mainPictureBox.Location = new System.Drawing.Point(148, 158);
             mainPictureBox.Name = "mainPictureBox";
-            mainPictureBox.Size = new System.Drawing.Size(559, 300);
+            mainPictureBox.Size = new System.Drawing.Size(571, 300);
             mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             mainPictureBox.TabIndex = 6;
             mainPictureBox.TabStop = false;
@@ -106,9 +107,9 @@ namespace BIUK9000.UI
             // layerParamsPanel
             // 
             layerParamsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            layerParamsPanel.Location = new System.Drawing.Point(160, 3);
+            layerParamsPanel.Location = new System.Drawing.Point(148, 3);
             layerParamsPanel.Name = "layerParamsPanel";
-            layerParamsPanel.Size = new System.Drawing.Size(559, 149);
+            layerParamsPanel.Size = new System.Drawing.Size(571, 149);
             layerParamsPanel.TabIndex = 7;
             // 
             // MainForm
@@ -126,8 +127,6 @@ namespace BIUK9000.UI
         }
 
         #endregion
-
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private LayersPanel mainLayersPanel;
         private TimelineSlider mainTimelineSlider;
