@@ -76,50 +76,9 @@ namespace BIUK9000.UI
             if (cp.IsLMBDown)
             {
                 cp.DraggingFileForExport = true;
-                Bitmap bitmap = SelectedFrame.CompleteBitmap(false);
-                if (controlsPanel.UseDithering)
-                {
-                    Bitmap bitmapRefBackup = bitmap;
-                    using Ditherer dtr = new Ditherer(bitmap);
-                    bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, controlsPanel.GifExportColors, false));
-                    bitmapRefBackup.Dispose();
-                }
-                string tempPath = Path.ChangeExtension(Path.GetTempFileName(), cp.ImageExportFormat);
-                switch (cp.ImageExportFormat)
-                {
-                    case ".jpeg":
-                        OBIMP.SaveJpeg(tempPath, bitmap, 80);
-                        break;
-                    default:
-                        bitmap.Save(tempPath);
-                        break;
-                }
-                bitmap.Dispose();
-                DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
-                DoDragDrop(data, DragDropEffects.Copy);
-                cp.IsLMBDown = false;
-                if (File.Exists(tempPath))
-                {
-                    File.Delete(tempPath);
-                }
+                ImageCreator.FrameExportDragDrop(this);
                 cp.DraggingFileForExport = false;
             }
-            //else if (cp.IsRMBDown)
-            //{
-            //    cp.DraggingFileForExport = true;
-            //    using Image gif = MainGiffer.GifFromFrames();
-            //    string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            //    gif.Save(tempPath);
-            //    OBIMP.CompressGif(tempPath, tempPath, cp.GifExportColors, cp.GifExportLossy);
-            //    DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
-            //    DoDragDrop(data, DragDropEffects.Copy);
-            //    cp.IsRMBDown = false;
-            //    if (File.Exists(tempPath))
-            //    {
-            //        File.Delete(tempPath);
-            //    }
-            //    cp.DraggingFileForExport = false;
-            //}
         }
         private void ControlsPanel_SaveButtonClicked(object sender, EventArgs e)
         {
@@ -132,7 +91,18 @@ namespace BIUK9000.UI
                     MessageBox.Show("Do not use the same file name for export as you did for import.");
                     return;
                 }
-                string tempPath = SaveGifToTempFile();
+                string tempPath;
+                if (controlsPanel.UseDithering)
+                {
+                    tempPath = ImageCreator.SaveGifToTempFile(MainGiffer, controlsPanel.GifExportColors);
+                } else
+                {
+                    tempPath = ImageCreator.SaveGifToTempFile(MainGiffer);
+                }
+                if(controlsPanel.UseGifsicle)
+                {
+                    OBIMP.CompressGif(tempPath, tempPath, controlsPanel.GifExportColors, controlsPanel.GifExportLossy);
+                }
                 if (tempPath != null)
                 {
                     File.Copy(tempPath, sfd.FileName, true);

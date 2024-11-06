@@ -9,17 +9,17 @@ namespace BIUK9000.GifferComponents.GFLVariants
 {
     internal class PlainGFL : GFL
     {
-        public Color BackColor { get; set; }
+        public Color Color { get; set; }
         public PlainGFL(Color color, int width, int height, int layerID) : base(layerID)
         {
-            BackColor = color;
+            Color = color;
             layerID = LayerID;
             Width = width;
             Height = height;
         }
         public override GFL Clone()
         {
-            PlainGFL result = new PlainGFL(BackColor, Width, Height, LayerID);
+            PlainGFL result = new PlainGFL(Color, Width, Height, LayerID);
             result.CopyParameters(this);
             return result;
         }
@@ -28,20 +28,25 @@ namespace BIUK9000.GifferComponents.GFLVariants
             base.CopyDifferingParams(ogState, newState);
             PlainGFL ogl = (PlainGFL)ogState;
             PlainGFL ngl = (PlainGFL)newState;
-            if (ogl.BackColor != ngl.BackColor) BackColor = ngl.BackColor;
+            if (ogl.Color != ngl.Color) Color = ngl.Color;
         }
         public override void CopyParameters(GFL layer)
         {
             base.CopyParameters(layer);
-            BackColor = (layer as PlainGFL).BackColor;
+            Color = (layer as PlainGFL).Color;
         }
 
         public override Bitmap MorphedBitmap()
         {
             Bitmap result = new Bitmap(Width, Height);
             using Graphics g = Graphics.FromImage(result);
-            g.Clear(BackColor);
+            g.Clear(Color);
             return result;
+        }
+        public override void Lerp(GFL start, GFL end, double distance)
+        {
+            base.Lerp(start, end, distance);
+            Color = LerpColor((start as PlainGFL).Color, (end as PlainGFL).Color, distance);
         }
     }
 }

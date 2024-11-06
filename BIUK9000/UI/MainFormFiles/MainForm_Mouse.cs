@@ -154,7 +154,7 @@ namespace BIUK9000.UI
         }
         private OVector LayerCenterToMouse()
         {
-            GFL gfl = MainLayersPanel.SelectedLayer;
+            GFL gfl = SelectedLayer;
             OVector LayerCenter = gfl.Center();
             double pbAspect = (double)mainPictureBox.Width / mainPictureBox.Height;
             double frameAspect = (double)SelectedFrame.Width / SelectedFrame.Height;

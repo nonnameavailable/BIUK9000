@@ -16,6 +16,7 @@ using BIUK9000.GifferComponents;
 using System.Drawing.Text;
 using BIUK9000.Properties;
 using BIUK9000.Dithering;
+using BIUK9000.UI.LayerParamControls;
 
 namespace BIUK9000.UI
 {
@@ -24,11 +25,15 @@ namespace BIUK9000.UI
         public Image MainImage { get => mainPictureBox.Image; set => mainPictureBox.Image = value; }
         private LayersPanel MainLayersPanel { get => mainLayersPanel; }
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
+        public ControlsPanel MainControlsPanel { get => controlsPanel; }
         public GifFrame SelectedFrame { get => MainGiffer.Frames[MainTimelineSlider.SelectedFrameIndex]; }
         private GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
         private GFL PreviousLayerState { get; set; }
         private Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
+        private GFL PreviousSelectedLayer { get; set; }
+        private FrameAndLayer LerpStart { get; set; }
+
 
         private Timer _updateTimer;
 
@@ -64,6 +69,39 @@ namespace BIUK9000.UI
             controlsPanel.SaveButtonClicked += ControlsPanel_SaveButtonClicked;
 
             MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
+
+            lerpStartButton.Click += LerpStartButton_Click;
+            lerpExecuteButton.Click += LerpExecuteButton_Click;
+        }
+
+        private void LerpExecuteButton_Click(object sender, EventArgs e)
+        {
+            if(LerpStart.Layer == null || LerpStart.Frame == null)
+            {
+                MessageBox.Show("You must start the lerp first");
+                return;
+            }
+            GFL startLayer = LerpStart.Layer;
+            GifFrame startFrame = LerpStart.Frame;
+            int startIndex = MainGiffer.Frames.IndexOf(startFrame);
+            int endIndex = mainTimelineSlider.SelectedFrameIndex;
+            int totalFrames = endIndex - startIndex;
+            string positions = string.Empty;
+            for (int i = startIndex + 1; i <= endIndex; i++)
+            {
+                double distance = 1 - (endIndex - i) / (double)totalFrames;
+                GifFrame cgf = MainGiffer.Frames[i];
+                GFL layerToLerp = cgf.Layers.Find(layer => layer.LayerID == startLayer.LayerID);
+                if (layerToLerp != null)
+                {
+                    layerToLerp.Lerp(startLayer, SelectedLayer, distance);
+                }
+            }
+        }
+
+        private void LerpStartButton_Click(object sender, EventArgs e)
+        {
+            LerpStart = new FrameAndLayer(SelectedLayer, SelectedFrame);
         }
 
         private void SavePreviousState()
@@ -71,40 +109,10 @@ namespace BIUK9000.UI
             PreviousLayerState = SelectedLayer.Clone();
         }
 
-        public string SaveGifToTempFile()
-        {
-            string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            Image gif;
-            if (controlsPanel.UseDithering)
-            {
-                using Bitmap bmpForPalette = SelectedFrame.CompleteBitmap(false);
-                List<Color> palette = KMeans.Palette(bmpForPalette, controlsPanel.GifExportColors, false);
-                //List<Color> palette = KMeans.Palette(MainGiffer, controlsPanel.GifExportColors);
-                gif = MainGiffer.GifFromFrames(palette);
-            }
-            else
-            {
-                gif = MainGiffer.GifFromFrames();
-            }
-            gif.Save(tempPath);
-            if (controlsPanel.UseGifsicle)
-            {
-                OBIMP.CompressGif(tempPath, tempPath, controlsPanel.GifExportColors, controlsPanel.GifExportLossy);
-            }
-            if(File.Exists(tempPath))
-            {
-                return tempPath;
-            } else
-            {
-                return null;
-            }
-        }
-
         public void ApplyCurrentLayerParamsToSubsequentLayers()
         {
             ApplyParamsMode apm = controlsPanel.SelectedApplyParamsMode;
             if (apm == ApplyParamsMode.applyNone) return;
-            //int cli = SelectedFrame.Layers.IndexOf(SelectedLayer);
             int cli = mainLayersPanel.SelectedLayerIndex;
             int cgfi = MainGiffer.Frames.IndexOf(SelectedFrame);
             for (int i = cgfi + 1; i < MainGiffer.Frames.Count; i++)
@@ -250,6 +258,54 @@ namespace BIUK9000.UI
             //MainImage = dtr.DitheredBitmap(palette);
             //dtr.Dispose();
             MainImage = bitmap;
+        }
+        private bool LayerTypeChanged()
+        {
+            if (PreviousSelectedLayer == null || SelectedLayer == null) return true;
+            return !(SelectedLayer.GetType().Name == PreviousSelectedLayer.GetType().Name);
+        }
+
+        private void UpdateLayerParamsUI(bool layerTypeChanged)
+        {
+            if (layerTypeChanged)
+            {
+                if (layerParamsPanel.Controls.Count > 0)
+                {
+                    layerParamsPanel.Controls[0].Dispose();
+                }
+                layerParamsPanel.Controls.Clear();
+                IGFLParamControl lpc = GFLParamsControlFactory.GFLParamControl(SelectedLayer);
+                lpc.LoadParams(SelectedLayer);
+                lpc.ParamsChanged += (sender, args) =>
+                {
+                    SavePreviousState();
+                    lpc.SaveParams(SelectedLayer);
+                    UpdateMainPictureBox();
+                    ApplyCurrentLayerParamsToSubsequentLayers();
+                };
+                Control lpcc = lpc as Control;
+                lpcc.Dock = DockStyle.Fill;
+                layerParamsPanel.Controls.Add(lpcc);
+            }
+            else
+            {
+                if (layerParamsPanel.Controls.Count > 0)
+                {
+                    IGFLParamControl lpc = layerParamsPanel.Controls[0] as IGFLParamControl;
+                    lpc.LoadParams(SelectedLayer);
+                }
+            }
+
+        }
+        private struct FrameAndLayer
+        {
+            public GFL Layer { get; private set; }
+            public GifFrame Frame { get; private set; }
+            public FrameAndLayer(GFL layer, GifFrame frame)
+            {
+                Layer = layer.Clone();
+                Frame = frame;
+            }
         }
     }
 }

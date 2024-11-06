@@ -136,6 +136,17 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             CopyParameters(textGFL);
         }
+        public override void Lerp(GFL start, GFL end, double distance)
+        {
+            base.Lerp(start, end, distance);
+            TextGFL tstart = start as TextGFL;
+            TextGFL tend = end as TextGFL;
+            FontSize = Lerp(tstart.FontSize, tend.FontSize, distance);
+            FontColor = LerpColor(tstart.FontColor, tend.FontColor, distance);
+            FontBorderColor = LerpColor(tstart.FontBorderColor, tend.FontBorderColor, distance);
+            FontBorderWidth = Lerp(tstart.FontBorderWidth, tend.FontBorderWidth, distance);
+            Text = LerpText(tstart.Text, tend.Text, distance);
+        }
 
     }
 }

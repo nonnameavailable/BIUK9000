@@ -36,8 +36,12 @@ namespace BIUK9000.UI
             mainPictureBox = new System.Windows.Forms.PictureBox();
             layerParamsPanel = new System.Windows.Forms.Panel();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            panel1 = new System.Windows.Forms.Panel();
+            lerpStartButton = new System.Windows.Forms.Button();
+            lerpExecuteButton = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -51,6 +55,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Controls.Add(controlsPanel, 0, 0);
             tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Controls.Add(layerParamsPanel, 1, 0);
+            tableLayoutPanel1.Controls.Add(panel1, 2, 2);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -112,6 +117,34 @@ namespace BIUK9000.UI
             layerParamsPanel.Size = new System.Drawing.Size(571, 149);
             layerParamsPanel.TabIndex = 7;
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(lerpExecuteButton);
+            panel1.Controls.Add(lerpStartButton);
+            panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel1.Location = new System.Drawing.Point(725, 464);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(144, 94);
+            panel1.TabIndex = 8;
+            // 
+            // lerpStartButton
+            // 
+            lerpStartButton.Location = new System.Drawing.Point(3, 3);
+            lerpStartButton.Name = "lerpStartButton";
+            lerpStartButton.Size = new System.Drawing.Size(75, 23);
+            lerpStartButton.TabIndex = 0;
+            lerpStartButton.Text = "lerp start";
+            lerpStartButton.UseVisualStyleBackColor = true;
+            // 
+            // lerpExecuteButton
+            // 
+            lerpExecuteButton.Location = new System.Drawing.Point(3, 32);
+            lerpExecuteButton.Name = "lerpExecuteButton";
+            lerpExecuteButton.Size = new System.Drawing.Size(81, 23);
+            lerpExecuteButton.TabIndex = 1;
+            lerpExecuteButton.Text = "lerp execute";
+            lerpExecuteButton.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AllowDrop = true;
@@ -123,6 +156,7 @@ namespace BIUK9000.UI
             Text = "Form1";
             tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -134,6 +168,9 @@ namespace BIUK9000.UI
         private System.Windows.Forms.PictureBox mainPictureBox;
         private System.Windows.Forms.Panel layerParamsPanel;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button lerpExecuteButton;
+        private System.Windows.Forms.Button lerpStartButton;
     }
 }
 

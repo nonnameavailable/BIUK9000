@@ -105,5 +105,16 @@ namespace BIUK9000
                 return ov.X == X && ov.Y == Y;
             }
         }
+
+        public static OVector Lerp(OVector start, OVector end, double distance)
+        {
+            double x = start.X + (end.X - start.X) * distance;
+            double y = start.Y + (end.Y - start.Y) * distance;
+            return new OVector(x, y);
+        }
+        public override string ToString()
+        {
+            return ("X: " + X + ", " + Y);
+        }
     }
 }

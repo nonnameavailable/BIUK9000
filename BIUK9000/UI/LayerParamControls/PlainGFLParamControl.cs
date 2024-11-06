@@ -22,12 +22,12 @@ namespace BIUK9000.UI.LayerParamControls
 
         public void LoadParams(GFL gfl)
         {
-            colorButton.Color = (gfl as PlainGFL).BackColor;
+            colorButton.Color = (gfl as PlainGFL).Color;
         }
 
         public void SaveParams(GFL gfl)
         {
-            (gfl as  PlainGFL).BackColor = colorButton.Color;
+            (gfl as  PlainGFL).Color = colorButton.Color;
         }
     }
 }
