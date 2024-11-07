@@ -25,16 +25,8 @@ namespace BIUK9000
         {
             get
             {
-                double quad = 0;
-                if (X < 0 && Y >= 0) quad = 1;
-                if (X <= 0 && Y < 0) quad = 2;
-                if (X > 0 && Y <= 0) quad = 3;
-                double helpRot = Math.PI / 2 * (quad + 1);
-
-                OVector help = Copy().Rotate(-90 * quad);
-                double angle = Math.Asin(help.Y / help.Magnitude);
-
-                return (angle + helpRot) * 180 / Math.PI;
+                double angle = Math.Atan2(Y, X);
+                return angle * 180 / Math.PI;
             }
         }
         public double DotProduct(OVector vector)

@@ -10,6 +10,7 @@ using System.Drawing;
 using BIUK9000.Dithering;
 using BIUK9000.UI;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace BIUK9000
 {
@@ -44,7 +45,8 @@ namespace BIUK9000
         public static string SaveGifToTempFile(Giffer giffer)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            GifFromGiffer(giffer).Save(tempPath);
+            using Image gif = GifFromGiffer(giffer);
+            gif.Save(tempPath);
             if (File.Exists(tempPath))
             {
                 return tempPath;
@@ -58,10 +60,10 @@ namespace BIUK9000
         public static string SaveGifToTempFile(Giffer giffer, int ditherColorCount)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            Image gif;
             using Bitmap bmpForPalette = giffer.Frames[0].CompleteBitmap(false);
             List<Color> palette = KMeans.Palette(bmpForPalette, ditherColorCount, false);
-            gif = GifFromGiffer(giffer, palette);
+            using Image gif = GifFromGiffer(giffer, palette);
+            gif.Save(tempPath);
             if (File.Exists(tempPath))
             {
                 return tempPath;

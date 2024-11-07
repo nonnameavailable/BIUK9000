@@ -1,6 +1,7 @@
 ﻿using BIUK9000.GifferComponents;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -63,7 +64,6 @@ namespace BIUK9000.UI
                 isMMBDown = true;
             }
         }
-
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
             if (MainGiffer == null) return;
@@ -72,7 +72,6 @@ namespace BIUK9000.UI
             int yDragDif = mousePosition.Y - mouseClickedPosition.Y;
             int xMoveDif = mousePosition.X - prevMousePosition.X;
             int yMoveDif = mousePosition.Y - prevMousePosition.Y;
-
             double zoom = Zoom();
             OVector currentLCtM = LayerCenterToMouse();
             if (isRMBDown || isLMBDown || isMMBDown)
@@ -84,7 +83,6 @@ namespace BIUK9000.UI
                     if (IsCtrlDown)
                     {
                         //MOVE WHOLE GIF (ALL LAYERS, ALL FRAMES)
-                        //SelectedFrame.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
                         MainGiffer.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
                     }
                     else
@@ -93,7 +91,6 @@ namespace BIUK9000.UI
                         gfl.MoveFromOBR((int)(xDragDif / zoom), (int)(yDragDif / zoom));
                         if(controlsPanel.PositionSnap) gfl.Position = SnappedPosition(gfl.Position, 10);
                     }
-                    //gfl.Move((int)(xMoveDif / zoom), (int)(yMoveDif / zoom));
                 }
                 else if (!isLMBDown && isRMBDown)
                 {
@@ -107,7 +104,6 @@ namespace BIUK9000.UI
                     {
                         gfl.Rotation = newRotation;
                     }
-                    
                 }
                 else if (isMMBDown)
                 {

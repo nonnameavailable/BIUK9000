@@ -86,7 +86,6 @@ namespace BIUK9000.UI
             int startIndex = MainGiffer.Frames.IndexOf(startFrame);
             int endIndex = mainTimelineSlider.SelectedFrameIndex;
             int totalFrames = endIndex - startIndex;
-            string positions = string.Empty;
             for (int i = startIndex + 1; i <= endIndex; i++)
             {
                 double distance = 1 - (endIndex - i) / (double)totalFrames;

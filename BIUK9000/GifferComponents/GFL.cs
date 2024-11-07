@@ -44,10 +44,37 @@ namespace BIUK9000.GifferComponents
             LayerID = layerID;
             Position = new OVector(0, 0);
             Visible = true;
-            Rotation = 0;
+            _rotation = 0;
+            _previousRotation = 0;
+            _spinCount = 0;
         }
         public bool Visible { get; set; }
-        public float Rotation { get; set; }
+        public float Rotation
+        {
+            get
+            {
+                return _rotation + _spinCount * 360;
+            }
+            set
+            {
+                _rotation = value;
+                float dif = _rotation - _previousRotation;
+                if(dif > 180)
+                {
+                    _spinCount--;
+                    _rotation += 360;
+                }
+                else if (dif < -180)
+                {
+                    _spinCount++;
+                    _rotation -= 360;
+                }
+                _previousRotation = value;
+            }
+        }
+        private float _rotation;
+        private float _previousRotation;
+        private int _spinCount;
         public abstract Bitmap MorphedBitmap();
         protected Rectangle OBR { get; set; }
         public virtual void Save()
