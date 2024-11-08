@@ -17,6 +17,7 @@ using System.Drawing.Text;
 using BIUK9000.Properties;
 using BIUK9000.Dithering;
 using BIUK9000.UI.LayerParamControls;
+using System.Drawing.Drawing2D;
 
 namespace BIUK9000.UI
 {
@@ -217,18 +218,16 @@ namespace BIUK9000.UI
                         }
                     }
                 }
-                UpdateMainPictureBox();
                 mainLayersPanel.DisplayLayers(SelectedFrame);
                 mainLayersPanel.SelectNewestLayer();
             }
+            UpdateMainPictureBox();
         }
 
         private void SetNewGiffer(Giffer newGiffer)
         {
             Giffer oldGiffer = MainGiffer;
             MainGiffer = newGiffer;
-            //mainTimelineSlider.Giffer = newGiffer;
-            UpdateMainPictureBox();
             foreach (GifFrame gifFrame in MainGiffer.Frames)
             {
                 gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
@@ -239,7 +238,6 @@ namespace BIUK9000.UI
             MainTimelineSlider.Maximum = MainGiffer.Frames.Count - 1;
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
             SavePreviousState();
-            //mainTimelineSlider.UpdateDelayNUD();
         }
 
         private void GifFrame_LayerCountChanged(object sender, EventArgs e)
@@ -252,11 +250,16 @@ namespace BIUK9000.UI
         {
             MainImage?.Dispose();
             Bitmap bitmap = SelectedFrame.CompleteBitmap(controlsPanel.DrawHelp);
-            //List<Color> palette = KMeans.Palette(bitmap, 10);
-            //Ditherer dtr = new Ditherer(bitmap);
-            //MainImage = dtr.DitheredBitmap(palette);
-            //dtr.Dispose();
+            if (SelectedLayer != null)
+            {
+                using Graphics g = Graphics.FromImage(bitmap);
+                OVector start = new OVector(0, 0);
+                OVector end = new OVector(bitmap.Width, bitmap.Height);
+                using GraphicsPath path = Lerper.ArcPath(start, end, 400, 20);
+                g.DrawPath(Pens.Red, path);
+            }
             MainImage = bitmap;
+
         }
         private bool LayerTypeChanged()
         {

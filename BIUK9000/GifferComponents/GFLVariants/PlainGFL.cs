@@ -46,7 +46,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
         public override void Lerp(GFL start, GFL end, double distance)
         {
             base.Lerp(start, end, distance);
-            Color = LerpColor((start as PlainGFL).Color, (end as PlainGFL).Color, distance);
+            Color = Lerper.LerpColor((start as PlainGFL).Color, (end as PlainGFL).Color, distance);
         }
     }
 }

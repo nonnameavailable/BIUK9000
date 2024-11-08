@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace BIUK9000
 {
@@ -42,6 +45,12 @@ namespace BIUK9000
         {
             X = x;
             Y = y;
+        }
+
+        public OVector(Point p)
+        {
+            X = p.X;
+            Y = p.Y;
         }
 
         public OVector Add(OVector vector)
@@ -104,9 +113,17 @@ namespace BIUK9000
             double y = start.Y + (end.Y - start.Y) * distance;
             return new OVector(x, y);
         }
+        public double Distance(OVector end)
+        {
+            return Math.Sqrt(Math.Pow(end.X - X, 2) + Math.Pow(end.Y - Y, 2));
+        }
         public override string ToString()
         {
             return ("X: " + X + ", " + Y);
+        }
+        public Point ToPoint()
+        {
+            return new Point(Xint, Yint);
         }
     }
 }
