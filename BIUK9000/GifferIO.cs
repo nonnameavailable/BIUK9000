@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using System.Drawing;
 using BIUK9000.Dithering;
 using BIUK9000.UI;
+using BIUK9000.GifferComponents.GFLVariants;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
 namespace BIUK9000
 {
-    public class ImageCreator
+    public class GifferIO
     {
         public static Image GifFromGiffer(Giffer giffer)
         {
@@ -27,7 +28,7 @@ namespace BIUK9000
             }
             return Image.FromStream(stream);
         }
-        public static Image GifFromGiffer(Giffer giffer, List<Color> paletteForDithering)
+        private static Image GifFromGifferDithered(Giffer giffer, List<Color> paletteForDithering)
         {
             MemoryStream stream = new MemoryStream();
             int frameDelay = giffer.FrameDelay();
@@ -57,12 +58,12 @@ namespace BIUK9000
             }
         }
 
-        public static string SaveGifToTempFile(Giffer giffer, int ditherColorCount)
+        public static string SaveGifToTempFileDithered(Giffer giffer, int ditherColorCount)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
             using Bitmap bmpForPalette = giffer.Frames[0].CompleteBitmap(false);
             List<Color> palette = KMeans.Palette(bmpForPalette, ditherColorCount, false);
-            using Image gif = GifFromGiffer(giffer, palette);
+            using Image gif = GifFromGifferDithered(giffer, palette);
             gif.Save(tempPath);
             if (File.Exists(tempPath))
             {
@@ -102,6 +103,58 @@ namespace BIUK9000
             if (File.Exists(tempPath))
             {
                 File.Delete(tempPath);
+            }
+        }
+
+        public static void FileImport(string[] filePaths, MainForm mf)
+        {
+            Giffer mg = mf.MainGiffer;
+            foreach (string filePath in filePaths)
+            {
+                string ext = Path.GetExtension(filePath);
+
+                if (ext == ".gif")
+                {
+                    Giffer newGiffer = new Giffer(filePath);
+                    if (mg == null)
+                    {
+                        mf.SetNewGiffer(newGiffer);
+                    }
+                    else
+                    {
+                        using ImportQuestionForm iqf = new ImportQuestionForm();
+                        iqf.SelectedFresh += (sender, args) => mf.SetNewGiffer(newGiffer);
+                        iqf.SelectedAsLayers += (sender, args) =>
+                        {
+                            mg.AddGifferAsLayers(newGiffer);
+                            newGiffer.Dispose();
+                        };
+                        iqf.ShowDialog();
+                    }
+                }
+                else
+                {
+                    Bitmap bitmap;
+                    try
+                    {
+                        bitmap = new Bitmap(filePath);
+                    }
+                    catch
+                    {
+                        MessageBox.Show(Path.GetFileName(filePath) + "is not an image file!");
+                        return;
+                    }
+                    if (mg == null)
+                    {
+                        mg = new Giffer();
+                        mg.AddFrame(new GifFrame(bitmap, 20, mg.NextLayerID()));
+                    }
+                    else
+                    {
+                        int nextLayerID = mg.NextLayerID();
+                        mg.Frames.ForEach(frame => frame.AddLayer(new BitmapGFL(bitmap, nextLayerID)));
+                    }
+                }
             }
         }
     }

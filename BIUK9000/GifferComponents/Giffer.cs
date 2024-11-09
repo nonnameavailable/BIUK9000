@@ -122,7 +122,7 @@ namespace BIUK9000.GifferComponents
             {
                 int newGifferIndex = (int)(i / (double)Frames.Count * newGiffer.Frames.Count);
                 GifFrame cgf = Frames[i];
-                cgf.AddLayer(newGiffer.Frames[newGifferIndex].CompleteBitmap(false), nextLayerID);
+                cgf.AddLayer(new BitmapGFL(newGiffer.Frames[newGifferIndex].CompleteBitmap(false), nextLayerID));
             }
         }
         public int NextLayerID()

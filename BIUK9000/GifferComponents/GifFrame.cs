@@ -84,24 +84,9 @@ namespace BIUK9000.GifferComponents
             }
             return result;
         }
-
-        public void AddLayer(Bitmap bitmap, int newLayerID)
-        {
-            Layers.Add(new BitmapGFL(bitmap, newLayerID));
-            //OnLayerCountChanged();
-        }
-        public void AddLayer(int width, int height, int newLayerID)
-        {
-            Bitmap bitmap = new Bitmap(width, height);
-            using Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.FillRectangle(Brushes.Black, 0, 0, width, height);
-            Layers.Add(new BitmapGFL(bitmap, newLayerID));
-            //OnLayerCountChanged();
-        }
         public void AddLayer(GFL layer)
         {
             Layers.Add(layer);
-            //OnLayerCountChanged();
         }
 
         public void RemoveLayer(int index)
@@ -110,7 +95,6 @@ namespace BIUK9000.GifferComponents
             {
                 Layers[index].Dispose();
                 Layers.RemoveAt(index);
-                //OnLayerCountChanged();
             }
         }
         public void RemoveLayer(GFL layer)
