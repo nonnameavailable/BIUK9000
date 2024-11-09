@@ -48,6 +48,7 @@
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(layersFLP);
+            DoubleBuffered = true;
             Name = "LayersPanel";
             ResumeLayout(false);
         }

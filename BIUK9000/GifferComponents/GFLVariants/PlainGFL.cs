@@ -10,16 +10,13 @@ namespace BIUK9000.GifferComponents.GFLVariants
     internal class PlainGFL : GFL
     {
         public Color Color { get; set; }
-        public PlainGFL(Color color, int width, int height, int layerID) : base(layerID)
+        public PlainGFL(int layerID) : base(layerID)
         {
-            Color = color;
-            layerID = LayerID;
-            Width = width;
-            Height = height;
+            Color = Color.White;
         }
         public override GFL Clone()
         {
-            PlainGFL result = new PlainGFL(Color, Width, Height, LayerID);
+            PlainGFL result = new PlainGFL(LayerID);
             result.CopyParameters(this);
             return result;
         }

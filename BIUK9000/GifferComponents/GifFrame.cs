@@ -13,12 +13,8 @@ namespace BIUK9000.GifferComponents
     {
         private bool disposedValue;
 
-        public event EventHandler LayerCountChanged;
         public int FrameDelay {  get; set; }
-        //protected virtual void OnLayerCountChanged()
-        //{
-        //    LayerCountChanged?.Invoke(this, EventArgs.Empty);
-        //}
+
         public Rectangle OBR { get; set; }
         public virtual void Save()
         {
@@ -62,7 +58,6 @@ namespace BIUK9000.GifferComponents
                     cl.Move(left, up);
                 }
             }
-            //OnLayerCountChanged();
         }
         public GifFrame(int width, int height, int firstLayerID)
         {

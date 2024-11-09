@@ -20,15 +20,14 @@ namespace BIUK9000.GifferComponents
 
         public override GFL Clone()
         {
-            CropGFL clone = new CropGFL(Width, Height, LayerID);
+            CropGFL clone = new CropGFL(LayerID);
             clone.CopyParameters(this);
             return clone;
         }
 
-        public CropGFL(int width, int height, int layerID) : base(layerID)
+        public CropGFL(int layerID) : base(layerID)
         {
-            Width = width;
-            Height = height;
+
         }
     }
 }

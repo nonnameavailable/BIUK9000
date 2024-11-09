@@ -44,6 +44,8 @@ namespace BIUK9000.GifferComponents
             LayerID = layerID;
             Position = new OVector(0, 0);
             Visible = true;
+            Width = 50;
+            Height = 50;
             _rotation = 0;
             _previousRotation = 0;
             _spinCount = 0;

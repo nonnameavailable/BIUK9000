@@ -170,23 +170,13 @@ namespace BIUK9000.UI
                          else
                         {
                             using ImportQuestionForm iqf = new ImportQuestionForm();
-                            if(iqf.ShowDialog() == DialogResult.OK)
+                            iqf.SelectedFresh += (sender, args) => SetNewGiffer(newGiffer);
+                            iqf.SelectedAsLayers += (sender, args) =>
                             {
-                                switch(iqf.SelectedImportType)
-                                {
-                                    case ImportQuestionForm.IMPORT_AS_LAYERS:
-                                        MainGiffer.AddGifferAsLayers(newGiffer);
-                                        newGiffer.Dispose();
-                                        break;
-                                    case ImportQuestionForm.IMPORT_INSERT:
-                                        MessageBox.Show("Not implemented yet :)");
-                                        break;
-                                    default: //FRESH
-                                        SetNewGiffer(newGiffer);
-                                        break;
-                                }
-                            }
-                            
+                                MainGiffer.AddGifferAsLayers(newGiffer);
+                                newGiffer.Dispose();
+                            };
+                            iqf.ShowDialog();
                         }
                     }
                     else
@@ -209,12 +199,7 @@ namespace BIUK9000.UI
                         else
                         {
                             int nextLayerID = MainGiffer.NextLayerID();
-                            foreach (GifFrame gifFrame in MainGiffer.Frames)
-                            {
-                                gifFrame.LayerCountChanged -= GifFrame_LayerCountChanged;
-                                gifFrame.AddLayer(bitmap, nextLayerID);
-                                gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
-                            }
+                            MainGiffer.Frames.ForEach(frame => frame.AddLayer(bitmap, nextLayerID));
                         }
                     }
                 }
@@ -226,38 +211,19 @@ namespace BIUK9000.UI
 
         private void SetNewGiffer(Giffer newGiffer)
         {
-            Giffer oldGiffer = MainGiffer;
+            MainGiffer?.Dispose();
             MainGiffer = newGiffer;
-            foreach (GifFrame gifFrame in MainGiffer.Frames)
-            {
-                gifFrame.LayerCountChanged += GifFrame_LayerCountChanged;
-            }
             MainLayersPanel.SelectedLayerIndex = 0;
             mainLayersPanel.DisplayLayers(SelectedFrame);
-            oldGiffer?.Dispose();
             MainTimelineSlider.Maximum = MainGiffer.Frames.Count - 1;
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
             SavePreviousState();
-        }
-
-        private void GifFrame_LayerCountChanged(object sender, EventArgs e)
-        {
-            UpdateMainPictureBox();
-            MainLayersPanel.DisplayLayers(SelectedFrame);
         }
 
         public void UpdateMainPictureBox()
         {
             MainImage?.Dispose();
             Bitmap bitmap = SelectedFrame.CompleteBitmap(controlsPanel.DrawHelp);
-            if (SelectedLayer != null)
-            {
-                using Graphics g = Graphics.FromImage(bitmap);
-                OVector start = new OVector(0, 0);
-                OVector end = new OVector(bitmap.Width, bitmap.Height);
-                using GraphicsPath path = Lerper.ArcPath(start, end, 400, 20);
-                g.DrawPath(Pens.Red, path);
-            }
             MainImage = bitmap;
 
         }

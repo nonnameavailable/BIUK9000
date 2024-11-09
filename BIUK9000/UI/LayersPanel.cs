@@ -29,6 +29,7 @@ namespace BIUK9000.UI
         }
         public void DisplayLayers(GifFrame frame)
         {
+            layersFLP.Visible = false;
             ActiveFrame = frame;
             for (int i = layersFLP.Controls.Count - 1; i >= 0; i--)
             {
@@ -45,6 +46,7 @@ namespace BIUK9000.UI
                 layersFLP.Controls.Add(lh);
             }
             SelectLayerHolder(SelectedLayerIndex);
+            layersFLP.Visible = true;
         }
 
         private void Lh_DeleteButtonClicked(object sender, EventArgs e)

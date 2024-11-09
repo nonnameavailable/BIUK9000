@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,8 +14,8 @@ namespace BIUK9000.UI
 {
     public partial class MainForm
     {
-        private bool IsShiftDown { get; set; }
-        private bool IsCtrlDown { get; set; }
+        public bool IsShiftDown { get; set; }
+        public bool IsCtrlDown { get; set; }
 
         protected override bool ProcessKeyPreview(ref Message m)
         {
@@ -34,47 +35,11 @@ namespace BIUK9000.UI
                     if (MainTimelineSlider.SelectedFrameIndex > 0) MainTimelineSlider.SelectedFrameIndex -= 1;
                     return true;
                 }
-                else if (keyData == Keys.T)
+                else if (keyData == Keys.T || keyData == Keys.B)
                 {
-                    TextGFL tgfl = new TextGFL("YOUR TEXT", 0);
-                    tgfl.FontName = "Impact";
-                    tgfl.FontBorderColor = Color.Black;
-                    tgfl.FontColor = Color.White;
-                    tgfl.FontBorderWidth = 5;
-                    tgfl.FontSize = 20;
-                    tgfl.Visible = true;
-                    int nextLayerID = MainGiffer.NextLayerID();
-                    foreach(GifFrame frame in MainGiffer.Frames)
-                    {
-                        frame.LayerCountChanged -= GifFrame_LayerCountChanged;
-                        frame.AddLayer(new TextGFL(tgfl, nextLayerID));
-                        frame.LayerCountChanged += GifFrame_LayerCountChanged;
-                    }
-                    UpdateMainPictureBox();
-                    mainLayersPanel.DisplayLayers(SelectedFrame);
-                    mainLayersPanel.SelectNewestLayer();
-                    return true;
-                } else if(keyData == Keys.B)
-                {
-                    PlainGFL pgfl = new PlainGFL(Color.White, SelectedFrame.Width, SelectedFrame.Height, MainGiffer.NextLayerID());
-                    foreach (GifFrame frame in MainGiffer.Frames)
-                    {
-                        frame.LayerCountChanged -= GifFrame_LayerCountChanged;
-                        frame.AddLayer(pgfl.Clone());
-                        frame.LayerCountChanged += GifFrame_LayerCountChanged;
-                    }
-                    UpdateMainPictureBox();
-                    mainLayersPanel.DisplayLayers(SelectedFrame);
-                    mainLayersPanel.SelectNewestLayer();
+                    AddNewLayer(keyData);
                     return true;
                 }
-                //else if (keyData == Keys.C)
-                //{
-                //    MainGiffer.Crop(SelectedFrame);
-                //    MainLayersPanel.DisplayLayers(SelectedFrame);
-                //    UpdateMainPictureBox();
-                //    return true;
-                //}
                 else if (keyData == Keys.ShiftKey)
                 {
                     IsShiftDown = true;
@@ -102,6 +67,27 @@ namespace BIUK9000.UI
             }
 
             return base.ProcessKeyPreview(ref m);
+        }
+        private void AddNewLayer(Keys keyData)
+        {
+            int nextId = MainGiffer.NextLayerID();
+            GFL nextLayer = null;
+            if (keyData == Keys.T)
+            {
+                nextLayer = new TextGFL(nextId);
+            }
+            else if (keyData == Keys.B)
+            {
+                nextLayer = new PlainGFL(nextId);
+            }
+            if (nextLayer == null) return;
+            foreach(GifFrame gf in MainGiffer.Frames)
+            {
+                gf.AddLayer(nextLayer);
+            }
+            MainLayersPanel.DisplayLayers(SelectedFrame);
+            UpdateMainPictureBox();
+            MainLayersPanel.SelectNewestLayer();
         }
     }
 }

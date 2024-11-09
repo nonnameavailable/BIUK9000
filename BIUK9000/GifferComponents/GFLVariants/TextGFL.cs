@@ -123,14 +123,19 @@ namespace BIUK9000.GifferComponents.GFLVariants
 
         public override GFL Clone()
         {
-            TextGFL clone = new TextGFL(Text, LayerID);
+            TextGFL clone = new TextGFL(LayerID);
             clone.CopyParameters(this);
             return clone;
         }
 
-        public TextGFL(string text, int layerID) : base(layerID)
+        public TextGFL(int layerID) : base(layerID)
         {
-            Text = text;
+            Text = "YOUR TEXT";
+            FontName = "Impact";
+            FontBorderColor = Color.Black;
+            FontColor = Color.White;
+            FontBorderWidth = 5;
+            FontSize = 20;
         }
         public TextGFL(TextGFL textGFL, int layerID) : base(layerID)
         {
@@ -147,6 +152,5 @@ namespace BIUK9000.GifferComponents.GFLVariants
             FontBorderWidth = Lerper.Lerp(tstart.FontBorderWidth, tend.FontBorderWidth, distance);
             Text = Lerper.LerpText(tstart.Text, tend.Text, distance);
         }
-
     }
 }
