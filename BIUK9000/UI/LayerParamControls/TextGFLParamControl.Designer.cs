@@ -129,7 +129,6 @@
             // 
             TextLayerBorderWidthNUD.Location = new System.Drawing.Point(98, 34);
             TextLayerBorderWidthNUD.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
-            TextLayerBorderWidthNUD.Minimum = new decimal(new int[] { 3, 0, 0, 0 });
             TextLayerBorderWidthNUD.Name = "TextLayerBorderWidthNUD";
             TextLayerBorderWidthNUD.Size = new System.Drawing.Size(82, 23);
             TextLayerBorderWidthNUD.TabIndex = 3;

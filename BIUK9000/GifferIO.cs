@@ -24,7 +24,7 @@ namespace BIUK9000
             using AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
             foreach (GifFrame frame in giffer.Frames)
             {
-                agc.AddFrame(frame.CompleteBitmap(false), frame.FrameDelay, GifQuality.Bit8);
+                agc.AddFrame(giffer.FrameAsBitmap(frame, false), frame.FrameDelay, GifQuality.Bit8);
             }
             return Image.FromStream(stream);
         }
@@ -35,7 +35,7 @@ namespace BIUK9000
             AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
             foreach (GifFrame frame in giffer.Frames)
             {
-                Bitmap cbm = frame.CompleteBitmap(false);
+                Bitmap cbm = giffer.FrameAsBitmap(frame, false);
                 Ditherer dtr = new Ditherer(cbm);
                 cbm = dtr.DitheredBitmap(paletteForDithering);
                 agc.AddFrame(cbm, frame.FrameDelay, GifQuality.Bit8);
@@ -61,7 +61,7 @@ namespace BIUK9000
         public static string SaveGifToTempFileDithered(Giffer giffer, int ditherColorCount)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            using Bitmap bmpForPalette = giffer.Frames[0].CompleteBitmap(false);
+            using Bitmap bmpForPalette = giffer.FrameAsBitmap(0, false);
             List<Color> palette = KMeans.Palette(bmpForPalette, ditherColorCount, false);
             using Image gif = GifFromGifferDithered(giffer, palette);
             gif.Save(tempPath);
@@ -77,7 +77,7 @@ namespace BIUK9000
 
         public static void FrameExportDragDrop(MainForm mf)
         {
-            Bitmap bitmap = mf.SelectedFrame.CompleteBitmap(false);
+            Bitmap bitmap = mf.SelectedFrameAsBitmap;
             ControlsPanel cp = mf.MainControlsPanel;
             if (cp.UseDithering)
             {

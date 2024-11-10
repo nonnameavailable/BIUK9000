@@ -30,6 +30,7 @@ namespace BIUK9000.UI
                 if(frameDelayNUD.Value != value)frameDelayNUD.Value = value;
             }
         }
+        public bool MouseButtonIsDown { get; set; }
 
         public event EventHandler SelectedFrameChanged;
         public event EventHandler FrameDelayChanged;
@@ -44,6 +45,12 @@ namespace BIUK9000.UI
             playTimer = new Timer();
             playTimer.Tick += PlayTimer_Tick;
             frameDelayNUD.ValueChanged += (sender, args) => FrameDelayChanged?.Invoke(this, EventArgs.Empty);
+            timeLineTrackBar.MouseDown += (sender, args) => MouseButtonIsDown = true;
+            timeLineTrackBar.MouseUp += (sender, args) =>
+            {
+                MouseButtonIsDown = false;
+                SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
+            };
         }
 
         private void PlayTimer_Tick(object sender, EventArgs e)

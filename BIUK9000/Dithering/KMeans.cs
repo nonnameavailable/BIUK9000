@@ -45,7 +45,7 @@ namespace BIUK9000.Dithering
                 List<int> candidates = new();
                 foreach(GifFrame frame in giffer.Frames)
                 {
-                    FastBitmap fbm = new FastBitmap(frame.CompleteBitmap(false));
+                    FastBitmap fbm = new FastBitmap(giffer.FrameAsBitmap(frame, false));
                     candidates.Add(NextCentroid(fbm, result));
                     fbm.Dispose();
                 }

@@ -105,16 +105,18 @@ namespace BIUK9000.GifferComponents.GFLVariants
             using Font font = new Font(FontName, scaledFs);
             using Brush textBrush = new SolidBrush(FontColor);
 
-            // Pen for the border
-            using Pen borderPen = new Pen(FontBorderColor, FontBorderWidth);
-            borderPen.LineJoin = LineJoin.Round; // Smooth the corners
-
             using GraphicsPath path = new GraphicsPath();
             path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
 
             g.SmoothingMode = SmoothingMode.AntiAlias;
             // Draw the border
-            g.DrawPath(borderPen, path);
+            if (FontBorderWidth > 0)
+            {
+                using Pen borderPen = new Pen(FontBorderColor, FontBorderWidth);
+                borderPen.LineJoin = LineJoin.Round; // Smooth the corners
+                g.DrawPath(borderPen, path);
+            }
+
             // Fill the text
             g.FillPath(textBrush, path);
 

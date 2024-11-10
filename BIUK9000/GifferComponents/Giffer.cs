@@ -22,11 +22,35 @@ namespace BIUK9000.GifferComponents
         private bool _createdEmpty;
         private int _nextLayerID;
         public string OriginalImagePath {  get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public OVector Position { get; set; }
 
         public event EventHandler FrameCountChanged;
         protected virtual void OnFrameCountChanged()
         {
             FrameCountChanged?.Invoke(this, EventArgs.Empty);
+        }
+        public Rectangle OBR { get; set; }
+        public virtual void Save()
+        {
+            OBR = new Rectangle(Position.Xint, Position.Yint, Width, Height);
+            foreach (GifFrame frame in Frames)
+            {
+                frame.Layers.ForEach(layer => layer.Save());
+            }
+        }
+        public void MoveFromOBR(int x, int y)
+        {
+            foreach(GifFrame frame in Frames)
+            {
+                frame.Layers.ForEach(layer => layer.MoveFromOBR(x, y));
+            }
+        }
+        public virtual void Resize(int xSizeDif, int ySizeDif)
+        {
+            Width = OBR.Width + xSizeDif * 2;
+            Height = OBR.Height + ySizeDif * 2;
         }
 
         public Giffer(string path)
@@ -37,6 +61,9 @@ namespace BIUK9000.GifferComponents
             Frames = FramesFromGif(gif);
             _createdEmpty = false;
             OriginalImagePath = path;
+            Width = gif.Width;
+            Height = gif.Height;
+            Position = new OVector(0, 0);
         }
 
         public Giffer()
@@ -45,26 +72,9 @@ namespace BIUK9000.GifferComponents
             Frames = new List<GifFrame>();
             _createdEmpty = true;
             OriginalImagePath = "";
-        }
-
-        public void AddSpace(int up, int right, int down, int left)
-        {
-            foreach (GifFrame gf in Frames)
-            {
-                gf.AddSpace(up, right, down, left);
-            }
-        }
-        public void MoveFromOBR(int x, int y)
-        {
-            Frames.ForEach(frame => frame.MoveFromOBR(x, y));
-        }
-        public void Resize(int xSizeDif, int ySizeDif)
-        {
-            Frames.ForEach(frame => frame.Resize(xSizeDif, ySizeDif));
-        }
-        public void Save()
-        {
-            Frames.ForEach(frame => frame.Save());
+            Width = 50;
+            Height = 50;
+            Position = new OVector(0, 0);
         }
 
         private List<GifFrame> FramesFromGif(Image gif)
@@ -109,10 +119,10 @@ namespace BIUK9000.GifferComponents
                 {
                     layer.Move(-newRectangle.X + layer.Position.Xint, -newRectangle.Y + layer.Position.Yint);
                 }
-                frame.Width = newRectangle.Width;
-                frame.Height = newRectangle.Height;
                 //frame.AddSpace(-newRectangle.Y, newRectangle.Right - frame.Width, newRectangle.Bottom - frame.Height, -newRectangle.X);
             }
+            Width = newRectangle.Width;
+            Height = newRectangle.Height;
             frameWithCropLayer.RemoveLayer(cl);
         }
         public void AddGifferAsLayers(Giffer newGiffer)
@@ -122,8 +132,16 @@ namespace BIUK9000.GifferComponents
             {
                 int newGifferIndex = (int)(i / (double)Frames.Count * newGiffer.Frames.Count);
                 GifFrame cgf = Frames[i];
-                cgf.AddLayer(new BitmapGFL(newGiffer.Frames[newGifferIndex].CompleteBitmap(false), nextLayerID));
+                cgf.AddLayer(new BitmapGFL(newGiffer.FrameAsBitmap(newGifferIndex, false), nextLayerID));
             }
+        }
+        public Bitmap FrameAsBitmap(GifFrame frame, bool drawHelp)
+        {
+            return frame.CompleteBitmap(Width, Height, drawHelp);
+        }
+        public Bitmap FrameAsBitmap(int frameIndex, bool drawHelp)
+        {
+            return Frames[frameIndex].CompleteBitmap(Width, Height, drawHelp);
         }
         public int NextLayerID()
         {

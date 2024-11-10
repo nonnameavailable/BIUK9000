@@ -15,61 +15,22 @@ namespace BIUK9000.GifferComponents
 
         public int FrameDelay {  get; set; }
 
-        public Rectangle OBR { get; set; }
-        public virtual void Save()
-        {
-            OBR = new Rectangle(Position.Xint, Position.Yint, Width, Height);
-            Layers.ForEach(layer => layer.Save());
-        }
-        public void MoveFromOBR(int x, int y)
-        {
-            Layers.ForEach(layer => layer.MoveFromOBR(x, y));
-        }
-        public virtual void Resize(int xSizeDif, int ySizeDif)
-        {
-            Width = OBR.Width + xSizeDif * 2;
-            Height = OBR.Height + ySizeDif * 2;
-        }
+
 
         public List<GFL> Layers { get; } = new List<GFL>();
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public OVector Position { get; set; }
+
         public GifFrame(Bitmap bitmap, int frameDelay, int firstLayerID)
         {
             GFL gfl = new BitmapGFL(bitmap, firstLayerID);
             Layers.Add(gfl);
-            Width = bitmap.Width;
-            Height = bitmap.Height;
-            Position = new OVector(0, 0);
+
             FrameDelay = frameDelay;
         }
 
-        public void AddSpace(int up, int right, int down, int left)
+        public Bitmap CompleteBitmap(int width, int height, bool drawHelp)
         {
-            Width += left + right;
-            Height += up + down;
-
-            for (int i = 0; i < Layers.Count; i++)
-            {
-                GFL cl = Layers[i];
-                if (i > 0)
-                {
-                    cl.Move(left, up);
-                }
-            }
-        }
-        public GifFrame(int width, int height, int firstLayerID)
-        {
-            GFL gfl = new BitmapGFL(new Bitmap(width, height), firstLayerID);
-            Layers.Add(gfl);
-            Width = width;
-            Height = height;
-        }
-        public Bitmap CompleteBitmap(bool drawHelp)
-        {
-            int absWidth = Math.Abs(Width);
-            int absHeight = Math.Abs(Height);
+            int absWidth = Math.Abs(width);
+            int absHeight = Math.Abs(height);
             Bitmap result = new Bitmap(absWidth, absHeight);
             using Graphics g = Graphics.FromImage(result);
             //g.TranslateTransform(Position.X, Position.Y);

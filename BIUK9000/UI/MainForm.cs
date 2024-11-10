@@ -29,6 +29,8 @@ namespace BIUK9000.UI
         public TimelineSlider MainTimelineSlider { get => mainTimelineSlider; }
         public ControlsPanel MainControlsPanel { get => controlsPanel; }
         public GifFrame SelectedFrame { get => MainGiffer.Frames[MainTimelineSlider.SelectedFrameIndex]; }
+        public int SelectedFrameIndex { get => MainTimelineSlider.SelectedFrameIndex; }
+        public Bitmap SelectedFrameAsBitmap { get => MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp); }
         private GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
         private GFL PreviousLayerState { get; set; }
         private Timer UpdateTimer { get => _updateTimer; }
@@ -178,7 +180,7 @@ namespace BIUK9000.UI
         public void UpdateMainPictureBox()
         {
             MainImage?.Dispose();
-            Bitmap bitmap = SelectedFrame.CompleteBitmap(controlsPanel.DrawHelp);
+            Bitmap bitmap = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);
             MainImage = bitmap;
 
         }
@@ -442,7 +444,7 @@ namespace BIUK9000.UI
             GFL gfl = SelectedLayer;
             OVector LayerCenter = gfl.Center();
             double pbAspect = (double)mainPictureBox.Width / mainPictureBox.Height;
-            double frameAspect = (double)SelectedFrame.Width / SelectedFrame.Height;
+            double frameAspect = (double)MainGiffer.Width / MainGiffer.Height;
             int scaledWidth, scaledHeight;
             if (frameAspect > pbAspect)
             {
@@ -523,7 +525,7 @@ namespace BIUK9000.UI
         {
             if (MainGiffer == null) return;
             TimelineSlider ts = sender as TimelineSlider;
-            if (!ts.PlayTimerRunning)
+            if (!ts.PlayTimerRunning && !ts.MouseButtonIsDown)
             {
                 MainLayersPanel.DisplayLayers(SelectedFrame);
                 MainLayersPanel.TrySelectLayerByID(PreviousSelectedLayer.LayerID);
