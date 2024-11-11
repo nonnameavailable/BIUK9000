@@ -15,6 +15,13 @@ namespace BIUK9000.UI
         public event EventHandler SelectedFresh;
         public event EventHandler SelectedAsLayers;
         public event EventHandler SelectedInsert;
+
+        public bool OLayersSpread { get => layerSpreadRB.Checked; }
+        public bool OLayersRepeat { get => layerRepeatRB.Checked; }
+        public bool OInsertStart { get => insertStartRB.Checked; }
+        public bool OInsertEnd { get =>  insertEndRB.Checked; }
+        public bool OInsertHere { get => insertHereRB.Checked; }
+
         public ImportQuestionForm()
         {
             InitializeComponent();
@@ -40,5 +47,6 @@ namespace BIUK9000.UI
             SelectedFresh?.Invoke(this, EventArgs.Empty);
             Close();
         }
+
     }
 }

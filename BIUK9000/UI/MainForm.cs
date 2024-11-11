@@ -110,7 +110,7 @@ namespace BIUK9000.UI
             LerpStart = new FrameAndLayer(SelectedLayer, SelectedFrame);
         }
 
-        private void SavePreviousState()
+        private void SavePreviousLayerState()
         {
             PreviousLayerState = SelectedLayer.Clone();
         }
@@ -121,7 +121,7 @@ namespace BIUK9000.UI
             if (apm == ApplyParamsMode.applyNone) return;
             int cli = mainLayersPanel.SelectedLayerIndex;
             int cgfi = MainGiffer.Frames.IndexOf(SelectedFrame);
-            for (int i = cgfi + 1; i < MainGiffer.Frames.Count; i++)
+            for (int i = cgfi + 1; i < MainGiffer.FrameCount; i++)
             {
                 GifFrame gf = MainGiffer.Frames[i];
                 if (cli >= 0 && cli < gf.Layers.Count)
@@ -134,12 +134,16 @@ namespace BIUK9000.UI
                     {
                         layerToUpdate = gf.Layers[cli];
                     }
-                    if(apm == ApplyParamsMode.applyChanged)
+                    if(layerToUpdate != null)
                     {
-                        layerToUpdate.CopyDifferingParams(PreviousLayerState, SelectedLayer);
-                    } else
-                    {
-                        layerToUpdate.CopyParameters(SelectedLayer);
+                        if (apm == ApplyParamsMode.applyChanged)
+                        {
+                            layerToUpdate.CopyDifferingParams(PreviousLayerState, SelectedLayer);
+                        }
+                        else
+                        {
+                            layerToUpdate.CopyParameters(SelectedLayer);
+                        }
                     }
                 }
             }
@@ -170,11 +174,17 @@ namespace BIUK9000.UI
         {
             MainGiffer?.Dispose();
             MainGiffer = newGiffer;
+            CompleteUIUpdate();
+            SavePreviousLayerState();
+        }
+        public void CompleteUIUpdate()
+        {
             MainLayersPanel.SelectedLayerIndex = 0;
+            MainTimelineSlider.SelectedFrameIndex = 0;
             MainLayersPanel.DisplayLayers(SelectedFrame);
-            MainTimelineSlider.Maximum = MainGiffer.Frames.Count - 1;
+            MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
-            SavePreviousState();
+            UpdateLayerParamsUI(LayerTypeChanged());
         }
 
         public void UpdateMainPictureBox()
@@ -203,7 +213,7 @@ namespace BIUK9000.UI
                 lpc.LoadParams(SelectedLayer);
                 lpc.ParamsChanged += (sender, args) =>
                 {
-                    SavePreviousState();
+                    SavePreviousLayerState();
                     lpc.SaveParams(SelectedLayer);
                     UpdateMainPictureBox();
                     ApplyCurrentLayerParamsToSubsequentLayers();
@@ -336,7 +346,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             GFL cgfl = SelectedLayer;
             MainGiffer.Save();
-            SavePreviousState();
+            SavePreviousLayerState();
             mouseClickedPosition = e.Location;
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
@@ -492,7 +502,7 @@ namespace BIUK9000.UI
         #region custom controls event handling
         private void MainLayersPanel_LayerOrderChanged(object sender, LayersPanel.LayerOrderEventArgs e)
         {
-            for (int i = MainTimelineSlider.SelectedFrameIndex; i < MainGiffer.Frames.Count; i++)
+            for (int i = MainTimelineSlider.SelectedFrameIndex; i < MainGiffer.FrameCount; i++)
             {
                 GifFrame cf = MainGiffer.Frames[i];
                 GFL gflToInsert = cf.Layers[e.OriginalIndex];
@@ -517,7 +527,7 @@ namespace BIUK9000.UI
         private void MainLayersPanel_LayerVisibilityChanged(object sender, EventArgs e)
         {
             UpdateMainPictureBox();
-            SavePreviousState();
+            SavePreviousLayerState();
             PreviousLayerState.Visible = !SelectedLayer.Visible;
             ApplyCurrentLayerParamsToSubsequentLayers();
         }
@@ -541,7 +551,7 @@ namespace BIUK9000.UI
             TimelineSlider ts = sender as TimelineSlider;
             SelectedFrame.FrameDelay = ts.FrameDelay;
             if (controlsPanel.SelectedApplyParamsMode == ApplyParamsMode.applyNone) return;
-            for (int i = MainTimelineSlider.SelectedFrameIndex + 1; i < MainGiffer.Frames.Count; i++)
+            for (int i = MainTimelineSlider.SelectedFrameIndex + 1; i < MainGiffer.FrameCount; i++)
             {
                 MainGiffer.Frames[i].FrameDelay = SelectedFrame.FrameDelay;
             }

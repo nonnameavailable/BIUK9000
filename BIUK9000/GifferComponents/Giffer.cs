@@ -25,6 +25,7 @@ namespace BIUK9000.GifferComponents
         public int Width { get; set; }
         public int Height { get; set; }
         public OVector Position { get; set; }
+        public int FrameCount { get =>  Frames.Count; }
 
         public event EventHandler FrameCountChanged;
         protected virtual void OnFrameCountChanged()
@@ -125,16 +126,40 @@ namespace BIUK9000.GifferComponents
             Height = newRectangle.Height;
             frameWithCropLayer.RemoveLayer(cl);
         }
-        public void AddGifferAsLayers(Giffer newGiffer)
+        public void AddGifferAsLayers(Giffer newGiffer, bool spread)
         {
             int nextLayerID = NextLayerID();
-            for(int i = 0; i < Frames.Count; i++)
+            for(int i = 0; i < FrameCount; i++)
             {
-                int newGifferIndex = (int)(i / (double)Frames.Count * newGiffer.Frames.Count);
+                int newGifferIndex;
+                if (spread)
+                {
+                    newGifferIndex = (int)(i / (double)FrameCount * newGiffer.FrameCount);
+                } else
+                {
+                    newGifferIndex = i % newGiffer.FrameCount;
+                }
                 GifFrame cgf = Frames[i];
                 cgf.AddLayer(new BitmapGFL(newGiffer.FrameAsBitmap(newGifferIndex, false), nextLayerID));
             }
         }
+        public void AddGifferAsFrames(Giffer newGiffer, int insertAt)
+        {
+            int[] layerIDs = new int[newGiffer.Frames[0].Layers.Count];
+            for(int i = 0; i < layerIDs.Length; i++)
+            {
+                layerIDs[i] = NextLayerID();
+            }
+            foreach(GifFrame frame in newGiffer.Frames)
+            {
+                for(int i = 0; i < frame.Layers.Count; i++)
+                {
+                    frame.Layers[i].LayerID = layerIDs[i];
+                }
+            }
+            Frames.InsertRange(insertAt, newGiffer.Frames);
+        }
+
         public Bitmap FrameAsBitmap(GifFrame frame, bool drawHelp)
         {
             return frame.CompleteBitmap(Width, Height, drawHelp);
@@ -154,7 +179,7 @@ namespace BIUK9000.GifferComponents
             {
                 if (disposing)
                 {
-                    for(int i = 0;  i < Frames.Count; i++)
+                    for(int i = 0;  i < FrameCount; i++)
                     {
                         Frames[i].Dispose();
                         Frames[i] = null;

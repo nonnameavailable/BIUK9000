@@ -124,11 +124,8 @@ namespace BIUK9000
                     {
                         using ImportQuestionForm iqf = new ImportQuestionForm();
                         iqf.SelectedFresh += (sender, args) => mf.SetNewGiffer(newGiffer);
-                        iqf.SelectedAsLayers += (sender, args) =>
-                        {
-                            mg.AddGifferAsLayers(newGiffer);
-                            newGiffer.Dispose();
-                        };
+                        iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, newGiffer);
+                        iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, newGiffer);
                         iqf.ShowDialog();
                     }
                 }
@@ -156,6 +153,28 @@ namespace BIUK9000
                     }
                 }
             }
+        }
+
+        private static void ImportAsLayers(MainForm mf, ImportQuestionForm iqf, Giffer newGiffer)
+        {
+            Giffer mg = mf.MainGiffer;
+            mg.AddGifferAsLayers(newGiffer, iqf.OLayersSpread);
+            newGiffer.Dispose();
+        }
+        private static void ImportAsInsert(MainForm mf, ImportQuestionForm iqf, Giffer newGiffer)
+        {
+            Giffer mg = mf.MainGiffer;
+            if (iqf.OInsertStart)
+            {
+                mg.AddGifferAsFrames(newGiffer, 0);
+            } else if (iqf.OInsertEnd)
+            {
+                mg.AddGifferAsFrames(newGiffer, mg.FrameCount);
+            } else if (iqf.OInsertHere)
+            {
+                mg.AddGifferAsFrames(newGiffer, mf.SelectedFrameIndex);
+            }
+            mf.CompleteUIUpdate();
         }
     }
 }

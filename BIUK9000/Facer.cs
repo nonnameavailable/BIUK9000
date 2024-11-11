@@ -59,7 +59,7 @@ namespace BIUK9000
         public static List<GifFrame> FaceSwappedFrameList(List<GifFrame> frames, Bitmap substituteImage)
         {
             List<GifFrame> result = new();
-            for (int i = 0; i < frames.Count; i++)
+            for (int i = 0; i < FrameCount; i++)
             {
                 GifFrame frame = frames[i];
                 result.Add(new GifFrame(FaceSwappedImage(frame.CompleteBitmap(true), substituteImage), frame.FrameDelay));
