@@ -4,10 +4,12 @@ using BIUK9000.GifferComponents.GFLVariants;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,7 +21,6 @@ namespace BIUK9000.GifferComponents
         public List<GifFrame> Frames { get; set; }
         private Image originalGif;
         private bool disposedValue;
-        private bool _createdEmpty;
         private int _nextLayerID;
         public string OriginalImagePath {  get; set; }
         public int Width { get; set; }
@@ -57,46 +58,57 @@ namespace BIUK9000.GifferComponents
         public Giffer(string path)
         {
             _nextLayerID = 0;
-            Image gif = Image.FromFile(path);
-            originalGif = gif;
-            Frames = FramesFromGif(gif);
-            _createdEmpty = false;
-            OriginalImagePath = path;
-            Width = gif.Width;
-            Height = gif.Height;
-            Position = new OVector(0, 0);
-        }
+            try
+            {
+                Image gif = Image.FromFile(path);
+                originalGif = gif;
+                Frames = FramesFromGif(gif);
+                OriginalImagePath = path;
+                Width = gif.Width;
+                Height = gif.Height;
+                Position = new OVector(0, 0);
+            } catch(Exception ex)
+            {
+                throw new ArgumentException(path + " is not an image file", ex);
+            }
 
-        public Giffer()
-        {
-            _nextLayerID = 0;
-            Frames = new List<GifFrame>();
-            _createdEmpty = true;
-            OriginalImagePath = "";
-            Width = 50;
-            Height = 50;
-            Position = new OVector(0, 0);
         }
 
         private List<GifFrame> FramesFromGif(Image gif)
         {
             List<GifFrame> result = new();
-
-            int frameCount = gif.GetFrameCount(FrameDimension.Time);
+            int frameCount = ImageFrameCount(gif);
             int firstLayerID = NextLayerID();
+            if(frameCount == 1)
+            {
+                result.Add(new GifFrame(new Bitmap(gif), 20, firstLayerID));
+                return result;
+            }
             for (int i = 0; i < frameCount; i++)
             {
                 gif.SelectActiveFrame(FrameDimension.Time, i);
-                result.Add(new GifFrame(new Bitmap(gif), FrameDelay(), firstLayerID));
+                result.Add(new GifFrame(new Bitmap(gif), FrameDelay(gif), firstLayerID));
             }
             return result;
         }
 
-        public int FrameDelay()
+        private int FrameDelay(Image img)
         {
-            if (_createdEmpty) return 20;
-            PropertyItem propertyItem = originalGif.GetPropertyItem(0x5100);
+            PropertyItem propertyItem = img.GetPropertyItem(0x5100);
             return BitConverter.ToInt32(propertyItem.Value, 0) * 10;
+        }
+        private static int ImageFrameCount(Image img)
+        {
+            int frameCount = 1;
+            try
+            {
+                frameCount = img.GetFrameCount(FrameDimension.Time);
+            } catch (ExternalException ex)
+            {
+                Debug.Print(ex.Message);
+                frameCount = 1;
+            }
+            return frameCount;
         }
         public void AddFrame(GifFrame frame)
         {

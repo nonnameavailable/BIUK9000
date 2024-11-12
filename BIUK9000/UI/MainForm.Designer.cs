@@ -33,15 +33,15 @@ namespace BIUK9000.UI
             mainLayersPanel = new LayersPanel();
             mainTimelineSlider = new TimelineSlider();
             controlsPanel = new ControlsPanel();
-            mainPictureBox = new System.Windows.Forms.PictureBox();
             layerParamsPanel = new System.Windows.Forms.Panel();
-            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             panel1 = new System.Windows.Forms.Panel();
-            lerpStartButton = new System.Windows.Forms.Button();
             lerpExecuteButton = new System.Windows.Forms.Button();
+            lerpStartButton = new System.Windows.Forms.Button();
+            mainPictureBox = new MyPictureBox();
+            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -53,9 +53,9 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 1);
             tableLayoutPanel1.Controls.Add(mainTimelineSlider, 1, 2);
             tableLayoutPanel1.Controls.Add(controlsPanel, 0, 0);
-            tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Controls.Add(layerParamsPanel, 1, 0);
             tableLayoutPanel1.Controls.Add(panel1, 2, 2);
+            tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -81,6 +81,7 @@ namespace BIUK9000.UI
             mainTimelineSlider.FrameDelay = 10;
             mainTimelineSlider.Location = new System.Drawing.Point(148, 464);
             mainTimelineSlider.Maximum = 100;
+            mainTimelineSlider.MouseButtonIsDown = false;
             mainTimelineSlider.Name = "mainTimelineSlider";
             mainTimelineSlider.SelectedFrameIndex = 0;
             mainTimelineSlider.Size = new System.Drawing.Size(571, 94);
@@ -97,17 +98,6 @@ namespace BIUK9000.UI
             tableLayoutPanel1.SetRowSpan(controlsPanel, 3);
             controlsPanel.Size = new System.Drawing.Size(139, 555);
             controlsPanel.TabIndex = 5;
-            // 
-            // mainPictureBox
-            // 
-            mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainPictureBox.Location = new System.Drawing.Point(148, 158);
-            mainPictureBox.Name = "mainPictureBox";
-            mainPictureBox.Size = new System.Drawing.Size(571, 300);
-            mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            mainPictureBox.TabIndex = 6;
-            mainPictureBox.TabStop = false;
             // 
             // layerParamsPanel
             // 
@@ -127,6 +117,15 @@ namespace BIUK9000.UI
             panel1.Size = new System.Drawing.Size(144, 94);
             panel1.TabIndex = 8;
             // 
+            // lerpExecuteButton
+            // 
+            lerpExecuteButton.Location = new System.Drawing.Point(3, 32);
+            lerpExecuteButton.Name = "lerpExecuteButton";
+            lerpExecuteButton.Size = new System.Drawing.Size(81, 23);
+            lerpExecuteButton.TabIndex = 1;
+            lerpExecuteButton.Text = "lerp execute";
+            lerpExecuteButton.UseVisualStyleBackColor = true;
+            // 
             // lerpStartButton
             // 
             lerpStartButton.Location = new System.Drawing.Point(3, 3);
@@ -136,14 +135,17 @@ namespace BIUK9000.UI
             lerpStartButton.Text = "lerp start";
             lerpStartButton.UseVisualStyleBackColor = true;
             // 
-            // lerpExecuteButton
+            // mainPictureBox
             // 
-            lerpExecuteButton.Location = new System.Drawing.Point(3, 32);
-            lerpExecuteButton.Name = "lerpExecuteButton";
-            lerpExecuteButton.Size = new System.Drawing.Size(81, 23);
-            lerpExecuteButton.TabIndex = 1;
-            lerpExecuteButton.Text = "lerp execute";
-            lerpExecuteButton.UseVisualStyleBackColor = true;
+            mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            mainPictureBox.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            mainPictureBox.Location = new System.Drawing.Point(148, 158);
+            mainPictureBox.Name = "mainPictureBox";
+            mainPictureBox.Size = new System.Drawing.Size(571, 300);
+            mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            mainPictureBox.TabIndex = 9;
+            mainPictureBox.TabStop = false;
             // 
             // MainForm
             // 
@@ -155,8 +157,8 @@ namespace BIUK9000.UI
             Name = "MainForm";
             Text = "Form1";
             tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
             panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
             ResumeLayout(false);
         }
 
@@ -165,12 +167,12 @@ namespace BIUK9000.UI
         private LayersPanel mainLayersPanel;
         private TimelineSlider mainTimelineSlider;
         private ControlsPanel controlsPanel;
-        private System.Windows.Forms.PictureBox mainPictureBox;
         private System.Windows.Forms.Panel layerParamsPanel;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button lerpExecuteButton;
         private System.Windows.Forms.Button lerpStartButton;
+        private MyPictureBox mainPictureBox;
     }
 }
 

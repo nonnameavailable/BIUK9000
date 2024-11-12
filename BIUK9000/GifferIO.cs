@@ -20,8 +20,7 @@ namespace BIUK9000
         public static Image GifFromGiffer(Giffer giffer)
         {
             MemoryStream stream = new MemoryStream();
-            int frameDelay = giffer.FrameDelay();
-            using AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
+            using AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
             foreach (GifFrame frame in giffer.Frames)
             {
                 agc.AddFrame(giffer.FrameAsBitmap(frame, false), frame.FrameDelay, GifQuality.Bit8);
@@ -31,8 +30,7 @@ namespace BIUK9000
         private static Image GifFromGifferDithered(Giffer giffer, List<Color> paletteForDithering)
         {
             MemoryStream stream = new MemoryStream();
-            int frameDelay = giffer.FrameDelay();
-            AnimatedGifCreator agc = new AnimatedGifCreator(stream, frameDelay);
+            AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
             foreach (GifFrame frame in giffer.Frames)
             {
                 Bitmap cbm = giffer.FrameAsBitmap(frame, false);
@@ -105,15 +103,12 @@ namespace BIUK9000
                 File.Delete(tempPath);
             }
         }
-
         public static void FileImport(string[] filePaths, MainForm mf)
         {
             Giffer mg = mf.MainGiffer;
             foreach (string filePath in filePaths)
             {
-                string ext = Path.GetExtension(filePath);
-
-                if (ext == ".gif")
+                try
                 {
                     Giffer newGiffer = new Giffer(filePath);
                     if (mg == null)
@@ -128,33 +123,13 @@ namespace BIUK9000
                         iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, newGiffer);
                         iqf.ShowDialog();
                     }
-                }
-                else
+                } catch (ArgumentException ex)
                 {
-                    Bitmap bitmap;
-                    try
-                    {
-                        bitmap = new Bitmap(filePath);
-                    }
-                    catch
-                    {
-                        MessageBox.Show(Path.GetFileName(filePath) + "is not an image file!");
-                        return;
-                    }
-                    if (mg == null)
-                    {
-                        mg = new Giffer();
-                        mg.AddFrame(new GifFrame(bitmap, 20, mg.NextLayerID()));
-                    }
-                    else
-                    {
-                        int nextLayerID = mg.NextLayerID();
-                        mg.Frames.ForEach(frame => frame.AddLayer(new BitmapGFL(bitmap, nextLayerID)));
-                    }
+                    MessageBox.Show(ex.Message);
+                    continue;
                 }
             }
         }
-
         private static void ImportAsLayers(MainForm mf, ImportQuestionForm iqf, Giffer newGiffer)
         {
             Giffer mg = mf.MainGiffer;
