@@ -39,7 +39,6 @@ namespace BIUK9000.UI
         private FrameAndLayer LerpStart { get; set; }
         public bool IsShiftDown { get; set; }
         public bool IsCtrlDown { get; set; }
-        private Point prevMousePosition, mousePosition, mouseClickedPosition;
         private float originalLayerRotation;
         private OVector originalLCtM;
         public bool IsLMBDown { get => mainPictureBox.IsLMBDown; }
@@ -74,9 +73,10 @@ namespace BIUK9000.UI
             mainLayersPanel.LayerVisibilityChanged += MainLayersPanel_LayerVisibilityChanged;
             mainLayersPanel.LayerDeleteButtonClicked += MainLayersPanel_LayerDeleteButtonClicked;
 
-            controlsPanel.MustRedraw += (sender, args) => UpdateMainPictureBox();
+            controlsPanel.MustRedraw += (sender, args) => { if (MainGiffer != null) UpdateMainPictureBox(); };
             controlsPanel.ShouldStartDragDrop += ControlsPanel_ShouldStartDragDrop;
             controlsPanel.SaveButtonClicked += ControlsPanel_SaveButtonClicked;
+            controlsPanel.InterpolationModeChanged += (sender, args) => mainPictureBox.InterpolationMode = ((ControlsPanel)sender).InterpolationMode;
 
             MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
 
@@ -179,7 +179,9 @@ namespace BIUK9000.UI
         public void CompleteUIUpdate()
         {
             MainLayersPanel.SelectedLayerIndex = 0;
+            MainTimelineSlider.SelectedFrameChanged -= MainTimelineSlider_SelectedFrameChanged;
             MainTimelineSlider.SelectedFrameIndex = 0;
+            MainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
             MainLayersPanel.DisplayLayers(SelectedFrame);
             MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
@@ -189,8 +191,7 @@ namespace BIUK9000.UI
         public void UpdateMainPictureBox()
         {
             MainImage?.Dispose();
-            Bitmap bitmap = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);
-            MainImage = bitmap;
+            MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);
 
         }
         private bool LayerTypeChanged()
@@ -334,7 +335,6 @@ namespace BIUK9000.UI
             GFL cgfl = SelectedLayer;
             MainGiffer.Save();
             SavePreviousLayerState();
-            mouseClickedPosition = e.Location;
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
             UpdateTimer.Start();
@@ -342,7 +342,6 @@ namespace BIUK9000.UI
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
             if (MainGiffer == null) return;
-            mousePosition = new Point(e.X, e.Y);
             Point dd = mainPictureBox.ScaledDragDifference;
             OVector currentLCtM = LayerCenterToMouse();
             //OVector currentLCtM = new OVector(mainPictureBox.PointToMouse(new Point(SelectedLayer.Center().Xint, SelectedLayer.Center().Yint)));
@@ -381,7 +380,7 @@ namespace BIUK9000.UI
                 else if (IsMMBDown)
                 {
                     //RESIZE
-                    OVector sdv = new OVector((int)(mousePosition.X - mouseClickedPosition.X), -(int)(mousePosition.Y - mouseClickedPosition.Y));
+                    OVector sdv = new OVector(mainPictureBox.ScaledDragDifference);
                     int xSizeDif = (int)sdv.X;
                     int ySizeDif = (int)sdv.Y;
                     if (IsCtrlDown)
@@ -405,11 +404,8 @@ namespace BIUK9000.UI
                             gfl.Resize(xSizeDif, ySizeDif);
                         }
                     }
-
-
                 }
             }
-            prevMousePosition = new Point(mousePosition.X, mousePosition.Y);
         }
 
         private OVector LayerCenterToMouse()

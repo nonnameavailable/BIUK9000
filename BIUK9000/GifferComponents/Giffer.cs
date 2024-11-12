@@ -20,7 +20,7 @@ namespace BIUK9000.GifferComponents
     {
         public List<GifFrame> Frames { get; set; }
         private Image originalGif;
-        private bool disposedValue;
+        private bool _disposed;
         private int _nextLayerID;
         public string OriginalImagePath {  get; set; }
         public int Width { get; set; }
@@ -185,32 +185,15 @@ namespace BIUK9000.GifferComponents
             return _nextLayerID++;
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    for(int i = 0;  i < FrameCount; i++)
-                    {
-                        Frames[i].Dispose();
-                        Frames[i] = null;
-                    }
-                    originalGif?.Dispose();
-                    originalGif = null;
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
-
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            if (_disposed) return;
+            for (int i = 0; i < FrameCount; i++)
+            {
+                Frames[i].Dispose();
+            }
+            originalGif?.Dispose();
+            _disposed = true;
         }
     }
 }

@@ -37,17 +37,10 @@ namespace BIUK9000.GifferComponents.GFLVariants
             OriginalBitmap.Dispose();
             Initialize(bitmap);
         }
-        protected override void Dispose(bool disposing)
+        public override void Dispose()
         {
-            if (disposing)
-            {
-                if (OriginalBitmap != null)
-                {
-                    OriginalBitmap.Dispose();
-                    OriginalBitmap = null;
-                }
-            }
-            base.Dispose(disposing);
+            OriginalBitmap?.Dispose();
+            base.Dispose();
         }
 
         public override GFL Clone()

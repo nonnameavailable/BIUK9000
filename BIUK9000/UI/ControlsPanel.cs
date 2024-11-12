@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
 
 namespace BIUK9000.UI
 {
@@ -29,9 +30,11 @@ namespace BIUK9000.UI
         public bool DrawHelp { get => drawHelpCB.Checked; }
         public bool UseGifsicle { get => useGifSicleCB.Checked; }
         public bool UseDithering { get => useDitheringCB.Checked; }
+        public InterpolationMode InterpolationMode { get => (InterpolationMode)mpbAAModeCBB.SelectedItem; }
         public event EventHandler MustRedraw;
         public event EventHandler ShouldStartDragDrop;
         public event EventHandler SaveButtonClicked;
+        public event EventHandler InterpolationModeChanged;
         public ControlsPanel()
         {
             InitializeComponent();
@@ -39,14 +42,30 @@ namespace BIUK9000.UI
             SaveButton.MouseUp += SaveButton_MouseUp;
             SaveButton.MouseMove += SaveButton_MouseMove;
             ImageExportFormatCBB.SelectedIndex = 0;
-            drawHelpCB.CheckedChanged += DrawHelpCB_CheckedChanged;
+            drawHelpCB.CheckedChanged += (sender, args) => OnMustRedraw();
             OriginalMousePosition = new OVector(0, 0);
             IsLMBDown = false;
             IsRMBDown = false;
             applyParamsCBB.DataSource = Enum.GetValues(typeof(ApplyParamsMode));
+            mpbAAModeCBB.DataSource = Enum.GetValues(typeof(InterpolationMode))
+                .Cast<InterpolationMode>()
+                .Where(mode => mode != InterpolationMode.Invalid)
+                .ToList(); ;
+            mpbAAModeCBB.SelectedItem = InterpolationMode.Bicubic;
+            mpbAAModeCBB.SelectedIndexChanged += MpbAAModeCBB_SelectedIndexChanged;
             applyParamsCBB.SelectedIndex = 0;
             SaveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
             useDitheringCB.CheckedChanged += UseDitheringCB_CheckedChanged;
+        }
+
+        private void MpbAAModeCBB_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            InterpolationModeChanged?.Invoke(this, new EventArgs());
+            OnMustRedraw();
+        }
+        protected void OnMustRedraw()
+        {
+            MustRedraw?.Invoke(this, EventArgs.Empty);
         }
 
         private void UseDitheringCB_CheckedChanged(object sender, EventArgs e)
@@ -67,10 +86,6 @@ namespace BIUK9000.UI
             OVector currentPosOV = new OVector(e.X, e.Y);
             double draggedDist = currentPosOV.Subtract(OriginalMousePosition).Magnitude;
             return draggedDist > distanceLimit;
-        }
-        private void DrawHelpCB_CheckedChanged(object sender, EventArgs e)
-        {
-            MustRedraw?.Invoke(this, EventArgs.Empty);
         }
 
         private void SaveButton_MouseDown(object sender, MouseEventArgs e)

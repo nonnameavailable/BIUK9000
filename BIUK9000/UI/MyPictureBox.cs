@@ -24,6 +24,12 @@ namespace BIUK9000.UI
             MouseDown += MyPictureBox_MouseDown;
             MouseUp += MyPictureBox_MouseUp;
             MouseMove += MyPictureBox_MouseMove;
+            InterpolationMode = InterpolationMode.Bicubic;
+        }
+        protected override void OnPaint(PaintEventArgs paintEventArgs)
+        {
+            paintEventArgs.Graphics.InterpolationMode = InterpolationMode;
+            base.OnPaint(paintEventArgs);
         }
 
         private void MyPictureBox_MouseMove(object sender, MouseEventArgs e)
@@ -66,12 +72,6 @@ namespace BIUK9000.UI
             {
                 IsMMBDown = true;
             }
-        }
-
-        protected override void OnPaint(PaintEventArgs paintEventArgs)
-        {
-            paintEventArgs.Graphics.InterpolationMode = InterpolationMode;
-            base.OnPaint(paintEventArgs);
         }
         public double Zoom()
         {

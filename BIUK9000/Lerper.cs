@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BIUK9000.GifferComponents;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;

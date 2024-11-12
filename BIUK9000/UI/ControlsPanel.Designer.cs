@@ -47,6 +47,7 @@
             GifExportColorsNUD = new System.Windows.Forms.NumericUpDown();
             label1 = new System.Windows.Forms.Label();
             settingsTC = new System.Windows.Forms.TabPage();
+            mpbAAModeCBB = new System.Windows.Forms.ComboBox();
             applyParamsCBB = new System.Windows.Forms.ComboBox();
             positionSnapCB = new System.Windows.Forms.CheckBox();
             drawHelpCB = new System.Windows.Forms.CheckBox();
@@ -254,6 +255,7 @@
             // 
             // settingsTC
             // 
+            settingsTC.Controls.Add(mpbAAModeCBB);
             settingsTC.Controls.Add(applyParamsCBB);
             settingsTC.Controls.Add(positionSnapCB);
             settingsTC.Controls.Add(drawHelpCB);
@@ -261,10 +263,20 @@
             settingsTC.Location = new System.Drawing.Point(4, 24);
             settingsTC.Name = "settingsTC";
             settingsTC.Padding = new System.Windows.Forms.Padding(3);
-            settingsTC.Size = new System.Drawing.Size(136, 499);
+            settingsTC.Size = new System.Drawing.Size(125, 499);
             settingsTC.TabIndex = 1;
             settingsTC.Text = "settings";
             settingsTC.UseVisualStyleBackColor = true;
+            // 
+            // mpbAAModeCBB
+            // 
+            mpbAAModeCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            mpbAAModeCBB.FormattingEnabled = true;
+            mpbAAModeCBB.Location = new System.Drawing.Point(6, 118);
+            mpbAAModeCBB.Name = "mpbAAModeCBB";
+            mpbAAModeCBB.Size = new System.Drawing.Size(113, 23);
+            mpbAAModeCBB.TabIndex = 4;
+            toolTip.SetToolTip(mpbAAModeCBB, "Sets the interpolation mode of the displayed image\r\nIf you want crispy pixels, choose NearestNeighbor.\r\n\r\nThis does not affect the quality of the exported images.");
             // 
             // applyParamsCBB
             // 
@@ -273,7 +285,7 @@
             applyParamsCBB.FormattingEnabled = true;
             applyParamsCBB.Location = new System.Drawing.Point(6, 87);
             applyParamsCBB.Name = "applyParamsCBB";
-            applyParamsCBB.Size = new System.Drawing.Size(124, 25);
+            applyParamsCBB.Size = new System.Drawing.Size(113, 25);
             applyParamsCBB.TabIndex = 3;
             toolTip.SetToolTip(applyParamsCBB, resources.GetString("applyParamsCBB.ToolTip"));
             // 
@@ -363,5 +375,6 @@
         private System.Windows.Forms.CheckBox useGifSicleCB;
         private System.Windows.Forms.CheckBox useDitheringCB;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.ComboBox mpbAAModeCBB;
     }
 }

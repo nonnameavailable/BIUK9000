@@ -66,6 +66,7 @@ namespace BIUK9000.UI
 
         private void playButton_Click(object sender, EventArgs e)
         {
+            if (timeLineTrackBar.Maximum <= 1) return;
             if (playTimer.Enabled)
             {
                 playTimer.Stop();

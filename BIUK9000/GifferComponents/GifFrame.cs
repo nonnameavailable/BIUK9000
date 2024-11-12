@@ -11,13 +11,13 @@ namespace BIUK9000.GifferComponents
 {
     public class GifFrame : IDisposable
     {
-        private bool disposedValue;
+        private bool _disposed;
 
         public int FrameDelay {  get; set; }
 
 
 
-        public List<GFL> Layers { get; } = new List<GFL>();
+        public List<GFL> Layers { get; private set; } = new List<GFL>();
 
         public GifFrame(Bitmap bitmap, int frameDelay, int firstLayerID)
         {
@@ -64,30 +64,14 @@ namespace BIUK9000.GifferComponents
             layer.Dispose();
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    for(int i = 0; i < Layers.Count; i++)
-                    {
-                        Layers[i].Dispose();
-                        Layers[i] = null;
-                    }
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
-
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            if(_disposed) return;
+            for (int i = 0; i < Layers.Count; i++)
+            {
+                Layers[i].Dispose();
+            }
+            _disposed = true;
         }
     }
 }
