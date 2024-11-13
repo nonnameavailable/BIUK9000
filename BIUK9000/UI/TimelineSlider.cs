@@ -18,6 +18,7 @@ namespace BIUK9000.UI
         public int SelectedFrameIndex { get => timeLineTrackBar.Value; set => timeLineTrackBar.Value = value; }
         public bool PlayTimerRunning { get => playTimer.Enabled; }
         public int Maximum { get => timeLineTrackBar.Maximum; set => timeLineTrackBar.Maximum = value; }
+        public List<int> Marks { get => timeLineTrackBar.Marks; }
         public int FrameDelay
         {
             get 
@@ -78,6 +79,18 @@ namespace BIUK9000.UI
                 playButton.Text = "stop";
             }
 
+        }
+        public bool AddMark(int mark)
+        {
+            return timeLineTrackBar.AddMark(mark);
+        }
+        public bool RemoveMark(int mark)
+        {
+            return timeLineTrackBar.RemoveMark(mark);
+        }
+        public void ClearMarks()
+        {
+            timeLineTrackBar.ClearMarks();
         }
     }
 }

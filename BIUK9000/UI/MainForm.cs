@@ -82,7 +82,19 @@ namespace BIUK9000.UI
 
             lerpStartButton.Click += LerpStartButton_Click;
             lerpExecuteButton.Click += LerpExecuteButton_Click;
+
+            markButton.Click += (sender, args) => MainTimelineSlider.AddMark(SelectedFrameIndex);
+            unmarkButton.Click += (sender, args) => MainTimelineSlider.RemoveMark(SelectedFrameIndex);
+            deleteFramesButton.Click += DeleteFramesButton_Click;
         }
+
+        private void DeleteFramesButton_Click(object sender, EventArgs e)
+        {
+            if(MainGiffer == null || MainGiffer.FrameCount < 2)return;
+            MainGiffer.RemoveFrames(MainTimelineSlider.Marks);
+            CompleteUIUpdate();
+        }
+
         private void LerpExecuteButton_Click(object sender, EventArgs e)
         {
             if(LerpStart.Layer == null || LerpStart.Frame == null)
@@ -106,6 +118,11 @@ namespace BIUK9000.UI
 
         private void LerpStartButton_Click(object sender, EventArgs e)
         {
+            if (MainGiffer == null)
+            {
+                MessageBox.Show("Import a gif first");
+                return;
+            }
             LerpStart = new FrameAndLayer(SelectedLayer, SelectedFrame);
         }
 
@@ -164,9 +181,10 @@ namespace BIUK9000.UI
             if (controlsPanel.DraggingFileForExport) return;
             string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             GifferIO.FileImport(filePaths, this);
-            mainLayersPanel.DisplayLayers(SelectedFrame);
-            mainLayersPanel.SelectNewestLayer();
-            UpdateMainPictureBox();
+            //mainLayersPanel.DisplayLayers(SelectedFrame);
+            //mainLayersPanel.SelectNewestLayer();
+            //UpdateMainPictureBox();
+            CompleteUIUpdate();
         }
 
         public void SetNewGiffer(Giffer newGiffer)
@@ -178,14 +196,17 @@ namespace BIUK9000.UI
         }
         public void CompleteUIUpdate()
         {
+            int currentSFI = SelectedFrameIndex;
+            MainTimelineSlider.ClearMarks();
             MainLayersPanel.SelectedLayerIndex = 0;
+            MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
             MainTimelineSlider.SelectedFrameChanged -= MainTimelineSlider_SelectedFrameChanged;
-            MainTimelineSlider.SelectedFrameIndex = 0;
+            MainTimelineSlider.SelectedFrameIndex = Math.Clamp(currentSFI, 0, MainTimelineSlider.Maximum);
             MainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
             MainLayersPanel.DisplayLayers(SelectedFrame);
-            MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
             UpdateLayerParamsUI(LayerTypeChanged());
+            UpdateMainPictureBox();
         }
 
         public void UpdateMainPictureBox()
@@ -309,7 +330,7 @@ namespace BIUK9000.UI
             if (nextLayer == null) return;
             foreach (GifFrame gf in MainGiffer.Frames)
             {
-                gf.AddLayer(nextLayer);
+                gf.AddLayer(nextLayer.Clone());
             }
             MainLayersPanel.DisplayLayers(SelectedFrame);
             UpdateMainPictureBox();
@@ -464,8 +485,7 @@ namespace BIUK9000.UI
                 GFL layerToDelete = gf.Layers.Find(layer => layer.LayerID == layerIDToDelete);
                 if (layerToDelete != null) gf.Layers.Remove(layerToDelete);
             }
-            UpdateMainPictureBox();
-            MainLayersPanel.DisplayLayers(SelectedFrame);
+            CompleteUIUpdate();
         }
         private void MainLayersPanel_LayerVisibilityChanged(object sender, EventArgs e)
         {

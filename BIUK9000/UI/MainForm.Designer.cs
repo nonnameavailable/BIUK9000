@@ -35,10 +35,13 @@ namespace BIUK9000.UI
             controlsPanel = new ControlsPanel();
             layerParamsPanel = new System.Windows.Forms.Panel();
             panel1 = new System.Windows.Forms.Panel();
+            unmarkButton = new System.Windows.Forms.Button();
+            markButton = new System.Windows.Forms.Button();
             lerpExecuteButton = new System.Windows.Forms.Button();
             lerpStartButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            deleteFramesButton = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
@@ -80,7 +83,7 @@ namespace BIUK9000.UI
             mainTimelineSlider.Dock = System.Windows.Forms.DockStyle.Fill;
             mainTimelineSlider.FrameDelay = 10;
             mainTimelineSlider.Location = new System.Drawing.Point(148, 464);
-            mainTimelineSlider.Maximum = 100;
+            mainTimelineSlider.Maximum = 9;
             mainTimelineSlider.MouseButtonIsDown = false;
             mainTimelineSlider.Name = "mainTimelineSlider";
             mainTimelineSlider.SelectedFrameIndex = 0;
@@ -109,6 +112,9 @@ namespace BIUK9000.UI
             // 
             // panel1
             // 
+            panel1.Controls.Add(deleteFramesButton);
+            panel1.Controls.Add(unmarkButton);
+            panel1.Controls.Add(markButton);
             panel1.Controls.Add(lerpExecuteButton);
             panel1.Controls.Add(lerpStartButton);
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -117,20 +123,38 @@ namespace BIUK9000.UI
             panel1.Size = new System.Drawing.Size(144, 94);
             panel1.TabIndex = 8;
             // 
+            // unmarkButton
+            // 
+            unmarkButton.Location = new System.Drawing.Point(71, 32);
+            unmarkButton.Name = "unmarkButton";
+            unmarkButton.Size = new System.Drawing.Size(62, 23);
+            unmarkButton.TabIndex = 3;
+            unmarkButton.Text = "unmark";
+            unmarkButton.UseVisualStyleBackColor = true;
+            // 
+            // markButton
+            // 
+            markButton.Location = new System.Drawing.Point(71, 3);
+            markButton.Name = "markButton";
+            markButton.Size = new System.Drawing.Size(62, 23);
+            markButton.TabIndex = 2;
+            markButton.Text = "mark";
+            markButton.UseVisualStyleBackColor = true;
+            // 
             // lerpExecuteButton
             // 
             lerpExecuteButton.Location = new System.Drawing.Point(3, 32);
             lerpExecuteButton.Name = "lerpExecuteButton";
-            lerpExecuteButton.Size = new System.Drawing.Size(81, 23);
+            lerpExecuteButton.Size = new System.Drawing.Size(62, 23);
             lerpExecuteButton.TabIndex = 1;
-            lerpExecuteButton.Text = "lerp execute";
+            lerpExecuteButton.Text = "lerp exe";
             lerpExecuteButton.UseVisualStyleBackColor = true;
             // 
             // lerpStartButton
             // 
             lerpStartButton.Location = new System.Drawing.Point(3, 3);
             lerpStartButton.Name = "lerpStartButton";
-            lerpStartButton.Size = new System.Drawing.Size(75, 23);
+            lerpStartButton.Size = new System.Drawing.Size(62, 23);
             lerpStartButton.TabIndex = 0;
             lerpStartButton.Text = "lerp start";
             lerpStartButton.UseVisualStyleBackColor = true;
@@ -140,12 +164,25 @@ namespace BIUK9000.UI
             mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             mainPictureBox.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            mainPictureBox.IsLMBDown = false;
+            mainPictureBox.IsMMBDown = false;
+            mainPictureBox.IsRMBDown = false;
             mainPictureBox.Location = new System.Drawing.Point(148, 158);
             mainPictureBox.Name = "mainPictureBox";
+            mainPictureBox.ScaledDragDifference = new System.Drawing.Point(0, 0);
             mainPictureBox.Size = new System.Drawing.Size(571, 300);
             mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             mainPictureBox.TabIndex = 9;
             mainPictureBox.TabStop = false;
+            // 
+            // deleteFramesButton
+            // 
+            deleteFramesButton.Location = new System.Drawing.Point(71, 62);
+            deleteFramesButton.Name = "deleteFramesButton";
+            deleteFramesButton.Size = new System.Drawing.Size(62, 23);
+            deleteFramesButton.TabIndex = 4;
+            deleteFramesButton.Text = "del fr.";
+            deleteFramesButton.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -173,6 +210,9 @@ namespace BIUK9000.UI
         private System.Windows.Forms.Button lerpExecuteButton;
         private System.Windows.Forms.Button lerpStartButton;
         private MyPictureBox mainPictureBox;
+        private System.Windows.Forms.Button unmarkButton;
+        private System.Windows.Forms.Button markButton;
+        private System.Windows.Forms.Button deleteFramesButton;
     }
 }
 

@@ -42,7 +42,11 @@ namespace BIUK9000.GifferComponents.GFLVariants
             OriginalBitmap?.Dispose();
             base.Dispose();
         }
-
+        public override void CopyParameters(GFL layer)
+        {
+            base.CopyParameters(layer);
+            OriginalBitmap = (layer as BitmapGFL).OriginalBitmap;
+        }
         public override GFL Clone()
         {
             BitmapGFL clone = new BitmapGFL(OriginalBitmap, LayerID);

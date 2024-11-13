@@ -28,33 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            timeLineTrackBar = new System.Windows.Forms.TrackBar();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             groupBox1 = new System.Windows.Forms.GroupBox();
-            frameDelayNUD = new System.Windows.Forms.NumericUpDown();
             playButton = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)timeLineTrackBar).BeginInit();
+            frameDelayNUD = new System.Windows.Forms.NumericUpDown();
+            timeLineTrackBar = new MyTrackBar();
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDelayNUD).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)timeLineTrackBar).BeginInit();
             SuspendLayout();
-            // 
-            // timeLineTrackBar
-            // 
-            timeLineTrackBar.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            timeLineTrackBar.Location = new System.Drawing.Point(103, 52);
-            timeLineTrackBar.Maximum = 100;
-            timeLineTrackBar.Name = "timeLineTrackBar";
-            timeLineTrackBar.Size = new System.Drawing.Size(376, 45);
-            timeLineTrackBar.TabIndex = 0;
             // 
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 2;
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel1.Controls.Add(timeLineTrackBar, 1, 0);
             tableLayoutPanel1.Controls.Add(groupBox1, 0, 0);
+            tableLayoutPanel1.Controls.Add(timeLineTrackBar, 1, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -74,6 +65,16 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "delay";
             // 
+            // playButton
+            // 
+            playButton.Location = new System.Drawing.Point(6, 53);
+            playButton.Name = "playButton";
+            playButton.Size = new System.Drawing.Size(82, 35);
+            playButton.TabIndex = 1;
+            playButton.Text = "play";
+            playButton.UseVisualStyleBackColor = true;
+            playButton.Click += playButton_Click;
+            // 
             // frameDelayNUD
             // 
             frameDelayNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
@@ -85,15 +86,14 @@
             frameDelayNUD.TabIndex = 0;
             frameDelayNUD.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
-            // playButton
+            // timeLineTrackBar
             // 
-            playButton.Location = new System.Drawing.Point(6, 53);
-            playButton.Name = "playButton";
-            playButton.Size = new System.Drawing.Size(82, 35);
-            playButton.TabIndex = 1;
-            playButton.Text = "play";
-            playButton.UseVisualStyleBackColor = true;
-            playButton.Click += playButton_Click;
+            timeLineTrackBar.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            timeLineTrackBar.Location = new System.Drawing.Point(103, 52);
+            timeLineTrackBar.Maximum = 9;
+            timeLineTrackBar.Name = "timeLineTrackBar";
+            timeLineTrackBar.Size = new System.Drawing.Size(376, 45);
+            timeLineTrackBar.TabIndex = 2;
             // 
             // TimelineSlider
             // 
@@ -102,20 +102,19 @@
             Controls.Add(tableLayoutPanel1);
             Name = "TimelineSlider";
             Size = new System.Drawing.Size(482, 100);
-            ((System.ComponentModel.ISupportInitialize)timeLineTrackBar).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)frameDelayNUD).EndInit();
+            ((System.ComponentModel.ISupportInitialize)timeLineTrackBar).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-
-        private System.Windows.Forms.TrackBar timeLineTrackBar;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.NumericUpDown frameDelayNUD;
         private System.Windows.Forms.Button playButton;
+        private MyTrackBar timeLineTrackBar;
     }
 }

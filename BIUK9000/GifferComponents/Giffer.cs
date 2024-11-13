@@ -184,7 +184,34 @@ namespace BIUK9000.GifferComponents
         {
             return _nextLayerID++;
         }
+        private bool RemoveFrame(int index)
+        {
+            if(index < 0 || index >= Frames.Count || FrameCount <= 1)
+            {
+                return false;
+            } else
+            {
+                Frames.RemoveAt(index);
+                return true;
+            }
+        }
+        public bool RemoveFrames(List<int> indexes)
+        {
+            if (indexes.Count == 0 || FrameCount <= 1) return false;
 
+            if(indexes.Count == 1) return RemoveFrame(indexes[0]);
+
+            int firstIndex = Math.Min(indexes[0], indexes[1]);
+            int lastIndex = Math.Max(indexes[0], indexes[1]);
+            if (lastIndex >= FrameCount || lastIndex - firstIndex + 1 >= FrameCount) return false;
+            for(int i = firstIndex; i <= lastIndex; i++)
+            {
+                GifFrame frameToRemove = Frames[firstIndex];
+                RemoveFrame(firstIndex);
+                frameToRemove.Dispose();
+            }
+            return true;
+        }
         public void Dispose()
         {
             if (_disposed) return;

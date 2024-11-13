@@ -1,6 +1,7 @@
 ﻿using BIUK9000.GifferComponents;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace BIUK9000.UI
             MouseDown += MyPictureBox_MouseDown;
             MouseUp += MyPictureBox_MouseUp;
             MouseMove += MyPictureBox_MouseMove;
-            InterpolationMode = InterpolationMode.Bicubic;
+            InterpolationMode = InterpolationMode.HighQualityBicubic;
         }
         protected override void OnPaint(PaintEventArgs paintEventArgs)
         {
@@ -102,6 +103,5 @@ namespace BIUK9000.UI
             Point zoomedMP = new Point(mousePosition.X - horizontalBlankSpace / 2, mousePosition.Y - verticalBlankSpace / 2);
             return new Point(zoomedPoint.X - zoomedMP.X, zoomedPoint.Y - zoomedMP.Y);
         }
-
     }
 }

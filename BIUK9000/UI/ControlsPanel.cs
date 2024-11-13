@@ -51,7 +51,7 @@ namespace BIUK9000.UI
                 .Cast<InterpolationMode>()
                 .Where(mode => mode != InterpolationMode.Invalid)
                 .ToList(); ;
-            mpbAAModeCBB.SelectedItem = InterpolationMode.Bicubic;
+            mpbAAModeCBB.SelectedItem = InterpolationMode.HighQualityBicubic;
             mpbAAModeCBB.SelectedIndexChanged += MpbAAModeCBB_SelectedIndexChanged;
             applyParamsCBB.SelectedIndex = 0;
             SaveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);

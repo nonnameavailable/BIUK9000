@@ -149,7 +149,6 @@ namespace BIUK9000
             {
                 mg.AddGifferAsFrames(newGiffer, mf.SelectedFrameIndex);
             }
-            mf.CompleteUIUpdate();
         }
     }
 }
