@@ -35,13 +35,13 @@ namespace BIUK9000.UI
             controlsPanel = new ControlsPanel();
             layerParamsPanel = new System.Windows.Forms.Panel();
             panel1 = new System.Windows.Forms.Panel();
+            deleteFramesButton = new System.Windows.Forms.Button();
             unmarkButton = new System.Windows.Forms.Button();
             markButton = new System.Windows.Forms.Button();
             lerpExecuteButton = new System.Windows.Forms.Button();
             lerpStartButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            deleteFramesButton = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
@@ -123,6 +123,15 @@ namespace BIUK9000.UI
             panel1.Size = new System.Drawing.Size(144, 94);
             panel1.TabIndex = 8;
             // 
+            // deleteFramesButton
+            // 
+            deleteFramesButton.Location = new System.Drawing.Point(71, 62);
+            deleteFramesButton.Name = "deleteFramesButton";
+            deleteFramesButton.Size = new System.Drawing.Size(62, 23);
+            deleteFramesButton.TabIndex = 4;
+            deleteFramesButton.Text = "del fr.";
+            deleteFramesButton.UseVisualStyleBackColor = true;
+            // 
             // unmarkButton
             // 
             unmarkButton.Location = new System.Drawing.Point(71, 32);
@@ -161,7 +170,7 @@ namespace BIUK9000.UI
             // 
             // mainPictureBox
             // 
-            mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            mainPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             mainPictureBox.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             mainPictureBox.IsLMBDown = false;
@@ -174,15 +183,6 @@ namespace BIUK9000.UI
             mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             mainPictureBox.TabIndex = 9;
             mainPictureBox.TabStop = false;
-            // 
-            // deleteFramesButton
-            // 
-            deleteFramesButton.Location = new System.Drawing.Point(71, 62);
-            deleteFramesButton.Name = "deleteFramesButton";
-            deleteFramesButton.Size = new System.Drawing.Size(62, 23);
-            deleteFramesButton.TabIndex = 4;
-            deleteFramesButton.Text = "del fr.";
-            deleteFramesButton.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

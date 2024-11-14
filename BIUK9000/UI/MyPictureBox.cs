@@ -17,6 +17,19 @@ namespace BIUK9000.UI
         public bool IsRMBDown { get; set; }
         public bool IsMMBDown { get; set; }
         public Point ScaledDragDifference { get; set; }
+        public Point MousePositionOnImage
+        {
+            get
+            {
+                int[] bsp = BlankSpace();
+                int hbp = bsp[0];
+                int vbp = bsp[1];
+
+                int x = (int)Math.Round((mousePosition.X - hbp / 2d) / Zoom());
+                int y = (int)Math.Round((mousePosition.Y - vbp / 2d) / Zoom());
+                return new Point(x, y);
+            }
+        }
         private Point mouseClickedPosition;
         private Point mousePosition;
         public InterpolationMode InterpolationMode { get; set; }
@@ -35,8 +48,9 @@ namespace BIUK9000.UI
 
         private void MyPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (Image == null) return;
             mousePosition = e.Location;
+            if (Image == null) return;
+            //Debug.Print(MousePositionOnImage.ToString() + BlankSpace()[0].ToString() + " x " + BlankSpace()[1].ToString());
             ScaledDragDifference = new Point((int)((e.X - mouseClickedPosition.X) / Zoom()),(int)((e.Y - mouseClickedPosition.Y) / Zoom()));
         }
 
@@ -76,14 +90,22 @@ namespace BIUK9000.UI
         }
         public double Zoom()
         {
-            int iMainGifferHeight = Image.Height;
-            int iMainGifferWidth = Image.Width;
-            double widthScale = (double)Width / (double)iMainGifferWidth;
-            double heightScale = (double)Height / (double)iMainGifferHeight;
+            double widthScale = (double)Width / (double)Image.Width;
+            double heightScale = (double)Height / (double)Image.Height;
             return Math.Min(widthScale, heightScale);
         }
         public Point PointToMouse(Point p)
         {
+            int[] bsp = BlankSpace();
+            int horizontalBlankSpace = bsp[0];
+            int verticalBlankSpace = bsp[1];
+            Point zoomedPoint = new Point((int)(p.X * Zoom()), (int)(p.Y * Zoom()));
+            Point zoomedMP = new Point(mousePosition.X - horizontalBlankSpace / 2, mousePosition.Y - verticalBlankSpace / 2);
+            return new Point(zoomedPoint.X - zoomedMP.X, zoomedPoint.Y - zoomedMP.Y);
+        }
+        private int[] BlankSpace()
+        {
+            int[] result = new int[2];
             double pbAspect = Width / (double)Height;
             double frameAspect = (double)Image.Width / Image.Height;
             int scaledWidth, scaledHeight;
@@ -97,11 +119,9 @@ namespace BIUK9000.UI
                 scaledWidth = (int)(Height * frameAspect);
                 scaledHeight = Height;
             }
-            int horizontalBlankSpace = Width - scaledWidth;
-            int verticalBlankSpace = Height - scaledHeight;
-            Point zoomedPoint = new Point((int)(p.X * Zoom()), (int)(p.Y * Zoom()));
-            Point zoomedMP = new Point(mousePosition.X - horizontalBlankSpace / 2, mousePosition.Y - verticalBlankSpace / 2);
-            return new Point(zoomedPoint.X - zoomedMP.X, zoomedPoint.Y - zoomedMP.Y);
+            result[0] = Width - scaledWidth;
+            result[1] = Height - scaledHeight;
+            return result;
         }
     }
 }
