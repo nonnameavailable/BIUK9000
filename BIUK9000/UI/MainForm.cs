@@ -18,6 +18,7 @@ using BIUK9000.Dithering;
 using BIUK9000.UI.LayerParamControls;
 using System.Drawing.Drawing2D;
 using BIUK9000.GifferComponents.GFLVariants;
+using BIUK9000.UI.CustomControls;
 
 namespace BIUK9000.UI
 {
@@ -75,6 +76,8 @@ namespace BIUK9000.UI
             controlsPanel.ShouldStartDragDrop += ControlsPanel_ShouldStartDragDrop;
             controlsPanel.SaveButtonClicked += ControlsPanel_SaveButtonClicked;
             controlsPanel.InterpolationModeChanged += (sender, args) => mainPictureBox.InterpolationMode = ((ControlsPanel)sender).InterpolationMode;
+            controlsPanel.ToolPaintSelected += ControlsPanel_ToolPaintSelected;
+            controlsPanel.ToolMoveSelected += ControlsPanel_ToolMoveSelected;
 
             MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
 
@@ -84,6 +87,26 @@ namespace BIUK9000.UI
             markButton.Click += (sender, args) => MainTimelineSlider.AddMark(SelectedFrameIndex);
             unmarkButton.Click += (sender, args) => MainTimelineSlider.RemoveMark(SelectedFrameIndex);
             deleteFramesButton.Click += DeleteFramesButton_Click;
+        }
+        private IGFLParamControl igflpBackup;
+        private void ControlsPanel_ToolMoveSelected(object sender, EventArgs e)
+        {
+            if (GifferC == null) return;
+            foreach (Control control in layerParamsPanel.Controls)
+            {
+                control.Dispose();
+            }
+            layerParamsPanel.Controls.Add(igflpBackup as Control);
+        }
+        private void ControlsPanel_ToolPaintSelected(object sender, EventArgs e)
+        {
+            if (GifferC == null) return;
+            if(layerParamsPanel.Controls.Count > 0)
+            {
+                igflpBackup = (IGFLParamControl)layerParamsPanel.Controls[0];
+                layerParamsPanel.Controls.Clear();
+                layerParamsPanel.Controls.Add(new PaintControl());
+            }
         }
 
         private void DeleteFramesButton_Click(object sender, EventArgs e)
@@ -302,11 +325,25 @@ namespace BIUK9000.UI
             originalLCtM = LayerCenterToMouse();
             UpdateTimer.Start();
         }
+        private Point prevMousePos;
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
             if (MainGiffer == null) return;
             Point dd = mainPictureBox.ScaledDragDifference;
             OVector currentLCtM = LayerCenterToMouse();
+            Point mpoi = mainPictureBox.MousePositionOnImage;
+            Point mpoiAdjusted = new Point(mpoi.X - SelectedLayer.Position.Xint, mpoi.Y - SelectedLayer.Position.Yint);
+            if (controlsPanel.ToolPaintSelectedFlag)
+            {
+                if(SelectedLayer is BitmapGFL)
+                {
+                    Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
+                    if (IsLMBDown) Painter.DrawLine(lbmp, mpoiAdjusted, prevMousePos, layerParamsPanel.Controls[0] as PaintControl);
+                }
+                prevMousePos = mpoiAdjusted;
+                return;
+            }
+
             if (IsRMBDown || IsLMBDown || IsMMBDown)
             {
                 GFL gfl = SelectedLayer;
@@ -368,6 +405,7 @@ namespace BIUK9000.UI
                     }
                 }
             }
+            prevMousePos = mpoiAdjusted;
         }
 
         private OVector LayerCenterToMouse()

@@ -121,27 +121,16 @@ namespace BIUK9000.GifferComponents
             frame.Dispose();
             OnFrameCountChanged();
         }
-        public void Crop(GifFrame frameWithCropLayer)
-        {
-            GFL cl = frameWithCropLayer.Layers.Last();
-            if (cl is not CropGFL) return;
-            Rectangle newRectangle = cl.BoundingRectangle;
-            foreach(GifFrame frame in Frames)
-            {
-                foreach (GFL layer in frame.Layers)
-                {
-                    layer.Move(-newRectangle.X + layer.Position.Xint, -newRectangle.Y + layer.Position.Yint);
-                }
-                //frame.AddSpace(-newRectangle.Y, newRectangle.Right - frame.Width, newRectangle.Bottom - frame.Height, -newRectangle.X);
-            }
-            Width = newRectangle.Width;
-            Height = newRectangle.Height;
-            frameWithCropLayer.RemoveLayer(cl);
-        }
         public void AddGifferAsLayers(Giffer newGiffer, bool spread)
         {
             int nextLayerID = NextLayerID();
-            for(int i = 0; i < FrameCount; i++)
+            if (newGiffer.FrameCount == 1)
+            {
+                using Bitmap bmp = newGiffer.FrameAsBitmap(0, false);
+                Frames.ForEach(frame => frame.AddLayer(new BitmapGFL(new Bitmap(bmp), nextLayerID)));
+                return;
+            }
+            for (int i = 0; i < FrameCount; i++)
             {
                 int newGifferIndex;
                 if (spread)

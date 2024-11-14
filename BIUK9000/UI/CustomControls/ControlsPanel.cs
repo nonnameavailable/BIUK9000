@@ -30,11 +30,14 @@ namespace BIUK9000.UI
         public bool DrawHelp { get => drawHelpCB.Checked; }
         public bool UseGifsicle { get => useGifSicleCB.Checked; }
         public bool UseDithering { get => useDitheringCB.Checked; }
+        public bool ToolMoveSelectedFlag { get => toolMoveRB.Checked; }
+        public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; }
         public InterpolationMode InterpolationMode { get => (InterpolationMode)mpbAAModeCBB.SelectedItem; }
         public event EventHandler MustRedraw;
         public event EventHandler ShouldStartDragDrop;
         public event EventHandler SaveButtonClicked;
         public event EventHandler InterpolationModeChanged;
+        public event EventHandler ToolMoveSelected, ToolPaintSelected;
         public ControlsPanel()
         {
             InitializeComponent();
@@ -56,6 +59,18 @@ namespace BIUK9000.UI
             applyParamsCBB.SelectedIndex = 0;
             SaveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
             useDitheringCB.CheckedChanged += UseDitheringCB_CheckedChanged;
+            toolMoveRB.CheckedChanged += ToolMoveRB_CheckedChanged;
+            toolPaintRB.CheckedChanged += ToolPaintRB_CheckedChanged;
+        }
+
+        private void ToolPaintRB_CheckedChanged(object sender, EventArgs e)
+        {
+            if(ToolPaintSelectedFlag) ToolPaintSelected?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ToolMoveRB_CheckedChanged(object sender, EventArgs e)
+        {
+            if(ToolMoveSelectedFlag) ToolMoveSelected?.Invoke(this, EventArgs.Empty);
         }
 
         private void MpbAAModeCBB_SelectedIndexChanged(object sender, EventArgs e)

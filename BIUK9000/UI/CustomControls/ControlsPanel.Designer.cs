@@ -33,7 +33,7 @@
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             SaveButton = new System.Windows.Forms.Button();
             exportTC = new System.Windows.Forms.TabControl();
-            tabPage1 = new System.Windows.Forms.TabPage();
+            exportTP = new System.Windows.Forms.TabPage();
             groupBox3 = new System.Windows.Forms.GroupBox();
             useDitheringCB = new System.Windows.Forms.CheckBox();
             groupBox2 = new System.Windows.Forms.GroupBox();
@@ -46,23 +46,29 @@
             label2 = new System.Windows.Forms.Label();
             GifExportColorsNUD = new System.Windows.Forms.NumericUpDown();
             label1 = new System.Windows.Forms.Label();
-            settingsTC = new System.Windows.Forms.TabPage();
+            settingsTP = new System.Windows.Forms.TabPage();
             mpbAAModeCBB = new System.Windows.Forms.ComboBox();
             applyParamsCBB = new System.Windows.Forms.ComboBox();
             positionSnapCB = new System.Windows.Forms.CheckBox();
             drawHelpCB = new System.Windows.Forms.CheckBox();
             rotationSnapCB = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            toolsTP = new System.Windows.Forms.TabPage();
+            groupBox4 = new System.Windows.Forms.GroupBox();
+            toolMoveRB = new System.Windows.Forms.RadioButton();
+            toolPaintRB = new System.Windows.Forms.RadioButton();
             tableLayoutPanel1.SuspendLayout();
             exportTC.SuspendLayout();
-            tabPage1.SuspendLayout();
+            exportTP.SuspendLayout();
             groupBox3.SuspendLayout();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ImageExportJpegQualNUD).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).BeginInit();
-            settingsTC.SuspendLayout();
+            settingsTP.SuspendLayout();
+            toolsTP.SuspendLayout();
+            groupBox4.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -94,8 +100,9 @@
             // 
             // exportTC
             // 
-            exportTC.Controls.Add(tabPage1);
-            exportTC.Controls.Add(settingsTC);
+            exportTC.Controls.Add(toolsTP);
+            exportTC.Controls.Add(exportTP);
+            exportTC.Controls.Add(settingsTP);
             exportTC.Dock = System.Windows.Forms.DockStyle.Fill;
             exportTC.Location = new System.Drawing.Point(3, 143);
             exportTC.Name = "exportTC";
@@ -104,18 +111,18 @@
             exportTC.Size = new System.Drawing.Size(133, 527);
             exportTC.TabIndex = 7;
             // 
-            // tabPage1
+            // exportTP
             // 
-            tabPage1.AutoScroll = true;
-            tabPage1.Controls.Add(groupBox3);
-            tabPage1.Controls.Add(groupBox2);
-            tabPage1.Controls.Add(groupBox1);
-            tabPage1.Location = new System.Drawing.Point(4, 24);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Size = new System.Drawing.Size(125, 499);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "export";
-            tabPage1.UseVisualStyleBackColor = true;
+            exportTP.AutoScroll = true;
+            exportTP.Controls.Add(groupBox3);
+            exportTP.Controls.Add(groupBox2);
+            exportTP.Controls.Add(groupBox1);
+            exportTP.Location = new System.Drawing.Point(4, 24);
+            exportTP.Name = "exportTP";
+            exportTP.Size = new System.Drawing.Size(125, 499);
+            exportTP.TabIndex = 0;
+            exportTP.Text = "export";
+            exportTP.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
@@ -253,20 +260,20 @@
             label1.TabIndex = 0;
             label1.Text = "colors";
             // 
-            // settingsTC
+            // settingsTP
             // 
-            settingsTC.Controls.Add(mpbAAModeCBB);
-            settingsTC.Controls.Add(applyParamsCBB);
-            settingsTC.Controls.Add(positionSnapCB);
-            settingsTC.Controls.Add(drawHelpCB);
-            settingsTC.Controls.Add(rotationSnapCB);
-            settingsTC.Location = new System.Drawing.Point(4, 24);
-            settingsTC.Name = "settingsTC";
-            settingsTC.Padding = new System.Windows.Forms.Padding(3);
-            settingsTC.Size = new System.Drawing.Size(125, 499);
-            settingsTC.TabIndex = 1;
-            settingsTC.Text = "settings";
-            settingsTC.UseVisualStyleBackColor = true;
+            settingsTP.Controls.Add(mpbAAModeCBB);
+            settingsTP.Controls.Add(applyParamsCBB);
+            settingsTP.Controls.Add(positionSnapCB);
+            settingsTP.Controls.Add(drawHelpCB);
+            settingsTP.Controls.Add(rotationSnapCB);
+            settingsTP.Location = new System.Drawing.Point(4, 24);
+            settingsTP.Name = "settingsTP";
+            settingsTP.Padding = new System.Windows.Forms.Padding(3);
+            settingsTP.Size = new System.Drawing.Size(125, 499);
+            settingsTP.TabIndex = 1;
+            settingsTP.Text = "options";
+            settingsTP.UseVisualStyleBackColor = true;
             // 
             // mpbAAModeCBB
             // 
@@ -327,6 +334,50 @@
             toolTip.SetToolTip(rotationSnapCB, "If enabled, the layer rotation will snap to the nearest 90°");
             rotationSnapCB.UseVisualStyleBackColor = true;
             // 
+            // toolsTP
+            // 
+            toolsTP.Controls.Add(groupBox4);
+            toolsTP.Location = new System.Drawing.Point(4, 24);
+            toolsTP.Name = "toolsTP";
+            toolsTP.Padding = new System.Windows.Forms.Padding(3);
+            toolsTP.Size = new System.Drawing.Size(125, 499);
+            toolsTP.TabIndex = 2;
+            toolsTP.Text = "tools";
+            toolsTP.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            groupBox4.Controls.Add(toolPaintRB);
+            groupBox4.Controls.Add(toolMoveRB);
+            groupBox4.Location = new System.Drawing.Point(6, 6);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new System.Drawing.Size(113, 101);
+            groupBox4.TabIndex = 0;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Tools";
+            // 
+            // toolMoveRB
+            // 
+            toolMoveRB.AutoSize = true;
+            toolMoveRB.Checked = true;
+            toolMoveRB.Location = new System.Drawing.Point(6, 22);
+            toolMoveRB.Name = "toolMoveRB";
+            toolMoveRB.Size = new System.Drawing.Size(55, 19);
+            toolMoveRB.TabIndex = 0;
+            toolMoveRB.TabStop = true;
+            toolMoveRB.Text = "Move";
+            toolMoveRB.UseVisualStyleBackColor = true;
+            // 
+            // toolPaintRB
+            // 
+            toolPaintRB.AutoSize = true;
+            toolPaintRB.Location = new System.Drawing.Point(6, 47);
+            toolPaintRB.Name = "toolPaintRB";
+            toolPaintRB.Size = new System.Drawing.Size(52, 19);
+            toolPaintRB.TabIndex = 1;
+            toolPaintRB.Text = "Paint";
+            toolPaintRB.UseVisualStyleBackColor = true;
+            // 
             // ControlsPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -336,7 +387,7 @@
             Size = new System.Drawing.Size(139, 673);
             tableLayoutPanel1.ResumeLayout(false);
             exportTC.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
+            exportTP.ResumeLayout(false);
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             groupBox2.ResumeLayout(false);
@@ -346,8 +397,11 @@
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).EndInit();
-            settingsTC.ResumeLayout(false);
-            settingsTC.PerformLayout();
+            settingsTP.ResumeLayout(false);
+            settingsTP.PerformLayout();
+            toolsTP.ResumeLayout(false);
+            groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -355,7 +409,7 @@
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TabControl exportTC;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage exportTP;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ComboBox ImageExportFormatCBB;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -363,7 +417,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown GifExportColorsNUD;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TabPage settingsTC;
+        private System.Windows.Forms.TabPage settingsTP;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.RadioButton toolPaintRB;
+        private System.Windows.Forms.RadioButton toolMoveRB;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.NumericUpDown ImageExportJpegQualNUD;
         private System.Windows.Forms.Label label3;
@@ -376,5 +433,8 @@
         private System.Windows.Forms.CheckBox useDitheringCB;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ComboBox mpbAAModeCBB;
+        private System.Windows.Forms.TabPage toolsTP;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage settingsTC;
     }
 }
