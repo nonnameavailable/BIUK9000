@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BIUK9000.Dithering
 {
     //from https://stackoverflow.com/a/34801225/9852011
-    public class FastBitmap
+    public class FastBitmap : IDisposable
     {
         public Bitmap Bitmap { get; private set; }
         public Int32[] Bits { get; private set; }

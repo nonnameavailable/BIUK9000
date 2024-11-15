@@ -35,11 +35,11 @@ namespace BIUK9000.UI
         private GFL SelectedLayer { get => MainLayersPanel.SelectedLayer; }
         private Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
-        private FrameAndLayer LerpStart { get; set; }
         public bool IsShiftDown { get; set; }
         public bool IsCtrlDown { get; set; }
         private float originalLayerRotation;
         private OVector originalLCtM;
+        private Control lpcBackup;
         public bool IsLMBDown { get => mainPictureBox.IsLMBDown; }
         public bool IsRMBDown { get => mainPictureBox.IsRMBDown; }
         public bool IsMMBDown { get => mainPictureBox.IsMMBDown; }
@@ -88,22 +88,26 @@ namespace BIUK9000.UI
             unmarkButton.Click += (sender, args) => MainTimelineSlider.RemoveMark(SelectedFrameIndex);
             deleteFramesButton.Click += DeleteFramesButton_Click;
         }
-        private IGFLParamControl igflpBackup;
+
         private void ControlsPanel_ToolMoveSelected(object sender, EventArgs e)
         {
+            MainLayersPanel.Enabled = true;
+            MainTimelineSlider.Enabled = true;
             if (GifferC == null) return;
             foreach (Control control in layerParamsPanel.Controls)
             {
                 control.Dispose();
             }
-            layerParamsPanel.Controls.Add(igflpBackup as Control);
+            layerParamsPanel.Controls.Add(lpcBackup);
         }
         private void ControlsPanel_ToolPaintSelected(object sender, EventArgs e)
         {
+            MainLayersPanel.Enabled = false;
+            MainTimelineSlider.Enabled = false;
             if (GifferC == null) return;
             if(layerParamsPanel.Controls.Count > 0)
             {
-                igflpBackup = (IGFLParamControl)layerParamsPanel.Controls[0];
+                lpcBackup = layerParamsPanel.Controls[0];
                 layerParamsPanel.Controls.Clear();
                 layerParamsPanel.Controls.Add(new PaintControl());
             }
@@ -116,11 +120,6 @@ namespace BIUK9000.UI
             CompleteUIUpdate();
         }
 
-        private void LerpExecuteButton_Click(object sender, EventArgs e)
-        {
-            GifferC.LerpExecute(MainGiffer.Frames.IndexOf(LerpStart.Frame), SelectedFrameIndex, SelectedLayer.LayerID);
-        }
-
         private void LerpStartButton_Click(object sender, EventArgs e)
         {
             if (MainGiffer == null)
@@ -128,12 +127,16 @@ namespace BIUK9000.UI
                 MessageBox.Show("Import a gif first");
                 return;
             }
-            LerpStart = new FrameAndLayer(SelectedLayer, SelectedFrame);
+            GifferC.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
         }
-
+        private void LerpExecuteButton_Click(object sender, EventArgs e)
+        {
+            GifferC.LerpExecute(MainTimelineSlider.Marks, SelectedLayerIndex);
+            MainTimelineSlider.ClearMarks();
+        }
         public void ApplyCurrentLayerParamsToSubsequentLayers()
         {
-            GifferC.ApplyLayerParams(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex, controlsPanel.SelectedApplyParamsMode);
+            GifferC.ApplyLayerParams(SelectedFrameIndex, SelectedLayerIndex, controlsPanel.SelectedApplyParamsMode);
         }
         private void MainForm_DragEnter(object sender, DragEventArgs e)
         {
@@ -161,7 +164,7 @@ namespace BIUK9000.UI
             MainGiffer = newGiffer;
             GifferC = new GifferController(newGiffer);
             CompleteUIUpdate();
-            GifferC.SaveLayerStateForLerp(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
+            GifferC.SaveLayerStateForApply(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
             GifferC.SaveLayerForLPC(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
         }
         public void CompleteUIUpdate()
@@ -198,7 +201,7 @@ namespace BIUK9000.UI
                 lpc.LoadParams(SelectedLayer);
                 lpc.ParamsChanged += (sender, args) =>
                 {
-                    GifferC.SaveLayerStateForLerp(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
+                    GifferC.SaveLayerStateForApply(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
                     lpc.SaveParams(SelectedLayer);
                     UpdateMainPictureBox();
                     ApplyCurrentLayerParamsToSubsequentLayers();
@@ -320,10 +323,32 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             GFL cgfl = SelectedLayer;
             MainGiffer.Save();
-            GifferC.SaveLayerStateForLerp(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
+            GifferC.SaveLayerStateForApply(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
             UpdateTimer.Start();
+            if (controlsPanel.ToolPaintSelectedFlag)
+            {
+                if (SelectedLayer is BitmapGFL)
+                {
+                    PaintControl pc = layerParamsPanel.Controls[0] as PaintControl;
+                    Point mpoi = mainPictureBox.MousePositionOnImage;
+                    Point mpoiAdjusted = new Point(mpoi.X - SelectedLayer.Position.Xint, mpoi.Y - SelectedLayer.Position.Yint);
+                    if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
+                    {
+                        Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
+                        if (IsLMBDown) Painter.DrawLine(lbmp, mpoiAdjusted, mpoiAdjusted, pc.PaintColor, pc.Transparency, pc.Thickness);
+                    }
+                    else if(pc.SelectedPaintTool == PaintControl.PaintTool.DeleteColor)
+                    {
+                        Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
+                        BitmapGFL gfl = SelectedLayer as BitmapGFL;
+                        Bitmap transparentBmp = Painter.DeleteColor(lbmp, mpoiAdjusted, pc.Transparency);
+                        gfl.ReplaceOriginalBitmap(transparentBmp);
+                    }
+                    UpdateMainPictureBox();
+                }
+            }
         }
         private Point prevMousePos;
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
@@ -337,8 +362,12 @@ namespace BIUK9000.UI
             {
                 if(SelectedLayer is BitmapGFL)
                 {
-                    Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
-                    if (IsLMBDown) Painter.DrawLine(lbmp, mpoiAdjusted, prevMousePos, layerParamsPanel.Controls[0] as PaintControl);
+                    PaintControl pc = layerParamsPanel.Controls[0] as PaintControl;
+                    if(pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
+                    {
+                        Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
+                        if (IsLMBDown) Painter.DrawLine(lbmp, mpoiAdjusted, prevMousePos, pc.PaintColor, pc.Transparency, pc.Thickness);
+                    }
                 }
                 prevMousePos = mpoiAdjusted;
                 return;
@@ -462,7 +491,7 @@ namespace BIUK9000.UI
         private void MainLayersPanel_LayerVisibilityChanged(object sender, EventArgs e)
         {
             UpdateMainPictureBox();
-            GifferC.SaveLayerStateForLerp(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
+            GifferC.SaveLayerStateForApply(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
             GifferC.SetSavedLayerVisibility(!SelectedLayer.Visible);
             ApplyCurrentLayerParamsToSubsequentLayers();
         }
@@ -477,7 +506,12 @@ namespace BIUK9000.UI
                 GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
                 UpdateLayerParamsUI();
             }
-            MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
+            if(controlsPanel.SelectedApplyParamsMode != ApplyParamsMode.applyNone)
+            {
+                MainTimelineSlider.FrameDelayChanged -= MainTimelineSlider_FrameDelayChanged;
+                MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
+                MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
+            }
             UpdateMainPictureBox();
         }
         private void MainTimelineSlider_FrameDelayChanged(object sender, EventArgs e)

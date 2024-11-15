@@ -12,7 +12,7 @@ namespace BIUK9000
     public class GifferController
     {
         private Giffer giffer;
-        private GFL SavedLayerForLerp;
+        private GFL SavedLayerForApply;
         private GFL SavedLayerForLPC;
         public GifferController(Giffer giffer)
         {
@@ -28,9 +28,9 @@ namespace BIUK9000
                 cf.Layers.Insert(targetLayerIndex, gflToInsert);
             }
         }
-        public void SaveLayerStateForLerp(int frameIndex, int layerIndex)
+        public void SaveLayerStateForApply(int frameIndex, int layerIndex)
         {
-            SavedLayerForLerp = giffer.Frames[frameIndex].Layers[layerIndex].Clone();
+            SavedLayerForApply = giffer.Frames[frameIndex].Layers[layerIndex].Clone();
         }
         public void SaveLayerForLPC(int frameIndex, int layerIndex)
         {
@@ -48,15 +48,22 @@ namespace BIUK9000
         }
         public void SetSavedLayerVisibility(bool visible)
         {
-            if(SavedLayerForLerp != null) SavedLayerForLerp.Visible = visible;
+            if(SavedLayerForApply != null) SavedLayerForApply.Visible = visible;
         }
-        public void LerpExecute(int startFrameIndex, int endFrameIndex, int layerID)
+        public void LerpExecute(List<int> marks, int selectedLayerIndex)
         {
-            GFL startLayer = giffer.Frames[startFrameIndex].Layers.Find(layer => layerID == layer.LayerID);
-            GFL endLayer = giffer.Frames[endFrameIndex].Layers.Find(layer => layerID == layer.LayerID);
+            if(marks.Count < 2)
+            {
+                MessageBox.Show("You must add at least 2 marks");
+                return;
+            }
+            int startFrameIndex = Math.Min(marks[0], marks[1]);
+            int endFrameIndex = Math.Max(marks[0], marks[1]);
+            GFL startLayer = giffer.Frames[startFrameIndex].Layers[selectedLayerIndex];
+            GFL endLayer = giffer.Frames[endFrameIndex].Layers.Find(layer => startLayer.LayerID == layer.LayerID);
             if (startLayer == null || endLayer == null)
             {
-                MessageBox.Show("You must start the lerp first");
+                MessageBox.Show("Layers not found");
                 return;
             }
             int totalFrames = endFrameIndex - startFrameIndex;
@@ -91,7 +98,7 @@ namespace BIUK9000
                     {
                         if (apm == ApplyParamsMode.applyChanged)
                         {
-                            layerToUpdate.CopyDifferingParams(SavedLayerForLerp, startLayer);
+                            layerToUpdate.CopyDifferingParams(SavedLayerForApply, startLayer);
                         }
                         else
                         {
