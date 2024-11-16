@@ -165,6 +165,10 @@ namespace BIUK9000.GifferComponents
         {
             return frame.CompleteBitmap(Width, Height, drawHelp);
         }
+        public void DrawFrame(GifFrame frame, bool drawHelp, Graphics g)
+        {
+            frame.DrawCompleteBitmap(Width, Height, drawHelp, g);
+        }
         public Bitmap FrameAsBitmap(int frameIndex, bool drawHelp)
         {
             return Frames[frameIndex].CompleteBitmap(Width, Height, drawHelp);

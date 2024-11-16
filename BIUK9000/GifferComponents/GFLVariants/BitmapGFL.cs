@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,6 +13,8 @@ namespace BIUK9000.GifferComponents.GFLVariants
     public class BitmapGFL : GFL
     {
         public Bitmap OriginalBitmap { get; set; }
+        public double HRatio { get => Width / (double)OriginalBitmap.Width; }
+        public double VRatio { get => Height / (double)OriginalBitmap.Height; }
 
         public override Bitmap MorphedBitmap()
         {
@@ -24,7 +25,10 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             Initialize(bitmap);
         }
-
+        public override OVector AbsoluteCenter()
+        {
+            return new OVector(OriginalBitmap.Width / 2d, OriginalBitmap.Height / 2d);
+        }
         private void Initialize(Bitmap bitmap)
         {
             OriginalBitmap = bitmap;
@@ -35,7 +39,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
         public void ReplaceOriginalBitmap(Bitmap bitmap)
         {
             OriginalBitmap.Dispose();
-            Initialize(bitmap);
+            OriginalBitmap = bitmap;
         }
         public override void Dispose()
         {

@@ -4,6 +4,7 @@ using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI.CustomControls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace BIUK9000
             p.StartCap = LineCap.Round;
             p.EndCap = LineCap.Round;
             g.CompositingMode = CompositingMode.SourceCopy;
+
             g.DrawLine(p, p1, p2);
         }
         public static Bitmap DeleteColor(Bitmap bmp, Point p, int tolerance)

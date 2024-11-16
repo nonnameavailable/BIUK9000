@@ -44,6 +44,7 @@ namespace BIUK9000.UI
         public bool IsRMBDown { get => mainPictureBox.IsRMBDown; }
         public bool IsMMBDown { get => mainPictureBox.IsMMBDown; }
         private Timer _updateTimer;
+        private Point prevMousePos;
         public GifferController GifferC { get; private set; }
         public MainForm()
         {
@@ -186,6 +187,18 @@ namespace BIUK9000.UI
         {
             MainImage?.Dispose();
             MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);
+            //if(MainImage == null)
+            //{
+            //    MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);
+            //}
+            //else
+            //{
+            //    using Graphics g = Graphics.FromImage(MainImage);
+            //    g.CompositingMode = CompositingMode.SourceCopy;
+            //    g.Clear(Color.FromArgb(0, 0, 0, 0));
+            //    MainGiffer.DrawFrame(SelectedFrame, controlsPanel.DrawHelp, g);
+            //}
+            //mainPictureBox.Invalidate();
         }
         private void UpdateLayerParamsUI()
         {
@@ -220,16 +233,7 @@ namespace BIUK9000.UI
             }
 
         }
-        private struct FrameAndLayer
-        {
-            public GFL Layer { get; private set; }
-            public GifFrame Frame { get; private set; }
-            public FrameAndLayer(GFL layer, GifFrame frame)
-            {
-                Layer = layer.Clone();
-                Frame = frame;
-            }
-        }
+
         #region key event handling
         protected override bool ProcessKeyPreview(ref Message m)
         {
@@ -306,6 +310,28 @@ namespace BIUK9000.UI
         }
         #endregion
         #region mouse event handling
+
+        private Point MousePositionOnLayer()
+        {
+            if (SelectedLayer is BitmapGFL)
+            {
+                BitmapGFL gfl = SelectedLayer as BitmapGFL;
+                OVector mousePositionOnFrame = new OVector(mainPictureBox.MousePositionOnImage);
+                OVector resultWithoutRotation = mousePositionOnFrame.Copy().Subtract(gfl.Position).Div2(gfl.HRatio, gfl.VRatio);
+                OVector arm = resultWithoutRotation.Copy().Subtract(gfl.AbsoluteCenter());
+                arm.Mult2(gfl.HRatio, gfl.VRatio);
+                arm.Rotate(-gfl.Rotation);
+                arm.Div2(gfl.HRatio, gfl.VRatio);
+                OVector result = arm.Copy().Add(gfl.AbsoluteCenter());
+                return result.ToPoint();
+            }
+            else
+            {
+                return new Point(0, 0);
+            }
+
+        }
+
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
             if (MainGiffer == null) return;
@@ -332,32 +358,30 @@ namespace BIUK9000.UI
                 if (SelectedLayer is BitmapGFL)
                 {
                     PaintControl pc = layerParamsPanel.Controls[0] as PaintControl;
-                    Point mpoi = mainPictureBox.MousePositionOnImage;
-                    Point mpoiAdjusted = new Point(mpoi.X - SelectedLayer.Position.Xint, mpoi.Y - SelectedLayer.Position.Yint);
+                    Point mpoi = MousePositionOnLayer();
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
                         Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
-                        if (IsLMBDown) Painter.DrawLine(lbmp, mpoiAdjusted, mpoiAdjusted, pc.PaintColor, pc.Transparency, pc.Thickness);
+                        if (IsLMBDown) Painter.DrawLine(lbmp, mpoi, mpoi, pc.PaintColor, pc.Transparency, pc.Thickness);
                     }
                     else if(pc.SelectedPaintTool == PaintControl.PaintTool.DeleteColor)
                     {
                         Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
                         BitmapGFL gfl = SelectedLayer as BitmapGFL;
-                        Bitmap transparentBmp = Painter.DeleteColor(lbmp, mpoiAdjusted, pc.Transparency);
+                        Bitmap transparentBmp = Painter.DeleteColor(lbmp, mpoi, pc.Transparency);
                         gfl.ReplaceOriginalBitmap(transparentBmp);
                     }
                     UpdateMainPictureBox();
                 }
             }
         }
-        private Point prevMousePos;
+
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
         {
             if (MainGiffer == null) return;
             Point dd = mainPictureBox.ScaledDragDifference;
             OVector currentLCtM = LayerCenterToMouse();
-            Point mpoi = mainPictureBox.MousePositionOnImage;
-            Point mpoiAdjusted = new Point(mpoi.X - SelectedLayer.Position.Xint, mpoi.Y - SelectedLayer.Position.Yint);
+            Point mpoi = MousePositionOnLayer();
             if (controlsPanel.ToolPaintSelectedFlag)
             {
                 if(SelectedLayer is BitmapGFL)
@@ -366,10 +390,10 @@ namespace BIUK9000.UI
                     if(pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
                         Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
-                        if (IsLMBDown) Painter.DrawLine(lbmp, mpoiAdjusted, prevMousePos, pc.PaintColor, pc.Transparency, pc.Thickness);
+                        if (IsLMBDown) Painter.DrawLine(lbmp, mpoi, prevMousePos, pc.PaintColor, pc.Transparency, pc.Thickness);
                     }
                 }
-                prevMousePos = mpoiAdjusted;
+                prevMousePos = mpoi;
                 return;
             }
 
@@ -434,7 +458,7 @@ namespace BIUK9000.UI
                     }
                 }
             }
-            prevMousePos = mpoiAdjusted;
+            prevMousePos = mpoi;
         }
 
         private OVector LayerCenterToMouse()

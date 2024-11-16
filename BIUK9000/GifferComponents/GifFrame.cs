@@ -45,6 +45,21 @@ namespace BIUK9000.GifferComponents
             }
             return result;
         }
+        public void DrawCompleteBitmap(int width, int height, bool drawHelp, Graphics g)
+        {
+            int absWidth = Math.Abs(width);
+            int absHeight = Math.Abs(height);
+            //g.TranslateTransform(Position.X, Position.Y);
+            foreach (GFL layer in Layers)
+            {
+                layer.DrawLayer(g, drawHelp);
+            }
+            if (drawHelp)
+            {
+                using Pen boundsPen = new Pen(Color.Red, 2f);
+                g.DrawRectangle(boundsPen, 0, 0, absWidth, absHeight);
+            }
+        }
         public void AddLayer(GFL layer)
         {
             Layers.Add(layer);

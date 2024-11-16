@@ -15,7 +15,6 @@ namespace BIUK9000.GifferComponents
         private bool _disposed;
         public OVector Position { get; set; }
         private int _width, _height;
-
         public int LayerID {  get; set; }
         public int Width
         {
@@ -99,6 +98,10 @@ namespace BIUK9000.GifferComponents
         public virtual OVector Center()
         {
             return new OVector(Position.X + Width / 2, Position.Y + Height / 2);
+        }
+        public virtual OVector AbsoluteCenter()
+        {
+            return new OVector(Width / 2d, Height / 2d);
         }
         public void DrawLayer(Graphics g, bool drawHelp)
         {

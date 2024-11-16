@@ -119,11 +119,23 @@ namespace BIUK9000
         }
         public override string ToString()
         {
-            return ("X: " + X + ", " + Y);
+            return ("X: " + X + ", Y: " + Y);
         }
         public Point ToPoint()
         {
             return new Point(Xint, Yint);
+        }
+        public OVector Mult2(double hMult, double vMult)
+        {
+            X *= hMult;
+            Y *= vMult;
+            return this;
+        }
+        public OVector Div2(double hMult, double vMult)
+        {
+            X /= hMult;
+            Y /= vMult;
+            return this;
         }
     }
 }
