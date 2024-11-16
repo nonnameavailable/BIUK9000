@@ -103,9 +103,10 @@ namespace BIUK9000
                 File.Delete(tempPath);
             }
         }
-        public static void FileImport(string[] filePaths, MainForm mf)
+        public static bool FileImport(string[] filePaths, MainForm mf)
         {
             Giffer mg = mf.MainGiffer;
+            bool result = false;
             foreach (string filePath in filePaths)
             {
                 try
@@ -114,6 +115,7 @@ namespace BIUK9000
                     if (mg == null)
                     {
                         mf.SetNewGiffer(newGiffer);
+                        result = true;
                     }
                     else
                     {
@@ -121,7 +123,7 @@ namespace BIUK9000
                         iqf.SelectedFresh += (sender, args) => mf.SetNewGiffer(newGiffer);
                         iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, newGiffer);
                         iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, newGiffer);
-                        iqf.ShowDialog();
+                        if (iqf.ShowDialog() == DialogResult.OK) result = true;
                     }
                 } catch (ArgumentException ex)
                 {
@@ -129,26 +131,57 @@ namespace BIUK9000
                     continue;
                 }
             }
+            return result;
         }
         private static void ImportAsLayers(MainForm mf, ImportQuestionForm iqf, Giffer newGiffer)
         {
-            Giffer mg = mf.MainGiffer;
-            mg.AddGifferAsLayers(newGiffer, iqf.OLayersSpread);
+            mf.GifferC.AddGifferAsLayers(newGiffer, iqf.OLayersSpread);
             newGiffer.Dispose();
         }
         private static void ImportAsInsert(MainForm mf, ImportQuestionForm iqf, Giffer newGiffer)
         {
-            Giffer mg = mf.MainGiffer;
+            GifferController gc = mf.GifferC;
             if (iqf.OInsertStart)
             {
-                mg.AddGifferAsFrames(newGiffer, 0);
+                gc.AddGifferAsFrames(newGiffer, 0);
             } else if (iqf.OInsertEnd)
             {
-                mg.AddGifferAsFrames(newGiffer, mg.FrameCount);
+                gc.AddGifferAsFrames(newGiffer, gc.FrameCount);
             } else if (iqf.OInsertHere)
             {
-                mg.AddGifferAsFrames(newGiffer, mf.SelectedFrameIndex);
+                gc.AddGifferAsFrames(newGiffer, mf.SelectedFrameIndex);
             }
+        }
+        public static void SaveGif(Giffer giffer, ControlsPanel cp, string path)
+        {
+            if (path == giffer.OriginalImagePath)
+            {
+                MessageBox.Show("Do not use the same file name for export as you did for import.");
+                return;
+            }
+            string tempPath;
+            if (cp.UseDithering)
+            {
+                tempPath = SaveGifToTempFileDithered(giffer, cp.GifExportColors);
+            }
+            else
+            {
+                tempPath = SaveGifToTempFile(giffer);
+            }
+            if (cp.UseGifsicle)
+            {
+                OBIMP.CompressGif(tempPath, tempPath, cp.GifExportColors, cp.GifExportLossy);
+            }
+            if (tempPath != null)
+            {
+                File.Copy(tempPath, path, true);
+            }
+            else
+            {
+                MessageBox.Show("Gif was not created");
+                return;
+            }
+            File.Delete(tempPath);
         }
     }
 }

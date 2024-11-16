@@ -1,7 +1,10 @@
 ﻿using BIUK9000.GifferComponents;
+using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +17,7 @@ namespace BIUK9000
         private Giffer giffer;
         private GFL SavedLayerForApply;
         private GFL SavedLayerForLPC;
+        public int FrameCount { get => giffer.FrameCount; }
         public GifferController(Giffer giffer)
         {
             this.giffer = giffer;
@@ -30,6 +34,10 @@ namespace BIUK9000
         }
         public void SaveLayerStateForApply(int frameIndex, int layerIndex)
         {
+            if(SavedLayerForApply is BitmapGFL)
+            {
+                (SavedLayerForApply as BitmapGFL).SoftDispose();
+            }
             SavedLayerForApply = giffer.Frames[frameIndex].Layers[layerIndex].Clone();
         }
         public void SaveLayerForLPC(int frameIndex, int layerIndex)
@@ -107,6 +115,116 @@ namespace BIUK9000
                     }
                 }
             }
+        }
+        public void AddNewLayer(Keys keyData)
+        {
+            int nextId = giffer.NextLayerID();
+            GFL nextLayer = null;
+            if (keyData == Keys.T)
+            {
+                nextLayer = new TextGFL(nextId);
+            }
+            else if (keyData == Keys.B)
+            {
+                nextLayer = new PlainGFL(nextId);
+            }
+            if (nextLayer == null) return;
+            foreach (GifFrame gf in giffer.Frames)
+            {
+                gf.AddLayer(nextLayer.Clone());
+            }
+        }
+        public Point MousePositionOnLayer(int frameIndex, int layerIndex, Point mousePosition)
+        {
+            GFL gflt = giffer.Frames[frameIndex].Layers[layerIndex];
+            if (gflt is BitmapGFL)
+            {
+                BitmapGFL gfl = gflt as BitmapGFL;
+                OVector mousePositionOnFrame = new OVector(mousePosition);
+                OVector resultWithoutRotation = mousePositionOnFrame.Copy().Subtract(gfl.Position).Div2(gfl.HRatio, gfl.VRatio);
+                OVector arm = resultWithoutRotation.Copy().Subtract(gfl.AbsoluteCenter());
+                arm.Mult2(gfl.HRatio, gfl.VRatio);
+                arm.Rotate(-gfl.Rotation);
+                arm.Div2(gfl.HRatio, gfl.VRatio);
+                OVector result = arm.Copy().Add(gfl.AbsoluteCenter());
+                return result.ToPoint();
+            }
+            else
+            {
+                return new Point(0, 0);
+            }
+
+        }
+        public void DeleteLayerByID(int layerID)
+        {
+            foreach (GifFrame gf in giffer.Frames)
+            {
+                GFL layerToDelete = gf.Layers.Find(layer => layer.LayerID == layerID);
+                if (layerToDelete != null) gf.Layers.Remove(layerToDelete);
+            }
+        }
+        public void AddGifferAsLayers(Giffer newGiffer, bool spread)
+        {
+            int nextLayerID = giffer.NextLayerID();
+            int sizeDif = Math.Max(newGiffer.Width - giffer.Width, newGiffer.Height - giffer.Height);
+            if (newGiffer.FrameCount == 1)
+            {
+                using Bitmap bmp = newGiffer.FrameAsBitmap(0, false, InterpolationMode.Default);
+                foreach (GifFrame frame in giffer.Frames)
+                {
+                    BitmapGFL gfl = new BitmapGFL(new Bitmap(bmp), nextLayerID);
+                    ResizeLayerToFit(gfl);
+                    frame.AddLayer(gfl);
+                }
+                return;
+            }
+            for (int i = 0; i < giffer.FrameCount; i++)
+            {
+                int newGifferIndex;
+                if (spread)
+                {
+                    newGifferIndex = (int)(i / (double)giffer.FrameCount * newGiffer.FrameCount);
+                }
+                else
+                {
+                    newGifferIndex = i % newGiffer.FrameCount;
+                }
+                GifFrame cgf = giffer.Frames[i];
+                BitmapGFL gfl = new BitmapGFL(newGiffer.FrameAsBitmap(newGifferIndex, false, InterpolationMode.Default), nextLayerID);
+                ResizeLayerToFit(gfl);
+                cgf.AddLayer(gfl);
+            }
+        }
+        private void ResizeLayerToFit(GFL gfl)
+        {
+            double hRatio = gfl.Width / (double)giffer.Width;
+            double vRatio = gfl.Height / (double)giffer.Height;
+            if (hRatio > vRatio)
+            {
+                gfl.Width = (int)(gfl.Width / hRatio);
+                gfl.Height = (int)(gfl.Height / hRatio);
+            }
+            else
+            {
+                gfl.Width = (int)(gfl.Width / vRatio);
+                gfl.Height = (int)(gfl.Height / vRatio);
+            }
+        }
+        public void AddGifferAsFrames(Giffer newGiffer, int insertAt)
+        {
+            int[] layerIDs = new int[newGiffer.Frames[0].Layers.Count];
+            for (int i = 0; i < layerIDs.Length; i++)
+            {
+                layerIDs[i] = giffer.NextLayerID();
+            }
+            foreach (GifFrame frame in newGiffer.Frames)
+            {
+                for (int i = 0; i < frame.Layers.Count; i++)
+                {
+                    frame.Layers[i].LayerID = layerIDs[i];
+                }
+            }
+            giffer.Frames.InsertRange(insertAt, newGiffer.Frames);
         }
     }
 }

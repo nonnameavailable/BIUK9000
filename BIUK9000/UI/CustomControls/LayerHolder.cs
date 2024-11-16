@@ -34,7 +34,7 @@ namespace BIUK9000.UI
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
             mainPictureBox.MouseDown += MainPictureBox_MouseDown;
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
-            mainPictureBox.Image = layer.MorphedBitmap();
+            mainPictureBox.Image = new Bitmap(layer.MorphedBitmap());
             DragDrop += (sender, args) => DragDropped?.Invoke(this, args);
             DragEnter += LayerHolder_DragEnter;
             StayHighlighted = false;

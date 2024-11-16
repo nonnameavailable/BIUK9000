@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -27,13 +28,13 @@ namespace BIUK9000.GifferComponents
             FrameDelay = frameDelay;
         }
 
-        public Bitmap CompleteBitmap(int width, int height, bool drawHelp)
+        public Bitmap CompleteBitmap(int width, int height, bool drawHelp, InterpolationMode interpolationMode)
         {
             int absWidth = Math.Abs(width);
             int absHeight = Math.Abs(height);
             Bitmap result = new Bitmap(absWidth, absHeight);
             using Graphics g = Graphics.FromImage(result);
-            //g.TranslateTransform(Position.X, Position.Y);
+            g.InterpolationMode = interpolationMode;
             foreach (GFL layer in Layers)
             {
                 layer.DrawLayer(g, drawHelp);
@@ -49,7 +50,6 @@ namespace BIUK9000.GifferComponents
         {
             int absWidth = Math.Abs(width);
             int absHeight = Math.Abs(height);
-            //g.TranslateTransform(Position.X, Position.Y);
             foreach (GFL layer in Layers)
             {
                 layer.DrawLayer(g, drawHelp);

@@ -29,6 +29,11 @@ namespace BIUK9000
         }
         public static Bitmap DeleteColor(Bitmap bmp, Point p, int tolerance)
         {
+            if(p.X >= bmp.Width || p.Y >= bmp.Height || p.X < 0 || p.Y < 0)
+            {
+                Debug.Print("clicked outside");
+                return new Bitmap(bmp);
+            }
             using FastBitmap fbmp = new FastBitmap(bmp);
             Color c1 = fbmp.GetPixel(p.X, p.Y);
             for(int i = 0; i < bmp.Width; i++)

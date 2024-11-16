@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -121,57 +122,18 @@ namespace BIUK9000.GifferComponents
             frame.Dispose();
             OnFrameCountChanged();
         }
-        public void AddGifferAsLayers(Giffer newGiffer, bool spread)
-        {
-            int nextLayerID = NextLayerID();
-            if (newGiffer.FrameCount == 1)
-            {
-                using Bitmap bmp = newGiffer.FrameAsBitmap(0, false);
-                Frames.ForEach(frame => frame.AddLayer(new BitmapGFL(new Bitmap(bmp), nextLayerID)));
-                return;
-            }
-            for (int i = 0; i < FrameCount; i++)
-            {
-                int newGifferIndex;
-                if (spread)
-                {
-                    newGifferIndex = (int)(i / (double)FrameCount * newGiffer.FrameCount);
-                } else
-                {
-                    newGifferIndex = i % newGiffer.FrameCount;
-                }
-                GifFrame cgf = Frames[i];
-                cgf.AddLayer(new BitmapGFL(newGiffer.FrameAsBitmap(newGifferIndex, false), nextLayerID));
-            }
-        }
-        public void AddGifferAsFrames(Giffer newGiffer, int insertAt)
-        {
-            int[] layerIDs = new int[newGiffer.Frames[0].Layers.Count];
-            for(int i = 0; i < layerIDs.Length; i++)
-            {
-                layerIDs[i] = NextLayerID();
-            }
-            foreach(GifFrame frame in newGiffer.Frames)
-            {
-                for(int i = 0; i < frame.Layers.Count; i++)
-                {
-                    frame.Layers[i].LayerID = layerIDs[i];
-                }
-            }
-            Frames.InsertRange(insertAt, newGiffer.Frames);
-        }
 
-        public Bitmap FrameAsBitmap(GifFrame frame, bool drawHelp)
+        public Bitmap FrameAsBitmap(GifFrame frame, bool drawHelp, InterpolationMode interpolationMode = InterpolationMode.Default)
         {
-            return frame.CompleteBitmap(Width, Height, drawHelp);
+            return frame.CompleteBitmap(Width, Height, drawHelp, interpolationMode);
         }
         public void DrawFrame(GifFrame frame, bool drawHelp, Graphics g)
         {
             frame.DrawCompleteBitmap(Width, Height, drawHelp, g);
         }
-        public Bitmap FrameAsBitmap(int frameIndex, bool drawHelp)
+        public Bitmap FrameAsBitmap(int frameIndex, bool drawHelp, InterpolationMode interpolationMode = InterpolationMode.Default)
         {
-            return Frames[frameIndex].CompleteBitmap(Width, Height, drawHelp);
+            return Frames[frameIndex].CompleteBitmap(Width, Height, drawHelp, interpolationMode);
         }
         public int NextLayerID()
         {

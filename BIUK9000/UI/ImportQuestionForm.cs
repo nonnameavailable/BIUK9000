@@ -28,24 +28,25 @@ namespace BIUK9000.UI
             freshButton.Click += FreshButton_Click;
             asLayersButton.Click += AsLayersButton_Click;
             insertButton.Click += InsertButton_Click;
+
+            freshButton.DialogResult = DialogResult.OK;
+            asLayersButton.DialogResult = DialogResult.OK;
+            insertButton.DialogResult = DialogResult.OK;
         }
 
         private void InsertButton_Click(object sender, EventArgs e)
         {
             SelectedInsert?.Invoke(this, EventArgs.Empty);
-            Close();
         }
 
         private void AsLayersButton_Click(object sender, EventArgs e)
         {
             SelectedAsLayers?.Invoke(this, EventArgs.Empty);
-            Close();
         }
 
         private void FreshButton_Click(object sender, EventArgs e)
         {
             SelectedFresh?.Invoke(this, EventArgs.Empty);
-            Close();
         }
 
     }

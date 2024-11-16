@@ -33,6 +33,7 @@ namespace BIUK9000.UI
         public bool ToolMoveSelectedFlag { get => toolMoveRB.Checked; }
         public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; }
         public InterpolationMode InterpolationMode { get => (InterpolationMode)mpbAAModeCBB.SelectedItem; }
+
         public event EventHandler MustRedraw;
         public event EventHandler ShouldStartDragDrop;
         public event EventHandler SaveButtonClicked;
@@ -41,9 +42,9 @@ namespace BIUK9000.UI
         public ControlsPanel()
         {
             InitializeComponent();
-            SaveButton.MouseDown += SaveButton_MouseDown;
-            SaveButton.MouseUp += SaveButton_MouseUp;
-            SaveButton.MouseMove += SaveButton_MouseMove;
+            saveButton.MouseDown += SaveButton_MouseDown;
+            saveButton.MouseUp += SaveButton_MouseUp;
+            saveButton.MouseMove += SaveButton_MouseMove;
             ImageExportFormatCBB.SelectedIndex = 0;
             drawHelpCB.CheckedChanged += (sender, args) => OnMustRedraw();
             OriginalMousePosition = new OVector(0, 0);
@@ -57,7 +58,7 @@ namespace BIUK9000.UI
             mpbAAModeCBB.SelectedItem = InterpolationMode.HighQualityBicubic;
             mpbAAModeCBB.SelectedIndexChanged += MpbAAModeCBB_SelectedIndexChanged;
             applyParamsCBB.SelectedIndex = 0;
-            SaveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
+            saveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
             useDitheringCB.CheckedChanged += UseDitheringCB_CheckedChanged;
             toolMoveRB.CheckedChanged += ToolMoveRB_CheckedChanged;
             toolPaintRB.CheckedChanged += ToolPaintRB_CheckedChanged;
@@ -126,6 +127,10 @@ namespace BIUK9000.UI
                 IsRMBDown = false;
             }
             DraggingFileForExport = false;
+        }
+        public void SetPaintMode(bool setValue)
+        {
+            saveButton.Enabled = !setValue;
         }
     }
     public enum ApplyParamsMode

@@ -13,29 +13,32 @@ namespace BIUK9000.GifferComponents.GFLVariants
     public class BitmapGFL : GFL
     {
         public Bitmap OriginalBitmap { get; set; }
+        private Bitmap cachedMorphedBitmap;
         public double HRatio { get => Width / (double)OriginalBitmap.Width; }
         public double VRatio { get => Height / (double)OriginalBitmap.Height; }
-
+        private int cachedWidth, cachedHeight;
         public override Bitmap MorphedBitmap()
         {
-            return new Bitmap(OriginalBitmap, Math.Max(Math.Abs(Width), 1), Math.Max(Math.Abs(Height), 1));
+            if (cachedMorphedBitmap == null || Width != cachedWidth || Height != cachedHeight)
+            {
+                cachedMorphedBitmap?.Dispose();
+                cachedMorphedBitmap = new Bitmap(OriginalBitmap, Width, Height);
+                cachedWidth = Width;
+                cachedHeight = Height;
+            }
+            return cachedMorphedBitmap;
         }
-
         public BitmapGFL(Bitmap bitmap, int layerID) : base(layerID)
         {
-            Initialize(bitmap);
+            OriginalBitmap = bitmap;
+            Width = bitmap.Width;
+            Height = bitmap.Height;
+            cachedMorphedBitmap = new Bitmap(bitmap);
         }
         public override OVector AbsoluteCenter()
         {
             return new OVector(OriginalBitmap.Width / 2d, OriginalBitmap.Height / 2d);
         }
-        private void Initialize(Bitmap bitmap)
-        {
-            OriginalBitmap = bitmap;
-            Width = bitmap.Width;
-            Height = bitmap.Height;
-        }
-
         public void ReplaceOriginalBitmap(Bitmap bitmap)
         {
             OriginalBitmap.Dispose();
@@ -44,7 +47,12 @@ namespace BIUK9000.GifferComponents.GFLVariants
         public override void Dispose()
         {
             OriginalBitmap?.Dispose();
+            cachedMorphedBitmap?.Dispose();
             base.Dispose();
+        }
+        public void SoftDispose()
+        {
+            cachedMorphedBitmap?.Dispose();
         }
         public override void CopyParameters(GFL layer)
         {

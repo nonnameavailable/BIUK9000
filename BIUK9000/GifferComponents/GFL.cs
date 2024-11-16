@@ -12,9 +12,9 @@ namespace BIUK9000.GifferComponents
 {
     public abstract class GFL : IDisposable
     {
-        private bool _disposed;
+        protected bool _disposed;
         public OVector Position { get; set; }
-        private int _width, _height;
+        protected int _width, _height;
         public int LayerID {  get; set; }
         public int Width
         {
@@ -73,9 +73,9 @@ namespace BIUK9000.GifferComponents
                 _previousRotation = value;
             }
         }
-        private float _rotation;
-        private float _previousRotation;
-        private int _spinCount;
+        protected float _rotation;
+        protected float _previousRotation;
+        protected int _spinCount;
         public abstract Bitmap MorphedBitmap();
         protected Rectangle OBR { get; set; }
         public virtual void Save()
@@ -113,8 +113,8 @@ namespace BIUK9000.GifferComponents
                 g.TranslateTransform(c.Xint, c.Yint);
                 g.RotateTransform(Rotation);
 
-                using Bitmap morphedBitmap = MorphedBitmap();
-                g.DrawImage(morphedBitmap, -morphedBitmap.Width / 2, - morphedBitmap.Height / 2);
+                Bitmap morphedBitmap = MorphedBitmap();
+                g.DrawImage(morphedBitmap, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2);
 
                 if(drawHelp)
                 {

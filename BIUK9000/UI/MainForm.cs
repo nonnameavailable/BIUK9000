@@ -40,6 +40,7 @@ namespace BIUK9000.UI
         private float originalLayerRotation;
         private OVector originalLCtM;
         private Control lpcBackup;
+        private Control paintControl;
         public bool IsLMBDown { get => mainPictureBox.IsLMBDown; }
         public bool IsRMBDown { get => mainPictureBox.IsRMBDown; }
         public bool IsMMBDown { get => mainPictureBox.IsMMBDown; }
@@ -77,40 +78,38 @@ namespace BIUK9000.UI
             controlsPanel.ShouldStartDragDrop += ControlsPanel_ShouldStartDragDrop;
             controlsPanel.SaveButtonClicked += ControlsPanel_SaveButtonClicked;
             controlsPanel.InterpolationModeChanged += (sender, args) => mainPictureBox.InterpolationMode = ((ControlsPanel)sender).InterpolationMode;
-            controlsPanel.ToolPaintSelected += ControlsPanel_ToolPaintSelected;
-            controlsPanel.ToolMoveSelected += ControlsPanel_ToolMoveSelected;
+            controlsPanel.ToolPaintSelected += (sender, args) => SetPaintMode(true);
+            controlsPanel.ToolMoveSelected += (sender, args) => SetPaintMode(false);
 
             MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
 
-            lerpStartButton.Click += LerpStartButton_Click;
-            lerpExecuteButton.Click += LerpExecuteButton_Click;
+            lerpButton.Click += LerpButton_Click;
 
             markButton.Click += (sender, args) => MainTimelineSlider.AddMark(SelectedFrameIndex);
             unmarkButton.Click += (sender, args) => MainTimelineSlider.RemoveMark(SelectedFrameIndex);
             deleteFramesButton.Click += DeleteFramesButton_Click;
-        }
 
-        private void ControlsPanel_ToolMoveSelected(object sender, EventArgs e)
-        {
-            MainLayersPanel.Enabled = true;
-            MainTimelineSlider.Enabled = true;
-            if (GifferC == null) return;
-            foreach (Control control in layerParamsPanel.Controls)
-            {
-                control.Dispose();
-            }
-            layerParamsPanel.Controls.Add(lpcBackup);
+            paintControl = new PaintControl();
         }
-        private void ControlsPanel_ToolPaintSelected(object sender, EventArgs e)
+        private void SetPaintMode(bool setValue)
         {
-            MainLayersPanel.Enabled = false;
-            MainTimelineSlider.Enabled = false;
+            MainTimelineSlider.Enabled = !setValue;
+            MainLayersPanel.Enabled = !setValue;
+            controlsPanel.SetPaintMode(setValue);
             if (GifferC == null) return;
-            if(layerParamsPanel.Controls.Count > 0)
+            if (setValue)
             {
-                lpcBackup = layerParamsPanel.Controls[0];
+                if (layerParamsPanel.Controls.Count > 0)
+                {
+                    lpcBackup = layerParamsPanel.Controls[0];
+                    layerParamsPanel.Controls.Clear();
+                    layerParamsPanel.Controls.Add(paintControl);
+                }
+            }
+            else
+            {
                 layerParamsPanel.Controls.Clear();
-                layerParamsPanel.Controls.Add(new PaintControl());
+                layerParamsPanel.Controls.Add(lpcBackup);
             }
         }
 
@@ -121,17 +120,9 @@ namespace BIUK9000.UI
             CompleteUIUpdate();
         }
 
-        private void LerpStartButton_Click(object sender, EventArgs e)
+        private void LerpButton_Click(object sender, EventArgs e)
         {
-            if (MainGiffer == null)
-            {
-                MessageBox.Show("Import a gif first");
-                return;
-            }
-            GifferC.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
-        }
-        private void LerpExecuteButton_Click(object sender, EventArgs e)
-        {
+            if (GifferC == null) return;
             GifferC.LerpExecute(MainTimelineSlider.Marks, SelectedLayerIndex);
             MainTimelineSlider.ClearMarks();
         }
@@ -155,8 +146,12 @@ namespace BIUK9000.UI
         {
             if (controlsPanel.DraggingFileForExport) return;
             string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            GifferIO.FileImport(filePaths, this);
-            CompleteUIUpdate();
+            bool importSucceeded = GifferIO.FileImport(filePaths, this);
+            if (importSucceeded)
+            {
+                CompleteUIUpdate();
+                MainLayersPanel.SelectNewestLayer();
+            }
         }
 
         public void SetNewGiffer(Giffer newGiffer)
@@ -170,24 +165,28 @@ namespace BIUK9000.UI
         }
         public void CompleteUIUpdate()
         {
-            int currentSFI = SelectedFrameIndex;
+            int sfi = SelectedFrameIndex;
+            int slid = 0;
+            MainLayersPanel.DisplayLayers(SelectedFrame);
+            if (SelectedLayer != null) slid = SelectedLayer.LayerID;
             MainTimelineSlider.ClearMarks();
             MainLayersPanel.SelectedLayerIndex = 0;
             MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
             MainTimelineSlider.SelectedFrameChanged -= MainTimelineSlider_SelectedFrameChanged;
-            MainTimelineSlider.SelectedFrameIndex = Math.Clamp(currentSFI, 0, MainTimelineSlider.Maximum);
+            MainTimelineSlider.SelectedFrameIndex = Math.Clamp(sfi, 0, MainTimelineSlider.Maximum);
             MainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
-            MainLayersPanel.DisplayLayers(SelectedFrame);
+            MainLayersPanel.TrySelectLayerByID(slid);
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
             UpdateLayerParamsUI();
+            GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
             UpdateMainPictureBox();
         }
 
         public void UpdateMainPictureBox()
         {
             MainImage?.Dispose();
-            MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);
-            //if(MainImage == null)
+            MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, InterpolationMode.Low);
+            //if (MainImage == null)
             //{
             //    MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);
             //}
@@ -255,7 +254,12 @@ namespace BIUK9000.UI
                 }
                 else if (keyData == Keys.T || keyData == Keys.B)
                 {
-                    AddNewLayer(keyData);
+                    GifferC.AddNewLayer(keyData);
+                    MainLayersPanel.DisplayLayers(SelectedFrame);
+                    UpdateMainPictureBox();
+                    MainLayersPanel.SelectNewestLayer();
+                    GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
+                    UpdateLayerParamsUI();
                     return true;
                 }
                 else if (keyData == Keys.ShiftKey)
@@ -286,51 +290,8 @@ namespace BIUK9000.UI
 
             return base.ProcessKeyPreview(ref m);
         }
-        private void AddNewLayer(Keys keyData)
-        {
-            int nextId = MainGiffer.NextLayerID();
-            GFL nextLayer = null;
-            if (keyData == Keys.T)
-            {
-                nextLayer = new TextGFL(nextId);
-            }
-            else if (keyData == Keys.B)
-            {
-                nextLayer = new PlainGFL(nextId);
-            }
-            if (nextLayer == null) return;
-            foreach (GifFrame gf in MainGiffer.Frames)
-            {
-                gf.AddLayer(nextLayer.Clone());
-            }
-            MainLayersPanel.DisplayLayers(SelectedFrame);
-            UpdateMainPictureBox();
-            MainLayersPanel.SelectNewestLayer();
-            GifferC.SaveLayerForLPC(SelectedFrameIndex, mainLayersPanel.SelectedLayerIndex);
-        }
         #endregion
         #region mouse event handling
-
-        private Point MousePositionOnLayer()
-        {
-            if (SelectedLayer is BitmapGFL)
-            {
-                BitmapGFL gfl = SelectedLayer as BitmapGFL;
-                OVector mousePositionOnFrame = new OVector(mainPictureBox.MousePositionOnImage);
-                OVector resultWithoutRotation = mousePositionOnFrame.Copy().Subtract(gfl.Position).Div2(gfl.HRatio, gfl.VRatio);
-                OVector arm = resultWithoutRotation.Copy().Subtract(gfl.AbsoluteCenter());
-                arm.Mult2(gfl.HRatio, gfl.VRatio);
-                arm.Rotate(-gfl.Rotation);
-                arm.Div2(gfl.HRatio, gfl.VRatio);
-                OVector result = arm.Copy().Add(gfl.AbsoluteCenter());
-                return result.ToPoint();
-            }
-            else
-            {
-                return new Point(0, 0);
-            }
-
-        }
 
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
@@ -349,7 +310,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             GFL cgfl = SelectedLayer;
             MainGiffer.Save();
-            GifferC.SaveLayerStateForApply(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
+            GifferC.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
             originalLayerRotation = cgfl.Rotation;
             originalLCtM = LayerCenterToMouse();
             UpdateTimer.Start();
@@ -358,7 +319,7 @@ namespace BIUK9000.UI
                 if (SelectedLayer is BitmapGFL)
                 {
                     PaintControl pc = layerParamsPanel.Controls[0] as PaintControl;
-                    Point mpoi = MousePositionOnLayer();
+                    Point mpoi = GifferC.MousePositionOnLayer(SelectedFrameIndex, SelectedLayerIndex, mainPictureBox.MousePositionOnImage);
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
                         Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
@@ -381,7 +342,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             Point dd = mainPictureBox.ScaledDragDifference;
             OVector currentLCtM = LayerCenterToMouse();
-            Point mpoi = MousePositionOnLayer();
+            Point mpoi = GifferC.MousePositionOnLayer(SelectedFrameIndex, SelectedLayerIndex, mainPictureBox.MousePositionOnImage);
             if (controlsPanel.ToolPaintSelectedFlag)
             {
                 if(SelectedLayer is BitmapGFL)
@@ -452,7 +413,6 @@ namespace BIUK9000.UI
                         else
                         {
                             //RESIZE LAYER FREE
-                            sdv.Rotate(gfl.Rotation);
                             gfl.Resize(xSizeDif, ySizeDif);
                         }
                     }
@@ -484,8 +444,7 @@ namespace BIUK9000.UI
 
         private static OVector SnappedPosition(OVector position, double snapDistance)
         {
-            double realDistance = position.Subtract(new OVector(0, 0)).Magnitude;
-            if (realDistance < snapDistance)
+            if (position.Magnitude < snapDistance)
             {
                 return new OVector(0, 0);
             }
@@ -505,11 +464,7 @@ namespace BIUK9000.UI
         {
             if (MessageBox.Show("Are you sure you want to delete this layer?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return;
             int layerIDToDelete = (sender as LayerHolder).HeldLayer.LayerID;
-            foreach (GifFrame gf in MainGiffer.Frames)
-            {
-                GFL layerToDelete = gf.Layers.Find(layer => layer.LayerID == layerIDToDelete);
-                if (layerToDelete != null) gf.Layers.Remove(layerToDelete);
-            }
+            GifferC.DeleteLayerByID(layerIDToDelete);
             CompleteUIUpdate();
         }
         private void MainLayersPanel_LayerVisibilityChanged(object sender, EventArgs e)
@@ -530,12 +485,9 @@ namespace BIUK9000.UI
                 GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
                 UpdateLayerParamsUI();
             }
-            if(controlsPanel.SelectedApplyParamsMode != ApplyParamsMode.applyNone)
-            {
-                MainTimelineSlider.FrameDelayChanged -= MainTimelineSlider_FrameDelayChanged;
-                MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
-                MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
-            }
+            MainTimelineSlider.FrameDelayChanged -= MainTimelineSlider_FrameDelayChanged;
+            MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
+            MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
             UpdateMainPictureBox();
         }
         private void MainTimelineSlider_FrameDelayChanged(object sender, EventArgs e)
@@ -566,34 +518,7 @@ namespace BIUK9000.UI
             SaveFileDialog sfd = saveFileDialog;
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                if (sfd.FileName == MainGiffer.OriginalImagePath)
-                {
-                    MessageBox.Show("Do not use the same file name for export as you did for import.");
-                    return;
-                }
-                string tempPath;
-                if (controlsPanel.UseDithering)
-                {
-                    tempPath = GifferIO.SaveGifToTempFileDithered(MainGiffer, controlsPanel.GifExportColors);
-                }
-                else
-                {
-                    tempPath = GifferIO.SaveGifToTempFile(MainGiffer);
-                }
-                if (controlsPanel.UseGifsicle)
-                {
-                    OBIMP.CompressGif(tempPath, tempPath, controlsPanel.GifExportColors, controlsPanel.GifExportLossy);
-                }
-                if (tempPath != null)
-                {
-                    File.Copy(tempPath, sfd.FileName, true);
-                }
-                else
-                {
-                    MessageBox.Show("Gif was not created");
-                    return;
-                }
-                File.Delete(tempPath);
+                GifferIO.SaveGif(MainGiffer, controlsPanel, sfd.FileName);
             }
         }
         #endregion

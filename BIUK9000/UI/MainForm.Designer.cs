@@ -38,8 +38,7 @@ namespace BIUK9000.UI
             deleteFramesButton = new System.Windows.Forms.Button();
             unmarkButton = new System.Windows.Forms.Button();
             markButton = new System.Windows.Forms.Button();
-            lerpExecuteButton = new System.Windows.Forms.Button();
-            lerpStartButton = new System.Windows.Forms.Button();
+            lerpButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1.SuspendLayout();
@@ -115,8 +114,7 @@ namespace BIUK9000.UI
             panel1.Controls.Add(deleteFramesButton);
             panel1.Controls.Add(unmarkButton);
             panel1.Controls.Add(markButton);
-            panel1.Controls.Add(lerpExecuteButton);
-            panel1.Controls.Add(lerpStartButton);
+            panel1.Controls.Add(lerpButton);
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             panel1.Location = new System.Drawing.Point(725, 464);
             panel1.Name = "panel1";
@@ -150,23 +148,14 @@ namespace BIUK9000.UI
             markButton.Text = "mark";
             markButton.UseVisualStyleBackColor = true;
             // 
-            // lerpExecuteButton
+            // lerpButton
             // 
-            lerpExecuteButton.Location = new System.Drawing.Point(3, 32);
-            lerpExecuteButton.Name = "lerpExecuteButton";
-            lerpExecuteButton.Size = new System.Drawing.Size(62, 23);
-            lerpExecuteButton.TabIndex = 1;
-            lerpExecuteButton.Text = "lerp exe";
-            lerpExecuteButton.UseVisualStyleBackColor = true;
-            // 
-            // lerpStartButton
-            // 
-            lerpStartButton.Location = new System.Drawing.Point(3, 3);
-            lerpStartButton.Name = "lerpStartButton";
-            lerpStartButton.Size = new System.Drawing.Size(62, 23);
-            lerpStartButton.TabIndex = 0;
-            lerpStartButton.Text = "lerp start";
-            lerpStartButton.UseVisualStyleBackColor = true;
+            lerpButton.Location = new System.Drawing.Point(3, 3);
+            lerpButton.Name = "lerpButton";
+            lerpButton.Size = new System.Drawing.Size(62, 23);
+            lerpButton.TabIndex = 1;
+            lerpButton.Text = "lerp";
+            lerpButton.UseVisualStyleBackColor = true;
             // 
             // mainPictureBox
             // 
@@ -207,8 +196,7 @@ namespace BIUK9000.UI
         private System.Windows.Forms.Panel layerParamsPanel;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button lerpExecuteButton;
-        private System.Windows.Forms.Button lerpStartButton;
+        private System.Windows.Forms.Button lerpButton;
         private MyPictureBox mainPictureBox;
         private System.Windows.Forms.Button unmarkButton;
         private System.Windows.Forms.Button markButton;
