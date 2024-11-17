@@ -41,8 +41,17 @@ namespace BIUK9000.GifferComponents.GFLVariants
         }
         public void ReplaceOriginalBitmap(Bitmap bitmap)
         {
-            OriginalBitmap.Dispose();
+            OriginalBitmap?.Dispose();
             OriginalBitmap = bitmap;
+            cachedMorphedBitmap?.Dispose();
+            cachedMorphedBitmap = new Bitmap(bitmap);
+        }
+        public void UpdateAfterPaint()
+        {
+            cachedMorphedBitmap?.Dispose();
+            cachedMorphedBitmap = new Bitmap(OriginalBitmap);
+            cachedWidth = cachedMorphedBitmap.Width;
+            cachedHeight = cachedMorphedBitmap.Height;
         }
         public override void Dispose()
         {

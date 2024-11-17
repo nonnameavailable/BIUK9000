@@ -159,18 +159,29 @@ namespace BIUK9000.UI
             MainGiffer?.Dispose();
             MainGiffer = newGiffer;
             GifferC = new GifferController(newGiffer);
-            CompleteUIUpdate();
+            CompleteUIUpdate(false);
             GifferC.SaveLayerStateForApply(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
             GifferC.SaveLayerForLPC(SelectedFrameIndex, MainLayersPanel.SelectedLayerIndex);
         }
-        public void CompleteUIUpdate()
+        public void CompleteUIUpdate(bool keepSelectedFrameAndLayer = true)
         {
-            int sfi = SelectedFrameIndex;
-            int slid = 0;
-            MainLayersPanel.DisplayLayers(SelectedFrame);
+            int sfi, sli, slid;
+            if (keepSelectedFrameAndLayer)
+            {
+                sfi = SelectedFrameIndex;
+                sli = SelectedLayerIndex;
+                slid = SelectedLayer.LayerID;
+            }
+            else
+            {
+                sfi = 0;
+                sli = 0;
+                slid = 0;
+            }
+            MainLayersPanel.SelectedLayerIndex = sli;
+            MainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
             if (SelectedLayer != null) slid = SelectedLayer.LayerID;
             MainTimelineSlider.ClearMarks();
-            MainLayersPanel.SelectedLayerIndex = 0;
             MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
             MainTimelineSlider.SelectedFrameChanged -= MainTimelineSlider_SelectedFrameChanged;
             MainTimelineSlider.SelectedFrameIndex = Math.Clamp(sfi, 0, MainTimelineSlider.Maximum);
@@ -262,6 +273,11 @@ namespace BIUK9000.UI
                     UpdateLayerParamsUI();
                     return true;
                 }
+                else if(keyData == Keys.F)
+                {
+                    MainGiffer.Mirror();
+                    CompleteUIUpdate();
+                }
                 else if (keyData == Keys.ShiftKey)
                 {
                     IsShiftDown = true;
@@ -323,7 +339,10 @@ namespace BIUK9000.UI
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
                         Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
-                        if (IsLMBDown) Painter.DrawLine(lbmp, mpoi, mpoi, pc.PaintColor, pc.Transparency, pc.Thickness);
+                        if (IsLMBDown)
+                        {
+                            Painter.DrawLine(lbmp, mpoi, mpoi, pc.PaintColor, pc.Transparency, pc.Thickness);
+                        }
                     }
                     else if(pc.SelectedPaintTool == PaintControl.PaintTool.DeleteColor)
                     {
@@ -332,6 +351,7 @@ namespace BIUK9000.UI
                         Bitmap transparentBmp = Painter.DeleteColor(lbmp, mpoi, pc.Transparency);
                         gfl.ReplaceOriginalBitmap(transparentBmp);
                     }
+                    (SelectedLayer as BitmapGFL).UpdateAfterPaint();
                     UpdateMainPictureBox();
                 }
             }
@@ -352,6 +372,7 @@ namespace BIUK9000.UI
                     {
                         Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
                         if (IsLMBDown) Painter.DrawLine(lbmp, mpoi, prevMousePos, pc.PaintColor, pc.Transparency, pc.Thickness);
+                        (SelectedLayer as BitmapGFL).UpdateAfterPaint();
                     }
                 }
                 prevMousePos = mpoi;

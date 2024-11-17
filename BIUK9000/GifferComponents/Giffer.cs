@@ -167,6 +167,26 @@ namespace BIUK9000.GifferComponents
             }
             return true;
         }
+        public void Mirror()
+        {
+            foreach(GifFrame frame in Frames)
+            {
+                foreach(GFL gfl in frame.Layers)
+                {
+                    if(gfl is BitmapGFL)
+                    {
+                        BitmapGFL bgfl = gfl as BitmapGFL;
+                        Bitmap obmp = bgfl.OriginalBitmap;
+                        Bitmap flipped = new Bitmap(obmp.Width, obmp.Height);
+                        using Graphics g = Graphics.FromImage(flipped);
+                        g.DrawImage(obmp, new Rectangle(0, 0, obmp.Width, obmp.Height),
+                            new Rectangle(obmp.Width, 0, -obmp.Width, obmp.Height),
+                            GraphicsUnit.Pixel);
+                        bgfl.ReplaceOriginalBitmap(flipped);
+                    }
+                }
+            }
+        }
         public void Dispose()
         {
             if (_disposed) return;
