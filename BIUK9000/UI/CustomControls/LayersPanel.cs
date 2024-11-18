@@ -19,7 +19,7 @@ namespace BIUK9000.UI
         public int SelectedLayerIndex { get; set; }
         public event EventHandler<LayerOrderEventArgs> LayerOrderChanged;
         public event EventHandler SelectedLayerChanged;
-        public event EventHandler LayerVisibilityChanged;
+        public event EventHandler<SelectedIndexEventArgs> LayerVisibilityChanged;
         public event EventHandler LayerDeleteButtonClicked;
         public LayersPanel()
         {
@@ -41,12 +41,18 @@ namespace BIUK9000.UI
                 LayerHolder lh = new LayerHolder(layer);
                 lh.LayerClicked += Lh_LayerClicked;
                 lh.DragDropped += Lh_DragDropped;
-                lh.LayerVisibilityChanged += (sender, args) => LayerVisibilityChanged?.Invoke(sender, args);
+                lh.LayerVisibilityChanged += Lh_LayerVisibilityChanged;
                 lh.DeleteButtonClicked += Lh_DeleteButtonClicked;
                 layersFLP.Controls.Add(lh);
             }
             SelectLayerHolder(SelectedLayerIndex);
             layersFLP.Visible = true;
+        }
+
+        private void Lh_LayerVisibilityChanged(object sender, EventArgs e)
+        {
+            int index = layersFLP.Controls.IndexOf(sender as Control);
+            LayerVisibilityChanged?.Invoke(sender, new SelectedIndexEventArgs(index));
         }
 
         private void Lh_DeleteButtonClicked(object sender, EventArgs e)
@@ -101,6 +107,15 @@ namespace BIUK9000.UI
             SelectLayerHolder(lhIndex);
             SelectedLayerIndex = lhIndex;
             SelectedLayerChanged?.Invoke(ClickedLayerHolder.HeldLayer, EventArgs.Empty);
+        }
+        public class SelectedIndexEventArgs : EventArgs
+        {
+            public int Index { get; }
+
+            public SelectedIndexEventArgs(int index)
+            {
+                Index = index;
+            }
         }
         public class LayerOrderEventArgs : EventArgs
         {

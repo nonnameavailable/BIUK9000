@@ -82,13 +82,15 @@ namespace BIUK9000.GifferComponents
             int firstLayerID = NextLayerID();
             if(frameCount == 1)
             {
-                result.Add(new GifFrame(new Bitmap(gif), 20, firstLayerID));
+                using Bitmap bitmap = new Bitmap(gif);
+                result.Add(new GifFrame(bitmap, 20, firstLayerID));
                 return result;
             }
             for (int i = 0; i < frameCount; i++)
             {
+                using Bitmap bitmap = new Bitmap(gif);
                 gif.SelectActiveFrame(FrameDimension.Time, i);
-                result.Add(new GifFrame(new Bitmap(gif), FrameDelay(gif), firstLayerID));
+                result.Add(new GifFrame(bitmap, FrameDelay(gif), firstLayerID));
             }
             return result;
         }

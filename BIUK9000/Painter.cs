@@ -33,15 +33,21 @@ namespace BIUK9000
             {
                 Debug.Print("clicked outside");
                 return new Bitmap(bmp);
-            }
-            using FastBitmap fbmp = new FastBitmap(bmp);
-            Color c1 = fbmp.GetPixel(p.X, p.Y);
-            for(int i = 0; i < bmp.Width; i++)
+            } else
             {
-                for(int j = 0; j < bmp.Height; j++)
+                return DeleteColor(bmp, bmp.GetPixel(p.X, p.Y), tolerance);
+            }
+
+        }
+        public static Bitmap DeleteColor(Bitmap bmp, Color c, int tolerance)
+        {
+            using FastBitmap fbmp = new FastBitmap(bmp);
+            for (int i = 0; i < bmp.Width; i++)
+            {
+                for (int j = 0; j < bmp.Height; j++)
                 {
                     Color c2 = fbmp.GetPixel(i, j);
-                    if(ColorIsWithinTolerance(c1, c2, tolerance))
+                    if (ColorIsWithinTolerance(c, c2, tolerance))
                     {
                         Color transparentC2 = Color.FromArgb(0, c2.R, c2.G, c2.B);
                         fbmp.SetPixel(i, j, transparentC2);

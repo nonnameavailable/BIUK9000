@@ -1,8 +1,10 @@
 ﻿using BIUK9000.GifferComponents;
 using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI;
+using BIUK9000.UI.CustomControls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -17,6 +19,7 @@ namespace BIUK9000
         private Giffer giffer;
         private GFL SavedLayerForApply;
         private GFL SavedLayerForLPC;
+        int _previousLayerID;
         public int FrameCount { get => giffer.FrameCount; }
         public GifferController(Giffer giffer)
         {
@@ -34,10 +37,7 @@ namespace BIUK9000
         }
         public void SaveLayerStateForApply(int frameIndex, int layerIndex)
         {
-            if(SavedLayerForApply is BitmapGFL)
-            {
-                (SavedLayerForApply as BitmapGFL).SoftDispose();
-            }
+            SavedLayerForApply?.Dispose();
             SavedLayerForApply = giffer.Frames[frameIndex].Layers[layerIndex].Clone();
         }
         public void SaveLayerForLPC(int frameIndex, int layerIndex)
@@ -172,7 +172,7 @@ namespace BIUK9000
                 using Bitmap bmp = newGiffer.FrameAsBitmap(0, false, InterpolationMode.Default);
                 foreach (GifFrame frame in giffer.Frames)
                 {
-                    BitmapGFL gfl = new BitmapGFL(new Bitmap(bmp), nextLayerID);
+                    BitmapGFL gfl = new BitmapGFL(bmp, nextLayerID);
                     ResizeLayerToFit(gfl);
                     frame.AddLayer(gfl);
                 }
@@ -190,7 +190,8 @@ namespace BIUK9000
                     newGifferIndex = i % newGiffer.FrameCount;
                 }
                 GifFrame cgf = giffer.Frames[i];
-                BitmapGFL gfl = new BitmapGFL(newGiffer.FrameAsBitmap(newGifferIndex, false, InterpolationMode.Default), nextLayerID);
+                using Bitmap bitmap = newGiffer.FrameAsBitmap(newGifferIndex, false, InterpolationMode.Default);
+                BitmapGFL gfl = new BitmapGFL(bitmap, nextLayerID);
                 ResizeLayerToFit(gfl);
                 cgf.AddLayer(gfl);
             }
@@ -225,6 +226,18 @@ namespace BIUK9000
                 }
             }
             giffer.Frames.InsertRange(insertAt, newGiffer.Frames);
+        }
+        public void DeleteColor(int frameIndex, int layerIndex, Point p, int tolerance)
+        {
+            BitmapGFL currentLayer = giffer.Frames[frameIndex].Layers[layerIndex] as BitmapGFL;
+            int layerID = currentLayer.LayerID;
+            Color c = currentLayer.OriginalBitmap.GetPixel(p.X, p.Y);
+            foreach (GifFrame frame in giffer.Frames)
+            {
+                BitmapGFL gfl = frame.Layers.Find(layer => layer.LayerID == layerID) as BitmapGFL;
+                using Bitmap deletedBitmap = Painter.DeleteColor(gfl.OriginalBitmap, c, tolerance);
+                gfl.ReplaceOriginalBitmap(deletedBitmap);
+            }
         }
     }
 }

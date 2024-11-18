@@ -30,7 +30,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
         }
         public BitmapGFL(Bitmap bitmap, int layerID) : base(layerID)
         {
-            OriginalBitmap = bitmap;
+            OriginalBitmap = new Bitmap(bitmap);
             Width = bitmap.Width;
             Height = bitmap.Height;
             cachedMorphedBitmap = new Bitmap(bitmap);
@@ -42,7 +42,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
         public void ReplaceOriginalBitmap(Bitmap bitmap)
         {
             OriginalBitmap?.Dispose();
-            OriginalBitmap = bitmap;
+            OriginalBitmap = new Bitmap(bitmap);
             cachedMorphedBitmap?.Dispose();
             cachedMorphedBitmap = new Bitmap(bitmap);
         }
@@ -58,15 +58,6 @@ namespace BIUK9000.GifferComponents.GFLVariants
             OriginalBitmap?.Dispose();
             cachedMorphedBitmap?.Dispose();
             base.Dispose();
-        }
-        public void SoftDispose()
-        {
-            cachedMorphedBitmap?.Dispose();
-        }
-        public override void CopyParameters(GFL layer)
-        {
-            base.CopyParameters(layer);
-            OriginalBitmap = (layer as BitmapGFL).OriginalBitmap;
         }
         public override GFL Clone()
         {
