@@ -115,7 +115,7 @@ namespace BIUK9000.UI
 
         private void DeleteFramesButton_Click(object sender, EventArgs e)
         {
-            if(MainGiffer == null || MainGiffer.FrameCount < 2)return;
+            if (MainGiffer == null || MainGiffer.FrameCount < 2) return;
             MainGiffer.RemoveFrames(MainTimelineSlider.Marks);
             CompleteUIUpdate();
         }
@@ -123,7 +123,7 @@ namespace BIUK9000.UI
         private void LerpButton_Click(object sender, EventArgs e)
         {
             if (GifferC == null) return;
-            GifferC.LerpExecute(MainTimelineSlider.Marks, SelectedLayerIndex);
+            GifferC.LerpExecute(MainTimelineSlider.Marks, SelectedLayerIndex, mainPictureBox.MouseTrace);
             MainTimelineSlider.ClearMarks();
         }
         public void ApplyLayerParamsToSubsequentLayers(int index = -1)
@@ -486,6 +486,10 @@ namespace BIUK9000.UI
         }
         public void CompleteUIUpdate(bool keepSelectedFrameAndLayer = true)
         {
+            MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
+            MainTimelineSlider.SelectedFrameChanged -= MainTimelineSlider_SelectedFrameChanged;
+            MainTimelineSlider.SelectedFrameIndex = Math.Clamp(SelectedFrameIndex, 0, MainTimelineSlider.Maximum);
+            MainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
             int sfi, sli, slid;
             if (keepSelectedFrameAndLayer)
             {
@@ -499,14 +503,8 @@ namespace BIUK9000.UI
                 sli = 0;
                 slid = 0;
             }
-            MainLayersPanel.SelectedLayerIndex = sli;
             MainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
-            MainTimelineSlider.ClearMarks();
-            MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
-            MainTimelineSlider.SelectedFrameChanged -= MainTimelineSlider_SelectedFrameChanged;
-            MainTimelineSlider.SelectedFrameIndex = Math.Clamp(sfi, 0, MainTimelineSlider.Maximum);
-            MainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
-            Debug.Print("prevlayerid: " + slid.ToString());
+            if(!keepSelectedFrameAndLayer) MainTimelineSlider.ClearMarks();
             MainLayersPanel.TrySelectLayerByID(slid);
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
             UpdateLayerParamsUI();

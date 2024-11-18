@@ -16,6 +16,7 @@ namespace BIUK9000.UI
         public bool IsLMBDown {  get; set; }
         public bool IsRMBDown { get; set; }
         public bool IsMMBDown { get; set; }
+        public List<Point> MouseTrace { get; private set; }
         public Point ScaledDragDifference { get; set; }
         public Point MousePositionOnImage
         {
@@ -39,6 +40,7 @@ namespace BIUK9000.UI
             MouseUp += MyPictureBox_MouseUp;
             MouseMove += MyPictureBox_MouseMove;
             InterpolationMode = InterpolationMode.HighQualityBicubic;
+            MouseTrace = new List<Point>();
         }
         protected override void OnPaint(PaintEventArgs paintEventArgs)
         {
@@ -50,8 +52,8 @@ namespace BIUK9000.UI
         {
             mousePosition = e.Location;
             if (Image == null) return;
-            //Debug.Print(MousePositionOnImage.ToString() + BlankSpace()[0].ToString() + " x " + BlankSpace()[1].ToString());
             ScaledDragDifference = new Point((int)((e.X - mouseClickedPosition.X) / Zoom()),(int)((e.Y - mouseClickedPosition.Y) / Zoom()));
+            if(IsLMBDown && !IsRMBDown && !IsMMBDown) MouseTrace.Add(MousePositionOnImage);
         }
 
         private void MyPictureBox_MouseUp(object sender, MouseEventArgs e)
@@ -86,6 +88,11 @@ namespace BIUK9000.UI
             else if (e.Button == MouseButtons.Middle)
             {
                 IsMMBDown = true;
+            }
+            if (IsLMBDown && !IsRMBDown && !IsMMBDown)
+            {
+                MouseTrace.Clear();
+                MouseTrace.Add(MousePositionOnImage);
             }
         }
         public double Zoom()

@@ -143,9 +143,9 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             CopyParameters(textGFL);
         }
-        public override void Lerp(GFL start, GFL end, double distance)
+        public override void Lerp(GFL start, GFL end, double distance, OVector position = null)
         {
-            base.Lerp(start, end, distance);
+            base.Lerp(start, end, distance, position);
             TextGFL tstart = start as TextGFL;
             TextGFL tend = end as TextGFL;
             FontSize = Lerper.Lerp(tstart.FontSize, tend.FontSize, distance);

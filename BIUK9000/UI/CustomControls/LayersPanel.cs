@@ -13,7 +13,20 @@ namespace BIUK9000.UI
 {
     public partial class LayersPanel : UserControl
     {
-        private LayerHolder ClickedLayerHolder { get => layersFLP.Controls[SelectedLayerIndex] as LayerHolder; }
+        private LayerHolder ClickedLayerHolder {
+            get
+            {
+                if(SelectedLayerIndex >= layersFLP.Controls.Count)
+                {
+                    //SelectedLayerIndex = layersFLP.Controls.Count - 1;
+                    //SelectLayerHolder(SelectedLayerIndex);
+                    return layersFLP.Controls[0] as LayerHolder;
+                } else
+                {
+                    return layersFLP.Controls[SelectedLayerIndex] as LayerHolder;
+                }
+            }
+        }
         public GFL SelectedLayer { get => ClickedLayerHolder.HeldLayer; }
         private GifFrame ActiveFrame { get; set; }
         public int SelectedLayerIndex { get; set; }

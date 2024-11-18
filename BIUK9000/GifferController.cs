@@ -58,7 +58,7 @@ namespace BIUK9000
         {
             if(SavedLayerForApply != null) SavedLayerForApply.Visible = visible;
         }
-        public void LerpExecute(List<int> marks, int selectedLayerIndex)
+        public void LerpExecute(List<int> marks, int selectedLayerIndex, List<Point> mouseTrace = null)
         {
             if(marks.Count < 2)
             {
@@ -69,20 +69,38 @@ namespace BIUK9000
             int endFrameIndex = Math.Max(marks[0], marks[1]);
             GFL startLayer = giffer.Frames[startFrameIndex].Layers[selectedLayerIndex];
             GFL endLayer = giffer.Frames[endFrameIndex].Layers.Find(layer => startLayer.LayerID == layer.LayerID);
+            Debug.Print("startLayer rot" + startLayer.Rotation.ToString());
+            Debug.Print("endLayer rot" + endLayer.Rotation.ToString());
             if (startLayer == null || endLayer == null)
             {
                 MessageBox.Show("Layers not found");
                 return;
             }
             int totalFrames = endFrameIndex - startFrameIndex;
-            for (int i = startFrameIndex + 1; i <= endFrameIndex; i++)
+            OVector difference = null;
+            if(mouseTrace != null && mouseTrace.Count > 0)
+            {
+                difference = startLayer.Position.Copy().Subtract(new OVector(mouseTrace[0]));
+            }
+            for (int i = startFrameIndex + 1; i < endFrameIndex; i++)
             {
                 double distance = 1 - (endFrameIndex - i) / (double)totalFrames;
                 GifFrame cgf = giffer.Frames[i];
                 GFL layerToLerp = cgf.Layers.Find(layer => layer.LayerID == startLayer.LayerID);
-                layerToLerp?.Lerp(startLayer, endLayer, distance);
+                if(mouseTrace == null || mouseTrace.Count == 0)
+                {
+                    //straight line lerp
+                    layerToLerp?.Lerp(startLayer, endLayer, distance);
+                }
+                else
+                {
+                    //mouse trace lerp
+                    OVector tracePoint = new OVector(mouseTrace[(int)(distance * (mouseTrace.Count - 1))]);
+                    layerToLerp?.Lerp(startLayer, endLayer, distance, tracePoint.Add(difference));
+                }
             }
         }
+
         public void ApplyLayerParams(int currentFrameIndex, int currentLayerIndex, ApplyParamsMode apm)
         {
             if (apm == ApplyParamsMode.applyNone) return;
@@ -159,8 +177,11 @@ namespace BIUK9000
         {
             foreach (GifFrame gf in giffer.Frames)
             {
-                GFL layerToDelete = gf.Layers.Find(layer => layer.LayerID == layerID);
-                if (layerToDelete != null) gf.Layers.Remove(layerToDelete);
+                if(gf.Layers.Count > 1)
+                {
+                    GFL layerToDelete = gf.Layers.Find(layer => layer.LayerID == layerID);
+                    if (layerToDelete != null) gf.Layers.Remove(layerToDelete);
+                }
             }
         }
         public void AddGifferAsLayers(Giffer newGiffer, bool spread)
@@ -231,7 +252,9 @@ namespace BIUK9000
         {
             BitmapGFL currentLayer = giffer.Frames[frameIndex].Layers[layerIndex] as BitmapGFL;
             int layerID = currentLayer.LayerID;
-            Color c = currentLayer.OriginalBitmap.GetPixel(p.X, p.Y);
+            Bitmap obm = currentLayer.OriginalBitmap;
+            if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
+            Color c = obm.GetPixel(p.X, p.Y);
             foreach (GifFrame frame in giffer.Frames)
             {
                 BitmapGFL gfl = frame.Layers.Find(layer => layer.LayerID == layerID) as BitmapGFL;

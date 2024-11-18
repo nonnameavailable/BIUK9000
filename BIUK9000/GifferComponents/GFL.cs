@@ -50,6 +50,29 @@ namespace BIUK9000.GifferComponents
             _spinCount = 0;
         }
         public bool Visible { get; set; }
+        //public float Rotation
+        //{
+        //    get
+        //    {
+        //        return _rotation + _spinCount * 360;
+        //    }
+        //    set
+        //    {
+        //        _rotation = value;
+        //        float dif = _rotation - _previousRotation;
+        //        if(dif > 180)
+        //        {
+        //            _spinCount--;
+        //            _rotation += 360;
+        //        }
+        //        else if (dif < -180)
+        //        {
+        //            _spinCount++;
+        //            _rotation -= 360;
+        //        }
+        //        _previousRotation = value;
+        //    }
+        //}
         public float Rotation
         {
             get
@@ -60,7 +83,7 @@ namespace BIUK9000.GifferComponents
             {
                 _rotation = value;
                 float dif = _rotation - _previousRotation;
-                if(dif > 180)
+                if (dif > 180)
                 {
                     _spinCount--;
                     _rotation += 360;
@@ -81,6 +104,19 @@ namespace BIUK9000.GifferComponents
         public virtual void Save()
         {
             OBR = BoundingRectangle;
+        }
+        public void ResetSpins()
+        {
+            _spinCount = 0;
+            while(_rotation > 180)
+            {
+                _rotation -= 360;
+            }
+            while(_rotation < -180)
+            {
+                _rotation += 360;
+            }
+            Debug.Print("reset spins");
         }
         public virtual void Resize(int sizeDif)
         {
@@ -169,9 +205,16 @@ namespace BIUK9000.GifferComponents
             if(ogState.Height != newState.Height) Height = newState.Height;
             if(ogState.Visible != newState.Visible) Visible = newState.Visible;
         }
-        public virtual void Lerp(GFL start, GFL end, double distance)
+        public virtual void Lerp(GFL start, GFL end, double distance, OVector position = null)
         {
-            Position = OVector.Lerp(start.Position, end.Position, distance);
+            if(position == null)
+            {
+                Position = OVector.Lerp(start.Position, end.Position, distance);
+            }
+            else
+            {
+                 Position = position;
+            }
             Width = Lerper.Lerp(start.Width, end.Width, distance);
             Height = Lerper.Lerp(start.Height, end.Height, distance);
             Rotation = Lerper.Lerp(start.Rotation, end.Rotation, distance);
