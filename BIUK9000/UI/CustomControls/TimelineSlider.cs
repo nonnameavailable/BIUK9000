@@ -84,10 +84,6 @@ namespace BIUK9000.UI
         {
             return timeLineTrackBar.AddMark(mark);
         }
-        public bool RemoveMark(int mark)
-        {
-            return timeLineTrackBar.RemoveMark(mark);
-        }
         public void ClearMarks()
         {
             timeLineTrackBar.ClearMarks();

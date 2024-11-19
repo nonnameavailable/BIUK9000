@@ -25,6 +25,28 @@ namespace BIUK9000
         {
             this.giffer = giffer;
         }
+        public GifFrame GetFrame(int frameIndex)
+        {
+            if(frameIndex < giffer.Frames.Count && frameIndex >= 0)
+            {
+                return giffer.Frames[frameIndex];
+            } else
+            {
+                return null;
+            }
+        }
+        public GFL GetLayer(int frameIndex, int layerIndex)
+        {
+            GifFrame frame = GetFrame(frameIndex);
+            if(frame != null)
+            {
+                if(layerIndex < frame.Layers.Count && layerIndex >= 0)
+                {
+                    return frame.Layers[layerIndex];
+                }
+            }
+            return null;
+        }
         public void MoveLayer(int frameIndex, int startLayerIndex, int targetLayerIndex)
         {
             for (int i = frameIndex; i < giffer.FrameCount; i++)
@@ -38,15 +60,15 @@ namespace BIUK9000
         public void SaveLayerStateForApply(int frameIndex, int layerIndex)
         {
             SavedLayerForApply?.Dispose();
-            SavedLayerForApply = giffer.Frames[frameIndex].Layers[layerIndex].Clone();
+            SavedLayerForApply = GetLayer(frameIndex, layerIndex).Clone();
         }
         public void SaveLayerForLPC(int frameIndex, int layerIndex)
         {
-            SavedLayerForLPC = giffer.Frames[frameIndex].Layers[layerIndex];
+            SavedLayerForLPC = GetLayer(frameIndex, layerIndex);
         }
         public bool ShouldSwitchLPC(int frameIndex, int layerIndex)
         {
-            GFL layer = giffer.Frames[frameIndex].Layers[layerIndex];
+            GFL layer = GetLayer(frameIndex, layerIndex);
             if (layer == null || SavedLayerForLPC == null) return true;
             return !(layer.GetType().Name == SavedLayerForLPC.GetType().Name);
         }
@@ -154,7 +176,7 @@ namespace BIUK9000
         }
         public Point MousePositionOnLayer(int frameIndex, int layerIndex, Point mousePosition)
         {
-            GFL gflt = giffer.Frames[frameIndex].Layers[layerIndex];
+            GFL gflt = GetLayer(frameIndex, layerIndex);
             if (gflt is BitmapGFL)
             {
                 BitmapGFL gfl = gflt as BitmapGFL;
@@ -180,7 +202,10 @@ namespace BIUK9000
                 if(gf.Layers.Count > 1)
                 {
                     GFL layerToDelete = gf.Layers.Find(layer => layer.LayerID == layerID);
-                    if (layerToDelete != null) gf.Layers.Remove(layerToDelete);
+                    if (layerToDelete != null)
+                    {
+                        gf.RemoveLayer(layerToDelete);
+                    }
                 }
             }
         }
@@ -250,7 +275,7 @@ namespace BIUK9000
         }
         public void DeleteColor(int frameIndex, int layerIndex, Point p, int tolerance)
         {
-            BitmapGFL currentLayer = giffer.Frames[frameIndex].Layers[layerIndex] as BitmapGFL;
+            BitmapGFL currentLayer = GetLayer(frameIndex, layerIndex) as BitmapGFL;
             int layerID = currentLayer.LayerID;
             Bitmap obm = currentLayer.OriginalBitmap;
             if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
@@ -260,6 +285,26 @@ namespace BIUK9000
                 BitmapGFL gfl = frame.Layers.Find(layer => layer.LayerID == layerID) as BitmapGFL;
                 using Bitmap deletedBitmap = Painter.DeleteColor(gfl.OriginalBitmap, c, tolerance);
                 gfl.ReplaceOriginalBitmap(deletedBitmap);
+            }
+        }
+        public void Mirror()
+        {
+            foreach (GifFrame frame in giffer.Frames)
+            {
+                foreach (GFL gfl in frame.Layers)
+                {
+                    if (gfl is BitmapGFL)
+                    {
+                        BitmapGFL bgfl = gfl as BitmapGFL;
+                        Bitmap obmp = bgfl.OriginalBitmap;
+                        using Bitmap flipped = new Bitmap(obmp.Width, obmp.Height);
+                        using Graphics g = Graphics.FromImage(flipped);
+                        g.DrawImage(obmp, new Rectangle(0, 0, obmp.Width, obmp.Height),
+                            new Rectangle(obmp.Width, 0, -obmp.Width, obmp.Height),
+                            GraphicsUnit.Pixel);
+                        bgfl.ReplaceOriginalBitmap(flipped);
+                    }
+                }
             }
         }
     }

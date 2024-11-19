@@ -34,15 +34,16 @@ namespace BIUK9000.UI
             mainTimelineSlider = new TimelineSlider();
             controlsPanel = new ControlsPanel();
             layerParamsPanel = new System.Windows.Forms.Panel();
-            panel1 = new System.Windows.Forms.Panel();
+            markLerpPanel = new System.Windows.Forms.Panel();
+            askDeleteCB = new System.Windows.Forms.CheckBox();
+            lerpModeCBB = new System.Windows.Forms.ComboBox();
             deleteFramesButton = new System.Windows.Forms.Button();
-            unmarkButton = new System.Windows.Forms.Button();
             markButton = new System.Windows.Forms.Button();
             lerpButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1.SuspendLayout();
-            panel1.SuspendLayout();
+            markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -56,7 +57,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Controls.Add(mainTimelineSlider, 1, 2);
             tableLayoutPanel1.Controls.Add(controlsPanel, 0, 0);
             tableLayoutPanel1.Controls.Add(layerParamsPanel, 1, 0);
-            tableLayoutPanel1.Controls.Add(panel1, 2, 2);
+            tableLayoutPanel1.Controls.Add(markLerpPanel, 2, 2);
             tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -109,17 +110,40 @@ namespace BIUK9000.UI
             layerParamsPanel.Size = new System.Drawing.Size(571, 149);
             layerParamsPanel.TabIndex = 7;
             // 
-            // panel1
+            // markLerpPanel
             // 
-            panel1.Controls.Add(deleteFramesButton);
-            panel1.Controls.Add(unmarkButton);
-            panel1.Controls.Add(markButton);
-            panel1.Controls.Add(lerpButton);
-            panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            panel1.Location = new System.Drawing.Point(725, 464);
-            panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(144, 94);
-            panel1.TabIndex = 8;
+            markLerpPanel.Controls.Add(askDeleteCB);
+            markLerpPanel.Controls.Add(lerpModeCBB);
+            markLerpPanel.Controls.Add(deleteFramesButton);
+            markLerpPanel.Controls.Add(markButton);
+            markLerpPanel.Controls.Add(lerpButton);
+            markLerpPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            markLerpPanel.Location = new System.Drawing.Point(725, 464);
+            markLerpPanel.Name = "markLerpPanel";
+            markLerpPanel.Size = new System.Drawing.Size(144, 94);
+            markLerpPanel.TabIndex = 8;
+            // 
+            // askDeleteCB
+            // 
+            askDeleteCB.AutoSize = true;
+            askDeleteCB.Checked = true;
+            askDeleteCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            askDeleteCB.Location = new System.Drawing.Point(13, 61);
+            askDeleteCB.Name = "askDeleteCB";
+            askDeleteCB.Size = new System.Drawing.Size(43, 19);
+            askDeleteCB.TabIndex = 6;
+            askDeleteCB.Text = "ask";
+            askDeleteCB.UseVisualStyleBackColor = true;
+            // 
+            // lerpModeCBB
+            // 
+            lerpModeCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            lerpModeCBB.FormattingEnabled = true;
+            lerpModeCBB.Items.AddRange(new object[] { "line", "trace" });
+            lerpModeCBB.Location = new System.Drawing.Point(4, 32);
+            lerpModeCBB.Name = "lerpModeCBB";
+            lerpModeCBB.Size = new System.Drawing.Size(61, 23);
+            lerpModeCBB.TabIndex = 5;
             // 
             // deleteFramesButton
             // 
@@ -130,27 +154,18 @@ namespace BIUK9000.UI
             deleteFramesButton.Text = "del fr.";
             deleteFramesButton.UseVisualStyleBackColor = true;
             // 
-            // unmarkButton
-            // 
-            unmarkButton.Location = new System.Drawing.Point(71, 32);
-            unmarkButton.Name = "unmarkButton";
-            unmarkButton.Size = new System.Drawing.Size(62, 23);
-            unmarkButton.TabIndex = 3;
-            unmarkButton.Text = "unmark";
-            unmarkButton.UseVisualStyleBackColor = true;
-            // 
             // markButton
             // 
-            markButton.Location = new System.Drawing.Point(71, 3);
+            markButton.Location = new System.Drawing.Point(4, 3);
             markButton.Name = "markButton";
-            markButton.Size = new System.Drawing.Size(62, 23);
+            markButton.Size = new System.Drawing.Size(129, 23);
             markButton.TabIndex = 2;
             markButton.Text = "mark";
             markButton.UseVisualStyleBackColor = true;
             // 
             // lerpButton
             // 
-            lerpButton.Location = new System.Drawing.Point(3, 3);
+            lerpButton.Location = new System.Drawing.Point(71, 32);
             lerpButton.Name = "lerpButton";
             lerpButton.Size = new System.Drawing.Size(62, 23);
             lerpButton.TabIndex = 1;
@@ -183,7 +198,8 @@ namespace BIUK9000.UI
             Name = "MainForm";
             Text = "Form1";
             tableLayoutPanel1.ResumeLayout(false);
-            panel1.ResumeLayout(false);
+            markLerpPanel.ResumeLayout(false);
+            markLerpPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
             ResumeLayout(false);
         }
@@ -195,12 +211,13 @@ namespace BIUK9000.UI
         private ControlsPanel controlsPanel;
         private System.Windows.Forms.Panel layerParamsPanel;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel markLerpPanel;
         private System.Windows.Forms.Button lerpButton;
         private MyPictureBox mainPictureBox;
-        private System.Windows.Forms.Button unmarkButton;
         private System.Windows.Forms.Button markButton;
         private System.Windows.Forms.Button deleteFramesButton;
+        private System.Windows.Forms.ComboBox lerpModeCBB;
+        private System.Windows.Forms.CheckBox askDeleteCB;
     }
 }
 

@@ -40,18 +40,19 @@ namespace BIUK9000.UI
         }
         public bool AddMark(int mark)
         {
-            if (mark <= Maximum && mark >= Minimum && !marks.Contains(mark) && Maximum > 0)
+            if (mark <= Maximum && Maximum > 0 && mark >= Minimum)
             {
-                marks.Add(mark);
+                if(marks.Contains(mark))
+                {
+                    marks.Remove(mark);
+                } else
+                {
+                    marks.Add(mark);
+                }
                 Invalidate();
                 return true;
             }
             else return false;
-        }
-        public bool RemoveMark(int mark)
-        {
-            Invalidate();
-            return marks.Remove(mark);
         }
         public void ClearMarks()
         {

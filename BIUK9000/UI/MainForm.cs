@@ -86,10 +86,10 @@ namespace BIUK9000.UI
             lerpButton.Click += LerpButton_Click;
 
             markButton.Click += (sender, args) => MainTimelineSlider.AddMark(SelectedFrameIndex);
-            unmarkButton.Click += (sender, args) => MainTimelineSlider.RemoveMark(SelectedFrameIndex);
             deleteFramesButton.Click += DeleteFramesButton_Click;
 
             _paintControl = new PaintControl();
+            lerpModeCBB.SelectedIndex = 0;
         }
         private void SetPaintMode(bool setValue)
         {
@@ -116,20 +116,39 @@ namespace BIUK9000.UI
         private void DeleteFramesButton_Click(object sender, EventArgs e)
         {
             if (MainGiffer == null || MainGiffer.FrameCount < 2) return;
-            MainGiffer.RemoveFrames(MainTimelineSlider.Marks);
+            if (askDeleteCB.Checked)
+            {
+                if (MessageBox.Show("Do you really want to delete these frames?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return;
+            }
+            List<int> marks = MainTimelineSlider.Marks;
+            if(marks.Count == 0)
+            {
+                MainGiffer.RemoveFrames(new List<int>() { SelectedFrameIndex });
+            } else if(marks.Count > 0)
+            {
+                MainGiffer.RemoveFrames(MainTimelineSlider.Marks);
+            }
+            mainTimelineSlider.ClearMarks();
             CompleteUIUpdate();
         }
 
         private void LerpButton_Click(object sender, EventArgs e)
         {
             if (GifferC == null) return;
-            GifferC.LerpExecute(MainTimelineSlider.Marks, SelectedLayerIndex, mainPictureBox.MouseTrace);
+            string lerpMode = lerpModeCBB.SelectedItem.ToString();
+            if(lerpMode == "trace")
+            {
+                GifferC.LerpExecute(MainTimelineSlider.Marks, SelectedLayerIndex, mainPictureBox.MouseTrace);
+            } else if(lerpMode == "line")
+            {
+                GifferC.LerpExecute(MainTimelineSlider.Marks, SelectedLayerIndex);
+            }
             MainTimelineSlider.ClearMarks();
         }
         public void ApplyLayerParamsToSubsequentLayers(int index = -1)
         {
             int i = SelectedLayerIndex;
-            if(index >= 0)
+            if (index >= 0)
             {
                 i = index;
             }
@@ -242,16 +261,13 @@ namespace BIUK9000.UI
                 else if (keyData == Keys.T || keyData == Keys.B)
                 {
                     GifferC.AddNewLayer(keyData);
-                    MainLayersPanel.DisplayLayers(SelectedFrame);
-                    UpdateMainPictureBox();
+                    CompleteUIUpdate();
                     MainLayersPanel.SelectNewestLayer();
-                    GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
-                    UpdateLayerParamsUI();
                     return true;
                 }
-                else if(keyData == Keys.F)
+                else if (keyData == Keys.F)
                 {
-                    MainGiffer.Mirror();
+                    GifferC.Mirror();
                     CompleteUIUpdate();
                 }
                 else if (keyData == Keys.ShiftKey)
@@ -310,7 +326,7 @@ namespace BIUK9000.UI
             {
                 if (SelectedLayer is BitmapGFL)
                 {
-                    PaintControl pc = layerParamsPanel.Controls[0] as PaintControl;
+                    PaintControl pc = _paintControl as PaintControl;
                     Point mpoi = GifferC.MousePositionOnLayer(SelectedFrameIndex, SelectedLayerIndex, mainPictureBox.MousePositionOnImage);
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
@@ -320,7 +336,7 @@ namespace BIUK9000.UI
                             Painter.DrawLine(lbmp, mpoi, mpoi, pc.PaintColor, pc.Transparency, pc.Thickness);
                         }
                     }
-                    else if(pc.SelectedPaintTool == PaintControl.PaintTool.DeleteColor)
+                    else if (pc.SelectedPaintTool == PaintControl.PaintTool.DeleteColor)
                     {
                         GifferC.DeleteColor(SelectedFrameIndex, SelectedLayerIndex, mpoi, pc.Transparency);
                     }
@@ -338,10 +354,10 @@ namespace BIUK9000.UI
             Point mpoi = GifferC.MousePositionOnLayer(SelectedFrameIndex, SelectedLayerIndex, mainPictureBox.MousePositionOnImage);
             if (controlsPanel.ToolPaintSelectedFlag)
             {
-                if(SelectedLayer is BitmapGFL)
+                if (SelectedLayer is BitmapGFL)
                 {
                     PaintControl pc = layerParamsPanel.Controls[0] as PaintControl;
-                    if(pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
+                    if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
                         Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
                         if (IsLMBDown) Painter.DrawLine(lbmp, mpoi, _prevMousePos, pc.PaintColor, pc.Transparency, pc.Thickness);
@@ -504,7 +520,7 @@ namespace BIUK9000.UI
                 slid = 0;
             }
             MainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
-            if(!keepSelectedFrameAndLayer) MainTimelineSlider.ClearMarks();
+            if (!keepSelectedFrameAndLayer) MainTimelineSlider.ClearMarks();
             MainLayersPanel.TrySelectLayerByID(slid);
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
             UpdateLayerParamsUI();
