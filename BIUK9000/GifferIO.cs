@@ -12,22 +12,24 @@ using BIUK9000.UI;
 using BIUK9000.GifferComponents.GFLVariants;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace BIUK9000
 {
     public class GifferIO
     {
-        public static Image GifFromGiffer(Giffer giffer)
+        public static Image GifFromGiffer(Giffer giffer, GifQuality gifQuality)
         {
             MemoryStream stream = new MemoryStream();
             using AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
             foreach (GifFrame frame in giffer.Frames)
             {
-                agc.AddFrame(giffer.FrameAsBitmap(frame, false), frame.FrameDelay, GifQuality.Bit8);
+                agc.AddFrame(giffer.FrameAsBitmap(frame, false), frame.FrameDelay, gifQuality);
             }
             return Image.FromStream(stream);
         }
-        private static Image GifFromGifferDithered(Giffer giffer, List<Color> paletteForDithering)
+        private static Image GifFromGifferDithered(Giffer giffer, List<Color> paletteForDithering, GifQuality gifQuality)
         {
             MemoryStream stream = new MemoryStream();
             AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
@@ -36,15 +38,15 @@ namespace BIUK9000
                 Bitmap cbm = giffer.FrameAsBitmap(frame, false);
                 Ditherer dtr = new Ditherer(cbm);
                 cbm = dtr.DitheredBitmap(paletteForDithering);
-                agc.AddFrame(cbm, frame.FrameDelay, GifQuality.Bit8);
+                agc.AddFrame(cbm, frame.FrameDelay, gifQuality);
                 dtr.Dispose();
             }
             return Image.FromStream(stream);
         }
-        public static string SaveGifToTempFile(Giffer giffer)
+        public static string SaveGifToTempFile(Giffer giffer, GifQuality gifQuality)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            using Image gif = GifFromGiffer(giffer);
+            using Image gif = GifFromGiffer(giffer, gifQuality);
             gif.Save(tempPath);
             if (File.Exists(tempPath))
             {
@@ -56,12 +58,12 @@ namespace BIUK9000
             }
         }
 
-        public static string SaveGifToTempFileDithered(Giffer giffer, int ditherColorCount)
+        public static string SaveGifToTempFileDithered(Giffer giffer, int ditherColorCount, GifQuality gifQuality)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
             using Bitmap bmpForPalette = giffer.FrameAsBitmap(0, false);
             List<Color> palette = KMeans.Palette(bmpForPalette, ditherColorCount, false);
-            using Image gif = GifFromGifferDithered(giffer, palette);
+            using Image gif = GifFromGifferDithered(giffer, palette, gifQuality);
             gif.Save(tempPath);
             if (File.Exists(tempPath))
             {
@@ -84,14 +86,19 @@ namespace BIUK9000
                 bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, cp.GifExportColors, false));
                 bitmapRefBackup.Dispose();
             }
-            string tempPath = Path.ChangeExtension(Path.GetTempFileName(), mf.MainControlsPanel.ImageExportFormat);
+            string tempPath = Path.ChangeExtension(Path.GetTempFileName(), cp.ImageExportFormat);
             switch (cp.ImageExportFormat)
             {
                 case ".jpeg":
-                    OBIMP.SaveJpeg(tempPath, bitmap, 80);
+                    OBIMP.SaveJpeg(tempPath, bitmap, cp.ImageExportJpegQuality);
+                    break;
+                case ".png":
+                    bitmap.Save(tempPath, ImageFormat.Png);
+                    break;
+                case ".gif":
+                    bitmap.Save(tempPath, ImageFormat.Gif);
                     break;
                 default:
-                    bitmap.Save(tempPath);
                     break;
             }
             bitmap.Dispose();
@@ -125,7 +132,8 @@ namespace BIUK9000
                         iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, newGiffer);
                         if (iqf.ShowDialog() == DialogResult.OK) result = true;
                     }
-                } catch (ArgumentException ex)
+                }
+                catch (ArgumentException ex)
                 {
                     MessageBox.Show(ex.Message);
                     continue;
@@ -144,15 +152,17 @@ namespace BIUK9000
             if (iqf.OInsertStart)
             {
                 gc.AddGifferAsFrames(newGiffer, 0);
-            } else if (iqf.OInsertEnd)
+            }
+            else if (iqf.OInsertEnd)
             {
                 gc.AddGifferAsFrames(newGiffer, gc.FrameCount);
-            } else if (iqf.OInsertHere)
+            }
+            else if (iqf.OInsertHere)
             {
                 gc.AddGifferAsFrames(newGiffer, mf.SelectedFrameIndex);
             }
         }
-        public static void SaveGif(Giffer giffer, ControlsPanel cp, string path)
+        public static void SaveGif(Giffer giffer, ControlsPanel cp, string path, GifQuality gifQuality, bool createFrames)
         {
             if (path == giffer.OriginalImagePath)
             {
@@ -162,11 +172,11 @@ namespace BIUK9000
             string tempPath;
             if (cp.UseDithering)
             {
-                tempPath = SaveGifToTempFileDithered(giffer, cp.GifExportColors);
+                tempPath = SaveGifToTempFileDithered(giffer, cp.GifExportColors, gifQuality);
             }
             else
             {
-                tempPath = SaveGifToTempFile(giffer);
+                tempPath = SaveGifToTempFile(giffer, gifQuality);
             }
             if (cp.UseGifsicle)
             {
@@ -175,6 +185,7 @@ namespace BIUK9000
             if (tempPath != null)
             {
                 File.Copy(tempPath, path, true);
+                if(createFrames)SaveGifAsFrames(giffer, cp, path);
             }
             else
             {
@@ -182,6 +193,57 @@ namespace BIUK9000
                 return;
             }
             File.Delete(tempPath);
+        }
+        public static void SaveGifAsFrames(Giffer giffer, ControlsPanel cp, string path)
+        {
+            string framesPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_frames");
+            EnsureFolderExistsAndClean(framesPath);
+            for (int i = 0; i < giffer.FrameCount; i++)
+            {
+                GifFrame frame = giffer.Frames[i];
+                using Bitmap bitmap = frame.CompleteBitmap(giffer.Width, giffer.Height, false, cp.InterpolationMode);
+                string frameFileName = $"frame_{i:D5}" + cp.ImageExportFormat;
+                string framePath = Path.Combine(framesPath, frameFileName);
+                switch (cp.ImageExportFormat)
+                {
+                    case ".jpeg":
+                        OBIMP.SaveJpeg(framePath, bitmap, cp.ImageExportJpegQuality);
+                        break;
+                    case ".png":
+                        bitmap.Save(framePath, ImageFormat.Png);
+                        break;
+                    case ".gif":
+                        bitmap.Save(framePath, ImageFormat.Gif);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        public static void EnsureFolderExistsAndClean(string folderPath)
+        {
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+                Console.WriteLine($"Folder created: {folderPath}");
+            }
+            else
+            {
+                string[] files = Directory.GetFiles(folderPath);
+
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        File.Delete(file);
+                        Console.WriteLine($"Deleted file: {file}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error deleting file: {file}. Exception: {ex.Message}");
+                    }
+                }
+            }
         }
     }
 }

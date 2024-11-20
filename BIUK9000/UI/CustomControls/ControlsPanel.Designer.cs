@@ -43,8 +43,11 @@
             drawHelpCB = new System.Windows.Forms.CheckBox();
             rotationSnapCB = new System.Windows.Forms.CheckBox();
             exportTP = new System.Windows.Forms.TabPage();
+            createFramesCB = new System.Windows.Forms.CheckBox();
+            gifExportModeCBB = new System.Windows.Forms.ComboBox();
             groupBox3 = new System.Windows.Forms.GroupBox();
             useDitheringCB = new System.Windows.Forms.CheckBox();
+            label4 = new System.Windows.Forms.Label();
             groupBox2 = new System.Windows.Forms.GroupBox();
             ImageExportJpegQualNUD = new System.Windows.Forms.NumericUpDown();
             label3 = new System.Windows.Forms.Label();
@@ -56,8 +59,6 @@
             GifExportColorsNUD = new System.Windows.Forms.NumericUpDown();
             label1 = new System.Windows.Forms.Label();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            label4 = new System.Windows.Forms.Label();
-            gifsicleModeCBB = new System.Windows.Forms.ComboBox();
             tableLayoutPanel1.SuspendLayout();
             controlsTC.SuspendLayout();
             optionsTP.SuspendLayout();
@@ -221,7 +222,10 @@
             // exportTP
             // 
             exportTP.AutoScroll = true;
+            exportTP.Controls.Add(createFramesCB);
+            exportTP.Controls.Add(gifExportModeCBB);
             exportTP.Controls.Add(groupBox3);
+            exportTP.Controls.Add(label4);
             exportTP.Controls.Add(groupBox2);
             exportTP.Controls.Add(groupBox1);
             exportTP.Location = new System.Drawing.Point(4, 24);
@@ -231,10 +235,32 @@
             exportTP.Text = "export";
             exportTP.UseVisualStyleBackColor = true;
             // 
+            // createFramesCB
+            // 
+            createFramesCB.AutoSize = true;
+            createFramesCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            createFramesCB.Location = new System.Drawing.Point(9, 38);
+            createFramesCB.Name = "createFramesCB";
+            createFramesCB.Size = new System.Drawing.Size(107, 21);
+            createFramesCB.TabIndex = 8;
+            createFramesCB.Text = "create frames";
+            toolTip.SetToolTip(createFramesCB, "Your work will be exported not only as a single .gif file,\r\nbut also as a yourGifName_Frames folder, containing the frames,\r\nexported as images in the format specified below.");
+            createFramesCB.UseVisualStyleBackColor = true;
+            // 
+            // gifExportModeCBB
+            // 
+            gifExportModeCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            gifExportModeCBB.FormattingEnabled = true;
+            gifExportModeCBB.Location = new System.Drawing.Point(58, 9);
+            gifExportModeCBB.Name = "gifExportModeCBB";
+            gifExportModeCBB.Size = new System.Drawing.Size(57, 23);
+            gifExportModeCBB.TabIndex = 7;
+            toolTip.SetToolTip(gifExportModeCBB, "Affects the quality of the gif.\r\nBit8 - highest quality\r\nBit4 - less colors, lower file size\r\nDefault - dithering\r\nGrayscale - obvious");
+            // 
             // groupBox3
             // 
             groupBox3.Controls.Add(useDitheringCB);
-            groupBox3.Location = new System.Drawing.Point(4, 249);
+            groupBox3.Location = new System.Drawing.Point(4, 277);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new System.Drawing.Size(118, 54);
             groupBox3.TabIndex = 5;
@@ -253,12 +279,22 @@
             toolTip.SetToolTip(useDitheringCB, "Enables dithering for both the Gif and single image.\r\nThis is my own, idiotic implementation of Floyd-Steinberg dithering and it is very slow.");
             useDitheringCB.UseVisualStyleBackColor = true;
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            label4.Location = new System.Drawing.Point(9, 9);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(42, 17);
+            label4.TabIndex = 6;
+            label4.Text = "mode";
+            // 
             // groupBox2
             // 
             groupBox2.Controls.Add(ImageExportJpegQualNUD);
             groupBox2.Controls.Add(label3);
             groupBox2.Controls.Add(ImageExportFormatCBB);
-            groupBox2.Location = new System.Drawing.Point(7, 157);
+            groupBox2.Location = new System.Drawing.Point(4, 185);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new System.Drawing.Size(118, 86);
             groupBox2.TabIndex = 3;
@@ -292,7 +328,7 @@
             ImageExportFormatCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             ImageExportFormatCBB.FormattingEnabled = true;
             ImageExportFormatCBB.IntegralHeight = false;
-            ImageExportFormatCBB.Items.AddRange(new object[] { ".jpeg", ".png" });
+            ImageExportFormatCBB.Items.AddRange(new object[] { ".jpeg", ".png", ".gif" });
             ImageExportFormatCBB.Location = new System.Drawing.Point(6, 22);
             ImageExportFormatCBB.Name = "ImageExportFormatCBB";
             ImageExportFormatCBB.Size = new System.Drawing.Size(106, 23);
@@ -301,16 +337,14 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(gifsicleModeCBB);
-            groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(useGifSicleCB);
             groupBox1.Controls.Add(GifExportLossyNUD);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(GifExportColorsNUD);
             groupBox1.Controls.Add(label1);
-            groupBox1.Location = new System.Drawing.Point(3, 3);
+            groupBox1.Location = new System.Drawing.Point(4, 65);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(118, 148);
+            groupBox1.Size = new System.Drawing.Size(118, 114);
             groupBox1.TabIndex = 2;
             groupBox1.TabStop = false;
             groupBox1.Text = "Gifsicle";
@@ -324,7 +358,7 @@
             useGifSicleCB.Size = new System.Drawing.Size(92, 21);
             useGifSicleCB.TabIndex = 5;
             useGifSicleCB.Text = "use Gifsicle";
-            toolTip.SetToolTip(useGifSicleCB, "When checked, gif will be compressed with Gifsicle");
+            toolTip.SetToolTip(useGifSicleCB, "When checked, gif will be compressed with Gifsicle.\r\nThis can sometimes result in the output actually being larger than without using it.");
             useGifSicleCB.UseVisualStyleBackColor = true;
             // 
             // GifExportLossyNUD
@@ -369,25 +403,6 @@
             label1.TabIndex = 0;
             label1.Text = "colors";
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            label4.Location = new System.Drawing.Point(6, 116);
-            label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(42, 17);
-            label4.TabIndex = 6;
-            label4.Text = "mode";
-            // 
-            // gifsicleModeCBB
-            // 
-            gifsicleModeCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            gifsicleModeCBB.FormattingEnabled = true;
-            gifsicleModeCBB.Location = new System.Drawing.Point(55, 116);
-            gifsicleModeCBB.Name = "gifsicleModeCBB";
-            gifsicleModeCBB.Size = new System.Drawing.Size(57, 23);
-            gifsicleModeCBB.TabIndex = 7;
-            // 
             // ControlsPanel
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -402,6 +417,7 @@
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
             exportTP.ResumeLayout(false);
+            exportTP.PerformLayout();
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             groupBox2.ResumeLayout(false);
@@ -445,6 +461,7 @@
         private System.Windows.Forms.RadioButton toolPaintRB;
         private System.Windows.Forms.RadioButton toolMoveRB;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox gifsicleModeCBB;
+        private System.Windows.Forms.ComboBox gifExportModeCBB;
+        private System.Windows.Forms.CheckBox createFramesCB;
     }
 }

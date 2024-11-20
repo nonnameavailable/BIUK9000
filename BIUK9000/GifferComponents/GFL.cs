@@ -50,29 +50,6 @@ namespace BIUK9000.GifferComponents
             _spinCount = 0;
         }
         public bool Visible { get; set; }
-        //public float Rotation
-        //{
-        //    get
-        //    {
-        //        return _rotation + _spinCount * 360;
-        //    }
-        //    set
-        //    {
-        //        _rotation = value;
-        //        float dif = _rotation - _previousRotation;
-        //        if(dif > 180)
-        //        {
-        //            _spinCount--;
-        //            _rotation += 360;
-        //        }
-        //        else if (dif < -180)
-        //        {
-        //            _spinCount++;
-        //            _rotation -= 360;
-        //        }
-        //        _previousRotation = value;
-        //    }
-        //}
         public float Rotation
         {
             get
@@ -105,19 +82,6 @@ namespace BIUK9000.GifferComponents
         {
             OBR = BoundingRectangle;
         }
-        public void ResetSpins()
-        {
-            _spinCount = 0;
-            while(_rotation > 180)
-            {
-                _rotation -= 360;
-            }
-            while(_rotation < -180)
-            {
-                _rotation += 360;
-            }
-            Debug.Print("reset spins");
-        }
         public virtual void Resize(int sizeDif)
         {
             double aspect = (double)OBR.Width / OBR.Height;
@@ -149,7 +113,7 @@ namespace BIUK9000.GifferComponents
                 g.TranslateTransform(c.Xint, c.Yint);
                 g.RotateTransform(Rotation);
 
-                Bitmap morphedBitmap = MorphedBitmap();
+                using Bitmap morphedBitmap = MorphedBitmap();
                 g.DrawImage(morphedBitmap, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2);
 
                 if(drawHelp)

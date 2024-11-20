@@ -18,8 +18,6 @@ namespace BIUK9000.UI
             {
                 if(SelectedLayerIndex >= layersFLP.Controls.Count)
                 {
-                    //SelectedLayerIndex = layersFLP.Controls.Count - 1;
-                    //SelectLayerHolder(SelectedLayerIndex);
                     return layersFLP.Controls[0] as LayerHolder;
                 } else
                 {

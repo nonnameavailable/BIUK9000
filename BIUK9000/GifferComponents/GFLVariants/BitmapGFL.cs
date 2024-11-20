@@ -13,27 +13,28 @@ namespace BIUK9000.GifferComponents.GFLVariants
     public class BitmapGFL : GFL
     {
         public Bitmap OriginalBitmap { get; set; }
-        private Bitmap cachedMorphedBitmap;
+        //private Bitmap cachedMorphedBitmap;
         public double HRatio { get => Width / (double)OriginalBitmap.Width; }
         public double VRatio { get => Height / (double)OriginalBitmap.Height; }
         private int cachedWidth, cachedHeight;
         public override Bitmap MorphedBitmap()
         {
-            if (cachedMorphedBitmap == null || Width != cachedWidth || Height != cachedHeight)
-            {
-                cachedMorphedBitmap?.Dispose();
-                cachedMorphedBitmap = new Bitmap(OriginalBitmap, Width, Height);
-                cachedWidth = Width;
-                cachedHeight = Height;
-            }
-            return cachedMorphedBitmap;
+            //if (cachedMorphedBitmap == null || Width != cachedWidth || Height != cachedHeight)
+            //{
+            //    cachedMorphedBitmap?.Dispose();
+            //    cachedMorphedBitmap = new Bitmap(OriginalBitmap, Width, Height);
+            //    cachedWidth = Width;
+            //    cachedHeight = Height;
+            //}
+            //return new Bitmap(cachedMorphedBitmap);
+            return new Bitmap(OriginalBitmap, Width, Height);
         }
         public BitmapGFL(Bitmap bitmap, int layerID) : base(layerID)
         {
             OriginalBitmap = new Bitmap(bitmap);
             Width = bitmap.Width;
             Height = bitmap.Height;
-            cachedMorphedBitmap = new Bitmap(bitmap);
+            //cachedMorphedBitmap = new Bitmap(bitmap);
         }
         public override OVector AbsoluteCenter()
         {
@@ -43,20 +44,20 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             OriginalBitmap?.Dispose();
             OriginalBitmap = new Bitmap(bitmap);
-            cachedMorphedBitmap?.Dispose();
-            cachedMorphedBitmap = new Bitmap(bitmap);
+            //cachedMorphedBitmap?.Dispose();
+            //cachedMorphedBitmap = new Bitmap(bitmap);
         }
-        public void UpdateAfterPaint()
-        {
-            cachedMorphedBitmap?.Dispose();
-            cachedMorphedBitmap = new Bitmap(OriginalBitmap);
-            cachedWidth = cachedMorphedBitmap.Width;
-            cachedHeight = cachedMorphedBitmap.Height;
-        }
+        //public void UpdateAfterPaint()
+        //{
+        //    cachedMorphedBitmap?.Dispose();
+        //    cachedMorphedBitmap = new Bitmap(OriginalBitmap);
+        //    cachedWidth = cachedMorphedBitmap.Width;
+        //    cachedHeight = cachedMorphedBitmap.Height;
+        //}
         public override void Dispose()
         {
             OriginalBitmap?.Dispose();
-            cachedMorphedBitmap?.Dispose();
+            //cachedMorphedBitmap?.Dispose();
             base.Dispose();
         }
         public override GFL Clone()

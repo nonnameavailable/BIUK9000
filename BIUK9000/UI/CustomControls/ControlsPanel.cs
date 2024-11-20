@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using AnimatedGif;
 
 namespace BIUK9000.UI
 {
@@ -24,6 +26,8 @@ namespace BIUK9000.UI
         public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
         public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
+        public GifQuality GifQuality { get => (GifQuality)gifExportModeCBB.SelectedItem; }
+        public int ImageExportJpegQuality { get => (int)ImageExportJpegQualNUD.Value; }
         public bool RotationSnap { get => rotationSnapCB.Checked; }
         public bool PositionSnap { get => positionSnapCB.Checked; }
         public ApplyParamsMode SelectedApplyParamsMode { get => (ApplyParamsMode)applyParamsCBB.SelectedItem; }
@@ -33,6 +37,7 @@ namespace BIUK9000.UI
         public bool ToolMoveSelectedFlag { get => toolMoveRB.Checked; }
         public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; }
         public InterpolationMode InterpolationMode { get => (InterpolationMode)mpbAAModeCBB.SelectedItem; }
+        public bool CreateFrames { get => createFramesCB.Checked; }
 
         public event EventHandler MustRedraw;
         public event EventHandler ShouldStartDragDrop;
@@ -45,19 +50,21 @@ namespace BIUK9000.UI
             saveButton.MouseDown += SaveButton_MouseDown;
             saveButton.MouseUp += SaveButton_MouseUp;
             saveButton.MouseMove += SaveButton_MouseMove;
-            ImageExportFormatCBB.SelectedIndex = 0;
             drawHelpCB.CheckedChanged += (sender, args) => OnMustRedraw();
             OriginalMousePosition = new OVector(0, 0);
             IsLMBDown = false;
             IsRMBDown = false;
+            gifExportModeCBB.DataSource = Enum.GetValues(typeof(GifQuality));
             applyParamsCBB.DataSource = Enum.GetValues(typeof(ApplyParamsMode));
             mpbAAModeCBB.DataSource = Enum.GetValues(typeof(InterpolationMode))
                 .Cast<InterpolationMode>()
                 .Where(mode => mode != InterpolationMode.Invalid)
-                .ToList(); ;
+                .ToList();
             mpbAAModeCBB.SelectedItem = InterpolationMode.HighQualityBicubic;
             mpbAAModeCBB.SelectedIndexChanged += MpbAAModeCBB_SelectedIndexChanged;
             applyParamsCBB.SelectedIndex = 0;
+            ImageExportFormatCBB.SelectedIndex = 0;
+            gifExportModeCBB.SelectedIndex = 1;
             saveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
             useDitheringCB.CheckedChanged += UseDitheringCB_CheckedChanged;
             toolMoveRB.CheckedChanged += ToolMoveRB_CheckedChanged;

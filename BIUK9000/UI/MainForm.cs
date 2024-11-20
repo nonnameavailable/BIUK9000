@@ -340,7 +340,7 @@ namespace BIUK9000.UI
                     {
                         GifferC.DeleteColor(SelectedFrameIndex, SelectedLayerIndex, mpoi, pc.Transparency);
                     }
-                    (SelectedLayer as BitmapGFL).UpdateAfterPaint();
+                    //(SelectedLayer as BitmapGFL).UpdateAfterPaint();
                     UpdateMainPictureBox();
                 }
             }
@@ -361,7 +361,7 @@ namespace BIUK9000.UI
                     {
                         Bitmap lbmp = (SelectedLayer as BitmapGFL).OriginalBitmap;
                         if (IsLMBDown) Painter.DrawLine(lbmp, mpoi, _prevMousePos, pc.PaintColor, pc.Transparency, pc.Thickness);
-                        (SelectedLayer as BitmapGFL).UpdateAfterPaint();
+                        //(SelectedLayer as BitmapGFL).UpdateAfterPaint();
                     }
                 }
                 _prevMousePos = mpoi;
@@ -555,7 +555,7 @@ namespace BIUK9000.UI
             SaveFileDialog sfd = saveFileDialog;
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                GifferIO.SaveGif(MainGiffer, controlsPanel, sfd.FileName);
+                GifferIO.SaveGif(MainGiffer, controlsPanel, sfd.FileName, controlsPanel.GifQuality, controlsPanel.CreateFrames);
             }
         }
         #endregion
