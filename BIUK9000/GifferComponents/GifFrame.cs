@@ -15,9 +15,6 @@ namespace BIUK9000.GifferComponents
         private bool _disposed;
 
         public int FrameDelay {  get; set; }
-
-
-
         public List<GFL> Layers { get; private set; } = new List<GFL>();
 
         public GifFrame(Bitmap bitmap, int frameDelay, int firstLayerID)
@@ -27,7 +24,7 @@ namespace BIUK9000.GifferComponents
 
             FrameDelay = frameDelay;
         }
-
+        public GifFrame() { }
         public Bitmap CompleteBitmap(int width, int height, bool drawHelp, InterpolationMode interpolationMode)
         {
             int absWidth = Math.Abs(width);
@@ -87,6 +84,16 @@ namespace BIUK9000.GifferComponents
                 Layers[i].Dispose();
             }
             _disposed = true;
+        }
+        public GifFrame Clone()
+        {
+            GifFrame result = new GifFrame();
+            result.FrameDelay = FrameDelay;
+            foreach (GFL layer in Layers)
+            {
+                result.AddLayer(layer.Clone());
+            }
+            return result;
         }
     }
 }

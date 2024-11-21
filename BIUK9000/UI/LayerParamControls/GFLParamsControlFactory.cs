@@ -22,7 +22,7 @@ namespace BIUK9000.UI.LayerParamControls
             }
             else
             {
-                return new EmptyGFLParamControl();
+                return null;
             } 
         }
     }

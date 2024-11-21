@@ -13,7 +13,6 @@ namespace BIUK9000.UI
 {
     public partial class TimelineSlider : UserControl
     {
-        //private Giffer _giffer;
         private Timer playTimer;
         public int SelectedFrameIndex { get => timeLineTrackBar.Value; set => timeLineTrackBar.Value = value; }
         public bool PlayTimerRunning { get => playTimer.Enabled; }
@@ -52,6 +51,7 @@ namespace BIUK9000.UI
                 MouseButtonIsDown = false;
                 SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
             };
+            addMarkButton.Click += (sender, args) => timeLineTrackBar.AddMark(SelectedFrameIndex);
         }
 
         private void PlayTimer_Tick(object sender, EventArgs e)
@@ -79,10 +79,6 @@ namespace BIUK9000.UI
                 playButton.Text = "stop";
             }
 
-        }
-        public bool AddMark(int mark)
-        {
-            return timeLineTrackBar.AddMark(mark);
         }
         public void ClearMarks()
         {

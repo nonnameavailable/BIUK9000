@@ -15,6 +15,8 @@ namespace BIUK9000.UI.CustomControls
         public Color PaintColor { get => paintColorButton.Color; }
         public int Transparency { get => transparencyTrackBar.Value; }
         public float Thickness { get => (float)thicknessNUD.Value; }
+        public bool LassoIncludeComplement { get => lassoIncludeComplementCB.Checked; }
+        public bool LassoConstrainBounds { get => lassoConstrainCB.Checked; }
         public PaintTool SelectedPaintTool
         {
             get
@@ -25,6 +27,9 @@ namespace BIUK9000.UI.CustomControls
                 } else if(drawLineRB.Checked)
                 {
                     return PaintTool.DrawLine;
+                } else if (lassoRB.Checked)
+                {
+                    return PaintTool.Lasso;
                 } else
                 {
                     return PaintTool.DrawLine;
@@ -40,7 +45,8 @@ namespace BIUK9000.UI.CustomControls
         public enum PaintTool
         {
             DrawLine,
-            DeleteColor
+            DeleteColor,
+            Lasso
         }
     }
 }

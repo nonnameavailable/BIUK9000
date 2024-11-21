@@ -156,7 +156,7 @@ namespace BIUK9000
                 }
             }
         }
-        public void AddNewLayer(Keys keyData)
+        public void AddLayerFromKey(Keys keyData)
         {
             int nextId = giffer.NextLayerID();
             GFL nextLayer = null;
@@ -172,6 +172,13 @@ namespace BIUK9000
             foreach (GifFrame gf in giffer.Frames)
             {
                 gf.AddLayer(nextLayer.Clone());
+            }
+        }
+        public void AddLayer(GFL gfl)
+        {
+            foreach (GifFrame gf in giffer.Frames)
+            {
+                gf.AddLayer(gfl.Clone());
             }
         }
         public Point MousePositionOnLayer(int frameIndex, int layerIndex, Point mousePosition)
@@ -305,6 +312,14 @@ namespace BIUK9000
                         bgfl.ReplaceOriginalBitmap(flipped);
                     }
                 }
+            }
+        }
+        public void DupeFrame(int frameIndex, int dupeCount)
+        {
+            GifFrame originalFrame = giffer.Frames[frameIndex];
+            for(int i = 0; i < dupeCount; i++)
+            {
+                giffer.Frames.Insert(frameIndex, originalFrame.Clone());
             }
         }
     }

@@ -15,17 +15,32 @@ namespace BIUK9000
 {
     public class Painter
     {
-        public static void DrawLine(Bitmap bmp, Point p1, Point p2, Color paintColor,int transparency, float thickness)
+        public static void DrawLine(Graphics g, Point p1, Point p2, Color paintColor,int transparency, float thickness)
         {
-            using Graphics g = Graphics.FromImage(bmp);
             Color paintColorWithTransparency = Color.FromArgb(transparency, paintColor.R, paintColor.G, paintColor.B);
             using Pen p = new Pen(new SolidBrush(paintColorWithTransparency), thickness);
             p.LineJoin = LineJoin.Round;
             p.StartCap = LineCap.Round;
             p.EndCap = LineCap.Round;
             g.CompositingMode = CompositingMode.SourceCopy;
-
             g.DrawLine(p, p1, p2);
+        }
+        public static void DrawLinesFromPoints(Graphics g, List<Point> points, Color paintColor, int transparency, float thickness)
+        {
+            if(points.Count < 2) return;
+            for(int i = 1; i < points.Count; i++)
+            {
+                DrawLine(g, points[i], points[i-1], paintColor, transparency, thickness);
+            }
+        }
+        public static void DrawLinesFromPoints(Graphics g, List<Point> points, List<Color> colors, int transparency, float thickness)
+        {
+            if (points.Count < 2) return;
+            for (int i = 1; i < points.Count; i++)
+            {
+                Color color = colors[i % colors.Count];
+                DrawLine(g, points[i], points[i - 1], color, transparency, thickness);
+            }
         }
         public static Bitmap DeleteColor(Bitmap bmp, Point p, int tolerance)
         {
@@ -69,6 +84,104 @@ namespace BIUK9000
         {
             int[] distances = ColorDistances(c1, c2);
             return !(distances[0] > tolerance || distances[1] > tolerance || distances[2] > tolerance);
+        }
+        //public static Bitmap LassoCutout(Bitmap originalBitmap, Point[] lassoPoints)
+        //{
+        //    //Copilot wrote this
+        //    // Create a GraphicsPath from the lasso points
+        //    GraphicsPath path = new GraphicsPath();
+        //    path.AddPolygon(lassoPoints);
+
+        //    // Calculate the bounding box of the path
+        //    RectangleF boundingBox = path.GetBounds();
+
+        //    // Create a new bitmap to hold the cutout
+        //    Bitmap cutoutBitmap = new Bitmap((int)boundingBox.Width, (int)boundingBox.Height);
+
+        //    using (Graphics g = Graphics.FromImage(cutoutBitmap))
+        //    {
+        //        // Clear the bitmap with a transparent background
+        //        g.Clear(Color.Transparent);
+
+        //        // Translate the graphics object to the bounding box location
+        //        g.TranslateTransform(-boundingBox.X, -boundingBox.Y);
+
+        //        // Set the clipping region to the lasso region
+        //        Region region = new Region(path);
+        //        g.SetClip(region, CombineMode.Replace);
+
+        //        // Draw the original bitmap within the clipping region
+        //        g.DrawImage(originalBitmap, new Rectangle(0, 0, originalBitmap.Width, originalBitmap.Height));
+        //    }
+
+        //    return cutoutBitmap;
+        //}
+        public static Bitmap LassoCutout(Bitmap originalBitmap, Point[] lassoPoints, bool constrainBounds)
+        {
+            // Create a GraphicsPath from the lasso points
+            GraphicsPath path = new GraphicsPath();
+            path.AddPolygon(lassoPoints);
+
+            // Calculate the bounding box of the path
+            RectangleF boundingBox = path.GetBounds();
+            float x = 0;
+            float y = 0;
+            float width = originalBitmap.Width;
+            float height = originalBitmap.Height;
+            if (constrainBounds)
+            {
+                x = Math.Max(boundingBox.X, 0);
+                y = Math.Max(boundingBox.Y, 0);
+                width = Math.Min(boundingBox.Right, originalBitmap.Width) - x;
+                height = Math.Min(boundingBox.Bottom, originalBitmap.Height) - y;
+            }
+            // Constrain the bounding box to the image dimensions
+
+
+            // Create a new bitmap to hold the cutout
+            Bitmap cutoutBitmap = new Bitmap((int)width, (int)height);
+
+            using (Graphics g = Graphics.FromImage(cutoutBitmap))
+            {
+                // Clear the bitmap with a transparent background
+                g.Clear(Color.Transparent);
+
+                // Translate the graphics object to the bounding box location
+                g.TranslateTransform(-x, -y);
+
+                // Set the clipping region to the lasso region
+                Region region = new Region(path);
+                g.SetClip(region, CombineMode.Replace);
+
+                // Draw the original bitmap within the clipping region
+                g.DrawImage(originalBitmap, new Rectangle(0, 0, originalBitmap.Width, originalBitmap.Height));
+            }
+
+            return cutoutBitmap;
+        }
+        public static Bitmap LassoComplement(Bitmap originalBitmap, Point[] lassoPoints)
+        {
+            // Create a GraphicsPath from the lasso points
+            GraphicsPath path = new GraphicsPath();
+            path.AddPolygon(lassoPoints);
+
+            // Create a new bitmap to hold the complement
+            Bitmap complementBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);
+
+            using (Graphics g = Graphics.FromImage(complementBitmap))
+            {
+                // Draw the original bitmap onto the new bitmap
+                g.DrawImage(originalBitmap, new Rectangle(0, 0, originalBitmap.Width, originalBitmap.Height));
+
+                // Set the clipping region to the lasso region
+                Region region = new Region(path);
+                g.SetClip(region, CombineMode.Replace);
+
+                // Clear the lasso region with a transparent background
+                g.Clear(Color.Transparent);
+            }
+
+            return complementBitmap;
         }
     }
 }

@@ -9,10 +9,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using BIUK9000.Dithering;
 using BIUK9000.UI;
-using BIUK9000.GifferComponents.GFLVariants;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace BIUK9000

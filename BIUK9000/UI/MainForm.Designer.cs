@@ -35,15 +35,17 @@ namespace BIUK9000.UI
             controlsPanel = new ControlsPanel();
             layerParamsPanel = new System.Windows.Forms.Panel();
             markLerpPanel = new System.Windows.Forms.Panel();
+            frameDupeCountNUD = new System.Windows.Forms.NumericUpDown();
+            dupeFrameButton = new System.Windows.Forms.Button();
             askDeleteCB = new System.Windows.Forms.CheckBox();
             lerpModeCBB = new System.Windows.Forms.ComboBox();
             deleteFramesButton = new System.Windows.Forms.Button();
-            markButton = new System.Windows.Forms.Button();
             lerpButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -112,10 +114,11 @@ namespace BIUK9000.UI
             // 
             // markLerpPanel
             // 
+            markLerpPanel.Controls.Add(frameDupeCountNUD);
+            markLerpPanel.Controls.Add(dupeFrameButton);
             markLerpPanel.Controls.Add(askDeleteCB);
             markLerpPanel.Controls.Add(lerpModeCBB);
             markLerpPanel.Controls.Add(deleteFramesButton);
-            markLerpPanel.Controls.Add(markButton);
             markLerpPanel.Controls.Add(lerpButton);
             markLerpPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             markLerpPanel.Location = new System.Drawing.Point(725, 464);
@@ -123,12 +126,31 @@ namespace BIUK9000.UI
             markLerpPanel.Size = new System.Drawing.Size(144, 94);
             markLerpPanel.TabIndex = 8;
             // 
+            // frameDupeCountNUD
+            // 
+            frameDupeCountNUD.Location = new System.Drawing.Point(71, 61);
+            frameDupeCountNUD.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            frameDupeCountNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            frameDupeCountNUD.Name = "frameDupeCountNUD";
+            frameDupeCountNUD.Size = new System.Drawing.Size(61, 23);
+            frameDupeCountNUD.TabIndex = 8;
+            frameDupeCountNUD.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // dupeFrameButton
+            // 
+            dupeFrameButton.Location = new System.Drawing.Point(3, 61);
+            dupeFrameButton.Name = "dupeFrameButton";
+            dupeFrameButton.Size = new System.Drawing.Size(62, 23);
+            dupeFrameButton.TabIndex = 7;
+            dupeFrameButton.Text = "dupe fr.";
+            dupeFrameButton.UseVisualStyleBackColor = true;
+            // 
             // askDeleteCB
             // 
             askDeleteCB.AutoSize = true;
             askDeleteCB.Checked = true;
             askDeleteCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            askDeleteCB.Location = new System.Drawing.Point(13, 61);
+            askDeleteCB.Location = new System.Drawing.Point(71, 35);
             askDeleteCB.Name = "askDeleteCB";
             askDeleteCB.Size = new System.Drawing.Size(43, 19);
             askDeleteCB.TabIndex = 6;
@@ -140,32 +162,23 @@ namespace BIUK9000.UI
             lerpModeCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             lerpModeCBB.FormattingEnabled = true;
             lerpModeCBB.Items.AddRange(new object[] { "line", "trace" });
-            lerpModeCBB.Location = new System.Drawing.Point(4, 32);
+            lerpModeCBB.Location = new System.Drawing.Point(3, 3);
             lerpModeCBB.Name = "lerpModeCBB";
             lerpModeCBB.Size = new System.Drawing.Size(61, 23);
             lerpModeCBB.TabIndex = 5;
             // 
             // deleteFramesButton
             // 
-            deleteFramesButton.Location = new System.Drawing.Point(71, 62);
+            deleteFramesButton.Location = new System.Drawing.Point(3, 32);
             deleteFramesButton.Name = "deleteFramesButton";
             deleteFramesButton.Size = new System.Drawing.Size(62, 23);
             deleteFramesButton.TabIndex = 4;
             deleteFramesButton.Text = "del fr.";
             deleteFramesButton.UseVisualStyleBackColor = true;
             // 
-            // markButton
-            // 
-            markButton.Location = new System.Drawing.Point(4, 3);
-            markButton.Name = "markButton";
-            markButton.Size = new System.Drawing.Size(129, 23);
-            markButton.TabIndex = 2;
-            markButton.Text = "mark";
-            markButton.UseVisualStyleBackColor = true;
-            // 
             // lerpButton
             // 
-            lerpButton.Location = new System.Drawing.Point(71, 32);
+            lerpButton.Location = new System.Drawing.Point(70, 3);
             lerpButton.Name = "lerpButton";
             lerpButton.Size = new System.Drawing.Size(62, 23);
             lerpButton.TabIndex = 1;
@@ -200,6 +213,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.ResumeLayout(false);
             markLerpPanel.ResumeLayout(false);
             markLerpPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
             ResumeLayout(false);
         }
@@ -214,10 +228,11 @@ namespace BIUK9000.UI
         private System.Windows.Forms.Panel markLerpPanel;
         private System.Windows.Forms.Button lerpButton;
         private MyPictureBox mainPictureBox;
-        private System.Windows.Forms.Button markButton;
         private System.Windows.Forms.Button deleteFramesButton;
         private System.Windows.Forms.ComboBox lerpModeCBB;
         private System.Windows.Forms.CheckBox askDeleteCB;
+        private System.Windows.Forms.NumericUpDown frameDupeCountNUD;
+        private System.Windows.Forms.Button dupeFrameButton;
     }
 }
 
