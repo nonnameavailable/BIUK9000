@@ -42,6 +42,7 @@ namespace BIUK9000.UI
             deleteFramesButton = new System.Windows.Forms.Button();
             lerpButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
+            hueSatPanel = new CustomControls.HueSatPanel();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
@@ -61,6 +62,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Controls.Add(layerParamsPanel, 1, 0);
             tableLayoutPanel1.Controls.Add(markLerpPanel, 2, 2);
             tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
+            tableLayoutPanel1.Controls.Add(hueSatPanel, 2, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -201,6 +203,15 @@ namespace BIUK9000.UI
             mainPictureBox.TabIndex = 9;
             mainPictureBox.TabStop = false;
             // 
+            // hueSatPanel
+            // 
+            hueSatPanel.Brightness = 1F;
+            hueSatPanel.Location = new System.Drawing.Point(725, 3);
+            hueSatPanel.Name = "hueSatPanel";
+            hueSatPanel.Saturation = 1F;
+            hueSatPanel.Size = new System.Drawing.Size(144, 95);
+            hueSatPanel.TabIndex = 10;
+            // 
             // MainForm
             // 
             AllowDrop = true;
@@ -233,6 +244,7 @@ namespace BIUK9000.UI
         private System.Windows.Forms.CheckBox askDeleteCB;
         private System.Windows.Forms.NumericUpDown frameDupeCountNUD;
         private System.Windows.Forms.Button dupeFrameButton;
+        private CustomControls.HueSatPanel hueSatPanel;
     }
 }
 

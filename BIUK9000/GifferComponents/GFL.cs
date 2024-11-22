@@ -16,6 +16,8 @@ namespace BIUK9000.GifferComponents
         public OVector Position { get; set; }
         protected int _width, _height;
         public int LayerID {  get; set; }
+        public float Saturation {  get; set; }
+        public float Brightness { get; set; }
         public int Width
         {
             get
@@ -48,6 +50,8 @@ namespace BIUK9000.GifferComponents
             _rotation = 0;
             _previousRotation = 0;
             _spinCount = 0;
+            Saturation = 1;
+            Brightness = 1;
         }
         public bool Visible { get; set; }
         public float Rotation
@@ -114,6 +118,7 @@ namespace BIUK9000.GifferComponents
                 g.RotateTransform(Rotation);
 
                 using Bitmap morphedBitmap = MorphedBitmap();
+                Painter.AdjustImageAttributes(morphedBitmap, Saturation, Brightness);
                 g.DrawImage(morphedBitmap, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2);
 
                 if(drawHelp)
@@ -159,6 +164,8 @@ namespace BIUK9000.GifferComponents
             Height = layer.Height;
             Position = layer.Position;
             Rotation = layer.Rotation;
+            Saturation = layer.Saturation;
+            Brightness = layer.Brightness;
         }
         public abstract GFL Clone();
         public virtual void CopyDifferingParams(GFL ogState, GFL newState)
@@ -168,6 +175,8 @@ namespace BIUK9000.GifferComponents
             if(ogState.Width != newState.Width) Width = newState.Width;
             if(ogState.Height != newState.Height) Height = newState.Height;
             if(ogState.Visible != newState.Visible) Visible = newState.Visible;
+            if(ogState.Saturation != newState.Saturation) Saturation = newState.Saturation;
+            if(ogState.Brightness != newState.Brightness) Brightness = newState.Brightness;
         }
         public virtual void Lerp(GFL start, GFL end, double distance, OVector position = null)
         {
@@ -182,6 +191,8 @@ namespace BIUK9000.GifferComponents
             Width = Lerper.Lerp(start.Width, end.Width, distance);
             Height = Lerper.Lerp(start.Height, end.Height, distance);
             Rotation = Lerper.Lerp(start.Rotation, end.Rotation, distance);
+            Saturation = Lerper.Lerp(start.Saturation, end.Saturation, distance);
+            Brightness = Lerper.Lerp(start.Brightness, end.Brightness, distance);
         }
     }
 }

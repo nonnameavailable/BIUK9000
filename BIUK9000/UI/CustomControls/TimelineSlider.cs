@@ -14,10 +14,23 @@ namespace BIUK9000.UI
     public partial class TimelineSlider : UserControl
     {
         private Timer playTimer;
-        public int SelectedFrameIndex { get => timeLineTrackBar.Value; set => timeLineTrackBar.Value = value; }
+        public int SelectedFrameIndex {
+            get
+            {
+                return timeLineTrackBar.Value;
+            }
+            set
+            {
+                _isCodeFrameIndexChange = true;
+                timeLineTrackBar.Value = value;
+                _isCodeFrameIndexChange = false;
+            }
+        }
         public bool PlayTimerRunning { get => playTimer.Enabled; }
         public int Maximum { get => timeLineTrackBar.Maximum; set => timeLineTrackBar.Maximum = value; }
         public List<int> Marks { get => timeLineTrackBar.Marks; }
+        private bool _isCodeFrameDelayChange;
+        private bool _isCodeFrameIndexChange;
         public int FrameDelay
         {
             get 
@@ -26,8 +39,10 @@ namespace BIUK9000.UI
             }
             set
             {
+                _isCodeFrameDelayChange = true;
                 if(playTimer.Interval != value) playTimer.Interval = value;
                 if(frameDelayNUD.Value != value)frameDelayNUD.Value = value;
+                _isCodeFrameDelayChange = false;
             }
         }
         public bool MouseButtonIsDown { get; set; }
@@ -39,12 +54,12 @@ namespace BIUK9000.UI
             InitializeComponent();
             timeLineTrackBar.ValueChanged += (sender, args) =>
             {
-                SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
+                if(!_isCodeFrameIndexChange)SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
             };
             frameDelayNUD.KeyPress += FrameDelayNUD_KeyPress;
             playTimer = new Timer();
             playTimer.Tick += PlayTimer_Tick;
-            frameDelayNUD.ValueChanged += (sender, args) => FrameDelayChanged?.Invoke(this, EventArgs.Empty);
+            frameDelayNUD.ValueChanged += (sender, args) => { if (!_isCodeFrameDelayChange) FrameDelayChanged?.Invoke(this, EventArgs.Empty); };
             timeLineTrackBar.MouseDown += (sender, args) => MouseButtonIsDown = true;
             timeLineTrackBar.MouseUp += (sender, args) =>
             {

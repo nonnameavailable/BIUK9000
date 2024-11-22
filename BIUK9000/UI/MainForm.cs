@@ -46,6 +46,7 @@ namespace BIUK9000.UI
         private Timer _updateTimer;
         private Point _prevMousePos;
         public GifferController GifferC { get; private set; }
+
         public MainForm()
         {
             InitializeComponent();
@@ -65,11 +66,7 @@ namespace BIUK9000.UI
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
 
             mainLayersPanel.LayerOrderChanged += mainLayersPanel_LayerOrderChanged;
-            mainLayersPanel.SelectedLayerChanged += (sender, args) =>
-            {
-                UpdateLayerParamsUI();
-                GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
-            };
+            mainLayersPanel.SelectedLayerChanged += MainLayersPanel_SelectedLayerChanged;
             mainLayersPanel.LayerVisibilityChanged += mainLayersPanel_LayerVisibilityChanged;
             mainLayersPanel.LayerDeleteButtonClicked += mainLayersPanel_LayerDeleteButtonClicked;
 
@@ -90,6 +87,23 @@ namespace BIUK9000.UI
             _paintControl = new PaintControl();
             lerpModeCBB.SelectedIndex = 0;
             mainPictureBox.InterpolationMode = controlsPanel.InterpolationMode;
+            hueSatPanel.HueSatChanged += HsbPanel_HueSatChanged;
+        }
+
+        private void MainLayersPanel_SelectedLayerChanged(object sender, EventArgs e)
+        {
+            UpdateLayerParamsUI();
+            GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
+            hueSatPanel.Saturation = SelectedLayer.Saturation;
+            hueSatPanel.Brightness = SelectedLayer.Brightness;
+        }
+
+        private void HsbPanel_HueSatChanged(object sender, EventArgs e)
+        {
+            if (MainGiffer == null) return;
+            SelectedLayer.Saturation = hueSatPanel.Saturation;
+            SelectedLayer.Brightness = hueSatPanel.Brightness;
+            UpdateMainPictureBox();
         }
 
         private void DupeFrameButton_Click(object sender, EventArgs e)
@@ -262,11 +276,13 @@ namespace BIUK9000.UI
                 if (keyData == Keys.D)
                 {
                     if (MainTimelineSlider.SelectedFrameIndex < MainTimelineSlider.Maximum) MainTimelineSlider.SelectedFrameIndex += 1;
+                    CompleteUIUpdate();
                     return true;
                 }
                 else if (keyData == Keys.A)
                 {
                     if (MainTimelineSlider.SelectedFrameIndex > 0) MainTimelineSlider.SelectedFrameIndex -= 1;
+                    CompleteUIUpdate();
                     return true;
                 }
                 else if (keyData == Keys.T || keyData == Keys.B)
@@ -539,9 +555,7 @@ namespace BIUK9000.UI
             }
             else
             {
-                MainTimelineSlider.FrameDelayChanged -= MainTimelineSlider_FrameDelayChanged;
                 MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
-                MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
                 UpdateMainPictureBox();
             }
         }
@@ -571,6 +585,8 @@ namespace BIUK9000.UI
             UpdateLayerParamsUI();
             GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
             UpdateMainPictureBox();
+            hueSatPanel.Saturation = SelectedLayer.Saturation;
+            hueSatPanel.Brightness = SelectedLayer.Brightness;
         }
         private void MainTimelineSlider_FrameDelayChanged(object sender, EventArgs e)
         {
