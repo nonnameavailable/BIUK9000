@@ -120,17 +120,4 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="transparencyTrackBar.ToolTip" xml:space="preserve">
-    <value>Opacity of painting and delete color tolerance
-
-drawing:
-0 - Completely transparent
-255 - Completely opaque
-
-delete color:
-0 - no tolerance, only exactly the same color will be made transparent
-255 - everything will be made transparent
-The higher the number, the less similar the pixel needs to be to the original "clicked color"
-in order to be made transparent</value>
-  </data>
 </root>

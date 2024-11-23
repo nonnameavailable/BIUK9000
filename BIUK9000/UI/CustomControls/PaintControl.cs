@@ -12,8 +12,17 @@ namespace BIUK9000.UI.CustomControls
 {
     public partial class PaintControl : UserControl
     {
-        public Color PaintColor { get => paintColorButton.Color; }
+        public Color PaintColorRGB { get => paintColorButton.Color; }
+        public Color PaintColorARGB
+        {
+            get
+            {
+                Color c = PaintColorRGB;
+                return Color.FromArgb(Transparency, c.R, c.G, c.B);
+            }
+        }
         public int Transparency { get => transparencyTrackBar.Value; }
+        public int Tolerance { get =>  toleranceTrackBar.Value; }
         public float Thickness { get => (float)thicknessNUD.Value; }
         public bool LassoIncludeComplement { get => lassoIncludeComplementCB.Checked; }
         public bool LassoConstrainBounds { get => lassoConstrainCB.Checked; }
@@ -21,16 +30,20 @@ namespace BIUK9000.UI.CustomControls
         {
             get
             {
-                if (deleteColorRB.Checked)
+                if (replaceColorRB.Checked)
                 {
-                    return PaintTool.DeleteColor;
+                    return PaintTool.ReplaceColor;
                 } else if(drawLineRB.Checked)
                 {
                     return PaintTool.DrawLine;
                 } else if (lassoRB.Checked)
                 {
                     return PaintTool.Lasso;
-                } else
+                } else if (fillColorRB.Checked)
+                {
+                    return PaintTool.FillColor;
+                } 
+                else
                 {
                     return PaintTool.DrawLine;
                 }
@@ -40,12 +53,15 @@ namespace BIUK9000.UI.CustomControls
         {
             InitializeComponent();
             transparencyDisplayLabel.Text = Transparency.ToString();
+            toleranceDisplayLabel.Text = Tolerance.ToString();
             transparencyTrackBar.ValueChanged += (sender, args) => transparencyDisplayLabel.Text = Transparency.ToString();
+            toleranceTrackBar.ValueChanged += (sender, args) => toleranceDisplayLabel.Text = Tolerance.ToString();
         }
         public enum PaintTool
         {
             DrawLine,
-            DeleteColor,
+            ReplaceColor,
+            FillColor,
             Lasso
         }
     }

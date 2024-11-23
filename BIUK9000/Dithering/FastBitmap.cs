@@ -47,6 +47,10 @@ namespace BIUK9000.Dithering
 
             return result;
         }
+        public Color GetPixel(Point p)
+        {
+            return GetPixel(p.X, p.Y);
+        }
         public int GetPixelAsInt(int x, int y)
         {
             return Bits[x + (y * Width)];

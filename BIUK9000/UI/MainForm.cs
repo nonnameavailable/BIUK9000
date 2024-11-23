@@ -118,6 +118,7 @@ namespace BIUK9000.UI
             mainLayersPanel.Enabled = !setValue;
             markLerpPanel.Enabled = !setValue;
             controlsPanel.SetPaintMode(setValue);
+            AllowDrop = !setValue;
             if (GifferC == null) return;
             if (setValue)
             {
@@ -267,7 +268,7 @@ namespace BIUK9000.UI
         #region key event handling
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            if (MainGiffer == null || ActiveControl is TextBox || ActiveControl is IGFLParamControl) return base.ProcessKeyPreview(ref m);
+            if (MainGiffer == null || ActiveControl is TextBox || ActiveControl is IGFLParamControl || controlsPanel.ToolPaintSelectedFlag) return base.ProcessKeyPreview(ref m);
             const int WM_KEYDOWN = 0x100;
             const int WM_KEYUP = 0x101;
             Keys keyData = (Keys)m.WParam.ToInt32();
@@ -371,28 +372,28 @@ namespace BIUK9000.UI
             GifferC.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
             _originalLayerRotation = cgfl.Rotation;
             _originalLCtM = LayerCenterToMouse();
-            if (controlsPanel.ToolPaintSelectedFlag)
+            if (controlsPanel.ToolPaintSelectedFlag && SelectedLayer is BitmapGFL)
             {
-                if (SelectedLayer is BitmapGFL)
+                if (IsLMBDown)
                 {
                     PaintControl pc = _paintControl as PaintControl;
                     Point mpoi = GifferC.MousePositionOnLayer(SelectedFrameIndex, SelectedLayerIndex, mainPictureBox.MousePositionOnImage);
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
                         _updateTimer.Start();
-                        if (IsLMBDown)
-                        {
-                            using Graphics g = Graphics.FromImage((SelectedLayer as BitmapGFL).OriginalBitmap);
-                            Painter.DrawLine(g, mpoi, mpoi, pc.PaintColor, pc.Transparency, pc.Thickness);
-                        }
+                        using Graphics g = Graphics.FromImage((SelectedLayer as BitmapGFL).OriginalBitmap);
+                        Painter.DrawLine(g, mpoi, mpoi, pc.PaintColorARGB, pc.Thickness);
                     }
-                    else if (pc.SelectedPaintTool == PaintControl.PaintTool.DeleteColor)
+                    else if (pc.SelectedPaintTool == PaintControl.PaintTool.ReplaceColor)
                     {
-                        GifferC.DeleteColor(SelectedFrameIndex, SelectedLayerIndex, mpoi, pc.Transparency);
+                        GifferC.ReplaceColor(SelectedFrameIndex, SelectedLayerIndex, mpoi, pc.PaintColorARGB, pc.Tolerance);
                     }
-                    //(SelectedLayer as BitmapGFL).UpdateAfterPaint();
-                    UpdateMainPictureBox();
+                    else if (pc.SelectedPaintTool == PaintControl.PaintTool.FillColor)
+                    {
+                        GifferC.FloodFill(SelectedFrameIndex, SelectedLayerIndex, mpoi, pc.PaintColorARGB, pc.Tolerance);
+                    }
                 }
+                UpdateMainPictureBox();
                 return;
             }
             _updateTimer.Start();
@@ -414,14 +415,14 @@ namespace BIUK9000.UI
                         if (IsLMBDown)
                         {
                             using Graphics g = Graphics.FromImage((SelectedLayer as BitmapGFL).OriginalBitmap);
-                            Painter.DrawLine(g, _prevMousePos, mpoi, pc.PaintColor, pc.Transparency, pc.Thickness);
+                            Painter.DrawLine(g, _prevMousePos, mpoi, pc.PaintColorARGB, pc.Thickness);
                         }
                     } else if(pc.SelectedPaintTool == PaintControl.PaintTool.Lasso)
                     {
                         if (IsLMBDown)
                         {
                             using Graphics g = Graphics.FromImage(MainImage);
-                            Painter.DrawLinesFromPoints(g, mainPictureBox.MouseTrace, [Color.Red, Color.Cyan], pc.Transparency, pc.Thickness);
+                            Painter.DrawLinesFromPoints(g, mainPictureBox.MouseTrace, [Color.Red, Color.Cyan], pc.Thickness);
                             mainPictureBox.Invalidate();
                         }
                     }

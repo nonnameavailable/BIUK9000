@@ -16,31 +16,30 @@ namespace BIUK9000
 {
     public class Painter
     {
-        public static void DrawLine(Graphics g, Point p1, Point p2, Color paintColor,int transparency, float thickness)
+        public static void DrawLine(Graphics g, Point p1, Point p2, Color paintColor, float thickness)
         {
-            Color paintColorWithTransparency = Color.FromArgb(transparency, paintColor.R, paintColor.G, paintColor.B);
-            using Pen p = new Pen(new SolidBrush(paintColorWithTransparency), thickness);
+            using Pen p = new Pen(new SolidBrush(paintColor), thickness);
             p.LineJoin = LineJoin.Round;
             p.StartCap = LineCap.Round;
             p.EndCap = LineCap.Round;
             g.CompositingMode = CompositingMode.SourceCopy;
             g.DrawLine(p, p1, p2);
         }
-        public static void DrawLinesFromPoints(Graphics g, List<Point> points, Color paintColor, int transparency, float thickness)
+        public static void DrawLinesFromPoints(Graphics g, List<Point> points, Color paintColor, float thickness)
         {
             if(points.Count < 2) return;
             for(int i = 1; i < points.Count; i++)
             {
-                DrawLine(g, points[i], points[i-1], paintColor, transparency, thickness);
+                DrawLine(g, points[i], points[i-1], paintColor, thickness);
             }
         }
-        public static void DrawLinesFromPoints(Graphics g, List<Point> points, List<Color> colors, int transparency, float thickness)
+        public static void DrawLinesFromPoints(Graphics g, List<Point> points, List<Color> colors, float thickness)
         {
             if (points.Count < 2) return;
             for (int i = 1; i < points.Count; i++)
             {
                 Color color = colors[i % colors.Count];
-                DrawLine(g, points[i], points[i - 1], color, transparency, thickness);
+                DrawLine(g, points[i], points[i - 1], color, thickness);
             }
         }
         public static Bitmap DeleteColor(Bitmap bmp, Point p, int tolerance)
@@ -72,6 +71,19 @@ namespace BIUK9000
             }
             return new Bitmap(fbmp.Bitmap);
         }
+        public static Bitmap ReplaceColor(Bitmap bmp, Color oc, Color rc, int tolerance)
+        {
+            using FastBitmap fbmp = new FastBitmap(bmp);
+            for (int i = 0; i < bmp.Width; i++)
+            {
+                for (int j = 0; j < bmp.Height; j++)
+                {
+                    Color c2 = fbmp.GetPixel(i, j);
+                    if (ColorIsWithinTolerance(oc, c2, tolerance)) fbmp.SetPixel(i, j, rc);
+                }
+            }
+            return new Bitmap(fbmp.Bitmap);
+        }
         private static int[] ColorDistances(Color c1, Color c2)
         {
             int[] result = new int[3];
@@ -86,37 +98,6 @@ namespace BIUK9000
             int[] distances = ColorDistances(c1, c2);
             return !(distances[0] > tolerance || distances[1] > tolerance || distances[2] > tolerance);
         }
-        //public static Bitmap LassoCutout(Bitmap originalBitmap, Point[] lassoPoints)
-        //{
-        //    //Copilot wrote this
-        //    // Create a GraphicsPath from the lasso points
-        //    GraphicsPath path = new GraphicsPath();
-        //    path.AddPolygon(lassoPoints);
-
-        //    // Calculate the bounding box of the path
-        //    RectangleF boundingBox = path.GetBounds();
-
-        //    // Create a new bitmap to hold the cutout
-        //    Bitmap cutoutBitmap = new Bitmap((int)boundingBox.Width, (int)boundingBox.Height);
-
-        //    using (Graphics g = Graphics.FromImage(cutoutBitmap))
-        //    {
-        //        // Clear the bitmap with a transparent background
-        //        g.Clear(Color.Transparent);
-
-        //        // Translate the graphics object to the bounding box location
-        //        g.TranslateTransform(-boundingBox.X, -boundingBox.Y);
-
-        //        // Set the clipping region to the lasso region
-        //        Region region = new Region(path);
-        //        g.SetClip(region, CombineMode.Replace);
-
-        //        // Draw the original bitmap within the clipping region
-        //        g.DrawImage(originalBitmap, new Rectangle(0, 0, originalBitmap.Width, originalBitmap.Height));
-        //    }
-
-        //    return cutoutBitmap;
-        //}
         public static Bitmap LassoCutout(Bitmap originalBitmap, Point[] lassoPoints, bool constrainBounds)
         {
             // Create a GraphicsPath from the lasso points
@@ -224,6 +205,56 @@ namespace BIUK9000
                 0, 0, image.Width, image.Height,
                 GraphicsUnit.Pixel, imageAttributes);
             }
+        }
+        public static Bitmap FloodFill(Bitmap bitmap, Point p, Color fillColor, int tolerance)
+        {
+            using FastBitmap fbm = new FastBitmap(bitmap);
+            Color originalColor = fbm.GetPixel(p);
+            List<Point> s = [p];
+            bool[,] processed = new bool[bitmap.Width, bitmap.Height];
+            while (s.Count > 0)
+            {
+                int x = s[0].X;
+                int y = s[0].Y;
+                s.RemoveAt(0);
+                int lx = x;
+                while(Inside(fbm, new Point(lx - 1, y), originalColor, tolerance) && !processed[lx - 1, y])
+                {
+                    fbm.SetPixel(lx - 1, y, fillColor);
+                    processed[lx - 1, y] = true;
+                    lx--;
+                }
+                while(Inside(fbm, new Point(x, y), originalColor, tolerance) && !processed[x, y])
+                {
+                    fbm.SetPixel(x, y, fillColor);
+                    processed[x, y] = true;
+                    x++;
+                }
+                Scan(lx, x - 1, y + 1, s, fbm, originalColor, tolerance);
+                Scan(lx, x - 1, y - 1, s, fbm, originalColor, tolerance);
+            }
+            return new Bitmap(fbm.Bitmap);
+        }
+        private static void Scan(int lx, int rx, int y, List<Point> s, FastBitmap fbm, Color originalColor, int tolerance)
+        {
+            bool spanAdded = false;
+            for(int x = lx; x <=rx; x++)
+            {
+                Point xy = new Point(x, y);
+                if(!Inside(fbm, xy, originalColor, tolerance))
+                {
+                    spanAdded = false;
+                }else if (!spanAdded)
+                {
+                    s.Add(xy);
+                    spanAdded = true;
+                }
+            }
+        }
+        private static bool Inside(FastBitmap fbm, Point p, Color c, int tolerance)
+        {
+            if (p.X >= fbm.Width || p.Y >= fbm.Height || p.X < 0 || p.Y < 0) return false;
+            return ColorIsWithinTolerance(fbm.GetPixel(p), c, tolerance);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -293,6 +294,29 @@ namespace BIUK9000
                 using Bitmap deletedBitmap = Painter.DeleteColor(gfl.OriginalBitmap, c, tolerance);
                 gfl.ReplaceOriginalBitmap(deletedBitmap);
             }
+        }
+        public void ReplaceColor(int frameIndex, int layerIndex, Point p, Color replacementColor, int tolerance)
+        {
+            BitmapGFL currentLayer = GetLayer(frameIndex, layerIndex) as BitmapGFL;
+            int layerID = currentLayer.LayerID;
+            Bitmap obm = currentLayer.OriginalBitmap;
+            if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
+            Color c = obm.GetPixel(p.X, p.Y);
+            foreach (GifFrame frame in giffer.Frames)
+            {
+                BitmapGFL gfl = frame.Layers.Find(layer => layer.LayerID == layerID) as BitmapGFL;
+                using Bitmap replacedBitmap = Painter.ReplaceColor(gfl.OriginalBitmap, c, replacementColor, tolerance);
+                gfl.ReplaceOriginalBitmap(replacedBitmap);
+            }
+        }
+        public void FloodFill(int frameIndex, int layerIndex, Point p, Color fillColor, int tolerance)
+        {
+            BitmapGFL currentLayer = GetLayer(frameIndex, layerIndex) as BitmapGFL;
+            int layerID = currentLayer.LayerID;
+            Bitmap obm = currentLayer.OriginalBitmap;
+            if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
+            Color c = obm.GetPixel(p.X, p.Y);
+            currentLayer.ReplaceOriginalBitmap(Painter.FloodFill(obm, p, fillColor, tolerance));
         }
         public void Mirror()
         {
