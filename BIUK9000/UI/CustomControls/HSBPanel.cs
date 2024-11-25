@@ -10,9 +10,11 @@ using System.Windows.Forms;
 
 namespace BIUK9000.UI.CustomControls
 {
-    public partial class HueSatPanel : UserControl
+    public partial class HSBPanel : UserControl
     {
         public event EventHandler HueSatChanged;
+        public event EventHandler ChangeStarted;
+        public event EventHandler ChangeEnded;
         private bool _isCodeValueChange;
         public float Saturation {
             get
@@ -39,11 +41,17 @@ namespace BIUK9000.UI.CustomControls
                 _isCodeValueChange = false;
             }
         }
-        public HueSatPanel()
+        public HSBPanel()
         {
             InitializeComponent();
             brightnessTrackBar.ValueChanged += (sender, args) => OnHueSatChanged();
             saturationTrackBar.ValueChanged += (sender, args) => OnHueSatChanged();
+
+            brightnessTrackBar.MouseDown += (sender, args) => ChangeStarted?.Invoke(this, EventArgs.Empty);
+            saturationTrackBar.MouseDown += (sender, args) => ChangeStarted?.Invoke(this, EventArgs.Empty);
+
+            brightnessTrackBar.MouseUp += (sender, args) => ChangeEnded?.Invoke(this, EventArgs.Empty);
+            saturationTrackBar.MouseUp += (sender, args) => ChangeEnded?.Invoke(this, EventArgs.Empty);
         }
         private void OnHueSatChanged()
         {

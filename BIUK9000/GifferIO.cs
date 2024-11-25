@@ -11,28 +11,29 @@ using BIUK9000.Dithering;
 using BIUK9000.UI;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace BIUK9000
 {
     public class GifferIO
     {
-        public static Image GifFromGiffer(Giffer giffer, GifQuality gifQuality)
+        public static Image GifFromGiffer(Giffer giffer, GifQuality gifQuality, InterpolationMode interpolationMode)
         {
             MemoryStream stream = new MemoryStream();
             using AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
             foreach (GifFrame frame in giffer.Frames)
             {
-                agc.AddFrame(giffer.FrameAsBitmap(frame, false), frame.FrameDelay, gifQuality);
+                agc.AddFrame(giffer.FrameAsBitmap(frame, false, interpolationMode), frame.FrameDelay, gifQuality);
             }
             return Image.FromStream(stream);
         }
-        private static Image GifFromGifferDithered(Giffer giffer, List<Color> paletteForDithering, GifQuality gifQuality)
+        private static Image GifFromGifferDithered(Giffer giffer, List<Color> paletteForDithering, GifQuality gifQuality, InterpolationMode interpolationMode)
         {
             MemoryStream stream = new MemoryStream();
             AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
             foreach (GifFrame frame in giffer.Frames)
             {
-                Bitmap cbm = giffer.FrameAsBitmap(frame, false);
+                Bitmap cbm = giffer.FrameAsBitmap(frame, false, interpolationMode);
                 Ditherer dtr = new Ditherer(cbm);
                 cbm = dtr.DitheredBitmap(paletteForDithering);
                 agc.AddFrame(cbm, frame.FrameDelay, gifQuality);
@@ -40,11 +41,11 @@ namespace BIUK9000
             }
             return Image.FromStream(stream);
         }
-        public static string SaveGifToTempFile(Giffer giffer, GifQuality gifQuality)
+        public static string SaveGifToTempFile(Giffer giffer, GifQuality gifQuality, InterpolationMode interpolationMode)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            using Image gif = GifFromGiffer(giffer, gifQuality);
-            gif.Save(tempPath);
+            using Image gif = GifFromGiffer(giffer, gifQuality, interpolationMode);
+            gif.Save(tempPath, ImageFormat.Gif);
             if (File.Exists(tempPath))
             {
                 return tempPath;
@@ -55,13 +56,13 @@ namespace BIUK9000
             }
         }
 
-        public static string SaveGifToTempFileDithered(Giffer giffer, int ditherColorCount, GifQuality gifQuality)
+        public static string SaveGifToTempFileDithered(Giffer giffer, int ditherColorCount, GifQuality gifQuality, InterpolationMode interpolationMode)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            using Bitmap bmpForPalette = giffer.FrameAsBitmap(0, false);
+            using Bitmap bmpForPalette = giffer.FrameAsBitmap(0, false, interpolationMode);
             List<Color> palette = KMeans.Palette(bmpForPalette, ditherColorCount, false);
-            using Image gif = GifFromGifferDithered(giffer, palette, gifQuality);
-            gif.Save(tempPath);
+            using Image gif = GifFromGifferDithered(giffer, palette, gifQuality, interpolationMode);
+            gif.Save(tempPath, ImageFormat.Gif);
             if (File.Exists(tempPath))
             {
                 return tempPath;
@@ -102,6 +103,41 @@ namespace BIUK9000
             DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
             mf.DoDragDrop(data, DragDropEffects.Copy);
             cp.IsLMBDown = false;
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+        public static void LayerExportDragDrop(MainForm mf)
+        {
+            Bitmap bitmap = mf.GifferC.GetLayer(mf.SelectedFrameIndex, mf.SelectedLayerIndex).MorphedBitmap(mf.MainControlsPanel.InterpolationMode);
+            ControlsPanel cp = mf.MainControlsPanel;
+            if (cp.UseDithering)
+            {
+                Bitmap bitmapRefBackup = bitmap;
+                using Ditherer dtr = new Ditherer(bitmap);
+                bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, cp.GifExportColors, false));
+                bitmapRefBackup.Dispose();
+            }
+            string tempPath = Path.ChangeExtension(Path.GetTempFileName(), cp.ImageExportFormat);
+            switch (cp.ImageExportFormat)
+            {
+                case ".jpeg":
+                    OBIMP.SaveJpeg(tempPath, bitmap, cp.ImageExportJpegQuality);
+                    break;
+                case ".png":
+                    bitmap.Save(tempPath, ImageFormat.Png);
+                    break;
+                case ".gif":
+                    bitmap.Save(tempPath, ImageFormat.Gif);
+                    break;
+                default:
+                    break;
+            }
+            bitmap.Dispose();
+            DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
+            mf.DoDragDrop(data, DragDropEffects.Copy);
+            cp.IsRMBDown = false;
             if (File.Exists(tempPath))
             {
                 File.Delete(tempPath);
@@ -159,7 +195,7 @@ namespace BIUK9000
                 gc.AddGifferAsFrames(newGiffer, mf.SelectedFrameIndex);
             }
         }
-        public static void SaveGif(Giffer giffer, ControlsPanel cp, string path, GifQuality gifQuality, bool createFrames)
+        public static void SaveGif(Giffer giffer, ControlsPanel cp, string path, GifQuality gifQuality, bool createFrames, InterpolationMode interpolationMode)
         {
             if (path == giffer.OriginalImagePath)
             {
@@ -169,11 +205,11 @@ namespace BIUK9000
             string tempPath;
             if (cp.UseDithering)
             {
-                tempPath = SaveGifToTempFileDithered(giffer, cp.GifExportColors, gifQuality);
+                tempPath = SaveGifToTempFileDithered(giffer, cp.GifExportColors, gifQuality, interpolationMode);
             }
             else
             {
-                tempPath = SaveGifToTempFile(giffer, gifQuality);
+                tempPath = SaveGifToTempFile(giffer, gifQuality, interpolationMode);
             }
             if (cp.UseGifsicle)
             {

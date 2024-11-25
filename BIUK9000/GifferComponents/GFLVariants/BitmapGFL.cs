@@ -16,8 +16,8 @@ namespace BIUK9000.GifferComponents.GFLVariants
         //private Bitmap cachedMorphedBitmap;
         public double HRatio { get => Width / (double)OriginalBitmap.Width; }
         public double VRatio { get => Height / (double)OriginalBitmap.Height; }
-        private int cachedWidth, cachedHeight;
-        public override Bitmap MorphedBitmap()
+        //private int cachedWidth, cachedHeight;
+        public override Bitmap MorphedBitmap(InterpolationMode interpolationMode)
         {
             //if (cachedMorphedBitmap == null || Width != cachedWidth || Height != cachedHeight)
             //{
@@ -27,7 +27,11 @@ namespace BIUK9000.GifferComponents.GFLVariants
             //    cachedHeight = Height;
             //}
             //return new Bitmap(cachedMorphedBitmap);
-            return new Bitmap(OriginalBitmap, Width, Height);
+            Bitmap result = new Bitmap(Width, Height);
+            using Graphics g = Graphics.FromImage(result);
+            g.InterpolationMode = interpolationMode;
+            g.DrawImage(OriginalBitmap, 0, 0, Width, Height);
+            return result;
         }
         public BitmapGFL(Bitmap bitmap, int layerID) : base(layerID)
         {

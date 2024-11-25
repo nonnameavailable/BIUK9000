@@ -118,7 +118,7 @@ namespace BIUK9000.GifferComponents
             frame.Dispose();
         }
 
-        public Bitmap FrameAsBitmap(GifFrame frame, bool drawHelp, InterpolationMode interpolationMode = InterpolationMode.Default)
+        public Bitmap FrameAsBitmap(GifFrame frame, bool drawHelp, InterpolationMode interpolationMode)
         {
             return frame.CompleteBitmap(Width, Height, drawHelp, interpolationMode);
         }
@@ -126,7 +126,7 @@ namespace BIUK9000.GifferComponents
         {
             frame.DrawCompleteBitmap(Width, Height, drawHelp, g);
         }
-        public Bitmap FrameAsBitmap(int frameIndex, bool drawHelp, InterpolationMode interpolationMode = InterpolationMode.Default)
+        public Bitmap FrameAsBitmap(int frameIndex, bool drawHelp, InterpolationMode interpolationMode)
         {
             return Frames[frameIndex].CompleteBitmap(Width, Height, drawHelp, interpolationMode);
         }

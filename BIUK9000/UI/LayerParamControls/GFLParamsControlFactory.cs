@@ -16,7 +16,7 @@ namespace BIUK9000.UI.LayerParamControls
             {
                 return new TextGFLParamControl();
             }
-            else if (gfl is PlainGFL)
+            else if (gfl is ShapeGFL)
             {
                 return new PlainGFLParamControl();
             }

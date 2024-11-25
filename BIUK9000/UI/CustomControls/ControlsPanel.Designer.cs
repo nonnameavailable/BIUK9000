@@ -96,7 +96,7 @@
             saveButton.Size = new System.Drawing.Size(133, 134);
             saveButton.TabIndex = 8;
             saveButton.Text = "Save";
-            toolTip.SetToolTip(saveButton, "Left click - save dialog will open, allowing you to save the gif\r\n\r\nLeft mouse down and drag to desktop / explorer - export current frame as jpeg / png");
+            toolTip.SetToolTip(saveButton, "Left click - save dialog will open, allowing you to save the gif\r\n\r\nLeft mouse down and drag to desktop / explorer - export current frame as jpeg / png\r\nRight mouse down + drag - export current layer");
             saveButton.UseVisualStyleBackColor = true;
             // 
             // controlsTC
@@ -168,7 +168,7 @@
             mpbAAModeCBB.Name = "mpbAAModeCBB";
             mpbAAModeCBB.Size = new System.Drawing.Size(113, 23);
             mpbAAModeCBB.TabIndex = 4;
-            toolTip.SetToolTip(mpbAAModeCBB, "Sets the interpolation mode of the displayed image\r\nIf you want crispy pixels, choose NearestNeighbor.\r\n\r\nThis does not affect the quality of the exported images.");
+            toolTip.SetToolTip(mpbAAModeCBB, "Sets the interpolation mode of the displayed and exported images.\r\nChoose nearest neighbor for no antialiasing.\r\n");
             // 
             // applyParamsCBB
             // 
@@ -190,7 +190,7 @@
             positionSnapCB.Size = new System.Drawing.Size(106, 21);
             positionSnapCB.TabIndex = 2;
             positionSnapCB.Text = "position snap";
-            toolTip.SetToolTip(positionSnapCB, "When enabled, the layer position will snap to the top left corner");
+            toolTip.SetToolTip(positionSnapCB, "When enabled, the layer position will snap to the top left corner of the frame");
             positionSnapCB.UseVisualStyleBackColor = true;
             // 
             // drawHelpCB

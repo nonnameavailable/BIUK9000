@@ -1,6 +1,6 @@
 ﻿namespace BIUK9000.UI.CustomControls
 {
-    partial class HueSatPanel
+    partial class HSBPanel
     {
         /// <summary> 
         /// Required designer variable.

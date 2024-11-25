@@ -30,7 +30,7 @@ namespace BIUK9000.UI
         public GifFrame SelectedFrame { get => MainGiffer.Frames[MainTimelineSlider.SelectedFrameIndex]; }
         public int SelectedFrameIndex { get => MainTimelineSlider.SelectedFrameIndex; }
         public int SelectedLayerIndex { get => mainLayersPanel.SelectedLayerIndex; }
-        public Bitmap SelectedFrameAsBitmap { get => MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp); }
+        public Bitmap SelectedFrameAsBitmap { get => MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode); }
         private GFL SelectedLayer { get => mainLayersPanel.SelectedLayer; }
         private Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
@@ -51,6 +51,7 @@ namespace BIUK9000.UI
         {
             InitializeComponent();
             mainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
+
 
             DragDrop += MainForm_DragDrop;
             DragEnter += MainForm_DragEnter;
@@ -87,22 +88,25 @@ namespace BIUK9000.UI
             _paintControl = new PaintControl();
             lerpModeCBB.SelectedIndex = 0;
             mainPictureBox.InterpolationMode = controlsPanel.InterpolationMode;
-            hueSatPanel.HueSatChanged += HsbPanel_HueSatChanged;
+
+            hsbPanel.HueSatChanged += HsbPanel_HueSatChanged;
+            hsbPanel.ChangeStarted += (sender, args) => GifferC?.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
+            hsbPanel.ChangeEnded += (sender, args) => GifferC?.ApplyLayerParams(SelectedFrameIndex, SelectedLayerIndex, controlsPanel.SelectedApplyParamsMode);
         }
 
         private void MainLayersPanel_SelectedLayerChanged(object sender, EventArgs e)
         {
             UpdateLayerParamsUI();
             GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
-            hueSatPanel.Saturation = SelectedLayer.Saturation;
-            hueSatPanel.Brightness = SelectedLayer.Brightness;
+            hsbPanel.Saturation = SelectedLayer.Saturation;
+            hsbPanel.Brightness = SelectedLayer.Brightness;
         }
 
         private void HsbPanel_HueSatChanged(object sender, EventArgs e)
         {
             if (MainGiffer == null) return;
-            SelectedLayer.Saturation = hueSatPanel.Saturation;
-            SelectedLayer.Brightness = hueSatPanel.Brightness;
+            SelectedLayer.Saturation = hsbPanel.Saturation;
+            SelectedLayer.Brightness = hsbPanel.Brightness;
             UpdateMainPictureBox();
         }
 
@@ -340,13 +344,13 @@ namespace BIUK9000.UI
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.Lasso)
                     {
                         List<Point> translatedPoints = mainPictureBox.MouseTrace.Select(point => point = GifferC.MousePositionOnLayer(SelectedFrameIndex, SelectedLayerIndex, point)).ToList();
-                        Bitmap cutoutBitmap = Painter.LassoCutout((SelectedLayer as BitmapGFL).OriginalBitmap, translatedPoints.ToArray(), pc.LassoConstrainBounds);
+                        Bitmap cutoutBitmap = Painter.LassoCutout(((BitmapGFL)SelectedLayer).OriginalBitmap, translatedPoints.ToArray(), pc.LassoConstrainBounds);
                         BitmapGFL bgfl = new BitmapGFL(cutoutBitmap, MainGiffer.NextLayerID());
                         bgfl.CopyParameters(SelectedLayer);
                         GifferC.AddLayer(bgfl);
                         if (pc.LassoIncludeComplement)
                         {
-                            Bitmap complementBitmap = Painter.LassoComplement((SelectedLayer as BitmapGFL).OriginalBitmap, translatedPoints.ToArray());
+                            Bitmap complementBitmap = Painter.LassoComplement(((BitmapGFL)SelectedLayer).OriginalBitmap, translatedPoints.ToArray());
                             BitmapGFL cbgfl = new BitmapGFL(complementBitmap, MainGiffer.NextLayerID());
                             cbgfl.CopyParameters(SelectedLayer);
                             GifferC.AddLayer(cbgfl);
@@ -381,7 +385,7 @@ namespace BIUK9000.UI
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
                         _updateTimer.Start();
-                        using Graphics g = Graphics.FromImage((SelectedLayer as BitmapGFL).OriginalBitmap);
+                        using Graphics g = Graphics.FromImage(((BitmapGFL)SelectedLayer).OriginalBitmap);
                         Painter.DrawLine(g, mpoi, mpoi, pc.PaintColorARGB, pc.Thickness);
                     }
                     else if (pc.SelectedPaintTool == PaintControl.PaintTool.ReplaceColor)
@@ -414,7 +418,7 @@ namespace BIUK9000.UI
                     {
                         if (IsLMBDown)
                         {
-                            using Graphics g = Graphics.FromImage((SelectedLayer as BitmapGFL).OriginalBitmap);
+                            using Graphics g = Graphics.FromImage(((BitmapGFL)SelectedLayer).OriginalBitmap);
                             Painter.DrawLine(g, _prevMousePos, mpoi, pc.PaintColorARGB, pc.Thickness);
                         }
                     } else if(pc.SelectedPaintTool == PaintControl.PaintTool.Lasso)
@@ -535,7 +539,7 @@ namespace BIUK9000.UI
         private void mainLayersPanel_LayerDeleteButtonClicked(object sender, EventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to delete this layer?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return;
-            int layerIDToDelete = (sender as LayerHolder).HeldLayer.LayerID;
+            int layerIDToDelete = ((LayerHolder)sender).HeldLayer.LayerID;
             GifferC.DeleteLayerByID(layerIDToDelete);
             CompleteUIUpdate();
         }
@@ -586,8 +590,8 @@ namespace BIUK9000.UI
             UpdateLayerParamsUI();
             GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
             UpdateMainPictureBox();
-            hueSatPanel.Saturation = SelectedLayer.Saturation;
-            hueSatPanel.Brightness = SelectedLayer.Brightness;
+            hsbPanel.Saturation = SelectedLayer.Saturation;
+            hsbPanel.Brightness = SelectedLayer.Brightness;
         }
         private void MainTimelineSlider_FrameDelayChanged(object sender, EventArgs e)
         {
@@ -609,6 +613,11 @@ namespace BIUK9000.UI
                 cp.DraggingFileForExport = true;
                 GifferIO.FrameExportDragDrop(this);
                 cp.DraggingFileForExport = false;
+            } else if (cp.IsRMBDown)
+            {
+                cp.DraggingFileForExport = true;
+                GifferIO.LayerExportDragDrop(this);
+                cp.DraggingFileForExport = false;
             }
         }
         private void ControlsPanel_SaveButtonClicked(object sender, EventArgs e)
@@ -617,7 +626,7 @@ namespace BIUK9000.UI
             SaveFileDialog sfd = saveFileDialog;
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                GifferIO.SaveGif(MainGiffer, controlsPanel, sfd.FileName, controlsPanel.GifQuality, controlsPanel.CreateFrames);
+                GifferIO.SaveGif(MainGiffer, controlsPanel, sfd.FileName, controlsPanel.GifQuality, controlsPanel.CreateFrames, controlsPanel.InterpolationMode);
             }
         }
         #endregion

@@ -80,7 +80,7 @@ namespace BIUK9000.GifferComponents
         protected float _rotation;
         protected float _previousRotation;
         protected int _spinCount;
-        public abstract Bitmap MorphedBitmap();
+        public abstract Bitmap MorphedBitmap(InterpolationMode interpolationMode);
         protected Rectangle OBR { get; set; }
         public virtual void Save()
         {
@@ -117,7 +117,7 @@ namespace BIUK9000.GifferComponents
                 g.TranslateTransform(c.Xint, c.Yint);
                 g.RotateTransform(Rotation);
 
-                using Bitmap morphedBitmap = MorphedBitmap();
+                using Bitmap morphedBitmap = MorphedBitmap(g.InterpolationMode);
                 Painter.AdjustImageAttributes(morphedBitmap, Saturation, Brightness);
                 g.DrawImage(morphedBitmap, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2);
 

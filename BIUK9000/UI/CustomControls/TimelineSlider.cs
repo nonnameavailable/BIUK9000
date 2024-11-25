@@ -71,7 +71,7 @@ namespace BIUK9000.UI
 
         private void PlayTimer_Tick(object sender, EventArgs e)
         {
-            timeLineTrackBar.Value = (timeLineTrackBar.Value + 1) % timeLineTrackBar.Maximum;
+            timeLineTrackBar.Value = (timeLineTrackBar.Value + 1) % (timeLineTrackBar.Maximum + 1);
         }
 
         private void FrameDelayNUD_KeyPress(object sender, KeyPressEventArgs e)

@@ -94,7 +94,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
             }
         }
 
-        public override Bitmap MorphedBitmap()
+        public override Bitmap MorphedBitmap(InterpolationMode interpolationMode)
         {
             Size ts = TextSize();
             Bitmap bitmap = new Bitmap(Math.Max(ts.Width, 1), Math.Max(ts.Height, 1));
@@ -108,7 +108,8 @@ namespace BIUK9000.GifferComponents.GFLVariants
             using GraphicsPath path = new GraphicsPath();
             path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
 
-            g.SmoothingMode = SmoothingMode.AntiAlias;
+            if(interpolationMode != InterpolationMode.NearestNeighbor) g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.InterpolationMode = interpolationMode;
             // Draw the border
             if (FontBorderWidth > 0)
             {

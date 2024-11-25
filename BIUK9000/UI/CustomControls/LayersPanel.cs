@@ -62,7 +62,7 @@ namespace BIUK9000.UI
 
         private void Lh_LayerVisibilityChanged(object sender, EventArgs e)
         {
-            int index = layersFLP.Controls.IndexOf(sender as Control);
+            int index = layersFLP.Controls.IndexOf((Control)sender);
             LayerVisibilityChanged?.Invoke(sender, new SelectedIndexEventArgs(index));
         }
 
@@ -87,7 +87,7 @@ namespace BIUK9000.UI
         {
             LayerHolder droppedLh = (LayerHolder)e.Data.GetData(typeof(LayerHolder));
             int originalIndex = layersFLP.Controls.IndexOf(droppedLh);
-            int targetIndex = layersFLP.Controls.IndexOf(sender as LayerHolder);
+            int targetIndex = layersFLP.Controls.IndexOf((LayerHolder)sender);
             LayerOrderEventArgs loea = new LayerOrderEventArgs(originalIndex, targetIndex);
             LayerOrderChanged?.Invoke(this, loea);
             SelectedLayerChanged?.Invoke(ClickedLayerHolder.HeldLayer, EventArgs.Empty);

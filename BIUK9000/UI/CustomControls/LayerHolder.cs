@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace BIUK9000.UI
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
             mainPictureBox.MouseDown += MainPictureBox_MouseDown;
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
-            mainPictureBox.Image = new Bitmap(layer.MorphedBitmap());
+            mainPictureBox.Image = new Bitmap(layer.MorphedBitmap(InterpolationMode.Low));
             DragDrop += (sender, args) => DragDropped?.Invoke(this, args);
             DragEnter += LayerHolder_DragEnter;
             StayHighlighted = false;

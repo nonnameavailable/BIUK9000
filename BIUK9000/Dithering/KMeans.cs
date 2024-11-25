@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace BIUK9000.Dithering
                 List<int> candidates = new();
                 foreach(GifFrame frame in giffer.Frames)
                 {
-                    FastBitmap fbm = new FastBitmap(giffer.FrameAsBitmap(frame, false));
+                    FastBitmap fbm = new FastBitmap(giffer.FrameAsBitmap(frame, false, InterpolationMode.NearestNeighbor));
                     candidates.Add(NextCentroid(fbm, result));
                     fbm.Dispose();
                 }

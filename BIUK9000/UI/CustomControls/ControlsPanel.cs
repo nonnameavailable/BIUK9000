@@ -20,8 +20,8 @@ namespace BIUK9000.UI
     public partial class ControlsPanel : UserControl
     {
         private OVector OriginalMousePosition { get; set; }
-        public bool IsLMBDown {  get; set; }
-        public bool IsRMBDown {  get; set; }
+        public bool IsLMBDown { get; set; }
+        public bool IsRMBDown { get; set; }
         public bool DraggingFileForExport { get; set; }
         public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
         public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
@@ -73,12 +73,12 @@ namespace BIUK9000.UI
 
         private void ToolPaintRB_CheckedChanged(object sender, EventArgs e)
         {
-            if(ToolPaintSelectedFlag) ToolPaintSelected?.Invoke(this, EventArgs.Empty);
+            if (ToolPaintSelectedFlag) ToolPaintSelected?.Invoke(this, EventArgs.Empty);
         }
 
         private void ToolMoveRB_CheckedChanged(object sender, EventArgs e)
         {
-            if(ToolMoveSelectedFlag) ToolMoveSelected?.Invoke(this, EventArgs.Empty);
+            if (ToolMoveSelectedFlag) ToolMoveSelected?.Invoke(this, EventArgs.Empty);
         }
 
         private void MpbAAModeCBB_SelectedIndexChanged(object sender, EventArgs e)
@@ -114,14 +114,15 @@ namespace BIUK9000.UI
         private void SaveButton_MouseDown(object sender, MouseEventArgs e)
         {
             OriginalMousePosition = new OVector(e.X, e.Y);
-            if(e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 IsLMBDown = true;
-            } else if(e.Button == MouseButtons.Right)
+            }
+            else if (e.Button == MouseButtons.Right)
             {
                 IsRMBDown = true;
             }
-            
+
         }
         private void SaveButton_MouseUp(object sender, MouseEventArgs e)
         {
