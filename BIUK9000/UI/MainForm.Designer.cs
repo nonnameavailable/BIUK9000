@@ -33,7 +33,6 @@ namespace BIUK9000.UI
             mainLayersPanel = new LayersPanel();
             mainTimelineSlider = new TimelineSlider();
             controlsPanel = new ControlsPanel();
-            layerParamsPanel = new System.Windows.Forms.Panel();
             markLerpPanel = new System.Windows.Forms.Panel();
             frameDupeCountNUD = new System.Windows.Forms.NumericUpDown();
             dupeFrameButton = new System.Windows.Forms.Button();
@@ -44,10 +43,13 @@ namespace BIUK9000.UI
             mainPictureBox = new MyPictureBox();
             hsbPanel = new CustomControls.HSBPanel();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            layerParamsPanel = new System.Windows.Forms.Panel();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
+            tableLayoutPanel2.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -56,13 +58,12 @@ namespace BIUK9000.UI
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 145F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 1);
             tableLayoutPanel1.Controls.Add(mainTimelineSlider, 1, 2);
             tableLayoutPanel1.Controls.Add(controlsPanel, 0, 0);
-            tableLayoutPanel1.Controls.Add(layerParamsPanel, 1, 0);
             tableLayoutPanel1.Controls.Add(markLerpPanel, 2, 2);
             tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 1);
-            tableLayoutPanel1.Controls.Add(hsbPanel, 2, 0);
+            tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 1);
+            tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 1, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -105,14 +106,6 @@ namespace BIUK9000.UI
             tableLayoutPanel1.SetRowSpan(controlsPanel, 3);
             controlsPanel.Size = new System.Drawing.Size(139, 555);
             controlsPanel.TabIndex = 5;
-            // 
-            // layerParamsPanel
-            // 
-            layerParamsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            layerParamsPanel.Location = new System.Drawing.Point(148, 3);
-            layerParamsPanel.Name = "layerParamsPanel";
-            layerParamsPanel.Size = new System.Drawing.Size(571, 149);
-            layerParamsPanel.TabIndex = 7;
             // 
             // markLerpPanel
             // 
@@ -206,12 +199,35 @@ namespace BIUK9000.UI
             // hsbPanel
             // 
             hsbPanel.Brightness = 1F;
-            hsbPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            hsbPanel.Location = new System.Drawing.Point(725, 3);
+            hsbPanel.Location = new System.Drawing.Point(430, 3);
             hsbPanel.Name = "hsbPanel";
             hsbPanel.Saturation = 1F;
-            hsbPanel.Size = new System.Drawing.Size(144, 149);
+            hsbPanel.Size = new System.Drawing.Size(138, 143);
             hsbPanel.TabIndex = 10;
+            hsbPanel.Transparency = 0F;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.ColumnCount = 2;
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 144F));
+            tableLayoutPanel2.Controls.Add(layerParamsPanel, 0, 0);
+            tableLayoutPanel2.Controls.Add(hsbPanel, 1, 0);
+            tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableLayoutPanel2.Location = new System.Drawing.Point(148, 3);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new System.Drawing.Size(571, 149);
+            tableLayoutPanel2.TabIndex = 11;
+            // 
+            // layerParamsPanel
+            // 
+            layerParamsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            layerParamsPanel.Location = new System.Drawing.Point(3, 3);
+            layerParamsPanel.Name = "layerParamsPanel";
+            layerParamsPanel.Size = new System.Drawing.Size(421, 143);
+            layerParamsPanel.TabIndex = 8;
             // 
             // MainForm
             // 
@@ -227,6 +243,7 @@ namespace BIUK9000.UI
             markLerpPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
+            tableLayoutPanel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -235,7 +252,6 @@ namespace BIUK9000.UI
         private LayersPanel mainLayersPanel;
         private TimelineSlider mainTimelineSlider;
         private ControlsPanel controlsPanel;
-        private System.Windows.Forms.Panel layerParamsPanel;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Panel markLerpPanel;
         private System.Windows.Forms.Button lerpButton;
@@ -246,6 +262,8 @@ namespace BIUK9000.UI
         private System.Windows.Forms.NumericUpDown frameDupeCountNUD;
         private System.Windows.Forms.Button dupeFrameButton;
         private CustomControls.HSBPanel hsbPanel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Panel layerParamsPanel;
     }
 }
 

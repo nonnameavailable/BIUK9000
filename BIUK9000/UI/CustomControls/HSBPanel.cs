@@ -16,7 +16,8 @@ namespace BIUK9000.UI.CustomControls
         public event EventHandler ChangeStarted;
         public event EventHandler ChangeEnded;
         private bool _isCodeValueChange;
-        public float Saturation {
+        public float Saturation
+        {
             get
             {
                 return saturationTrackBar.Value / 100f;
@@ -24,7 +25,7 @@ namespace BIUK9000.UI.CustomControls
             set
             {
                 _isCodeValueChange = true;
-                saturationTrackBar.Value = (int) (value * 100);
+                saturationTrackBar.Value = (int)(value * 100);
                 _isCodeValueChange = false;
             }
         }
@@ -41,17 +42,31 @@ namespace BIUK9000.UI.CustomControls
                 _isCodeValueChange = false;
             }
         }
+        public float Transparency
+        {
+            get
+            {
+                return transparencyTrackBar.Value / 200f;
+            }
+            set
+            {
+                _isCodeValueChange = true;
+                transparencyTrackBar.Value = (int)(value * 200);
+                _isCodeValueChange = false;
+            }
+        }
         public HSBPanel()
         {
             InitializeComponent();
-            brightnessTrackBar.ValueChanged += (sender, args) => OnHueSatChanged();
-            saturationTrackBar.ValueChanged += (sender, args) => OnHueSatChanged();
-
-            brightnessTrackBar.MouseDown += (sender, args) => ChangeStarted?.Invoke(this, EventArgs.Empty);
-            saturationTrackBar.MouseDown += (sender, args) => ChangeStarted?.Invoke(this, EventArgs.Empty);
-
-            brightnessTrackBar.MouseUp += (sender, args) => ChangeEnded?.Invoke(this, EventArgs.Empty);
-            saturationTrackBar.MouseUp += (sender, args) => ChangeEnded?.Invoke(this, EventArgs.Empty);
+            foreach(Control c in this.Controls)
+            {
+                if(c is TrackBar tc)
+                {
+                    tc.ValueChanged += (sender, args) => OnHueSatChanged();
+                    tc.MouseDown += (sender, args) => ChangeStarted?.Invoke(this, EventArgs.Empty);
+                    tc.MouseUp += (sender, args) => ChangeEnded?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
         private void OnHueSatChanged()
         {

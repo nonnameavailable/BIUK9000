@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace BIUK9000.GifferComponents
         public int LayerID {  get; set; }
         public float Saturation {  get; set; }
         public float Brightness { get; set; }
+        public float Transparency { get; set; }
         public int Width
         {
             get
@@ -52,6 +54,7 @@ namespace BIUK9000.GifferComponents
             _spinCount = 0;
             Saturation = 1;
             Brightness = 1;
+            Transparency = 1;
         }
         public bool Visible { get; set; }
         public float Rotation
@@ -118,10 +121,8 @@ namespace BIUK9000.GifferComponents
                 g.RotateTransform(Rotation);
 
                 using Bitmap morphedBitmap = MorphedBitmap(g.InterpolationMode);
-                Painter.AdjustImageAttributes(morphedBitmap, Saturation, Brightness);
-                g.DrawImage(morphedBitmap, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2);
-
-                if(drawHelp)
+                g.DrawImage(morphedBitmap, new Rectangle(-morphedBitmap.Width / 2, -morphedBitmap.Height / 2, morphedBitmap.Width, morphedBitmap.Height), 0, 0, morphedBitmap.Width, morphedBitmap.Height, GraphicsUnit.Pixel, LayerImageAttributes());
+                if (drawHelp)
                 {
                     using Pen boundsPen = new Pen(Color.Red, 2f);
                     g.DrawRectangle(boundsPen, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2, morphedBitmap.Width, morphedBitmap.Height);
@@ -166,6 +167,7 @@ namespace BIUK9000.GifferComponents
             Rotation = layer.Rotation;
             Saturation = layer.Saturation;
             Brightness = layer.Brightness;
+            Transparency = layer.Transparency;
         }
         public abstract GFL Clone();
         public virtual void CopyDifferingParams(GFL ogState, GFL newState)
@@ -177,6 +179,7 @@ namespace BIUK9000.GifferComponents
             if(ogState.Visible != newState.Visible) Visible = newState.Visible;
             if(ogState.Saturation != newState.Saturation) Saturation = newState.Saturation;
             if(ogState.Brightness != newState.Brightness) Brightness = newState.Brightness;
+            if(ogState.Transparency != newState.Transparency) Transparency = newState.Transparency;
         }
         public virtual void Lerp(GFL start, GFL end, double distance, OVector position = null)
         {
@@ -193,6 +196,44 @@ namespace BIUK9000.GifferComponents
             Rotation = Lerper.Lerp(start.Rotation, end.Rotation, distance);
             Saturation = Lerper.Lerp(start.Saturation, end.Saturation, distance);
             Brightness = Lerper.Lerp(start.Brightness, end.Brightness, distance);
+            Transparency = Lerper.Lerp(start.Transparency, end.Transparency, distance);
+        }
+        private ImageAttributes LayerImageAttributes()
+        {
+            //adapted from https://stackoverflow.com/a/14384449/9852011
+            // Luminance vector for linear RGB
+            const float rwgt = 0.3086f;
+            const float gwgt = 0.6094f;
+            const float bwgt = 0.0820f;
+
+            // Create a new color matrix
+            ColorMatrix colorMatrix = new ColorMatrix();
+
+            // Adjust saturation
+            float baseSat = 1.0f - Saturation;
+            colorMatrix[0, 0] = baseSat * rwgt + Saturation;
+            colorMatrix[0, 1] = baseSat * rwgt;
+            colorMatrix[0, 2] = baseSat * rwgt;
+            colorMatrix[1, 0] = baseSat * gwgt;
+            colorMatrix[1, 1] = baseSat * gwgt + Saturation;
+            colorMatrix[1, 2] = baseSat * gwgt;
+            colorMatrix[2, 0] = baseSat * bwgt;
+            colorMatrix[2, 1] = baseSat * bwgt;
+            colorMatrix[2, 2] = baseSat * bwgt + Saturation;
+
+            // Adjust brightness
+            float adjustedBrightness = Brightness - 1f;
+            colorMatrix[4, 0] = adjustedBrightness;
+            colorMatrix[4, 1] = adjustedBrightness;
+            colorMatrix[4, 2] = adjustedBrightness;
+
+            //colorMatrix.Matrix33 = transparency;
+            colorMatrix[3, 3] = Transparency;
+            // Create image attributes
+            ImageAttributes imageAttributes = new ImageAttributes();
+            imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+            // Draw the image with the new color matrix
+            return imageAttributes;
         }
     }
 }

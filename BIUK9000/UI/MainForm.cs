@@ -98,8 +98,6 @@ namespace BIUK9000.UI
         {
             UpdateLayerParamsUI();
             GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);
-            hsbPanel.Saturation = SelectedLayer.Saturation;
-            hsbPanel.Brightness = SelectedLayer.Brightness;
         }
 
         private void HsbPanel_HueSatChanged(object sender, EventArgs e)
@@ -107,6 +105,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             SelectedLayer.Saturation = hsbPanel.Saturation;
             SelectedLayer.Brightness = hsbPanel.Brightness;
+            SelectedLayer.Transparency = hsbPanel.Transparency;
             UpdateMainPictureBox();
         }
 
@@ -218,7 +217,7 @@ namespace BIUK9000.UI
         public void UpdateMainPictureBox()
         {
             MainImage?.Dispose();
-            MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, InterpolationMode.Low);
+            MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode);
             //if (MainImage == null)
             //{
             //    MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);
@@ -266,7 +265,9 @@ namespace BIUK9000.UI
                     lpc.LoadParams(SelectedLayer);
                 }
             }
-
+            hsbPanel.Saturation = SelectedLayer.Saturation;
+            hsbPanel.Brightness = SelectedLayer.Brightness;
+            hsbPanel.Transparency = SelectedLayer.Transparency;
         }
 
         #region key event handling
@@ -592,6 +593,7 @@ namespace BIUK9000.UI
             UpdateMainPictureBox();
             hsbPanel.Saturation = SelectedLayer.Saturation;
             hsbPanel.Brightness = SelectedLayer.Brightness;
+            hsbPanel.Transparency = SelectedLayer.Transparency;
         }
         private void MainTimelineSlider_FrameDelayChanged(object sender, EventArgs e)
         {
