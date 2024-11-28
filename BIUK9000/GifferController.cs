@@ -245,7 +245,10 @@ namespace BIUK9000
             {
                 return new Point(0, 0);
             }
-
+        }
+        public GFL TryGetLayerById(int frameIndex, int layerId)
+        {
+            return GetFrame(frameIndex).Layers.Find(layer => layer.LayerID == layerId);
         }
         public void DeleteLayerByID(int layerID)
         {
@@ -389,6 +392,51 @@ namespace BIUK9000
             for(int i = 0; i < dupeCount; i++)
             {
                 giffer.Frames.Insert(frameIndex, originalFrame.Clone());
+            }
+        }
+        public void Lasso(int frameIndex, int layerIndex, Point[] lassoPoints, bool includeComplement, bool constrain, bool animateCutout, bool animateComplement)
+        {
+            BitmapGFL bgfl = (BitmapGFL)GetLayer(frameIndex, layerIndex);
+            int cutoutLayerId = giffer.NextLayerID();
+            if (animateCutout)
+            {
+                for(int i = frameIndex; i < FrameCount; i++)
+                {
+                    BitmapGFL currentBgfl = (BitmapGFL)TryGetLayerById(i, bgfl.LayerID);
+                    if (currentBgfl == null) continue;
+                    using Bitmap cutout = Painter.LassoCutout(currentBgfl.OriginalBitmap, lassoPoints, constrain);
+                    BitmapGFL newBgfl = new BitmapGFL(cutout, cutoutLayerId);
+                    newBgfl.CopyParameters(bgfl);
+                    GetFrame(i).AddLayer(newBgfl);
+                }
+            } else
+            {
+                using Bitmap cutoutBitmap = Painter.LassoCutout(bgfl.OriginalBitmap, lassoPoints, constrain);
+                BitmapGFL newBgfl = new BitmapGFL(cutoutBitmap, cutoutLayerId);
+                newBgfl.CopyParameters(bgfl);
+                AddLayer(newBgfl);
+            }
+            if (includeComplement)
+            {
+                int complementLayerId = giffer.NextLayerID();
+                if (animateComplement)
+                {
+                    for (int i = frameIndex; i < FrameCount; i++)
+                    {
+                        BitmapGFL currentBgfl = (BitmapGFL)TryGetLayerById(i, bgfl.LayerID);
+                        if (currentBgfl == null) continue;
+                        using Bitmap complement = Painter.LassoComplement(currentBgfl.OriginalBitmap, lassoPoints);
+                        BitmapGFL newBgfl = new BitmapGFL(complement, complementLayerId);
+                        newBgfl.CopyParameters(bgfl);
+                        GetFrame(i).AddLayer(newBgfl);
+                    }
+                } else
+                {
+                    Bitmap complementBitmap = Painter.LassoComplement(bgfl.OriginalBitmap, lassoPoints);
+                    BitmapGFL cbgfl = new BitmapGFL(complementBitmap, complementLayerId);
+                    cbgfl.CopyParameters(bgfl);
+                    AddLayer(cbgfl);
+                }
             }
         }
     }

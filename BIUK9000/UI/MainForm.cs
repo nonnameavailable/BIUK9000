@@ -344,18 +344,8 @@ namespace BIUK9000.UI
                     PaintControl pc = _paintControl as PaintControl;
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.Lasso)
                     {
-                        List<Point> translatedPoints = mainPictureBox.MouseTrace.Select(point => point = GifferC.MousePositionOnLayer(SelectedFrameIndex, SelectedLayerIndex, point)).ToList();
-                        Bitmap cutoutBitmap = Painter.LassoCutout(((BitmapGFL)SelectedLayer).OriginalBitmap, translatedPoints.ToArray(), pc.LassoConstrainBounds);
-                        BitmapGFL bgfl = new BitmapGFL(cutoutBitmap, MainGiffer.NextLayerID());
-                        bgfl.CopyParameters(SelectedLayer);
-                        GifferC.AddLayer(bgfl);
-                        if (pc.LassoIncludeComplement)
-                        {
-                            Bitmap complementBitmap = Painter.LassoComplement(((BitmapGFL)SelectedLayer).OriginalBitmap, translatedPoints.ToArray());
-                            BitmapGFL cbgfl = new BitmapGFL(complementBitmap, MainGiffer.NextLayerID());
-                            cbgfl.CopyParameters(SelectedLayer);
-                            GifferC.AddLayer(cbgfl);
-                        }
+                        Point[] translatedPoints = mainPictureBox.MouseTrace.Select(point => point = GifferC.MousePositionOnLayer(SelectedFrameIndex, SelectedLayerIndex, point)).ToArray();
+                        GifferC.Lasso(SelectedFrameIndex, SelectedLayerIndex, translatedPoints, pc.LassoIncludeComplement, pc.LassoConstrainBounds, pc.LassoAnimateCutout, pc.LassoAnimateComplement);
                         mainLayersPanel.DisplayLayers(SelectedFrame);
                     }
                 }

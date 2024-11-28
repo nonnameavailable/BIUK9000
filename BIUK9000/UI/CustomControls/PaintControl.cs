@@ -26,6 +26,8 @@ namespace BIUK9000.UI.CustomControls
         public float Thickness { get => (float)thicknessNUD.Value; }
         public bool LassoIncludeComplement { get => lassoIncludeComplementCB.Checked; }
         public bool LassoConstrainBounds { get => lassoConstrainCB.Checked; }
+        public bool LassoAnimateCutout { get => animateCutoutCB.Checked; }
+        public bool LassoAnimateComplement {  get => animateComplementCB.Checked; }
         public PaintTool SelectedPaintTool
         {
             get

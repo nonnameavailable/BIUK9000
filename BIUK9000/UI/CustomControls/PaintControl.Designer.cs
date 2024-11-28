@@ -46,6 +46,8 @@
             groupBox1 = new System.Windows.Forms.GroupBox();
             lassoIncludeComplementCB = new System.Windows.Forms.CheckBox();
             lassoConstrainCB = new System.Windows.Forms.CheckBox();
+            animateCutoutCB = new System.Windows.Forms.CheckBox();
+            animateComplementCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)transparencyTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)thicknessNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)toleranceTrackBar).BeginInit();
@@ -217,6 +219,8 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(animateComplementCB);
+            groupBox1.Controls.Add(animateCutoutCB);
             groupBox1.Controls.Add(lassoIncludeComplementCB);
             groupBox1.Controls.Add(lassoConstrainCB);
             groupBox1.Location = new System.Drawing.Point(300, 3);
@@ -246,6 +250,26 @@
             lassoConstrainCB.TabIndex = 0;
             lassoConstrainCB.Text = "constrain";
             lassoConstrainCB.UseVisualStyleBackColor = true;
+            // 
+            // animateCutoutCB
+            // 
+            animateCutoutCB.AutoSize = true;
+            animateCutoutCB.Location = new System.Drawing.Point(6, 72);
+            animateCutoutCB.Name = "animateCutoutCB";
+            animateCutoutCB.Size = new System.Drawing.Size(107, 19);
+            animateCutoutCB.TabIndex = 2;
+            animateCutoutCB.Text = "animate cutout";
+            animateCutoutCB.UseVisualStyleBackColor = true;
+            // 
+            // animateComplementCB
+            // 
+            animateComplementCB.AutoSize = true;
+            animateComplementCB.Location = new System.Drawing.Point(6, 97);
+            animateComplementCB.Name = "animateComplementCB";
+            animateComplementCB.Size = new System.Drawing.Size(140, 19);
+            animateComplementCB.TabIndex = 3;
+            animateComplementCB.Text = "animate complement";
+            animateComplementCB.UseVisualStyleBackColor = true;
             // 
             // PaintControl
             // 
@@ -286,5 +310,7 @@
         private System.Windows.Forms.Label toleranceDisplayLabel;
         private System.Windows.Forms.TrackBar toleranceTrackBar;
         private System.Windows.Forms.RadioButton fillColorRB;
+        private System.Windows.Forms.CheckBox animateComplementCB;
+        private System.Windows.Forms.CheckBox animateCutoutCB;
     }
 }
