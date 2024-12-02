@@ -250,6 +250,10 @@ namespace BIUK9000
         {
             return GetFrame(frameIndex).Layers.Find(layer => layer.LayerID == layerId);
         }
+        public int TryGetLayerIndexById(int frameIndex, int layerId)
+        {
+            return GetFrame(frameIndex).Layers.IndexOf(TryGetLayerById(frameIndex, layerId));
+        }
         public void DeleteLayerByID(int layerID)
         {
             foreach (GifFrame gf in giffer.Frames)
@@ -263,6 +267,11 @@ namespace BIUK9000
                     }
                 }
             }
+        }
+        public void DeleteLayerByIndex(int frameIndex, int layerIndex)
+        {
+            int idToDelete = GetLayer(frameIndex, layerIndex).LayerID;
+            DeleteLayerByID(idToDelete);
         }
         public void AddGifferAsLayers(Giffer newGiffer, bool spread)
         {

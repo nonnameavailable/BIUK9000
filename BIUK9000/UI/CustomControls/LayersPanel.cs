@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BIUK9000.GifferComponents;
 
 namespace BIUK9000.UI
 {
@@ -25,64 +24,54 @@ namespace BIUK9000.UI
                 }
             }
         }
-        public GFL SelectedLayer { get => ClickedLayerHolder.HeldLayer; }
-        private GifFrame ActiveFrame { get; set; }
         public int SelectedLayerIndex { get; set; }
         public event EventHandler<LayerOrderEventArgs> LayerOrderChanged;
         public event EventHandler SelectedLayerChanged;
-        public event EventHandler<SelectedIndexEventArgs> LayerVisibilityChanged;
-        public event EventHandler LayerDeleteButtonClicked;
+        public event EventHandler<IndexEventArgs> LayerVisibilityChanged;
+        public event EventHandler<IndexEventArgs> LayerDeleteButtonClicked;
         public LayersPanel()
         {
             InitializeComponent();
-            ActiveFrame = null;
             SelectedLayerIndex = 0;
         }
-        public void DisplayLayers(GifFrame frame)
+        public void DisplayLayers(IBitmapProvider bitmapProvider)
         {
             layersFLP.Visible = false;
-            ActiveFrame = frame;
             for (int i = layersFLP.Controls.Count - 1; i >= 0; i--)
             {
                 Control c = layersFLP.Controls[i];
                 c.Dispose();
             }
-            foreach (var layer in frame.Layers)
+            List<Bitmap> bitmaps = bitmapProvider.GetBitmaps();
+            foreach (Bitmap bitmap in bitmaps)
             {
-                LayerHolder lh = new LayerHolder(layer);
+                LayerHolder lh = new LayerHolder(bitmap);
                 lh.LayerClicked += Lh_LayerClicked;
                 lh.DragDropped += Lh_DragDropped;
                 lh.LayerVisibilityChanged += Lh_LayerVisibilityChanged;
                 lh.DeleteButtonClicked += Lh_DeleteButtonClicked;
                 layersFLP.Controls.Add(lh);
             }
-            SelectLayerHolder(SelectedLayerIndex);
+            for(int i = 0; i < bitmaps.Count; i++)
+            {
+                bitmaps[i]?.Dispose();
+            }
+            SelectHolder(SelectedLayerIndex);
             layersFLP.Visible = true;
         }
 
         private void Lh_LayerVisibilityChanged(object sender, EventArgs e)
         {
             int index = layersFLP.Controls.IndexOf((Control)sender);
-            LayerVisibilityChanged?.Invoke(sender, new SelectedIndexEventArgs(index));
+            LayerVisibilityChanged?.Invoke(sender, new IndexEventArgs(index));
         }
 
         private void Lh_DeleteButtonClicked(object sender, EventArgs e)
         {
-            if (layersFLP.Controls.Count > 1)
-            {
-                SelectedLayerIndex = 0;
-                LayerDeleteButtonClicked?.Invoke(sender, e);
-            }
+            SelectedLayerIndex = 0;
+            LayerDeleteButtonClicked?.Invoke(sender, new IndexEventArgs(layersFLP.Controls.IndexOf(sender as LayerHolder)));
         }
 
-        public void TrySelectLayerByID(int layerID)
-        {
-            GFL newSelectedLayer = ActiveFrame.Layers.Find(layer => layer.LayerID == layerID);
-            if(newSelectedLayer != null)
-            {
-                SelectLayerHolder(ActiveFrame.Layers.IndexOf(newSelectedLayer));
-            }
-        }
         private void Lh_DragDropped(object sender, DragEventArgs e)
         {
             LayerHolder droppedLh = (LayerHolder)e.Data.GetData(typeof(LayerHolder));
@@ -90,13 +79,13 @@ namespace BIUK9000.UI
             int targetIndex = layersFLP.Controls.IndexOf((LayerHolder)sender);
             LayerOrderEventArgs loea = new LayerOrderEventArgs(originalIndex, targetIndex);
             LayerOrderChanged?.Invoke(this, loea);
-            SelectedLayerChanged?.Invoke(ClickedLayerHolder.HeldLayer, EventArgs.Empty);
+            SelectedLayerChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void SelectLayerHolder(int i)
+        public void SelectHolder(int index)
         {
             ClickedLayerHolder?.Highlight(false);
-            SelectedLayerIndex = i;
+            SelectedLayerIndex = index;
             ClickedLayerHolder.Highlight(true);
             ClickedLayerHolder.StayHighlighted = true;
         }
@@ -109,21 +98,20 @@ namespace BIUK9000.UI
             lh.Highlight(true);
             SelectedLayerIndex = layersFLP.Controls.IndexOf(lh);
             if (ClickedLayerHolder != null) ClickedLayerHolder.StayHighlighted = true;
-            SelectedLayerChanged?.Invoke(ClickedLayerHolder.HeldLayer, EventArgs.Empty);
+            SelectedLayerChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void SelectNewestLayer()
         {
             int lhIndex = layersFLP.Controls.Count - 1;
-            SelectLayerHolder(lhIndex);
-            SelectedLayerIndex = lhIndex;
-            SelectedLayerChanged?.Invoke(ClickedLayerHolder.HeldLayer, EventArgs.Empty);
+            SelectHolder(lhIndex);
+            SelectedLayerChanged?.Invoke(this, EventArgs.Empty);
         }
-        public class SelectedIndexEventArgs : EventArgs
+        public class IndexEventArgs : EventArgs
         {
             public int Index { get; }
 
-            public SelectedIndexEventArgs(int index)
+            public IndexEventArgs(int index)
             {
                 Index = index;
             }
@@ -138,6 +126,10 @@ namespace BIUK9000.UI
                 TargetIndex = targetIndex;
                 OriginalIndex = originalIndex;
             }
+        }
+        public interface IBitmapProvider
+        {
+            List<Bitmap> GetBitmaps();
         }
     }
 }

@@ -31,7 +31,7 @@ namespace BIUK9000.UI
         public int SelectedFrameIndex { get => MainTimelineSlider.SelectedFrameIndex; }
         public int SelectedLayerIndex { get => mainLayersPanel.SelectedLayerIndex; }
         public Bitmap SelectedFrameAsBitmap { get => MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode); }
-        private GFL SelectedLayer { get => mainLayersPanel.SelectedLayer; }
+        private GFL SelectedLayer { get => GifferC.GetLayer(SelectedFrameIndex, SelectedLayerIndex); }
         private Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
         public bool IsShiftDown { get; set; }
@@ -527,14 +527,13 @@ namespace BIUK9000.UI
             GifferC.MoveLayer(SelectedFrameIndex, e.OriginalIndex, e.TargetIndex);
             CompleteUIUpdate();
         }
-        private void mainLayersPanel_LayerDeleteButtonClicked(object sender, EventArgs e)
+        private void mainLayersPanel_LayerDeleteButtonClicked(object sender, LayersPanel.IndexEventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to delete this layer?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return;
-            int layerIDToDelete = ((LayerHolder)sender).HeldLayer.LayerID;
-            GifferC.DeleteLayerByID(layerIDToDelete);
+            GifferC.DeleteLayerByIndex(SelectedFrameIndex, e.Index);
             CompleteUIUpdate();
         }
-        private void mainLayersPanel_LayerVisibilityChanged(object sender, LayersPanel.SelectedIndexEventArgs e)
+        private void mainLayersPanel_LayerVisibilityChanged(object sender, LayersPanel.IndexEventArgs e)
         {
             UpdateMainPictureBox();
             GifferC.SaveLayerStateForApply(SelectedFrameIndex, e.Index);
@@ -576,7 +575,7 @@ namespace BIUK9000.UI
             }
             mainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
             if (!keepSelectedFrameAndLayer) MainTimelineSlider.ClearMarks();
-            mainLayersPanel.TrySelectLayerByID(slid);
+            mainLayersPanel.SelectHolder(GifferC.TryGetLayerIndexById(SelectedFrameIndex, slid));
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
             UpdateLayerParamsUI();
             GifferC.SaveLayerForLPC(SelectedFrameIndex, SelectedLayerIndex);

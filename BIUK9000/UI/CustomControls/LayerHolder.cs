@@ -17,30 +17,31 @@ namespace BIUK9000.UI
 {
     public partial class LayerHolder : UserControl
     {
-        public GFL HeldLayer { get; set; }
+        //public GFL HeldLayer { get; set; }
         public bool StayHighlighted { get; set; }
         private OVector OriginalMousePosition { get; set; }
         public event EventHandler LayerClicked;
         public event EventHandler LayerVisibilityChanged;
         public event DragEventHandler DragDropped;
         public event EventHandler DeleteButtonClicked;
-        private bool _isLmbDown;
-        public LayerHolder(GFL layer)
+        private bool _isLmbDown, _visible;
+        public LayerHolder(Bitmap bitmap)
         {
             InitializeComponent();
-            HeldLayer = layer;
+            //HeldLayer = layer;
+            _visible = true;
             mainPictureBox.MouseEnter += MainPictureBox_MouseEnter;
             mainPictureBox.MouseLeave += MainPictureBox_MouseLeave;
             mainPictureBox.MouseClick += (sender, args) => LayerClicked?.Invoke(this, EventArgs.Empty);
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
             mainPictureBox.MouseDown += MainPictureBox_MouseDown;
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
-            mainPictureBox.Image = new Bitmap(layer.MorphedBitmap(InterpolationMode.Low));
+            mainPictureBox.Image = new Bitmap(bitmap);
             DragDrop += (sender, args) => DragDropped?.Invoke(this, args);
             DragEnter += LayerHolder_DragEnter;
             StayHighlighted = false;
             this.AllowDrop = true;
-            visibleButton.Image = (layer.Visible ? Resources.eye_open_icon : Resources.eye_closed_icon);
+            visibleButton.Image = Resources.eye_open_icon;
             visibleButton.Click += VisibleButton_Click;
             deleteButton.Image = Resources.dustbin_icon;
             deleteButton.Click += (sender, args) => DeleteButtonClicked?.Invoke(this, args);
@@ -48,15 +49,17 @@ namespace BIUK9000.UI
 
         private void VisibleButton_Click(object sender, EventArgs e)
         {
-            if (HeldLayer.Visible)
+            if (_visible)
             {
                 visibleButton.Image = Resources.eye_closed_icon;
-                HeldLayer.Visible = false;
+                _visible = false;
+                //HeldLayer.Visible = false;
             }
             else
             {
                 visibleButton.Image = Resources.eye_open_icon;
-                HeldLayer.Visible = true;
+                _visible = true;
+                //HeldLayer.Visible = true;
             }
             OnLayerVisChanged();
         }

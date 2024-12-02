@@ -7,10 +7,11 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using BIUK9000.GifferComponents.GFLVariants;
+using BIUK9000.UI;
 
 namespace BIUK9000.GifferComponents
 {
-    public class GifFrame : IDisposable
+    public class GifFrame : IDisposable, LayersPanel.IBitmapProvider
     {
         private bool _disposed;
 
@@ -94,6 +95,11 @@ namespace BIUK9000.GifferComponents
                 result.AddLayer(layer.Clone());
             }
             return result;
+        }
+
+        public List<Bitmap> GetBitmaps()
+        {
+            return Layers.Select(layer => layer.MorphedBitmap(InterpolationMode.Low)).ToList();
         }
     }
 }
