@@ -17,7 +17,6 @@ namespace BIUK9000.UI
 {
     public partial class LayerHolder : UserControl
     {
-        //public GFL HeldLayer { get; set; }
         public bool StayHighlighted { get; set; }
         private OVector OriginalMousePosition { get; set; }
         public event EventHandler LayerClicked;
@@ -28,7 +27,6 @@ namespace BIUK9000.UI
         public LayerHolder(Bitmap bitmap)
         {
             InitializeComponent();
-            //HeldLayer = layer;
             _visible = true;
             mainPictureBox.MouseEnter += MainPictureBox_MouseEnter;
             mainPictureBox.MouseLeave += MainPictureBox_MouseLeave;
@@ -53,13 +51,11 @@ namespace BIUK9000.UI
             {
                 visibleButton.Image = Resources.eye_closed_icon;
                 _visible = false;
-                //HeldLayer.Visible = false;
             }
             else
             {
                 visibleButton.Image = Resources.eye_open_icon;
                 _visible = true;
-                //HeldLayer.Visible = true;
             }
             OnLayerVisChanged();
         }

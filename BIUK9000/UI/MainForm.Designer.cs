@@ -30,7 +30,6 @@ namespace BIUK9000.UI
         private void InitializeComponent()
         {
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            mainLayersPanel = new LayersPanel();
             mainTimelineSlider = new TimelineSlider();
             controlsPanel = new ControlsPanel();
             markLerpPanel = new System.Windows.Forms.Panel();
@@ -41,10 +40,11 @@ namespace BIUK9000.UI
             deleteFramesButton = new System.Windows.Forms.Button();
             lerpButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
-            hsbPanel = new CustomControls.HSBPanel();
-            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            mainLayersPanel = new LayersPanel();
             tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             layerParamsPanel = new System.Windows.Forms.Panel();
+            hsbPanel = new CustomControls.HSBPanel();
+            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -71,28 +71,19 @@ namespace BIUK9000.UI
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 155F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(872, 561);
+            tableLayoutPanel1.Size = new System.Drawing.Size(928, 598);
             tableLayoutPanel1.TabIndex = 0;
-            // 
-            // mainLayersPanel
-            // 
-            mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainLayersPanel.Location = new System.Drawing.Point(725, 158);
-            mainLayersPanel.Name = "mainLayersPanel";
-            mainLayersPanel.SelectedLayerIndex = 0;
-            mainLayersPanel.Size = new System.Drawing.Size(144, 300);
-            mainLayersPanel.TabIndex = 2;
             // 
             // mainTimelineSlider
             // 
             mainTimelineSlider.Dock = System.Windows.Forms.DockStyle.Fill;
             mainTimelineSlider.FrameDelay = 10;
-            mainTimelineSlider.Location = new System.Drawing.Point(148, 464);
+            mainTimelineSlider.Location = new System.Drawing.Point(148, 501);
             mainTimelineSlider.Maximum = 9;
             mainTimelineSlider.MouseButtonIsDown = false;
             mainTimelineSlider.Name = "mainTimelineSlider";
             mainTimelineSlider.SelectedFrameIndex = 0;
-            mainTimelineSlider.Size = new System.Drawing.Size(571, 94);
+            mainTimelineSlider.Size = new System.Drawing.Size(627, 94);
             mainTimelineSlider.TabIndex = 3;
             // 
             // controlsPanel
@@ -104,7 +95,7 @@ namespace BIUK9000.UI
             controlsPanel.Location = new System.Drawing.Point(3, 3);
             controlsPanel.Name = "controlsPanel";
             tableLayoutPanel1.SetRowSpan(controlsPanel, 3);
-            controlsPanel.Size = new System.Drawing.Size(139, 555);
+            controlsPanel.Size = new System.Drawing.Size(139, 592);
             controlsPanel.TabIndex = 5;
             // 
             // markLerpPanel
@@ -116,7 +107,7 @@ namespace BIUK9000.UI
             markLerpPanel.Controls.Add(deleteFramesButton);
             markLerpPanel.Controls.Add(lerpButton);
             markLerpPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            markLerpPanel.Location = new System.Drawing.Point(725, 464);
+            markLerpPanel.Location = new System.Drawing.Point(781, 501);
             markLerpPanel.Name = "markLerpPanel";
             markLerpPanel.Size = new System.Drawing.Size(144, 94);
             markLerpPanel.TabIndex = 8;
@@ -191,20 +182,19 @@ namespace BIUK9000.UI
             mainPictureBox.Location = new System.Drawing.Point(148, 158);
             mainPictureBox.Name = "mainPictureBox";
             mainPictureBox.ScaledDragDifference = new System.Drawing.Point(0, 0);
-            mainPictureBox.Size = new System.Drawing.Size(571, 300);
+            mainPictureBox.Size = new System.Drawing.Size(627, 337);
             mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             mainPictureBox.TabIndex = 9;
             mainPictureBox.TabStop = false;
             // 
-            // hsbPanel
+            // mainLayersPanel
             // 
-            hsbPanel.Brightness = 1F;
-            hsbPanel.Location = new System.Drawing.Point(430, 3);
-            hsbPanel.Name = "hsbPanel";
-            hsbPanel.Saturation = 1F;
-            hsbPanel.Size = new System.Drawing.Size(138, 143);
-            hsbPanel.TabIndex = 10;
-            hsbPanel.Transparency = 0F;
+            mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            mainLayersPanel.Location = new System.Drawing.Point(781, 158);
+            mainLayersPanel.Name = "mainLayersPanel";
+            mainLayersPanel.SelectedLayerIndex = 0;
+            mainLayersPanel.Size = new System.Drawing.Size(144, 337);
+            mainLayersPanel.TabIndex = 2;
             // 
             // tableLayoutPanel2
             // 
@@ -218,7 +208,7 @@ namespace BIUK9000.UI
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel2.Size = new System.Drawing.Size(571, 149);
+            tableLayoutPanel2.Size = new System.Drawing.Size(627, 149);
             tableLayoutPanel2.TabIndex = 11;
             // 
             // layerParamsPanel
@@ -226,15 +216,29 @@ namespace BIUK9000.UI
             layerParamsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             layerParamsPanel.Location = new System.Drawing.Point(3, 3);
             layerParamsPanel.Name = "layerParamsPanel";
-            layerParamsPanel.Size = new System.Drawing.Size(421, 143);
+            layerParamsPanel.Size = new System.Drawing.Size(477, 143);
             layerParamsPanel.TabIndex = 8;
+            // 
+            // hsbPanel
+            // 
+            hsbPanel.Brightness = 1F;
+            hsbPanel.Location = new System.Drawing.Point(486, 3);
+            hsbPanel.Name = "hsbPanel";
+            hsbPanel.Saturation = 1F;
+            hsbPanel.Size = new System.Drawing.Size(138, 143);
+            hsbPanel.TabIndex = 10;
+            hsbPanel.Transparency = 0F;
+            // 
+            // saveFileDialog
+            // 
+            saveFileDialog.Filter = "GIF files|*.gif";
             // 
             // MainForm
             // 
             AllowDrop = true;
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(872, 561);
+            ClientSize = new System.Drawing.Size(928, 598);
             Controls.Add(tableLayoutPanel1);
             Name = "MainForm";
             Text = "Form1";

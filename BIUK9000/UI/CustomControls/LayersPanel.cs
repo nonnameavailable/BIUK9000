@@ -84,6 +84,7 @@ namespace BIUK9000.UI
 
         public void SelectHolder(int index)
         {
+            if (index < 0) return;
             ClickedLayerHolder?.Highlight(false);
             SelectedLayerIndex = index;
             ClickedLayerHolder.Highlight(true);

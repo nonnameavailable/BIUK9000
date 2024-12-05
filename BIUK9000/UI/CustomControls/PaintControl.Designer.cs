@@ -44,10 +44,10 @@
             replaceColorRB = new System.Windows.Forms.RadioButton();
             drawLineRB = new System.Windows.Forms.RadioButton();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            animateComplementCB = new System.Windows.Forms.CheckBox();
+            animateCutoutCB = new System.Windows.Forms.CheckBox();
             lassoIncludeComplementCB = new System.Windows.Forms.CheckBox();
             lassoConstrainCB = new System.Windows.Forms.CheckBox();
-            animateCutoutCB = new System.Windows.Forms.CheckBox();
-            animateComplementCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)transparencyTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)thicknessNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)toleranceTrackBar).BeginInit();
@@ -63,7 +63,7 @@
             paintColorButton.Color = System.Drawing.Color.Black;
             paintColorButton.Location = new System.Drawing.Point(3, 3);
             paintColorButton.Name = "paintColorButton";
-            paintColorButton.Size = new System.Drawing.Size(46, 29);
+            paintColorButton.Size = new System.Drawing.Size(42, 29);
             paintColorButton.TabIndex = 0;
             toolTip.SetToolTip(paintColorButton, "Fill color for painting");
             // 
@@ -73,7 +73,7 @@
             transparencyTrackBar.Location = new System.Drawing.Point(8, 12);
             transparencyTrackBar.Maximum = 255;
             transparencyTrackBar.Name = "transparencyTrackBar";
-            transparencyTrackBar.Size = new System.Drawing.Size(140, 45);
+            transparencyTrackBar.Size = new System.Drawing.Size(127, 45);
             transparencyTrackBar.TabIndex = 1;
             transparencyTrackBar.TickFrequency = 15;
             toolTip.SetToolTip(transparencyTrackBar, "Opacity of fill color\r\n\r\ndrawing:\r\n0 - Completely transparent\r\n255 - Completely opaque");
@@ -83,11 +83,11 @@
             // 
             thicknessNUD.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             thicknessNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            thicknessNUD.Location = new System.Drawing.Point(55, 3);
+            thicknessNUD.Location = new System.Drawing.Point(51, 3);
             thicknessNUD.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             thicknessNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             thicknessNUD.Name = "thicknessNUD";
-            thicknessNUD.Size = new System.Drawing.Size(134, 25);
+            thicknessNUD.Size = new System.Drawing.Size(125, 25);
             thicknessNUD.TabIndex = 2;
             toolTip.SetToolTip(thicknessNUD, "Line thickness");
             thicknessNUD.Value = new decimal(new int[] { 1, 0, 0, 0 });
@@ -97,7 +97,7 @@
             transparencyDisplayLabel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             transparencyDisplayLabel.AutoSize = true;
             transparencyDisplayLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            transparencyDisplayLabel.Location = new System.Drawing.Point(151, 14);
+            transparencyDisplayLabel.Location = new System.Drawing.Point(138, 14);
             transparencyDisplayLabel.Name = "transparencyDisplayLabel";
             transparencyDisplayLabel.Size = new System.Drawing.Size(20, 17);
             transparencyDisplayLabel.TabIndex = 3;
@@ -109,7 +109,7 @@
             toleranceTrackBar.Location = new System.Drawing.Point(8, 63);
             toleranceTrackBar.Maximum = 255;
             toleranceTrackBar.Name = "toleranceTrackBar";
-            toleranceTrackBar.Size = new System.Drawing.Size(140, 45);
+            toleranceTrackBar.Size = new System.Drawing.Size(127, 45);
             toleranceTrackBar.TabIndex = 4;
             toleranceTrackBar.TickFrequency = 15;
             toolTip.SetToolTip(toleranceTrackBar, "Tolerance for replace color and fill\r\n\r\n0 - no tolerance, only exactly the same color will be replaced / filled\r\n255 - everything will be replaced / filled");
@@ -119,8 +119,8 @@
             tableLayoutPanel1.ColumnCount = 4;
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 73F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 105F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 109F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 159F));
             tableLayoutPanel1.Controls.Add(paintColorButton, 0, 0);
             tableLayoutPanel1.Controls.Add(panel1, 0, 1);
             tableLayoutPanel1.Controls.Add(toolsGroupBox, 2, 0);
@@ -145,7 +145,7 @@
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             panel1.Location = new System.Drawing.Point(3, 38);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(186, 111);
+            panel1.Size = new System.Drawing.Size(173, 111);
             panel1.TabIndex = 4;
             // 
             // toleranceDisplayLabel
@@ -153,7 +153,7 @@
             toleranceDisplayLabel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             toleranceDisplayLabel.AutoSize = true;
             toleranceDisplayLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            toleranceDisplayLabel.Location = new System.Drawing.Point(151, 66);
+            toleranceDisplayLabel.Location = new System.Drawing.Point(138, 66);
             toleranceDisplayLabel.Name = "toleranceDisplayLabel";
             toleranceDisplayLabel.Size = new System.Drawing.Size(20, 17);
             toleranceDisplayLabel.TabIndex = 5;
@@ -165,10 +165,10 @@
             toolsGroupBox.Controls.Add(lassoRB);
             toolsGroupBox.Controls.Add(replaceColorRB);
             toolsGroupBox.Controls.Add(drawLineRB);
-            toolsGroupBox.Location = new System.Drawing.Point(195, 3);
+            toolsGroupBox.Location = new System.Drawing.Point(182, 3);
             toolsGroupBox.Name = "toolsGroupBox";
             tableLayoutPanel1.SetRowSpan(toolsGroupBox, 2);
-            toolsGroupBox.Size = new System.Drawing.Size(99, 143);
+            toolsGroupBox.Size = new System.Drawing.Size(102, 143);
             toolsGroupBox.TabIndex = 5;
             toolsGroupBox.TabStop = false;
             toolsGroupBox.Text = "tools";
@@ -223,13 +223,33 @@
             groupBox1.Controls.Add(animateCutoutCB);
             groupBox1.Controls.Add(lassoIncludeComplementCB);
             groupBox1.Controls.Add(lassoConstrainCB);
-            groupBox1.Location = new System.Drawing.Point(300, 3);
+            groupBox1.Location = new System.Drawing.Point(291, 3);
             groupBox1.Name = "groupBox1";
             tableLayoutPanel1.SetRowSpan(groupBox1, 2);
-            groupBox1.Size = new System.Drawing.Size(145, 143);
+            groupBox1.Size = new System.Drawing.Size(154, 143);
             groupBox1.TabIndex = 6;
             groupBox1.TabStop = false;
             groupBox1.Text = "lasso options";
+            // 
+            // animateComplementCB
+            // 
+            animateComplementCB.AutoSize = true;
+            animateComplementCB.Location = new System.Drawing.Point(6, 97);
+            animateComplementCB.Name = "animateComplementCB";
+            animateComplementCB.Size = new System.Drawing.Size(140, 19);
+            animateComplementCB.TabIndex = 3;
+            animateComplementCB.Text = "animate complement";
+            animateComplementCB.UseVisualStyleBackColor = true;
+            // 
+            // animateCutoutCB
+            // 
+            animateCutoutCB.AutoSize = true;
+            animateCutoutCB.Location = new System.Drawing.Point(6, 72);
+            animateCutoutCB.Name = "animateCutoutCB";
+            animateCutoutCB.Size = new System.Drawing.Size(107, 19);
+            animateCutoutCB.TabIndex = 2;
+            animateCutoutCB.Text = "animate cutout";
+            animateCutoutCB.UseVisualStyleBackColor = true;
             // 
             // lassoIncludeComplementCB
             // 
@@ -250,26 +270,6 @@
             lassoConstrainCB.TabIndex = 0;
             lassoConstrainCB.Text = "constrain";
             lassoConstrainCB.UseVisualStyleBackColor = true;
-            // 
-            // animateCutoutCB
-            // 
-            animateCutoutCB.AutoSize = true;
-            animateCutoutCB.Location = new System.Drawing.Point(6, 72);
-            animateCutoutCB.Name = "animateCutoutCB";
-            animateCutoutCB.Size = new System.Drawing.Size(107, 19);
-            animateCutoutCB.TabIndex = 2;
-            animateCutoutCB.Text = "animate cutout";
-            animateCutoutCB.UseVisualStyleBackColor = true;
-            // 
-            // animateComplementCB
-            // 
-            animateComplementCB.AutoSize = true;
-            animateComplementCB.Location = new System.Drawing.Point(6, 97);
-            animateComplementCB.Name = "animateComplementCB";
-            animateComplementCB.Size = new System.Drawing.Size(140, 19);
-            animateComplementCB.TabIndex = 3;
-            animateComplementCB.Text = "animate complement";
-            animateComplementCB.UseVisualStyleBackColor = true;
             // 
             // PaintControl
             // 

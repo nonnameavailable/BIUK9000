@@ -197,6 +197,7 @@ namespace BIUK9000
         }
         public static void SaveGif(Giffer giffer, ControlsPanel cp, string path, GifQuality gifQuality, bool createFrames, InterpolationMode interpolationMode)
         {
+            if (Path.GetExtension(path) == string.Empty || Path.GetExtension(path) != ".gif") path += ".gif";
             if (path == giffer.OriginalImagePath)
             {
                 MessageBox.Show("Do not use the same file name for export as you did for import.");

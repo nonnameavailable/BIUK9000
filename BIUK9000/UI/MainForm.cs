@@ -535,9 +535,10 @@ namespace BIUK9000.UI
         }
         private void mainLayersPanel_LayerVisibilityChanged(object sender, LayersPanel.IndexEventArgs e)
         {
+            GifferC.GetLayer(SelectedFrameIndex, e.Index).Visible = !GifferC.GetLayer(SelectedFrameIndex, e.Index).Visible;
             UpdateMainPictureBox();
             GifferC.SaveLayerStateForApply(SelectedFrameIndex, e.Index);
-            GifferC.SetSavedLayerVisibility(!MainGiffer.Frames[SelectedFrameIndex].Layers[e.Index].Visible);
+            GifferC.SetSavedLayerVisibility(!GifferC.GetLayer(SelectedFrameIndex, e.Index).Visible);
             ApplyLayerParamsToSubsequentLayers(e.Index);
         }
         private void MainTimelineSlider_SelectedFrameChanged(object sender, EventArgs e)
