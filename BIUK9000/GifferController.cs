@@ -81,46 +81,6 @@ namespace BIUK9000
         {
             if(SavedLayerForApply != null) SavedLayerForApply.Visible = visible;
         }
-        //public void LerpExecute(List<int> marks, int selectedLayerIndex, List<Point> mouseTrace = null)
-        //{
-        //    if(marks.Count < 2)
-        //    {
-        //        MessageBox.Show("You must add at least 2 marks");
-        //        return;
-        //    }
-        //    int startFrameIndex = Math.Min(marks[0], marks[1]);
-        //    int endFrameIndex = Math.Max(marks[0], marks[1]);
-        //    GFL startLayer = giffer.Frames[startFrameIndex].Layers[selectedLayerIndex];
-        //    GFL endLayer = giffer.Frames[endFrameIndex].Layers.Find(layer => startLayer.LayerID == layer.LayerID);
-        //    if (startLayer == null || endLayer == null)
-        //    {
-        //        MessageBox.Show("Layers not found");
-        //        return;
-        //    }
-        //    int totalFrames = endFrameIndex - startFrameIndex;
-        //    OVector difference = null;
-        //    if(mouseTrace != null && mouseTrace.Count > 0)
-        //    {
-        //        difference = startLayer.Position.Copy().Subtract(new OVector(mouseTrace[0]));
-        //    }
-        //    for (int i = startFrameIndex + 1; i < endFrameIndex; i++)
-        //    {
-        //        double distance = 1 - (endFrameIndex - i) / (double)totalFrames;
-        //        GifFrame cgf = giffer.Frames[i];
-        //        GFL layerToLerp = cgf.Layers.Find(layer => layer.LayerID == startLayer.LayerID);
-        //        if(mouseTrace == null || mouseTrace.Count == 0)
-        //        {
-        //            //straight line lerp
-        //            layerToLerp?.Lerp(startLayer, endLayer, distance);
-        //        }
-        //        else
-        //        {
-        //            //mouse trace lerp
-        //            OVector tracePoint = new OVector(mouseTrace[(int)(distance * (mouseTrace.Count - 1))]);
-        //            layerToLerp?.Lerp(startLayer, endLayer, distance, tracePoint.Add(difference));
-        //        }
-        //    }
-        //}
         public void LerpExecute(List<int> marks, int selectedLayerIndex, List<Point> mouseTrace = null)
         {
             if (marks.Count < 2)
@@ -405,6 +365,7 @@ namespace BIUK9000
         }
         public void Lasso(int frameIndex, int layerIndex, Point[] lassoPoints, bool includeComplement, bool constrain, bool animateCutout, bool animateComplement)
         {
+            if (lassoPoints.Length < 3) return;
             BitmapGFL bgfl = (BitmapGFL)GetLayer(frameIndex, layerIndex);
             int cutoutLayerId = giffer.NextLayerID();
             if (animateCutout)
@@ -415,14 +376,16 @@ namespace BIUK9000
                     if (currentBgfl == null) continue;
                     using Bitmap cutout = Painter.LassoCutout(currentBgfl.OriginalBitmap, lassoPoints, constrain);
                     BitmapGFL newBgfl = new BitmapGFL(cutout, cutoutLayerId);
-                    newBgfl.CopyParameters(bgfl);
+                    //newBgfl.CopyParameters(bgfl);
+                    CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
                     GetFrame(i).AddLayer(newBgfl);
                 }
             } else
             {
                 using Bitmap cutoutBitmap = Painter.LassoCutout(bgfl.OriginalBitmap, lassoPoints, constrain);
-                BitmapGFL newBgfl = new BitmapGFL(cutoutBitmap, cutoutLayerId);
-                newBgfl.CopyParameters(bgfl);
+                using BitmapGFL newBgfl = new BitmapGFL(cutoutBitmap, cutoutLayerId);
+                //newBgfl.CopyParameters(bgfl);
+                CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
                 AddLayer(newBgfl);
             }
             if (includeComplement)
@@ -435,17 +398,45 @@ namespace BIUK9000
                         BitmapGFL currentBgfl = (BitmapGFL)TryGetLayerById(i, bgfl.LayerID);
                         if (currentBgfl == null) continue;
                         using Bitmap complement = Painter.LassoComplement(currentBgfl.OriginalBitmap, lassoPoints);
-                        BitmapGFL newBgfl = new BitmapGFL(complement, complementLayerId);
-                        newBgfl.CopyParameters(bgfl);
+                        using BitmapGFL newBgfl = new BitmapGFL(complement, complementLayerId);
+                        //newBgfl.CopyParameters(bgfl);
+                        CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
                         GetFrame(i).AddLayer(newBgfl);
                     }
                 } else
                 {
-                    Bitmap complementBitmap = Painter.LassoComplement(bgfl.OriginalBitmap, lassoPoints);
-                    BitmapGFL cbgfl = new BitmapGFL(complementBitmap, complementLayerId);
-                    cbgfl.CopyParameters(bgfl);
-                    AddLayer(cbgfl);
+                    using Bitmap complementBitmap = Painter.LassoComplement(bgfl.OriginalBitmap, lassoPoints);
+                    using BitmapGFL newBgfl = new BitmapGFL(complementBitmap, complementLayerId);
+                    //newBgfl.CopyParameters(bgfl);
+                    CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
+                    AddLayer(newBgfl);
                 }
+            }
+        }
+        private void CopyLassoParams(BitmapGFL newGFL, BitmapGFL modelGFL, bool constrain, Point[] lassoPoints)
+        {
+            if (constrain)
+            {
+                newGFL.Position = modelGFL.Position.Copy();
+                newGFL.Rotation = modelGFL.Rotation;
+                newGFL.Width = (int)Math.Round(newGFL.Width * modelGFL.HRatio, 0);
+                newGFL.Height = (int)Math.Round(newGFL.Height * modelGFL.VRatio, 0);
+                using GraphicsPath gp = new GraphicsPath();
+                gp.AddPolygon(lassoPoints);
+                RectangleF boundingBox = gp.GetBounds();
+                OVector ratioVector = new OVector(modelGFL.HRatio, modelGFL.VRatio);
+                OVector posAdjust = new OVector(boundingBox.X, boundingBox.Y).Mult2(ratioVector.X, ratioVector.Y);
+                newGFL.Position = modelGFL.Position.Copy().Add(posAdjust);
+
+                OVector arm = newGFL.Center().Copy().Subtract(modelGFL.Center());
+                arm.Mult2(ratioVector.X, ratioVector.Y);
+                arm.Rotate(modelGFL.Rotation);
+                arm.Div2(ratioVector.X, ratioVector.Y);
+                newGFL.Position = modelGFL.Center().Copy().Add(arm).Subtract(newGFL.Center().Copy().Subtract(newGFL.Position));
+            }
+            else
+            {
+                newGFL.CopyParameters(modelGFL);
             }
         }
     }

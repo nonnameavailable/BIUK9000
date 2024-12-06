@@ -14,8 +14,8 @@ namespace BIUK9000
     {
         public double X {  get; set; }
         public double Y { get; set; }
-        public int Xint { get => (int)X; }
-        public int Yint { get => (int)Y; }
+        public int Xint { get => (int)Math.Round(X, 0); }
+        public int Yint { get => (int)Math.Round(Y, 0); }
         public double Magnitude
         {
             get
