@@ -176,18 +176,19 @@
             // fillColorRB
             // 
             fillColorRB.AutoSize = true;
-            fillColorRB.Location = new System.Drawing.Point(6, 100);
+            fillColorRB.Location = new System.Drawing.Point(6, 71);
             fillColorRB.Name = "fillColorRB";
             fillColorRB.Size = new System.Drawing.Size(68, 19);
             fillColorRB.TabIndex = 3;
             fillColorRB.TabStop = true;
             fillColorRB.Text = "fill color";
+            toolTip.SetToolTip(fillColorRB, "Works just like fill tool in any other image editing software.\r\nThe fill is only performed on selected frame.");
             fillColorRB.UseVisualStyleBackColor = true;
             // 
             // lassoRB
             // 
             lassoRB.AutoSize = true;
-            lassoRB.Location = new System.Drawing.Point(6, 72);
+            lassoRB.Location = new System.Drawing.Point(6, 96);
             lassoRB.Name = "lassoRB";
             lassoRB.Size = new System.Drawing.Size(51, 19);
             lassoRB.TabIndex = 2;
@@ -203,6 +204,7 @@
             replaceColorRB.Size = new System.Drawing.Size(93, 19);
             replaceColorRB.TabIndex = 1;
             replaceColorRB.Text = "replace color";
+            toolTip.SetToolTip(replaceColorRB, "Replaces all pixels of the same color as the color you clicked on\r\n(or similar color, based on the tolerance)\r\nwith the color specified in the button.");
             replaceColorRB.UseVisualStyleBackColor = true;
             // 
             // drawLineRB
@@ -239,6 +241,7 @@
             animateComplementCB.Size = new System.Drawing.Size(140, 19);
             animateComplementCB.TabIndex = 3;
             animateComplementCB.Text = "animate complement";
+            toolTip.SetToolTip(animateComplementCB, "Lasso complement will be animated.");
             animateComplementCB.UseVisualStyleBackColor = true;
             // 
             // animateCutoutCB
@@ -249,6 +252,7 @@
             animateCutoutCB.Size = new System.Drawing.Size(107, 19);
             animateCutoutCB.TabIndex = 2;
             animateCutoutCB.Text = "animate cutout";
+            toolTip.SetToolTip(animateCutoutCB, "Lasso cutout will be animated.");
             animateCutoutCB.UseVisualStyleBackColor = true;
             // 
             // lassoIncludeComplementCB
@@ -259,16 +263,20 @@
             lassoIncludeComplementCB.Size = new System.Drawing.Size(136, 19);
             lassoIncludeComplementCB.TabIndex = 1;
             lassoIncludeComplementCB.Text = "include complement";
+            toolTip.SetToolTip(lassoIncludeComplementCB, "Lasso will also create a \"complement\" layer (Whatever would be left after the lasso cuts out the image)");
             lassoIncludeComplementCB.UseVisualStyleBackColor = true;
             // 
             // lassoConstrainCB
             // 
             lassoConstrainCB.AutoSize = true;
+            lassoConstrainCB.Checked = true;
+            lassoConstrainCB.CheckState = System.Windows.Forms.CheckState.Checked;
             lassoConstrainCB.Location = new System.Drawing.Point(6, 23);
             lassoConstrainCB.Name = "lassoConstrainCB";
             lassoConstrainCB.Size = new System.Drawing.Size(75, 19);
             lassoConstrainCB.TabIndex = 0;
             lassoConstrainCB.Text = "constrain";
+            toolTip.SetToolTip(lassoConstrainCB, "Constrains the newly created layer bounds to just the selected area");
             lassoConstrainCB.UseVisualStyleBackColor = true;
             // 
             // PaintControl

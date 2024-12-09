@@ -367,6 +367,9 @@ namespace BIUK9000
         {
             if (lassoPoints.Length < 3) return;
             BitmapGFL bgfl = (BitmapGFL)GetLayer(frameIndex, layerIndex);
+
+            ClampPoints(lassoPoints, 0, bgfl.OriginalWidth, 0 , bgfl.OriginalHeight);
+
             int cutoutLayerId = giffer.NextLayerID();
             if (animateCutout)
             {
@@ -437,6 +440,17 @@ namespace BIUK9000
             else
             {
                 newGFL.CopyParameters(modelGFL);
+            }
+        }
+
+        private void ClampPoints(Point[] points, int xMin, int xMax, int yMin, int yMax)
+        {
+            for(int i = 0; i < points.Length; i++)
+            {
+                Point cp = points[i];
+                int newX = Math.Clamp(cp.X, xMin, xMax);
+                int newY = Math.Clamp(cp.Y, yMin, yMax);
+                points[i] = new Point(newX, newY);
             }
         }
     }
