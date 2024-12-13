@@ -353,8 +353,8 @@ namespace BIUK9000.UI
             if (!IsLMBDown && !IsMMBDown & !IsRMBDown)
             {
                 UpdateTimer.Stop();
+                if(!IsCtrlDown)ApplyLayerParamsToSubsequentLayers();
             }
-            ApplyLayerParamsToSubsequentLayers();
             UpdateMainPictureBox();
         }
 

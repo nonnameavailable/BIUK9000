@@ -402,16 +402,16 @@ namespace BIUK9000
                         if (currentBgfl == null) continue;
                         using Bitmap complement = Painter.LassoComplement(currentBgfl.OriginalBitmap, lassoPoints);
                         using BitmapGFL newBgfl = new BitmapGFL(complement, complementLayerId);
-                        //newBgfl.CopyParameters(bgfl);
-                        CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
+                        newBgfl.CopyParameters(bgfl);
+                        //CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
                         GetFrame(i).AddLayer(newBgfl);
                     }
                 } else
                 {
                     using Bitmap complementBitmap = Painter.LassoComplement(bgfl.OriginalBitmap, lassoPoints);
                     using BitmapGFL newBgfl = new BitmapGFL(complementBitmap, complementLayerId);
-                    //newBgfl.CopyParameters(bgfl);
-                    CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
+                    newBgfl.CopyParameters(bgfl);
+                    //CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
                     AddLayer(newBgfl);
                 }
             }

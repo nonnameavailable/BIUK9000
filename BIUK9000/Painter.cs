@@ -165,6 +165,8 @@ namespace BIUK9000
 
             return complementBitmap;
         }
+
+
         public static void AdjustImageAttributes(Image image, float brightness, float saturation)
         {
             //adapted from https://stackoverflow.com/a/14384449/9852011
@@ -256,5 +258,6 @@ namespace BIUK9000
             if (p.X >= fbm.Width || p.Y >= fbm.Height || p.X < 0 || p.Y < 0) return false;
             return ColorIsWithinTolerance(fbm.GetPixel(p), c, tolerance);
         }
+
     }
 }

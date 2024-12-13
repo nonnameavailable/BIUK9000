@@ -63,7 +63,7 @@ namespace BIUK9000.UI
             mpbAAModeCBB.SelectedItem = InterpolationMode.HighQualityBicubic;
             mpbAAModeCBB.SelectedIndexChanged += MpbAAModeCBB_SelectedIndexChanged;
             applyParamsCBB.SelectedIndex = 0;
-            ImageExportFormatCBB.SelectedIndex = 0;
+            ImageExportFormatCBB.SelectedIndex = 1;
             gifExportModeCBB.SelectedIndex = 1;
             saveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
             useDitheringCB.CheckedChanged += UseDitheringCB_CheckedChanged;
