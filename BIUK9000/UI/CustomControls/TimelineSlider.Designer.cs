@@ -1,4 +1,6 @@
-﻿namespace BIUK9000.UI
+﻿using BIUK9000.UI.ExtendedControls;
+
+namespace BIUK9000.UI
 {
     partial class TimelineSlider
     {

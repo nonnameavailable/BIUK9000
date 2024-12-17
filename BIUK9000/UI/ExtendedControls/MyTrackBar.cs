@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000.UI
+namespace BIUK9000.UI.ExtendedControls
 {
     public class MyTrackBar : TrackBar
     {
@@ -26,7 +26,7 @@ namespace BIUK9000.UI
             if (m.Msg == 0x0F)
             {
                 using Graphics lgGraphics = Graphics.FromHwndInternal(m.HWnd);
-                OnPaintOver(new PaintEventArgs(lgGraphics, this.ClientRectangle));
+                OnPaintOver(new PaintEventArgs(lgGraphics, ClientRectangle));
             }
         }
         protected virtual void OnPaintOver(PaintEventArgs e)
@@ -42,10 +42,11 @@ namespace BIUK9000.UI
         {
             if (mark <= Maximum && Maximum > 0 && mark >= Minimum)
             {
-                if(marks.Contains(mark))
+                if (marks.Contains(mark))
                 {
                     marks.Remove(mark);
-                } else
+                }
+                else
                 {
                     marks.Add(mark);
                 }

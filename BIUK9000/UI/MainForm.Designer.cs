@@ -1,4 +1,6 @@
 ﻿
+using BIUK9000.UI.ExtendedControls;
+
 namespace BIUK9000.UI
 {
     partial class MainForm
@@ -68,7 +70,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 3;
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 155F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 158F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             tableLayoutPanel1.Size = new System.Drawing.Size(928, 598);
@@ -179,10 +181,10 @@ namespace BIUK9000.UI
             mainPictureBox.IsLMBDown = false;
             mainPictureBox.IsMMBDown = false;
             mainPictureBox.IsRMBDown = false;
-            mainPictureBox.Location = new System.Drawing.Point(148, 158);
+            mainPictureBox.Location = new System.Drawing.Point(148, 161);
             mainPictureBox.Name = "mainPictureBox";
             mainPictureBox.ScaledDragDifference = new System.Drawing.Point(0, 0);
-            mainPictureBox.Size = new System.Drawing.Size(627, 337);
+            mainPictureBox.Size = new System.Drawing.Size(627, 334);
             mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             mainPictureBox.TabIndex = 9;
             mainPictureBox.TabStop = false;
@@ -190,17 +192,18 @@ namespace BIUK9000.UI
             // mainLayersPanel
             // 
             mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainLayersPanel.Location = new System.Drawing.Point(781, 158);
+            mainLayersPanel.Location = new System.Drawing.Point(781, 161);
             mainLayersPanel.Name = "mainLayersPanel";
             mainLayersPanel.SelectedLayerIndex = 0;
-            mainLayersPanel.Size = new System.Drawing.Size(144, 337);
+            mainLayersPanel.Size = new System.Drawing.Size(144, 334);
             mainLayersPanel.TabIndex = 2;
             // 
             // tableLayoutPanel2
             // 
             tableLayoutPanel2.ColumnCount = 2;
+            tableLayoutPanel1.SetColumnSpan(tableLayoutPanel2, 2);
             tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 144F));
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
             tableLayoutPanel2.Controls.Add(layerParamsPanel, 0, 0);
             tableLayoutPanel2.Controls.Add(hsbPanel, 1, 0);
             tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -208,7 +211,7 @@ namespace BIUK9000.UI
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel2.Size = new System.Drawing.Size(627, 149);
+            tableLayoutPanel2.Size = new System.Drawing.Size(777, 152);
             tableLayoutPanel2.TabIndex = 11;
             // 
             // layerParamsPanel
@@ -216,16 +219,16 @@ namespace BIUK9000.UI
             layerParamsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             layerParamsPanel.Location = new System.Drawing.Point(3, 3);
             layerParamsPanel.Name = "layerParamsPanel";
-            layerParamsPanel.Size = new System.Drawing.Size(477, 143);
+            layerParamsPanel.Size = new System.Drawing.Size(575, 146);
             layerParamsPanel.TabIndex = 8;
             // 
             // hsbPanel
             // 
             hsbPanel.Brightness = 1F;
-            hsbPanel.Location = new System.Drawing.Point(486, 3);
+            hsbPanel.Location = new System.Drawing.Point(584, 3);
             hsbPanel.Name = "hsbPanel";
             hsbPanel.Saturation = 1F;
-            hsbPanel.Size = new System.Drawing.Size(138, 143);
+            hsbPanel.Size = new System.Drawing.Size(190, 143);
             hsbPanel.TabIndex = 10;
             hsbPanel.Transparency = 0F;
             // 

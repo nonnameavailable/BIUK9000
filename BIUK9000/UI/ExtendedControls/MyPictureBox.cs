@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000.UI
+namespace BIUK9000.UI.ExtendedControls
 {
     public class MyPictureBox : PictureBox
     {
-        public bool IsLMBDown {  get; set; }
+        public bool IsLMBDown { get; set; }
         public bool IsRMBDown { get; set; }
         public bool IsMMBDown { get; set; }
         public List<Point> MouseTrace { get; private set; }
@@ -52,8 +52,8 @@ namespace BIUK9000.UI
         {
             mousePosition = e.Location;
             if (Image == null) return;
-            ScaledDragDifference = new Point((int)((e.X - mouseClickedPosition.X) / Zoom()),(int)((e.Y - mouseClickedPosition.Y) / Zoom()));
-            if(IsLMBDown && !IsRMBDown && !IsMMBDown) MouseTrace.Add(MousePositionOnImage);
+            ScaledDragDifference = new Point((int)((e.X - mouseClickedPosition.X) / Zoom()), (int)((e.Y - mouseClickedPosition.Y) / Zoom()));
+            if (IsLMBDown && !IsRMBDown && !IsMMBDown) MouseTrace.Add(MousePositionOnImage);
         }
 
         private void MyPictureBox_MouseUp(object sender, MouseEventArgs e)
@@ -97,8 +97,8 @@ namespace BIUK9000.UI
         }
         public double Zoom()
         {
-            double widthScale = (double)Width / (double)Image.Width;
-            double heightScale = (double)Height / (double)Image.Height;
+            double widthScale = Width / (double)Image.Width;
+            double heightScale = Height / (double)Image.Height;
             return Math.Min(widthScale, heightScale);
         }
         public Point PointToMouse(Point p)

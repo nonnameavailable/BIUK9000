@@ -37,7 +37,8 @@ namespace BIUK9000.UI
         public bool IsShiftDown { get; set; }
         public bool IsCtrlDown { get; set; }
         private float _originalLayerRotation;
-        private OVector _originalLCtM;
+        private OVector _previousLCtM;
+        private float _rotationChange;
         private Control _lpcBackup;
         private Control _paintControl;
         public bool IsLMBDown { get => mainPictureBox.IsLMBDown; }
@@ -366,7 +367,8 @@ namespace BIUK9000.UI
             MainGiffer.Save();
             GifferC.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
             _originalLayerRotation = cgfl.Rotation;
-            _originalLCtM = LayerCenterToMouse();
+            _previousLCtM = LayerCenterToMouse();
+            _rotationChange = 0;
             if (controlsPanel.ToolPaintSelectedFlag && SelectedLayer is BitmapGFL)
             {
                 if (IsLMBDown)
@@ -446,16 +448,19 @@ namespace BIUK9000.UI
                 else if (!IsLMBDown && IsRMBDown)
                 {
                     //ROTATE
-                    double angle = currentLCtM.Rotation;
-                    float newRotation = _originalLayerRotation + (float)angle - (float)_originalLCtM.Rotation;
+                    float angleDif = (float)currentLCtM.Rotation - (float)_previousLCtM.Rotation;
+                    if (angleDif > 180) angleDif -= 360;
+                    if (angleDif < -180) angleDif += 360;
+                    _rotationChange += angleDif;
+                    float newRotation = _originalLayerRotation + _rotationChange;
                     if (controlsPanel.RotationSnap)
                     {
-                        gfl.Rotation = SnappedRotation(newRotation, 10);
-                    }
-                    else
+                        gfl.Rotation = SnappedRotation(newRotation, 5);
+                    } else
                     {
                         gfl.Rotation = newRotation;
                     }
+                    _previousLCtM = currentLCtM;
                 }
                 else if (IsMMBDown)
                 {
@@ -474,7 +479,7 @@ namespace BIUK9000.UI
                         if (!IsShiftDown)
                         {
                             //RESIZE LAYER KEEP RATIO
-                            int sizeDif = (int)(currentLCtM.Magnitude - _originalLCtM.Magnitude);
+                            int sizeDif = (int)(currentLCtM.Magnitude - _previousLCtM.Magnitude);
                             gfl.Resize(sizeDif);
                         }
                         else
@@ -496,9 +501,8 @@ namespace BIUK9000.UI
         }
         private static float SnappedRotation(float rotation, float snapAngle)
         {
-            if (rotation < 0) rotation += 360;
-            float roundedRotation = (float)(Math.Round(rotation / 90f, 0) * 90);
-            float mod90 = rotation % 90;
+            float roundedRotation = (float)(Math.Round(rotation / 90, 0) * 90);
+            float mod90 = Math.Abs(rotation % 90);
             if (mod90 > 90 - snapAngle || mod90 < snapAngle)
             {
                 return roundedRotation;

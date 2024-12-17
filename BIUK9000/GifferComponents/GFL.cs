@@ -49,40 +49,14 @@ namespace BIUK9000.GifferComponents
             Visible = true;
             Width = 50;
             Height = 50;
-            _rotation = 0;
-            _previousRotation = 0;
-            _spinCount = 0;
+            Rotation = 0;
             Saturation = 1;
             Brightness = 1;
             Transparency = 1;
         }
         public bool Visible { get; set; }
-        public float Rotation
-        {
-            get
-            {
-                return _rotation + _spinCount * 360;
-            }
-            set
-            {
-                _rotation = value;
-                float dif = _rotation - _previousRotation;
-                if (dif > 180)
-                {
-                    _spinCount--;
-                    _rotation += 360;
-                }
-                else if (dif < -180)
-                {
-                    _spinCount++;
-                    _rotation -= 360;
-                }
-                _previousRotation = value;
-            }
-        }
-        protected float _rotation;
-        protected float _previousRotation;
-        protected int _spinCount;
+        public float Rotation { get; set; }
+
         public abstract Bitmap MorphedBitmap(InterpolationMode interpolationMode);
         protected Rectangle OBR { get; set; }
         public virtual void Save()
@@ -174,7 +148,7 @@ namespace BIUK9000.GifferComponents
         {
             if (!ogState.Position.Equals(newState.Position)) Position = newState.Position;
             if(ogState.Rotation != newState.Rotation) Rotation = newState.Rotation;
-            if(ogState.Width != newState.Width) Width = newState.Width;
+            if (ogState.Width != newState.Width) Width = newState.Width;
             if(ogState.Height != newState.Height) Height = newState.Height;
             if(ogState.Visible != newState.Visible) Visible = newState.Visible;
             if(ogState.Saturation != newState.Saturation) Saturation = newState.Saturation;
