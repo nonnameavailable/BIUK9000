@@ -34,8 +34,17 @@ namespace BIUK9000.UI
         public bool DrawHelp { get => drawHelpCB.Checked; }
         public bool UseGifsicle { get => useGifSicleCB.Checked; }
         public bool UseDithering { get => useDitheringCB.Checked; }
-        public bool ToolMoveSelectedFlag { get => toolMoveRB.Checked; }
-        public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; }
+        public bool ToolMoveSelectedFlag
+        {
+            get => toolMoveRB.Checked;
+            set
+            {
+                _isCodeChange = true;
+                toolMoveRB.Checked = true;
+                _isCodeChange = false;
+            }
+        }
+        public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; set => toolPaintRB.Checked = true; }
         public InterpolationMode InterpolationMode { get => (InterpolationMode)mpbAAModeCBB.SelectedItem; }
         public bool CreateFrames { get => createFramesCB.Checked; }
 
@@ -44,6 +53,8 @@ namespace BIUK9000.UI
         public event EventHandler SaveButtonClicked;
         public event EventHandler InterpolationModeChanged;
         public event EventHandler ToolMoveSelected, ToolPaintSelected;
+
+        private bool _isCodeChange;
         public ControlsPanel()
         {
             InitializeComponent();
@@ -73,12 +84,12 @@ namespace BIUK9000.UI
 
         private void ToolPaintRB_CheckedChanged(object sender, EventArgs e)
         {
-            if (ToolPaintSelectedFlag) ToolPaintSelected?.Invoke(this, EventArgs.Empty);
+            if (ToolPaintSelectedFlag && ! _isCodeChange) ToolPaintSelected?.Invoke(this, EventArgs.Empty);
         }
 
         private void ToolMoveRB_CheckedChanged(object sender, EventArgs e)
         {
-            if (ToolMoveSelectedFlag) ToolMoveSelected?.Invoke(this, EventArgs.Empty);
+            if (ToolMoveSelectedFlag && !_isCodeChange) ToolMoveSelected?.Invoke(this, EventArgs.Empty);
         }
 
         private void MpbAAModeCBB_SelectedIndexChanged(object sender, EventArgs e)

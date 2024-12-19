@@ -110,7 +110,7 @@ namespace BIUK9000
         }
         public static void LayerExportDragDrop(MainForm mf)
         {
-            Bitmap bitmap = mf.GifferC.GetLayer(mf.SelectedFrameIndex, mf.SelectedLayerIndex).MorphedBitmap(mf.MainControlsPanel.InterpolationMode);
+            Bitmap bitmap = mf.GifferC.GetLayer(mf.SFI, mf.SLI).MorphedBitmap(mf.MainControlsPanel.InterpolationMode);
             ControlsPanel cp = mf.MainControlsPanel;
             if (cp.UseDithering)
             {
@@ -192,7 +192,7 @@ namespace BIUK9000
             }
             else if (iqf.OInsertHere)
             {
-                gc.AddGifferAsFrames(newGiffer, mf.SelectedFrameIndex);
+                gc.AddGifferAsFrames(newGiffer, mf.SFI);
             }
         }
         public static void SaveGif(Giffer giffer, ControlsPanel cp, string path, GifQuality gifQuality, bool createFrames, InterpolationMode interpolationMode)

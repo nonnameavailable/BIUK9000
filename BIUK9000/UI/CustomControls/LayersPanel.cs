@@ -43,9 +43,12 @@ namespace BIUK9000.UI
                 c.Dispose();
             }
             List<Bitmap> bitmaps = bitmapProvider.GetBitmaps();
-            foreach (Bitmap bitmap in bitmaps)
+            List<bool> visibles = bitmapProvider.GetVisibles();
+            for (int i = 0; i < bitmaps.Count; i++)
             {
-                LayerHolder lh = new LayerHolder(bitmap);
+                Bitmap bitmap = bitmaps[i];
+                bool visible = visibles[i];
+                LayerHolder lh = new LayerHolder(bitmap, visible);
                 lh.LayerClicked += Lh_LayerClicked;
                 lh.DragDropped += Lh_DragDropped;
                 lh.LayerVisibilityChanged += Lh_LayerVisibilityChanged;
@@ -131,6 +134,7 @@ namespace BIUK9000.UI
         public interface IBitmapProvider
         {
             List<Bitmap> GetBitmaps();
+            List<bool> GetVisibles();
         }
     }
 }

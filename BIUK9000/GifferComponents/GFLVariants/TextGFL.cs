@@ -48,8 +48,8 @@ namespace BIUK9000.GifferComponents.GFLVariants
         public override void CopyDifferingParams(GFL ogState, GFL newState)
         {
             base.CopyDifferingParams(ogState, newState);
-            TextGFL otl = ogState as TextGFL;
-            TextGFL ntl = newState as TextGFL;
+            TextGFL otl = (TextGFL)ogState;
+            TextGFL ntl = (TextGFL)newState;
             if (otl.Text != ntl.Text) Text = ntl.Text;
             if (otl.FontName != ntl.FontName) FontName = ntl.FontName;
             if (otl.FontColor != ntl.FontColor) FontColor = ntl.FontColor;
@@ -147,8 +147,8 @@ namespace BIUK9000.GifferComponents.GFLVariants
         public override void Lerp(GFL start, GFL end, double distance, OVector position = null)
         {
             base.Lerp(start, end, distance, position);
-            TextGFL tstart = start as TextGFL;
-            TextGFL tend = end as TextGFL;
+            TextGFL tstart = (TextGFL)start;
+            TextGFL tend = (TextGFL)end;
             FontSize = Lerper.Lerp(tstart.FontSize, tend.FontSize, distance);
             FontColor = Lerper.LerpColor(tstart.FontColor, tend.FontColor, distance);
             FontBorderColor = Lerper.LerpColor(tstart.FontBorderColor, tend.FontBorderColor, distance);
