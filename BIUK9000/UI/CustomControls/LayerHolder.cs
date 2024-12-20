@@ -24,10 +24,10 @@ namespace BIUK9000.UI
         public event DragEventHandler DragDropped;
         public event EventHandler DeleteButtonClicked;
         private bool _isLmbDown, _visible;
-        public LayerHolder(Bitmap bitmap)
+        public LayerHolder(Bitmap bitmap, bool visible)
         {
             InitializeComponent();
-            _visible = true;
+            _visible = visible;
             mainPictureBox.MouseEnter += MainPictureBox_MouseEnter;
             mainPictureBox.MouseLeave += MainPictureBox_MouseLeave;
             mainPictureBox.MouseClick += (sender, args) => LayerClicked?.Invoke(this, EventArgs.Empty);
@@ -39,7 +39,13 @@ namespace BIUK9000.UI
             DragEnter += LayerHolder_DragEnter;
             StayHighlighted = false;
             this.AllowDrop = true;
-            visibleButton.Image = Resources.eye_open_icon;
+            if (visible)
+            {
+                visibleButton.Image = Resources.eye_open_icon;
+            } else
+            {
+                visibleButton.Image = Resources.eye_closed_icon;
+            }
             visibleButton.Click += VisibleButton_Click;
             deleteButton.Image = Resources.dustbin_icon;
             deleteButton.Click += (sender, args) => DeleteButtonClicked?.Invoke(this, args);

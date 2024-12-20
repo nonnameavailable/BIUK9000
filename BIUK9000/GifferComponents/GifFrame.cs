@@ -101,5 +101,10 @@ namespace BIUK9000.GifferComponents
         {
             return Layers.Select(layer => layer.MorphedBitmap(InterpolationMode.Low)).ToList();
         }
+
+        public List<bool> GetVisibles()
+        {
+            return Layers.Select(layer => layer.Visible).ToList();
+        }
     }
 }

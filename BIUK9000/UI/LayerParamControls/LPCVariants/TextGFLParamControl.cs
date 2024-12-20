@@ -33,7 +33,7 @@ namespace BIUK9000.UI.LayerParamControls
         public void LoadParams(GFL gfl)
         {
             _suppressLayerParamsEvents = true;
-            TextGFL tgfl = gfl as TextGFL;
+            TextGFL tgfl = (TextGFL)gfl;
             TextLayerBorderWidthNUD.Value = (decimal)tgfl.FontBorderWidth;
             textLayerTextTB.Text = tgfl.Text;
             textLayerFontCBB.SelectedItem = tgfl.FontName;
@@ -44,7 +44,7 @@ namespace BIUK9000.UI.LayerParamControls
 
         public void SaveParams(GFL gfl)
         {
-            TextGFL tgfl = gfl as TextGFL;
+            TextGFL tgfl = (TextGFL)gfl;
             tgfl.FontBorderWidth = (float)TextLayerBorderWidthNUD.Value;
             tgfl.Text = textLayerTextTB.Text;
             tgfl.FontName = textLayerFontCBB.SelectedItem.ToString();
