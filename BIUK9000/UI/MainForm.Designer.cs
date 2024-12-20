@@ -31,6 +31,7 @@ namespace BIUK9000.UI
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             mainTimelineSlider = new TimelineSlider();
             controlsPanel = new ControlsPanel();
@@ -47,6 +48,7 @@ namespace BIUK9000.UI
             layerParamsPanel = new System.Windows.Forms.Panel();
             hsbPanel = new CustomControls.HSBPanel();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            toolTip = new System.Windows.Forms.ToolTip(components);
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -73,19 +75,19 @@ namespace BIUK9000.UI
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 158F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(928, 598);
+            tableLayoutPanel1.Size = new System.Drawing.Size(918, 521);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // mainTimelineSlider
             // 
             mainTimelineSlider.Dock = System.Windows.Forms.DockStyle.Fill;
             mainTimelineSlider.FrameDelay = 10;
-            mainTimelineSlider.Location = new System.Drawing.Point(148, 501);
+            mainTimelineSlider.Location = new System.Drawing.Point(148, 424);
             mainTimelineSlider.Maximum = 9;
             mainTimelineSlider.MouseButtonIsDown = false;
             mainTimelineSlider.Name = "mainTimelineSlider";
             mainTimelineSlider.SelectedFrameIndex = 0;
-            mainTimelineSlider.Size = new System.Drawing.Size(627, 94);
+            mainTimelineSlider.Size = new System.Drawing.Size(617, 94);
             mainTimelineSlider.TabIndex = 3;
             // 
             // controlsPanel
@@ -97,7 +99,7 @@ namespace BIUK9000.UI
             controlsPanel.Location = new System.Drawing.Point(3, 3);
             controlsPanel.Name = "controlsPanel";
             tableLayoutPanel1.SetRowSpan(controlsPanel, 3);
-            controlsPanel.Size = new System.Drawing.Size(139, 592);
+            controlsPanel.Size = new System.Drawing.Size(139, 515);
             controlsPanel.TabIndex = 5;
             // 
             // markLerpPanel
@@ -109,7 +111,7 @@ namespace BIUK9000.UI
             markLerpPanel.Controls.Add(deleteFramesButton);
             markLerpPanel.Controls.Add(lerpButton);
             markLerpPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            markLerpPanel.Location = new System.Drawing.Point(781, 501);
+            markLerpPanel.Location = new System.Drawing.Point(771, 424);
             markLerpPanel.Name = "markLerpPanel";
             markLerpPanel.Size = new System.Drawing.Size(144, 94);
             markLerpPanel.TabIndex = 8;
@@ -122,6 +124,7 @@ namespace BIUK9000.UI
             frameDupeCountNUD.Name = "frameDupeCountNUD";
             frameDupeCountNUD.Size = new System.Drawing.Size(61, 23);
             frameDupeCountNUD.TabIndex = 8;
+            toolTip.SetToolTip(frameDupeCountNUD, "Number of frame duplicates");
             frameDupeCountNUD.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // dupeFrameButton
@@ -131,6 +134,7 @@ namespace BIUK9000.UI
             dupeFrameButton.Size = new System.Drawing.Size(62, 23);
             dupeFrameButton.TabIndex = 7;
             dupeFrameButton.Text = "dupe fr.";
+            toolTip.SetToolTip(dupeFrameButton, "Duplicate currently selected frame");
             dupeFrameButton.UseVisualStyleBackColor = true;
             // 
             // askDeleteCB
@@ -143,6 +147,7 @@ namespace BIUK9000.UI
             askDeleteCB.Size = new System.Drawing.Size(43, 19);
             askDeleteCB.TabIndex = 6;
             askDeleteCB.Text = "ask";
+            toolTip.SetToolTip(askDeleteCB, "Ask before frame deletion");
             askDeleteCB.UseVisualStyleBackColor = true;
             // 
             // lerpModeCBB
@@ -154,6 +159,7 @@ namespace BIUK9000.UI
             lerpModeCBB.Name = "lerpModeCBB";
             lerpModeCBB.Size = new System.Drawing.Size(61, 23);
             lerpModeCBB.TabIndex = 5;
+            toolTip.SetToolTip(lerpModeCBB, "lerp mode\r\nline - layer will travel across a straight line\r\ntrace - layer will travel across the dragged path");
             // 
             // deleteFramesButton
             // 
@@ -162,6 +168,7 @@ namespace BIUK9000.UI
             deleteFramesButton.Size = new System.Drawing.Size(62, 23);
             deleteFramesButton.TabIndex = 4;
             deleteFramesButton.Text = "del fr.";
+            toolTip.SetToolTip(deleteFramesButton, "Deletes the selected frames\r\n\r\nIf 2 frames are marked, the frames between them (including the marked frames) are deleted\r\nIf no frame is marked, only the selected frame is deleted");
             deleteFramesButton.UseVisualStyleBackColor = true;
             // 
             // lerpButton
@@ -171,6 +178,7 @@ namespace BIUK9000.UI
             lerpButton.Size = new System.Drawing.Size(62, 23);
             lerpButton.TabIndex = 1;
             lerpButton.Text = "lerp";
+            toolTip.SetToolTip(lerpButton, "Interpolate the selected layer\r\n\r\n2 frames must be marked for this to work");
             lerpButton.UseVisualStyleBackColor = true;
             // 
             // mainPictureBox
@@ -184,7 +192,7 @@ namespace BIUK9000.UI
             mainPictureBox.Location = new System.Drawing.Point(148, 161);
             mainPictureBox.Name = "mainPictureBox";
             mainPictureBox.ScaledDragDifference = new System.Drawing.Point(0, 0);
-            mainPictureBox.Size = new System.Drawing.Size(627, 334);
+            mainPictureBox.Size = new System.Drawing.Size(617, 257);
             mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             mainPictureBox.TabIndex = 9;
             mainPictureBox.TabStop = false;
@@ -192,10 +200,10 @@ namespace BIUK9000.UI
             // mainLayersPanel
             // 
             mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainLayersPanel.Location = new System.Drawing.Point(781, 161);
+            mainLayersPanel.Location = new System.Drawing.Point(771, 161);
             mainLayersPanel.Name = "mainLayersPanel";
             mainLayersPanel.SelectedLayerIndex = 0;
-            mainLayersPanel.Size = new System.Drawing.Size(144, 334);
+            mainLayersPanel.Size = new System.Drawing.Size(144, 257);
             mainLayersPanel.TabIndex = 2;
             // 
             // tableLayoutPanel2
@@ -211,7 +219,7 @@ namespace BIUK9000.UI
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel2.Size = new System.Drawing.Size(777, 152);
+            tableLayoutPanel2.Size = new System.Drawing.Size(767, 152);
             tableLayoutPanel2.TabIndex = 11;
             // 
             // layerParamsPanel
@@ -219,13 +227,13 @@ namespace BIUK9000.UI
             layerParamsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             layerParamsPanel.Location = new System.Drawing.Point(3, 3);
             layerParamsPanel.Name = "layerParamsPanel";
-            layerParamsPanel.Size = new System.Drawing.Size(575, 146);
+            layerParamsPanel.Size = new System.Drawing.Size(565, 146);
             layerParamsPanel.TabIndex = 8;
             // 
             // hsbPanel
             // 
             hsbPanel.Brightness = 1F;
-            hsbPanel.Location = new System.Drawing.Point(584, 3);
+            hsbPanel.Location = new System.Drawing.Point(574, 3);
             hsbPanel.Name = "hsbPanel";
             hsbPanel.Saturation = 1F;
             hsbPanel.Size = new System.Drawing.Size(190, 143);
@@ -241,10 +249,13 @@ namespace BIUK9000.UI
             AllowDrop = true;
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(928, 598);
+            BackColor = System.Drawing.SystemColors.Control;
+            ClientSize = new System.Drawing.Size(918, 521);
             Controls.Add(tableLayoutPanel1);
+            Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            ForeColor = System.Drawing.SystemColors.Desktop;
             Name = "MainForm";
-            Text = "Form1";
+            Text = "BIUK";
             tableLayoutPanel1.ResumeLayout(false);
             markLerpPanel.ResumeLayout(false);
             markLerpPanel.PerformLayout();
@@ -271,6 +282,7 @@ namespace BIUK9000.UI
         private CustomControls.HSBPanel hsbPanel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Panel layerParamsPanel;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
 

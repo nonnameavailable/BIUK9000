@@ -91,8 +91,22 @@ namespace BIUK9000.UI
             mainPictureBox.InterpolationMode = controlsPanel.InterpolationMode;
 
             hsbPanel.HueSatChanged += HsbPanel_HueSatChanged;
-            hsbPanel.ChangeStarted += (sender, args) => GifferC?.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
-            hsbPanel.ChangeEnded += (sender, args) => GifferC?.ApplyLayerParams(SelectedFrameIndex, SelectedLayerIndex, controlsPanel.SelectedApplyParamsMode);
+            hsbPanel.ChangeStarted += HsbPanel_ChangeStarted;
+            hsbPanel.ChangeEnded += HsbPanel_ChangeEnded;
+        }
+
+        private void HsbPanel_ChangeEnded(object sender, EventArgs e)
+        {
+            if (GifferC == null) return;
+            _updateTimer.Stop();
+            GifferC.ApplyLayerParams(SelectedFrameIndex, SelectedLayerIndex, controlsPanel.SelectedApplyParamsMode);
+        }
+
+        private void HsbPanel_ChangeStarted(object sender, EventArgs e)
+        {
+            if (GifferC == null) return;
+            GifferC.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
+            _updateTimer.Start();
         }
 
         private void MainLayersPanel_SelectedLayerChanged(object sender, EventArgs e)
@@ -103,11 +117,10 @@ namespace BIUK9000.UI
 
         private void HsbPanel_HueSatChanged(object sender, EventArgs e)
         {
-            if (MainGiffer == null) return;
+            if (GifferC == null) return;
             SelectedLayer.Saturation = hsbPanel.Saturation;
             SelectedLayer.Brightness = hsbPanel.Brightness;
             SelectedLayer.Transparency = hsbPanel.Transparency;
-            UpdateMainPictureBox();
         }
 
         private void DupeFrameButton_Click(object sender, EventArgs e)

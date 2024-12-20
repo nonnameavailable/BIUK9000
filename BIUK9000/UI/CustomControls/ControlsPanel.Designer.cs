@@ -173,7 +173,6 @@
             // applyParamsCBB
             // 
             applyParamsCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            applyParamsCBB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             applyParamsCBB.FormattingEnabled = true;
             applyParamsCBB.Location = new System.Drawing.Point(6, 87);
             applyParamsCBB.Name = "applyParamsCBB";
@@ -184,7 +183,6 @@
             // positionSnapCB
             // 
             positionSnapCB.AutoSize = true;
-            positionSnapCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             positionSnapCB.Location = new System.Drawing.Point(6, 33);
             positionSnapCB.Name = "positionSnapCB";
             positionSnapCB.Size = new System.Drawing.Size(106, 21);
@@ -198,7 +196,6 @@
             drawHelpCB.AutoSize = true;
             drawHelpCB.Checked = true;
             drawHelpCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            drawHelpCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             drawHelpCB.Location = new System.Drawing.Point(6, 60);
             drawHelpCB.Name = "drawHelpCB";
             drawHelpCB.Size = new System.Drawing.Size(85, 21);
@@ -210,7 +207,6 @@
             // rotationSnapCB
             // 
             rotationSnapCB.AutoSize = true;
-            rotationSnapCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             rotationSnapCB.Location = new System.Drawing.Point(6, 6);
             rotationSnapCB.Name = "rotationSnapCB";
             rotationSnapCB.Size = new System.Drawing.Size(105, 21);
@@ -238,7 +234,6 @@
             // createFramesCB
             // 
             createFramesCB.AutoSize = true;
-            createFramesCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             createFramesCB.Location = new System.Drawing.Point(9, 38);
             createFramesCB.Name = "createFramesCB";
             createFramesCB.Size = new System.Drawing.Size(107, 21);
@@ -270,7 +265,6 @@
             // useDitheringCB
             // 
             useDitheringCB.AutoSize = true;
-            useDitheringCB.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             useDitheringCB.Location = new System.Drawing.Point(6, 22);
             useDitheringCB.Name = "useDitheringCB";
             useDitheringCB.Size = new System.Drawing.Size(103, 21);
@@ -282,7 +276,6 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             label4.Location = new System.Drawing.Point(9, 9);
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(42, 17);
@@ -303,7 +296,6 @@
             // 
             // ImageExportJpegQualNUD
             // 
-            ImageExportJpegQualNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             ImageExportJpegQualNUD.Increment = new decimal(new int[] { 10, 0, 0, 0 });
             ImageExportJpegQualNUD.Location = new System.Drawing.Point(71, 51);
             ImageExportJpegQualNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
@@ -316,7 +308,6 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             label3.Location = new System.Drawing.Point(6, 53);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(59, 17);
@@ -363,7 +354,6 @@
             // 
             // GifExportLossyNUD
             // 
-            GifExportLossyNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             GifExportLossyNUD.Location = new System.Drawing.Point(55, 79);
             GifExportLossyNUD.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
             GifExportLossyNUD.Name = "GifExportLossyNUD";
@@ -374,7 +364,6 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             label2.Location = new System.Drawing.Point(6, 85);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(37, 17);
@@ -383,7 +372,6 @@
             // 
             // GifExportColorsNUD
             // 
-            GifExportColorsNUD.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             GifExportColorsNUD.Location = new System.Drawing.Point(55, 48);
             GifExportColorsNUD.Maximum = new decimal(new int[] { 256, 0, 0, 0 });
             GifExportColorsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
@@ -396,7 +384,6 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             label1.Location = new System.Drawing.Point(6, 54);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(44, 17);
