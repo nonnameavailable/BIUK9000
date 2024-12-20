@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace BIUK9000.UI.CustomControls
         public event EventHandler HueSatChanged;
         public event EventHandler ChangeStarted;
         public event EventHandler ChangeEnded;
+        public event EventHandler ShouldUpdate;
         private bool _isCodeValueChange;
         public float Saturation
         {
@@ -117,6 +119,7 @@ namespace BIUK9000.UI.CustomControls
             _isCodeValueChange = true;
             transparencyTrackBar.Value = (int)(newValue * 200);
             _isCodeValueChange = false;
+            ShouldUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void BrightnessNUD_ValueChanged(object sender, EventArgs e)
@@ -126,6 +129,7 @@ namespace BIUK9000.UI.CustomControls
             _isCodeValueChange = true;
             brightnessTrackBar.Value = (int)(newValue * 100);
             _isCodeValueChange = false;
+            ShouldUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void SaturationNUD_ValueChanged(object sender, EventArgs e)
@@ -135,6 +139,7 @@ namespace BIUK9000.UI.CustomControls
             _isCodeValueChange = true;
             saturationTrackBar.Value = (int)(newValue * 100);
             _isCodeValueChange = false;
+            ShouldUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnHueSatChanged()

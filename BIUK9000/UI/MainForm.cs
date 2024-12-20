@@ -93,19 +93,24 @@ namespace BIUK9000.UI
             hsbPanel.HueSatChanged += HsbPanel_HueSatChanged;
             hsbPanel.ChangeStarted += HsbPanel_ChangeStarted;
             hsbPanel.ChangeEnded += HsbPanel_ChangeEnded;
+            hsbPanel.ShouldUpdate += (sender, args) =>
+            {
+                HsbPanel_HueSatChanged(sender, args);
+                UpdateMainPictureBox();
+            };
         }
 
         private void HsbPanel_ChangeEnded(object sender, EventArgs e)
         {
             if (GifferC == null) return;
             _updateTimer.Stop();
-            GifferC.ApplyLayerParams(SelectedFrameIndex, SelectedLayerIndex, controlsPanel.SelectedApplyParamsMode);
+            GifferC.ApplyLayerParams(SFI, SLI, controlsPanel.SelectedApplyParamsMode);
         }
 
         private void HsbPanel_ChangeStarted(object sender, EventArgs e)
         {
             if (GifferC == null) return;
-            GifferC.SaveLayerStateForApply(SelectedFrameIndex, SelectedLayerIndex);
+            GifferC.SaveLayerStateForApply(SFI, SLI);
             _updateTimer.Start();
         }
 
