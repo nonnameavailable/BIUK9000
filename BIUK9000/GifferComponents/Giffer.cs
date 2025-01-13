@@ -14,13 +14,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace BIUK9000.GifferComponents
 {
     public class Giffer : IDisposable
     {
         public List<GifFrame> Frames { get; set; }
-        private Image originalGif;
         private bool _disposed;
         private int _nextLayerID;
         public string OriginalImagePath {  get; set; }
@@ -56,8 +56,7 @@ namespace BIUK9000.GifferComponents
             _nextLayerID = 0;
             try
             {
-                Image gif = Image.FromFile(path);
-                originalGif = gif;
+                using Image gif = Image.FromFile(path);
                 Frames = FramesFromGif(gif);
                 OriginalImagePath = path;
                 Width = gif.Width;
@@ -67,9 +66,30 @@ namespace BIUK9000.GifferComponents
             {
                 throw new ArgumentException(path + " is not an image file", ex);
             }
-
         }
-
+        public Giffer(string[] paths)
+        {
+            int lid = NextLayerID();
+            Frames = new List<GifFrame>();
+            for(int i = 0; i < paths.Length; i++)
+            {
+                try
+                {
+                    using Bitmap bmp = new Bitmap(paths[i]);
+                    Frames.Add(new GifFrame(bmp, 50, lid));
+                    if (i == 0)
+                    {
+                        OriginalImagePath = "";
+                        Width = bmp.Width;
+                        Height = bmp.Height;
+                        Position = new OVector(0, 0);
+                    }
+                } catch
+                {
+                    MessageBox.Show(paths[i] + " is not an image file.");
+                }
+            }
+        }
         private List<GifFrame> FramesFromGif(Image gif)
         {
             List<GifFrame> result = new();
@@ -169,7 +189,6 @@ namespace BIUK9000.GifferComponents
             {
                 Frames[i].Dispose();
             }
-            originalGif?.Dispose();
             _disposed = true;
         }
     }

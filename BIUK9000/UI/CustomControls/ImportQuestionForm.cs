@@ -21,6 +21,7 @@ namespace BIUK9000.UI
         public bool OInsertStart { get => insertStartRB.Checked; }
         public bool OInsertEnd { get =>  insertEndRB.Checked; }
         public bool OInsertHere { get => insertHereRB.Checked; }
+        public bool OFreshAsFrames { get => freshAsFramesRB.Checked; }
 
         public ImportQuestionForm()
         {
@@ -48,6 +49,10 @@ namespace BIUK9000.UI
         {
             SelectedFresh?.Invoke(this, EventArgs.Empty);
         }
-
+        public void SetOnlyFreshMode()
+        {
+            insertButton.Enabled = false;
+            asLayersButton.Enabled = false;
+        }
     }
 }

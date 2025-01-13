@@ -41,10 +41,13 @@
             insertHereRB = new System.Windows.Forms.RadioButton();
             insertEndRB = new System.Windows.Forms.RadioButton();
             insertStartRB = new System.Windows.Forms.RadioButton();
+            groupBox3 = new System.Windows.Forms.GroupBox();
+            freshAsFramesRB = new System.Windows.Forms.RadioButton();
             toolTip = new System.Windows.Forms.ToolTip(components);
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
+            groupBox3.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -59,6 +62,7 @@
             tableLayoutPanel1.Controls.Add(freshButton, 0, 1);
             tableLayoutPanel1.Controls.Add(groupBox1, 1, 2);
             tableLayoutPanel1.Controls.Add(groupBox2, 2, 2);
+            tableLayoutPanel1.Controls.Add(groupBox3, 0, 2);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -79,7 +83,7 @@
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(318, 100);
             label1.TabIndex = 0;
-            label1.Text = "Looks like there is already something here. What do you want to do?";
+            label1.Text = "What do you want to do?";
             label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // insertButton
@@ -199,6 +203,29 @@
             toolTip.SetToolTip(insertStartRB, "Insert at the start\r\n");
             insertStartRB.UseVisualStyleBackColor = true;
             // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(freshAsFramesRB);
+            groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            groupBox3.Location = new System.Drawing.Point(3, 203);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new System.Drawing.Size(102, 96);
+            groupBox3.TabIndex = 6;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "settings";
+            // 
+            // freshAsFramesRB
+            // 
+            freshAsFramesRB.AutoSize = true;
+            freshAsFramesRB.Checked = true;
+            freshAsFramesRB.Location = new System.Drawing.Point(6, 22);
+            freshAsFramesRB.Name = "freshAsFramesRB";
+            freshAsFramesRB.Size = new System.Drawing.Size(75, 19);
+            freshAsFramesRB.TabIndex = 1;
+            freshAsFramesRB.TabStop = true;
+            freshAsFramesRB.Text = "as frames";
+            freshAsFramesRB.UseVisualStyleBackColor = true;
+            // 
             // ImportQuestionForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -213,6 +240,8 @@
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -231,5 +260,7 @@
         private System.Windows.Forms.RadioButton insertEndRB;
         private System.Windows.Forms.RadioButton insertStartRB;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RadioButton freshAsFramesRB;
     }
 }

@@ -147,52 +147,76 @@ namespace BIUK9000
         {
             Giffer mg = mf.MainGiffer;
             bool result = false;
-            foreach (string filePath in filePaths)
+            try
             {
-                try
+                Giffer newGiffer = new Giffer(filePaths[0]);
+                using ImportQuestionForm iqf = new ImportQuestionForm();
+                if (mg == null) iqf.SetOnlyFreshMode();
+                iqf.SelectedFresh += (sender, args) => ImportAsFresh(mf, iqf, filePaths, newGiffer);
+                iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, newGiffer);
+                iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, filePaths, newGiffer);
+                if (iqf.ShowDialog() == DialogResult.OK) result = true;
+                if (iqf.DialogResult == DialogResult.Cancel)
                 {
-                    Giffer newGiffer = new Giffer(filePath);
-                    if (mg == null)
-                    {
-                        mf.SetNewGiffer(newGiffer);
-                        result = true;
-                    }
-                    else
-                    {
-                        using ImportQuestionForm iqf = new ImportQuestionForm();
-                        iqf.SelectedFresh += (sender, args) => mf.SetNewGiffer(newGiffer);
-                        iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, newGiffer);
-                        iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, newGiffer);
-                        if (iqf.ShowDialog() == DialogResult.OK) result = true;
-                    }
-                }
-                catch (ArgumentException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    continue;
+                    newGiffer.Dispose();
+                    result = false;
                 }
             }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             return result;
+        }
+        private static void ImportAsFresh(MainForm mf, ImportQuestionForm iqf, string[] filePaths, Giffer newGiffer)
+        {
+            if (filePaths.Length == 1)
+            {
+                mf.SetNewGiffer(newGiffer);
+            } else
+            {
+                newGiffer.Dispose();
+                newGiffer = new Giffer(filePaths);
+                mf.SetNewGiffer(newGiffer);
+            }
         }
         private static void ImportAsLayers(MainForm mf, ImportQuestionForm iqf, Giffer newGiffer)
         {
             mf.GifferC.AddGifferAsLayers(newGiffer, iqf.OLayersSpread);
             newGiffer.Dispose();
         }
-        private static void ImportAsInsert(MainForm mf, ImportQuestionForm iqf, Giffer newGiffer)
+        private static void ImportAsInsert(MainForm mf, ImportQuestionForm iqf, string[] filePaths, Giffer newGiffer)
         {
             GifferController gc = mf.GifferC;
-            if (iqf.OInsertStart)
+            if(filePaths.Length == 1)
             {
-                gc.AddGifferAsFrames(newGiffer, 0);
-            }
-            else if (iqf.OInsertEnd)
+                if (iqf.OInsertStart)
+                {
+                    gc.AddGifferAsFrames(newGiffer, 0);
+                }
+                else if (iqf.OInsertEnd)
+                {
+                    gc.AddGifferAsFrames(newGiffer, gc.FrameCount);
+                }
+                else if (iqf.OInsertHere)
+                {
+                    gc.AddGifferAsFrames(newGiffer, mf.SFI);
+                }
+            } else
             {
-                gc.AddGifferAsFrames(newGiffer, gc.FrameCount);
-            }
-            else if (iqf.OInsertHere)
-            {
-                gc.AddGifferAsFrames(newGiffer, mf.SFI);
+                newGiffer.Dispose();
+                if (iqf.OInsertStart)
+                {
+                    gc.AddGifferAsFrames(new Giffer(filePaths), 0);
+                }
+                else if (iqf.OInsertEnd)
+                {
+                    gc.AddGifferAsFrames(new Giffer(filePaths), gc.FrameCount);
+                }
+                else if (iqf.OInsertHere)
+                {
+                    gc.AddGifferAsFrames(new Giffer(filePaths), mf.SFI);
+                }
             }
         }
         public static void SaveGif(Giffer giffer, ControlsPanel cp, string path, GifQuality gifQuality, bool createFrames, InterpolationMode interpolationMode)
