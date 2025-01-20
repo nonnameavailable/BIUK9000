@@ -284,19 +284,24 @@ namespace BIUK9000
         }
         public void AddGifferAsFrames(Giffer newGiffer, int insertAt)
         {
-            int[] layerIDs = new int[newGiffer.Frames[0].Layers.Count];
-            for (int i = 0; i < layerIDs.Length; i++)
+            GFL firstLayer = giffer.Frames[0].Layers[0];
+            GifFrame firstFrame = giffer.Frames[0];
+            if (firstLayer is BitmapGFL)
             {
-                layerIDs[i] = giffer.NextLayerID();
-            }
-            foreach (GifFrame frame in newGiffer.Frames)
-            {
-                for (int i = 0; i < frame.Layers.Count; i++)
+                foreach (GifFrame frame in newGiffer.Frames)
                 {
-                    frame.Layers[i].LayerID = layerIDs[i];
+                    frame.Layers[0].LayerID = firstLayer.LayerID;
+                    for(int i = 1; i < firstFrame.Layers.Count; i++)
+                    {
+                        frame.AddLayer(firstFrame.Layers[i].Clone());
+                    }
                 }
+                giffer.Frames.InsertRange(insertAt, newGiffer.Frames);
+            } else
+            {
+                newGiffer.Dispose();
+                MessageBox.Show("First layer on the first frame must be an image layer for this to work!");
             }
-            giffer.Frames.InsertRange(insertAt, newGiffer.Frames);
         }
         public void DeleteColor(int frameIndex, int layerIndex, Point p, int tolerance)
         {
