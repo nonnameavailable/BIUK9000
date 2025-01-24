@@ -126,6 +126,7 @@ namespace BIUK9000.UI
             SelectedLayer.Saturation = hsbPanel.Saturation;
             SelectedLayer.Brightness = hsbPanel.Brightness;
             SelectedLayer.Transparency = hsbPanel.Transparency;
+            SelectedLayer.Hue = hsbPanel.Hue;
         }
 
         private void DupeFrameButton_Click(object sender, EventArgs e)

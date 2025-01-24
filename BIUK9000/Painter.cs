@@ -167,7 +167,7 @@ namespace BIUK9000
         }
 
 
-        public static void AdjustImageAttributes(Image image, float brightness, float saturation)
+        public static void AdjustImageAttributes(Image image, float brightness, float saturation, float transparency)
         {
             //adapted from https://stackoverflow.com/a/14384449/9852011
             // Luminance vector for linear RGB
@@ -195,6 +195,8 @@ namespace BIUK9000
             colorMatrix[4, 0] = adjustedBrightness;
             colorMatrix[4, 1] = adjustedBrightness;
             colorMatrix[4, 2] = adjustedBrightness;
+
+            colorMatrix[3, 3] = transparency;
 
             // Create image attributes
             ImageAttributes imageAttributes = new ImageAttributes();
@@ -259,5 +261,21 @@ namespace BIUK9000
             return ColorIsWithinTolerance(fbm.GetPixel(p), c, tolerance);
         }
 
+        public static ColorMatrix MultipliedColorMatrix(ColorMatrix sbtCm, ColorMatrix hCm)
+        {
+            ColorMatrix result = new ColorMatrix();
+            for(int i = 0; i < 5; i++)
+            {
+                for(int j = 0; j < 5; j++)
+                {
+                    result[i, j] = sbtCm[i, 0] * hCm[0, j];
+                    result[i, j] += sbtCm[i, 1] * hCm[1, j];
+                    result[i, j] += sbtCm[i, 2] * hCm[2, j];
+                    result[i, j] += sbtCm[i, 3] * hCm[3, j];
+                    result[i, j] += sbtCm[i, 4] * hCm[4, j];
+                }
+            }
+            return result;
+        }
     }
 }

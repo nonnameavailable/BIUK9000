@@ -60,18 +60,32 @@ namespace BIUK9000.UI.CustomControls
                 _isCodeValueChange = false;
             }
         }
+        public float Hue
+        {
+            get
+            {
+                return hueTrackBar.Value;
+            }
+            set
+            {
+                _isCodeValueChange = true;
+                hueTrackBar.Value = (int)(value);
+                hueNUD.Value = (decimal)value;
+                _isCodeValueChange = false;
+            }
+        }
         public HSBPanel()
         {
             InitializeComponent();
-            foreach(Control c in this.Controls)
+            foreach (Control c in this.Controls)
             {
-                if(c is TrackBar tc)
+                if (c is TrackBar tc)
                 {
                     tc.ValueChanged += (sender, args) => OnHueSatChanged();
                     tc.MouseDown += (sender, args) => ChangeStarted?.Invoke(this, EventArgs.Empty);
                     tc.MouseUp += (sender, args) => ChangeEnded?.Invoke(this, EventArgs.Empty);
                 }
-                if(c is NumericUpDown nc)
+                if (c is NumericUpDown nc)
                 {
                     nc.ValueChanged += (sender, args) => OnHueSatChanged();
                 }
@@ -79,10 +93,31 @@ namespace BIUK9000.UI.CustomControls
             saturationNUD.ValueChanged += SaturationNUD_ValueChanged;
             brightnessNUD.ValueChanged += BrightnessNUD_ValueChanged;
             transparencyNUD.ValueChanged += TransparencyNUD_ValueChanged;
+            hueNUD.ValueChanged += HueNUD_ValueChanged;
 
             saturationTrackBar.ValueChanged += SaturationTrackBar_ValueChanged;
             brightnessTrackBar.ValueChanged += BrightnessTrackBar_ValueChanged;
             transparencyTrackBar.ValueChanged += TransparencyTrackBar_ValueChanged;
+            hueTrackBar.ValueChanged += HueTrackBar_ValueChanged;
+        }
+
+        private void HueTrackBar_ValueChanged(object sender, EventArgs e)
+        {
+            if (_isCodeValueChange) return;
+            float newValue = hueTrackBar.Value;
+            _isCodeValueChange = true;
+            hueNUD.Value = (decimal)newValue;
+            _isCodeValueChange = false;
+        }
+
+        private void HueNUD_ValueChanged(object sender, EventArgs e)
+        {
+            if (_isCodeValueChange) return;
+            float newValue = (float)hueNUD.Value;
+            _isCodeValueChange = true;
+            hueTrackBar.Value = (int)(newValue);
+            _isCodeValueChange = false;
+            ShouldUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void TransparencyTrackBar_ValueChanged(object sender, EventArgs e)
@@ -148,6 +183,11 @@ namespace BIUK9000.UI.CustomControls
             {
                 HueSatChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void hueTrackBar_Scroll(object sender, EventArgs e)
+        {
+
         }
     }
 }
