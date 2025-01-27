@@ -46,6 +46,12 @@
     <None Update="Resources\gifsicle.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\gifsicle32.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\gifsicle64.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\haarcascade_frontalcatface.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

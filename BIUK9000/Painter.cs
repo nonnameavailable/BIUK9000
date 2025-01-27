@@ -165,51 +165,6 @@ namespace BIUK9000
 
             return complementBitmap;
         }
-
-
-        public static void AdjustImageAttributes(Image image, float brightness, float saturation, float transparency)
-        {
-            //adapted from https://stackoverflow.com/a/14384449/9852011
-            // Luminance vector for linear RGB
-            const float rwgt = 0.3086f;
-            const float gwgt = 0.6094f;
-            const float bwgt = 0.0820f;
-
-            // Create a new color matrix
-            ColorMatrix colorMatrix = new ColorMatrix();
-
-            // Adjust saturation
-            float baseSat = 1.0f - saturation;
-            colorMatrix[0, 0] = baseSat * rwgt + saturation;
-            colorMatrix[0, 1] = baseSat * rwgt;
-            colorMatrix[0, 2] = baseSat * rwgt;
-            colorMatrix[1, 0] = baseSat * gwgt;
-            colorMatrix[1, 1] = baseSat * gwgt + saturation;
-            colorMatrix[1, 2] = baseSat * gwgt;
-            colorMatrix[2, 0] = baseSat * bwgt;
-            colorMatrix[2, 1] = baseSat * bwgt;
-            colorMatrix[2, 2] = baseSat * bwgt + saturation;
-
-            // Adjust brightness
-            float adjustedBrightness = brightness - 1f;
-            colorMatrix[4, 0] = adjustedBrightness;
-            colorMatrix[4, 1] = adjustedBrightness;
-            colorMatrix[4, 2] = adjustedBrightness;
-
-            colorMatrix[3, 3] = transparency;
-
-            // Create image attributes
-            ImageAttributes imageAttributes = new ImageAttributes();
-            imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-            // Draw the image with the new color matrix
-            using (Graphics g = Graphics.FromImage(image))
-            {
-                g.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height),
-                0, 0, image.Width, image.Height,
-                GraphicsUnit.Pixel, imageAttributes);
-            }
-        }
         public static Bitmap FloodFill(Bitmap bitmap, Point p, Color fillColor, int tolerance)
         {
             using FastBitmap fbm = new FastBitmap(bitmap);
@@ -259,23 +214,6 @@ namespace BIUK9000
         {
             if (p.X >= fbm.Width || p.Y >= fbm.Height || p.X < 0 || p.Y < 0) return false;
             return ColorIsWithinTolerance(fbm.GetPixel(p), c, tolerance);
-        }
-
-        public static ColorMatrix MultipliedColorMatrix(ColorMatrix sbtCm, ColorMatrix hCm)
-        {
-            ColorMatrix result = new ColorMatrix();
-            for(int i = 0; i < 5; i++)
-            {
-                for(int j = 0; j < 5; j++)
-                {
-                    result[i, j] = sbtCm[i, 0] * hCm[0, j];
-                    result[i, j] += sbtCm[i, 1] * hCm[1, j];
-                    result[i, j] += sbtCm[i, 2] * hCm[2, j];
-                    result[i, j] += sbtCm[i, 3] * hCm[3, j];
-                    result[i, j] += sbtCm[i, 4] * hCm[4, j];
-                }
-            }
-            return result;
         }
     }
 }

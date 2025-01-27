@@ -95,6 +95,7 @@ namespace BIUK9000.UI
             hsbPanel.ChangeEnded += HsbPanel_ChangeEnded;
             hsbPanel.ShouldUpdate += (sender, args) =>
             {
+                if (GifferC == null) return;
                 HsbPanel_HueSatChanged(sender, args);
                 UpdateMainPictureBox();
             };

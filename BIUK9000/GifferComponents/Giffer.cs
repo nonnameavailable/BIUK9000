@@ -103,8 +103,8 @@ namespace BIUK9000.GifferComponents
             }
             for (int i = 0; i < frameCount; i++)
             {
-                using Bitmap bitmap = new Bitmap(gif);
                 gif.SelectActiveFrame(FrameDimension.Time, i);
+                using Bitmap bitmap = new Bitmap(gif);
                 result.Add(new GifFrame(bitmap, FrameDelay(gif), firstLayerID));
             }
             return result;

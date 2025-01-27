@@ -35,19 +35,21 @@
             transparencyDisplayLabel = new System.Windows.Forms.Label();
             toolTip = new System.Windows.Forms.ToolTip(components);
             toleranceTrackBar = new System.Windows.Forms.TrackBar();
-            tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            panel1 = new System.Windows.Forms.Panel();
-            toleranceDisplayLabel = new System.Windows.Forms.Label();
-            toolsGroupBox = new System.Windows.Forms.GroupBox();
             fillColorRB = new System.Windows.Forms.RadioButton();
-            lassoRB = new System.Windows.Forms.RadioButton();
             replaceColorRB = new System.Windows.Forms.RadioButton();
-            drawLineRB = new System.Windows.Forms.RadioButton();
-            groupBox1 = new System.Windows.Forms.GroupBox();
             animateComplementCB = new System.Windows.Forms.CheckBox();
             animateCutoutCB = new System.Windows.Forms.CheckBox();
             lassoIncludeComplementCB = new System.Windows.Forms.CheckBox();
             lassoConstrainCB = new System.Windows.Forms.CheckBox();
+            tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            panel1 = new System.Windows.Forms.Panel();
+            toleranceDisplayLabel = new System.Windows.Forms.Label();
+            toolsGroupBox = new System.Windows.Forms.GroupBox();
+            lassoRB = new System.Windows.Forms.RadioButton();
+            drawLineRB = new System.Windows.Forms.RadioButton();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            label1 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)transparencyTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)thicknessNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)toleranceTrackBar).BeginInit();
@@ -70,7 +72,7 @@
             // transparencyTrackBar
             // 
             transparencyTrackBar.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            transparencyTrackBar.Location = new System.Drawing.Point(8, 12);
+            transparencyTrackBar.Location = new System.Drawing.Point(19, 11);
             transparencyTrackBar.Maximum = 255;
             transparencyTrackBar.Name = "transparencyTrackBar";
             transparencyTrackBar.Size = new System.Drawing.Size(127, 45);
@@ -97,7 +99,7 @@
             transparencyDisplayLabel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             transparencyDisplayLabel.AutoSize = true;
             transparencyDisplayLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            transparencyDisplayLabel.Location = new System.Drawing.Point(138, 14);
+            transparencyDisplayLabel.Location = new System.Drawing.Point(149, 13);
             transparencyDisplayLabel.Name = "transparencyDisplayLabel";
             transparencyDisplayLabel.Size = new System.Drawing.Size(20, 17);
             transparencyDisplayLabel.TabIndex = 3;
@@ -106,72 +108,13 @@
             // toleranceTrackBar
             // 
             toleranceTrackBar.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            toleranceTrackBar.Location = new System.Drawing.Point(8, 63);
+            toleranceTrackBar.Location = new System.Drawing.Point(19, 63);
             toleranceTrackBar.Maximum = 255;
             toleranceTrackBar.Name = "toleranceTrackBar";
             toleranceTrackBar.Size = new System.Drawing.Size(127, 45);
             toleranceTrackBar.TabIndex = 4;
             toleranceTrackBar.TickFrequency = 15;
             toolTip.SetToolTip(toleranceTrackBar, "Tolerance for replace color and fill\r\n\r\n0 - no tolerance, only exactly the same color will be replaced / filled\r\n255 - everything will be replaced / filled");
-            // 
-            // tableLayoutPanel1
-            // 
-            tableLayoutPanel1.ColumnCount = 4;
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 73F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 109F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 159F));
-            tableLayoutPanel1.Controls.Add(paintColorButton, 0, 0);
-            tableLayoutPanel1.Controls.Add(panel1, 0, 1);
-            tableLayoutPanel1.Controls.Add(toolsGroupBox, 2, 0);
-            tableLayoutPanel1.Controls.Add(groupBox1, 3, 0);
-            tableLayoutPanel1.Controls.Add(thicknessNUD, 1, 0);
-            tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 2;
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(448, 152);
-            tableLayoutPanel1.TabIndex = 4;
-            // 
-            // panel1
-            // 
-            tableLayoutPanel1.SetColumnSpan(panel1, 2);
-            panel1.Controls.Add(toleranceDisplayLabel);
-            panel1.Controls.Add(toleranceTrackBar);
-            panel1.Controls.Add(transparencyDisplayLabel);
-            panel1.Controls.Add(transparencyTrackBar);
-            panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            panel1.Location = new System.Drawing.Point(3, 38);
-            panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(173, 111);
-            panel1.TabIndex = 4;
-            // 
-            // toleranceDisplayLabel
-            // 
-            toleranceDisplayLabel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            toleranceDisplayLabel.AutoSize = true;
-            toleranceDisplayLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            toleranceDisplayLabel.Location = new System.Drawing.Point(138, 66);
-            toleranceDisplayLabel.Name = "toleranceDisplayLabel";
-            toleranceDisplayLabel.Size = new System.Drawing.Size(20, 17);
-            toleranceDisplayLabel.TabIndex = 5;
-            toleranceDisplayLabel.Text = "fff";
-            // 
-            // toolsGroupBox
-            // 
-            toolsGroupBox.Controls.Add(fillColorRB);
-            toolsGroupBox.Controls.Add(lassoRB);
-            toolsGroupBox.Controls.Add(replaceColorRB);
-            toolsGroupBox.Controls.Add(drawLineRB);
-            toolsGroupBox.Location = new System.Drawing.Point(182, 3);
-            toolsGroupBox.Name = "toolsGroupBox";
-            tableLayoutPanel1.SetRowSpan(toolsGroupBox, 2);
-            toolsGroupBox.Size = new System.Drawing.Size(102, 143);
-            toolsGroupBox.TabIndex = 5;
-            toolsGroupBox.TabStop = false;
-            toolsGroupBox.Text = "tools";
             // 
             // fillColorRB
             // 
@@ -185,17 +128,6 @@
             toolTip.SetToolTip(fillColorRB, "Works just like fill tool in any other image editing software.\r\nThe fill is only performed on selected frame.");
             fillColorRB.UseVisualStyleBackColor = true;
             // 
-            // lassoRB
-            // 
-            lassoRB.AutoSize = true;
-            lassoRB.Location = new System.Drawing.Point(6, 96);
-            lassoRB.Name = "lassoRB";
-            lassoRB.Size = new System.Drawing.Size(51, 19);
-            lassoRB.TabIndex = 2;
-            lassoRB.TabStop = true;
-            lassoRB.Text = "lasso";
-            lassoRB.UseVisualStyleBackColor = true;
-            // 
             // replaceColorRB
             // 
             replaceColorRB.AutoSize = true;
@@ -206,32 +138,6 @@
             replaceColorRB.Text = "replace color";
             toolTip.SetToolTip(replaceColorRB, "Replaces all pixels of the same color as the color you clicked on\r\n(or similar color, based on the tolerance)\r\nwith the color specified in the button.");
             replaceColorRB.UseVisualStyleBackColor = true;
-            // 
-            // drawLineRB
-            // 
-            drawLineRB.AutoSize = true;
-            drawLineRB.Checked = true;
-            drawLineRB.Location = new System.Drawing.Point(6, 22);
-            drawLineRB.Name = "drawLineRB";
-            drawLineRB.Size = new System.Drawing.Size(73, 19);
-            drawLineRB.TabIndex = 0;
-            drawLineRB.TabStop = true;
-            drawLineRB.Text = "draw line";
-            drawLineRB.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            groupBox1.Controls.Add(animateComplementCB);
-            groupBox1.Controls.Add(animateCutoutCB);
-            groupBox1.Controls.Add(lassoIncludeComplementCB);
-            groupBox1.Controls.Add(lassoConstrainCB);
-            groupBox1.Location = new System.Drawing.Point(291, 3);
-            groupBox1.Name = "groupBox1";
-            tableLayoutPanel1.SetRowSpan(groupBox1, 2);
-            groupBox1.Size = new System.Drawing.Size(154, 143);
-            groupBox1.TabIndex = 6;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "lasso options";
             // 
             // animateComplementCB
             // 
@@ -279,6 +185,122 @@
             toolTip.SetToolTip(lassoConstrainCB, "Constrains the newly created layer bounds to just the selected area");
             lassoConstrainCB.UseVisualStyleBackColor = true;
             // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 4;
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 73F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 109F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 159F));
+            tableLayoutPanel1.Controls.Add(paintColorButton, 0, 0);
+            tableLayoutPanel1.Controls.Add(panel1, 0, 1);
+            tableLayoutPanel1.Controls.Add(toolsGroupBox, 2, 0);
+            tableLayoutPanel1.Controls.Add(groupBox1, 3, 0);
+            tableLayoutPanel1.Controls.Add(thicknessNUD, 1, 0);
+            tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 2;
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            tableLayoutPanel1.Size = new System.Drawing.Size(448, 152);
+            tableLayoutPanel1.TabIndex = 4;
+            // 
+            // panel1
+            // 
+            tableLayoutPanel1.SetColumnSpan(panel1, 2);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(toleranceDisplayLabel);
+            panel1.Controls.Add(toleranceTrackBar);
+            panel1.Controls.Add(transparencyDisplayLabel);
+            panel1.Controls.Add(transparencyTrackBar);
+            panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel1.Location = new System.Drawing.Point(3, 38);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(173, 111);
+            panel1.TabIndex = 4;
+            // 
+            // toleranceDisplayLabel
+            // 
+            toleranceDisplayLabel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            toleranceDisplayLabel.AutoSize = true;
+            toleranceDisplayLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            toleranceDisplayLabel.Location = new System.Drawing.Point(149, 66);
+            toleranceDisplayLabel.Name = "toleranceDisplayLabel";
+            toleranceDisplayLabel.Size = new System.Drawing.Size(20, 17);
+            toleranceDisplayLabel.TabIndex = 5;
+            toleranceDisplayLabel.Text = "fff";
+            // 
+            // toolsGroupBox
+            // 
+            toolsGroupBox.Controls.Add(fillColorRB);
+            toolsGroupBox.Controls.Add(lassoRB);
+            toolsGroupBox.Controls.Add(replaceColorRB);
+            toolsGroupBox.Controls.Add(drawLineRB);
+            toolsGroupBox.Location = new System.Drawing.Point(182, 3);
+            toolsGroupBox.Name = "toolsGroupBox";
+            tableLayoutPanel1.SetRowSpan(toolsGroupBox, 2);
+            toolsGroupBox.Size = new System.Drawing.Size(102, 143);
+            toolsGroupBox.TabIndex = 5;
+            toolsGroupBox.TabStop = false;
+            toolsGroupBox.Text = "tools";
+            // 
+            // lassoRB
+            // 
+            lassoRB.AutoSize = true;
+            lassoRB.Location = new System.Drawing.Point(6, 96);
+            lassoRB.Name = "lassoRB";
+            lassoRB.Size = new System.Drawing.Size(51, 19);
+            lassoRB.TabIndex = 2;
+            lassoRB.TabStop = true;
+            lassoRB.Text = "lasso";
+            lassoRB.UseVisualStyleBackColor = true;
+            // 
+            // drawLineRB
+            // 
+            drawLineRB.AutoSize = true;
+            drawLineRB.Checked = true;
+            drawLineRB.Location = new System.Drawing.Point(6, 22);
+            drawLineRB.Name = "drawLineRB";
+            drawLineRB.Size = new System.Drawing.Size(73, 19);
+            drawLineRB.TabIndex = 0;
+            drawLineRB.TabStop = true;
+            drawLineRB.Text = "draw line";
+            drawLineRB.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(animateComplementCB);
+            groupBox1.Controls.Add(animateCutoutCB);
+            groupBox1.Controls.Add(lassoIncludeComplementCB);
+            groupBox1.Controls.Add(lassoConstrainCB);
+            groupBox1.Location = new System.Drawing.Point(291, 3);
+            groupBox1.Name = "groupBox1";
+            tableLayoutPanel1.SetRowSpan(groupBox1, 2);
+            groupBox1.Size = new System.Drawing.Size(154, 143);
+            groupBox1.TabIndex = 6;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "lasso options";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(3, 15);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(21, 15);
+            label1.TabIndex = 6;
+            label1.Text = "tra";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(3, 68);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(21, 15);
+            label2.TabIndex = 7;
+            label2.Text = "tol";
+            // 
             // PaintControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -320,5 +342,7 @@
         private System.Windows.Forms.RadioButton fillColorRB;
         private System.Windows.Forms.CheckBox animateComplementCB;
         private System.Windows.Forms.CheckBox animateCutoutCB;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -15,7 +15,19 @@ namespace BIUK9000
     {
         public static void CompressGif(string originalPath, string targetPath, int colors, int lossy)
         {
-            string gifsiclePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "gifsicle.exe");
+            //string gifsiclePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "gifsicle.exe");
+
+            bool is64Bit = IntPtr.Size == 8;
+            string gifsiclePath;
+
+            if (is64Bit)
+            {
+                gifsiclePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "gifsicle64.exe");
+            }
+            else
+            {
+                gifsiclePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "gifsicle32.exe");
+            }
 
             if (!File.Exists(gifsiclePath))
             {
