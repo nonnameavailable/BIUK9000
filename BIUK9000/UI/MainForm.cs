@@ -13,8 +13,6 @@ using System.Diagnostics;
 using Microsoft.VisualBasic;
 using BIUK9000.GifferComponents;
 using System.Drawing.Text;
-using BIUK9000.Properties;
-using BIUK9000.Dithering;
 using BIUK9000.UI.LayerParamControls;
 using System.Drawing.Drawing2D;
 using BIUK9000.GifferComponents.GFLVariants;
@@ -237,9 +235,13 @@ namespace BIUK9000.UI
             MainGiffer?.Dispose();
             MainGiffer = newGiffer;
             GifferC = new GifferController(newGiffer);
+            if(layerParamsPanel.Controls.Count > 0)
+            {
+                layerParamsPanel.Controls[0].Dispose();
+            }
             CompleteUIUpdate(false);
-            GifferC.SaveLayerStateForApply(SFI, SLI);
-            GifferC.SaveLayerForLPC(SFI, SLI);
+            GifferC.SaveLayerStateForApply(0, 0);
+            GifferC.SaveLayerForLPC(0, 0);
         }
 
         public void UpdateMainPictureBox()
@@ -261,6 +263,7 @@ namespace BIUK9000.UI
         }
         private void UpdateLayerParamsUI()
         {
+            if (SelectedLayer == null) return;
             bool cond = GifferC.ShouldSwitchLPC(SFI, SLI);
             if (cond)
             {
@@ -613,9 +616,12 @@ namespace BIUK9000.UI
             UpdateLayerParamsUI();
             GifferC.SaveLayerForLPC(SFI, SLI);
             UpdateMainPictureBox();
-            hsbPanel.Saturation = SelectedLayer.Saturation;
-            hsbPanel.Brightness = SelectedLayer.Brightness;
-            hsbPanel.Transparency = SelectedLayer.Transparency;
+            if(SelectedLayer != null)
+            {
+                hsbPanel.Saturation = SelectedLayer.Saturation;
+                hsbPanel.Brightness = SelectedLayer.Brightness;
+                hsbPanel.Transparency = SelectedLayer.Transparency;
+            }
         }
         private void MainTimelineSlider_FrameDelayChanged(object sender, EventArgs e)
         {
