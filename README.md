@@ -1,4 +1,5 @@
 # Animated Gif Editor
+![showcasesmallerres](https://github.com/user-attachments/assets/a865d1fa-0dc8-43a2-a772-c50d5e5e89d5)
 - Written in C#, UI made with Windows Forms
 ### External libraries and programs used
 - AnimatedGif by Marc Rousavy - [Github](https://github.com/mrousavy/AnimatedGif)
@@ -7,7 +8,7 @@
 ### Layer system
 - You can add images, animated gifs, text or shapes via a layer system similar to other image-processing programs. Simply drag an image file onto the window to start.
 - Layers can be manipulated separately on each frame.
-- All layers can be moved, rotated, resized and have the saturation, brightness and transparency altered.
+- All layers can be moved, rotated, resized and have the saturation, brightness, transparency and hue altered.
 - Text layers have more options like font, border, color etc.
 ### Layer manipulation + basic controls
 - Moving (LMB)
