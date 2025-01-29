@@ -12,6 +12,7 @@ using BIUK9000.UI;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using Microsoft.VisualBasic;
 
 namespace BIUK9000
 {
@@ -145,17 +146,15 @@ namespace BIUK9000
         }
         public static bool FileImport(string[] filePaths, MainForm mf)
         {
-            Giffer mg = mf.MainGiffer;
             bool result = false;
             try
             {
-                //Giffer newGiffer = new Giffer(filePaths[0]);
                 using ImportQuestionForm iqf = new ImportQuestionForm();
-                if (mg == null) iqf.SetOnlyFreshMode();
+                if (mf.MainGiffer == null) iqf.SetOnlyFreshMode();
                 iqf.SelectedFresh += (sender, args) => ImportAsFresh(mf, iqf, filePaths);
                 iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, filePaths);
                 iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, filePaths);
-                if (iqf.ShowDialog() == DialogResult.OK)
+                if (iqf.ShowDialog() == DialogResult.OK && mf.MainGiffer != null)
                 {
                     result = true;
                 }
@@ -173,60 +172,53 @@ namespace BIUK9000
         }
         private static void ImportAsFresh(MainForm mf, ImportQuestionForm iqf, string[] filePaths)
         {
-            if (filePaths.Length == 1)
-            {
-                mf.SetNewGiffer(new Giffer(filePaths[0]));
-            } else
+            try
             {
                 mf.SetNewGiffer(new Giffer(filePaths));
+            } catch(ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         private static void ImportAsLayers(MainForm mf, ImportQuestionForm iqf, string[] filePaths)
         {
-            Giffer giffer;
-            if (filePaths.Length == 1)
+            try
             {
-                giffer = new Giffer(filePaths[0]);
-            } else
+                Giffer giffer = new Giffer(filePaths);
+                mf.GifferC.AddGifferAsLayers(giffer, iqf.OLayersSpread);
+                giffer.Dispose();
+            } catch(ArgumentException ex)
             {
-                giffer = new Giffer(filePaths);
+                MessageBox.Show(ex.Message);
+                return;
             }
-            mf.GifferC.AddGifferAsLayers(giffer, iqf.OLayersSpread);
-            giffer.Dispose();
         }
         private static void ImportAsInsert(MainForm mf, ImportQuestionForm iqf, string[] filePaths)
         {
             GifferController gc = mf.GifferC;
-            Giffer giffer;
-            if (filePaths.Length == 1)
+            try
             {
-                giffer = new Giffer(filePaths[0]);
-            }
-            else
+                Giffer giffer = new Giffer(filePaths);
+                if (iqf.OInsertStart)
+                {
+                    gc.AddGifferAsFrames(giffer, 0);
+                }
+                else if (iqf.OInsertEnd)
+                {
+                    gc.AddGifferAsFrames(giffer, gc.FrameCount);
+                }
+                else if (iqf.OInsertHere)
+                {
+                    gc.AddGifferAsFrames(giffer, mf.SFI);
+                }
+            } catch(ArgumentException ex)
             {
-                giffer = new Giffer(filePaths);
-            }
-            if (iqf.OInsertStart)
-            {
-                gc.AddGifferAsFrames(giffer, 0);
-            }
-            else if (iqf.OInsertEnd)
-            {
-                gc.AddGifferAsFrames(giffer, gc.FrameCount);
-            }
-            else if (iqf.OInsertHere)
-            {
-                gc.AddGifferAsFrames(giffer, mf.SFI);
+                MessageBox.Show(ex.Message);
             }
         }
         public static void SaveGif(Giffer giffer, ControlsPanel cp, string path, GifQuality gifQuality, bool createFrames, InterpolationMode interpolationMode)
         {
             if (Path.GetExtension(path) == string.Empty || Path.GetExtension(path) != ".gif") path += ".gif";
-            if (path == giffer.OriginalImagePath)
-            {
-                MessageBox.Show("Do not use the same file name for export as you did for import.");
-                return;
-            }
             string tempPath;
             if (cp.UseDithering)
             {

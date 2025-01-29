@@ -23,7 +23,6 @@ namespace BIUK9000.GifferComponents
         public List<GifFrame> Frames { get; set; }
         private bool _disposed;
         private int _nextLayerID;
-        public string OriginalImagePath {  get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public OVector Position { get; set; }
@@ -51,44 +50,56 @@ namespace BIUK9000.GifferComponents
             Height = OBR.Height + ySizeDif * 2;
         }
 
-        public Giffer(string path)
-        {
-            _nextLayerID = 0;
-            try
-            {
-                using Image gif = Image.FromFile(path);
-                Frames = FramesFromGif(gif);
-                OriginalImagePath = path;
-                Width = gif.Width;
-                Height = gif.Height;
-                Position = new OVector(0, 0);
-            } catch(Exception ex)
-            {
-                throw new ArgumentException(path + " is not an image file", ex);
-            }
-        }
+        //public Giffer(string path)
+        //{
+        //    _nextLayerID = 0;
+        //    try
+        //    {
+        //        using Image gif = Image.FromFile(path);
+        //        Frames = FramesFromGif(gif);
+        //        //OriginalImagePath = path;
+        //        Width = gif.Width;
+        //        Height = gif.Height;
+        //        Position = new OVector(0, 0);
+        //    } catch(Exception ex)
+        //    {
+        //        throw new ArgumentException(path + " is not an image file", ex);
+        //    }
+        //}
         public Giffer(string[] paths)
         {
             int lid = NextLayerID();
             Frames = new List<GifFrame>();
-            for(int i = 0; i < paths.Length; i++)
+            if(paths.Length > 1)
+            {
+                for (int i = 0; i < paths.Length; i++)
+                {
+                    try
+                    {
+                        using Bitmap bmp = new Bitmap(paths[i]);
+                        Frames.Add(new GifFrame(bmp, 50, lid));
+                    }
+                    catch(Exception ex)
+                    {
+                        Frames.ForEach(frame => frame.Dispose());
+                        throw new ArgumentException(paths[i] + " is not an image file", ex);
+                    }
+                }
+            } else
             {
                 try
                 {
-                    using Bitmap bmp = new Bitmap(paths[i]);
-                    Frames.Add(new GifFrame(bmp, 50, lid));
-                    if (i == 0)
-                    {
-                        OriginalImagePath = "";
-                        Width = bmp.Width;
-                        Height = bmp.Height;
-                        Position = new OVector(0, 0);
-                    }
-                } catch
+                    using Image gif = Image.FromFile(paths[0]);
+                    Frames = FramesFromGif(gif);
+                } catch(Exception ex)
                 {
-                    MessageBox.Show(paths[i] + " is not an image file.");
+                    throw new ArgumentException(paths[0] + " is not an image file", ex);
                 }
             }
+            GFL fl = Frames[0].Layers[0];
+            Width = fl.Width;
+            Height = fl.Height;
+            Position = new OVector(0, 0);
         }
         private List<GifFrame> FramesFromGif(Image gif)
         {
