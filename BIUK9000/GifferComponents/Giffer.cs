@@ -101,6 +101,19 @@ namespace BIUK9000.GifferComponents
             Height = fl.Height;
             Position = new OVector(0, 0);
         }
+        public Giffer(List<Bitmap> bitmapList, int fps)
+        {
+            Frames = new List<GifFrame>();
+            int id = NextLayerID();
+            foreach (Bitmap bmp in bitmapList)
+            {
+                Frames.Add(new GifFrame(bmp, 1000 / fps, id));
+            }
+            GFL fl = Frames[0].Layers[0];
+            Width = fl.Width;
+            Height = fl.Height;
+            Position = new OVector(0, 0);
+        }
         private List<GifFrame> FramesFromGif(Image gif)
         {
             List<GifFrame> result = new();

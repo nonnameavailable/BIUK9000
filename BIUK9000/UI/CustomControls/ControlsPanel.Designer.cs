@@ -35,6 +35,7 @@
             controlsTC = new System.Windows.Forms.TabControl();
             optionsTP = new System.Windows.Forms.TabPage();
             groupBox4 = new System.Windows.Forms.GroupBox();
+            toolRecordRB = new System.Windows.Forms.RadioButton();
             toolPaintRB = new System.Windows.Forms.RadioButton();
             toolMoveRB = new System.Windows.Forms.RadioButton();
             mpbAAModeCBB = new System.Windows.Forms.ComboBox();
@@ -129,14 +130,25 @@
             // 
             // groupBox4
             // 
+            groupBox4.Controls.Add(toolRecordRB);
             groupBox4.Controls.Add(toolPaintRB);
             groupBox4.Controls.Add(toolMoveRB);
             groupBox4.Location = new System.Drawing.Point(6, 147);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new System.Drawing.Size(113, 75);
+            groupBox4.Size = new System.Drawing.Size(113, 100);
             groupBox4.TabIndex = 5;
             groupBox4.TabStop = false;
             groupBox4.Text = "Mode";
+            // 
+            // toolRecordRB
+            // 
+            toolRecordRB.AutoSize = true;
+            toolRecordRB.Location = new System.Drawing.Point(6, 72);
+            toolRecordRB.Name = "toolRecordRB";
+            toolRecordRB.Size = new System.Drawing.Size(62, 19);
+            toolRecordRB.TabIndex = 2;
+            toolRecordRB.Text = "Record";
+            toolRecordRB.UseVisualStyleBackColor = true;
             // 
             // toolPaintRB
             // 
@@ -176,7 +188,7 @@
             applyParamsCBB.FormattingEnabled = true;
             applyParamsCBB.Location = new System.Drawing.Point(6, 87);
             applyParamsCBB.Name = "applyParamsCBB";
-            applyParamsCBB.Size = new System.Drawing.Size(113, 25);
+            applyParamsCBB.Size = new System.Drawing.Size(113, 23);
             applyParamsCBB.TabIndex = 3;
             toolTip.SetToolTip(applyParamsCBB, resources.GetString("applyParamsCBB.ToolTip"));
             // 
@@ -185,7 +197,7 @@
             positionSnapCB.AutoSize = true;
             positionSnapCB.Location = new System.Drawing.Point(6, 33);
             positionSnapCB.Name = "positionSnapCB";
-            positionSnapCB.Size = new System.Drawing.Size(106, 21);
+            positionSnapCB.Size = new System.Drawing.Size(97, 19);
             positionSnapCB.TabIndex = 2;
             positionSnapCB.Text = "position snap";
             toolTip.SetToolTip(positionSnapCB, "When enabled, the layer position will snap to the top left corner of the frame");
@@ -198,7 +210,7 @@
             drawHelpCB.CheckState = System.Windows.Forms.CheckState.Checked;
             drawHelpCB.Location = new System.Drawing.Point(6, 60);
             drawHelpCB.Name = "drawHelpCB";
-            drawHelpCB.Size = new System.Drawing.Size(85, 21);
+            drawHelpCB.Size = new System.Drawing.Size(78, 19);
             drawHelpCB.TabIndex = 1;
             drawHelpCB.Text = "draw help";
             toolTip.SetToolTip(drawHelpCB, "When enabled, red border will be drawn around all layers and the frame itself");
@@ -209,7 +221,7 @@
             rotationSnapCB.AutoSize = true;
             rotationSnapCB.Location = new System.Drawing.Point(6, 6);
             rotationSnapCB.Name = "rotationSnapCB";
-            rotationSnapCB.Size = new System.Drawing.Size(105, 21);
+            rotationSnapCB.Size = new System.Drawing.Size(96, 19);
             rotationSnapCB.TabIndex = 0;
             rotationSnapCB.Text = "rotation snap";
             toolTip.SetToolTip(rotationSnapCB, "If enabled, the layer rotation will snap to the nearest 90°");
@@ -236,7 +248,7 @@
             createFramesCB.AutoSize = true;
             createFramesCB.Location = new System.Drawing.Point(9, 38);
             createFramesCB.Name = "createFramesCB";
-            createFramesCB.Size = new System.Drawing.Size(107, 21);
+            createFramesCB.Size = new System.Drawing.Size(97, 19);
             createFramesCB.TabIndex = 8;
             createFramesCB.Text = "create frames";
             toolTip.SetToolTip(createFramesCB, "Your work will be exported not only as a single .gif file,\r\nbut also as a yourGifName_Frames folder, containing the frames,\r\nexported as images in the format specified below.");
@@ -267,7 +279,7 @@
             useDitheringCB.AutoSize = true;
             useDitheringCB.Location = new System.Drawing.Point(6, 22);
             useDitheringCB.Name = "useDitheringCB";
-            useDitheringCB.Size = new System.Drawing.Size(103, 21);
+            useDitheringCB.Size = new System.Drawing.Size(95, 19);
             useDitheringCB.TabIndex = 4;
             useDitheringCB.Text = "use dithering";
             toolTip.SetToolTip(useDitheringCB, "Enables dithering for both the Gif and single image.\r\nThis is my own, idiotic implementation of Floyd-Steinberg dithering and it is very slow.");
@@ -278,7 +290,7 @@
             label4.AutoSize = true;
             label4.Location = new System.Drawing.Point(9, 9);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(42, 17);
+            label4.Size = new System.Drawing.Size(38, 15);
             label4.TabIndex = 6;
             label4.Text = "mode";
             // 
@@ -300,7 +312,7 @@
             ImageExportJpegQualNUD.Location = new System.Drawing.Point(71, 51);
             ImageExportJpegQualNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             ImageExportJpegQualNUD.Name = "ImageExportJpegQualNUD";
-            ImageExportJpegQualNUD.Size = new System.Drawing.Size(41, 25);
+            ImageExportJpegQualNUD.Size = new System.Drawing.Size(41, 23);
             ImageExportJpegQualNUD.TabIndex = 5;
             toolTip.SetToolTip(ImageExportJpegQualNUD, "If .jpeg is selected above, this affects the quality of the export\r\n100 is highest quality\r\nLower means lower quality and smaller file size");
             ImageExportJpegQualNUD.Value = new decimal(new int[] { 100, 0, 0, 0 });
@@ -310,7 +322,7 @@
             label3.AutoSize = true;
             label3.Location = new System.Drawing.Point(6, 53);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(59, 17);
+            label3.Size = new System.Drawing.Size(53, 15);
             label3.TabIndex = 4;
             label3.Text = "jpg qual.";
             // 
@@ -357,7 +369,7 @@
             GifExportLossyNUD.Location = new System.Drawing.Point(55, 79);
             GifExportLossyNUD.Maximum = new decimal(new int[] { 500, 0, 0, 0 });
             GifExportLossyNUD.Name = "GifExportLossyNUD";
-            GifExportLossyNUD.Size = new System.Drawing.Size(57, 25);
+            GifExportLossyNUD.Size = new System.Drawing.Size(57, 23);
             GifExportLossyNUD.TabIndex = 3;
             toolTip.SetToolTip(GifExportLossyNUD, "Lossiness of the compression\r\nHigher number means lower quality and smaller file size");
             // 
@@ -366,7 +378,7 @@
             label2.AutoSize = true;
             label2.Location = new System.Drawing.Point(6, 85);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(37, 17);
+            label2.Size = new System.Drawing.Size(33, 15);
             label2.TabIndex = 2;
             label2.Text = "lossy";
             // 
@@ -376,7 +388,7 @@
             GifExportColorsNUD.Maximum = new decimal(new int[] { 256, 0, 0, 0 });
             GifExportColorsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             GifExportColorsNUD.Name = "GifExportColorsNUD";
-            GifExportColorsNUD.Size = new System.Drawing.Size(57, 25);
+            GifExportColorsNUD.Size = new System.Drawing.Size(57, 23);
             GifExportColorsNUD.TabIndex = 1;
             toolTip.SetToolTip(GifExportColorsNUD, "Number of colors in the compressed gif");
             GifExportColorsNUD.Value = new decimal(new int[] { 256, 0, 0, 0 });
@@ -386,7 +398,7 @@
             label1.AutoSize = true;
             label1.Location = new System.Drawing.Point(6, 54);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(44, 17);
+            label1.Size = new System.Drawing.Size(39, 15);
             label1.TabIndex = 0;
             label1.Text = "colors";
             // 
@@ -450,5 +462,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox gifExportModeCBB;
         private System.Windows.Forms.CheckBox createFramesCB;
+        private System.Windows.Forms.RadioButton toolRecordRB;
     }
 }

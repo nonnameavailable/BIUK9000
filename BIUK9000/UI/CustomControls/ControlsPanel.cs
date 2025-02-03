@@ -44,7 +44,8 @@ namespace BIUK9000.UI
                 _isCodeChange = false;
             }
         }
-        public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; set => toolPaintRB.Checked = true; }
+        public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; set => toolPaintRB.Checked = value; }
+        public bool ToolRecordSelectedFlag { get => toolRecordRB.Checked; set=> toolRecordRB.Checked = value; }
         public InterpolationMode InterpolationMode { get => (InterpolationMode)mpbAAModeCBB.SelectedItem; }
         public bool CreateFrames { get => createFramesCB.Checked; }
 
@@ -52,7 +53,7 @@ namespace BIUK9000.UI
         public event EventHandler ShouldStartDragDrop;
         public event EventHandler SaveButtonClicked;
         public event EventHandler InterpolationModeChanged;
-        public event EventHandler ToolMoveSelected, ToolPaintSelected;
+        public event EventHandler ToolMoveSelected, ToolPaintSelected, ToolRecordSelected;
 
         private bool _isCodeChange;
         public ControlsPanel()
@@ -80,6 +81,12 @@ namespace BIUK9000.UI
             useDitheringCB.CheckedChanged += UseDitheringCB_CheckedChanged;
             toolMoveRB.CheckedChanged += ToolMoveRB_CheckedChanged;
             toolPaintRB.CheckedChanged += ToolPaintRB_CheckedChanged;
+            toolRecordRB.CheckedChanged += ToolRecordRB_CheckedChanged;
+        }
+
+        private void ToolRecordRB_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ToolRecordSelectedFlag && !_isCodeChange) ToolRecordSelected?.Invoke(this, EventArgs.Empty);
         }
 
         private void ToolPaintRB_CheckedChanged(object sender, EventArgs e)
@@ -157,5 +164,11 @@ namespace BIUK9000.UI
         applyChanged,
         applyAll,
         applyNone
+    }
+    public enum Tools
+    {
+        Move,
+        Paint,
+        Record
     }
 }

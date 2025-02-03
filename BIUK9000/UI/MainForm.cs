@@ -38,13 +38,15 @@ namespace BIUK9000.UI
         private OVector _previousLCtM;
         private float _rotationChange;
         private Control _lpcBackup;
-        private Control _paintControl;
+        private PaintControl _paintControl;
+        private RecordControl _recordControl;
         public bool IsLMBDown { get => mainPictureBox.IsLMBDown; }
         public bool IsRMBDown { get => mainPictureBox.IsRMBDown; }
         public bool IsMMBDown { get => mainPictureBox.IsMMBDown; }
         private Timer _updateTimer;
         private Point _prevMousePos;
         public GifferController GifferC { get; private set; }
+        private ScreenCapture _sc;
 
         public MainForm()
         {
@@ -58,7 +60,6 @@ namespace BIUK9000.UI
             _updateTimer = new Timer();
             _updateTimer.Interval = 17;
             _updateTimer.Tick += (sender, args) => UpdateMainPictureBox();
-
             KeyPreview = true;
 
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
@@ -76,6 +77,7 @@ namespace BIUK9000.UI
             controlsPanel.InterpolationModeChanged += (sender, args) => mainPictureBox.InterpolationMode = ((ControlsPanel)sender).InterpolationMode;
             controlsPanel.ToolPaintSelected += (sender, args) => SetPaintMode(true);
             controlsPanel.ToolMoveSelected += (sender, args) => SetPaintMode(false);
+            controlsPanel.ToolRecordSelected += ControlsPanel_ToolRecordSelected;
 
             MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
 
@@ -85,6 +87,7 @@ namespace BIUK9000.UI
             dupeFrameButton.Click += DupeFrameButton_Click;
 
             _paintControl = new PaintControl();
+            _recordControl = new RecordControl();
             lerpModeCBB.SelectedIndex = 0;
             mainPictureBox.InterpolationMode = controlsPanel.InterpolationMode;
 
@@ -97,6 +100,53 @@ namespace BIUK9000.UI
                 HsbPanel_HueSatChanged(sender, args);
                 UpdateMainPictureBox();
             };
+            _sc = new ScreenCapture();
+            _recordControl.Start += _recordControl_Start;
+            _recordControl.Stop += _recordControl_Stop;
+
+            TransparencyKey = Color.LimeGreen;
+        }
+        private void SetRecordMode(bool val)
+        {
+            if (val)
+            {
+                TransparencyKey = Color.Red;
+                mainPictureBox.BackColor = Color.Red;
+                if(MainImage != null){
+                    using Graphics g = Graphics.FromImage(MainImage);
+                    g.Clear(Color.Transparent);
+                }
+            } else
+            {
+                mainPictureBox.BackColor = default;
+                TransparencyKey = default;
+            }
+        }
+
+        private void _recordControl_Stop(object sender, EventArgs e)
+        {
+            _sc.StopCapture();
+            SetNewGiffer(new Giffer(_sc.Frames, _sc.FPS));
+            _sc.DisposeFrames();
+        }
+
+        private void _recordControl_Start(object sender, EventArgs e)
+        {
+            Point p = mainPictureBox.PointToScreen(Point.Empty);
+            _sc.X = p.X;
+            _sc.Y = p.Y;
+            _sc.Width = mainPictureBox.Width;
+            _sc.Height = mainPictureBox.Height;
+            _sc.FPS = _recordControl.FPS;
+            _sc.StartCapture();
+        }
+
+        private void ControlsPanel_ToolRecordSelected(object sender, EventArgs e)
+        {
+            layerParamsPanel.Controls.Clear();
+            layerParamsPanel.Controls.Add(_recordControl);
+            ControlsEnable(false);
+            SetRecordMode(true);
         }
 
         private void HsbPanel_ChangeEnded(object sender, EventArgs e)
@@ -133,21 +183,27 @@ namespace BIUK9000.UI
             GifferC.DupeFrame(SFI, (int)frameDupeCountNUD.Value);
             CompleteUIUpdate();
         }
-
+        
         private void SetPaintMode(bool setValue)
         {
-            if(SelectedLayer is not BitmapGFL)
+            SetRecordMode(false);
+            if (layerParamsPanel.Controls.Count > 0 && layerParamsPanel.Controls[0] is RecordControl)
             {
-                MessageBox.Show("Only image layers can be painted on, select an image layer.");
+                layerParamsPanel.Controls.Clear();
+            }
+            if (GifferC == null)
+            {
                 controlsPanel.ToolMoveSelectedFlag = true;
                 return;
             }
-            MainTimelineSlider.Enabled = !setValue;
-            mainLayersPanel.Enabled = !setValue;
-            markLerpPanel.Enabled = !setValue;
-            controlsPanel.SetPaintMode(setValue);
-            AllowDrop = !setValue;
-            if (GifferC == null) return;
+            if(setValue && SelectedLayer is not BitmapGFL)
+            {
+                MessageBox.Show("Only image layers can be painted on, select an image layer.");
+                controlsPanel.ToolMoveSelectedFlag = true;
+                ControlsEnable(true);
+                return;
+            }
+            ControlsEnable(!setValue);
             if (setValue)
             {
                 if (layerParamsPanel.Controls.Count > 0)
@@ -163,7 +219,18 @@ namespace BIUK9000.UI
                 if(_lpcBackup != null)layerParamsPanel.Controls.Add(_lpcBackup);
             }
         }
+        private void ControlsEnable(bool val)
+        {
+            MainTimelineSlider.Enabled = val;
+            mainLayersPanel.Enabled = val;
+            markLerpPanel.Enabled = val;
+            controlsPanel.SetPaintMode(!val);
+            AllowDrop = val;
+        }
+        private void SetRecordMode()
+        {
 
+        }
         private void DeleteFramesButton_Click(object sender, EventArgs e)
         {
             if (MainGiffer == null || MainGiffer.FrameCount < 2) return;
@@ -237,8 +304,17 @@ namespace BIUK9000.UI
             GifferC = new GifferController(newGiffer);
             if(layerParamsPanel.Controls.Count > 0)
             {
-                layerParamsPanel.Controls[0].Dispose();
+                //layerParamsPanel.Controls[0].Dispose();
+                if (layerParamsPanel.Controls[0] is IGFLParamControl)
+                {
+                    layerParamsPanel.Controls[0].Dispose();
+                } else
+                {
+                    layerParamsPanel.Controls.Clear();
+                }
             }
+            controlsPanel.ToolMoveSelectedFlag = true;
+            SetPaintMode(false);
             CompleteUIUpdate(false);
             GifferC.SaveLayerStateForApply(0, 0);
             GifferC.SaveLayerForLPC(0, 0);
@@ -304,7 +380,7 @@ namespace BIUK9000.UI
         #region key event handling
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            if (MainGiffer == null || ActiveControl is TextBox || ActiveControl is IGFLParamControl || controlsPanel.ToolPaintSelectedFlag) return base.ProcessKeyPreview(ref m);
+            if (MainGiffer == null || ActiveControl is TextBox || ActiveControl is IGFLParamControl || controlsPanel.ToolPaintSelectedFlag || controlsPanel.ToolRecordSelectedFlag) return base.ProcessKeyPreview(ref m);
             const int WM_KEYDOWN = 0x100;
             const int WM_KEYUP = 0x101;
             Keys keyData = (Keys)m.WParam.ToInt32();
@@ -373,7 +449,7 @@ namespace BIUK9000.UI
             {
                 if(SelectedLayer is BitmapGFL)
                 {
-                    PaintControl pc = _paintControl as PaintControl;
+                    PaintControl pc = _paintControl;
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.Lasso)
                     {
                         Point[] translatedPoints = mainPictureBox.MouseTrace.Select(point => point = GifferC.MousePositionOnLayer(SFI, SLI, point)).ToArray();
@@ -404,7 +480,7 @@ namespace BIUK9000.UI
             {
                 if (IsLMBDown)
                 {
-                    PaintControl pc = _paintControl as PaintControl;
+                    PaintControl pc = _paintControl;
                     Point mpoi = GifferC.MousePositionOnLayer(SFI, SLI, mainPictureBox.MousePositionOnImage);
                     if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine)
                     {
