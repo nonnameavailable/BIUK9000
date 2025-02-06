@@ -54,9 +54,10 @@ namespace BIUK9000.UI
             InitializeComponent();
             timeLineTrackBar.ValueChanged += (sender, args) =>
             {
-                if(!_isCodeFrameIndexChange)SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
+                playButton.Focus();
+                if (!_isCodeFrameIndexChange)SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
             };
-            frameDelayNUD.KeyPress += FrameDelayNUD_KeyPress;
+            //frameDelayNUD.KeyPress += FrameDelayNUD_KeyPress;
             playTimer = new Timer();
             playTimer.Tick += PlayTimer_Tick;
             frameDelayNUD.ValueChanged += (sender, args) => { if (!_isCodeFrameDelayChange) FrameDelayChanged?.Invoke(this, EventArgs.Empty); };

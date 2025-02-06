@@ -46,8 +46,9 @@ namespace BIUK9000.UI
         private Timer _updateTimer;
         private Point _prevMousePos;
         public GifferController GifferC { get; private set; }
-        private ScreenCapture _sc;
-
+        //private ScreenCapture _sc;
+        private ScreenStateLogger _ssl;
+        private List<byte[]> byteFrames;
         public MainForm()
         {
             InitializeComponent();
@@ -100,12 +101,16 @@ namespace BIUK9000.UI
                 HsbPanel_HueSatChanged(sender, args);
                 UpdateMainPictureBox();
             };
-            _sc = new ScreenCapture();
+            //_sc = new ScreenCapture();
+            byteFrames = new List<byte[]>();
+            _ssl = new ScreenStateLogger();
+
             _recordControl.Start += _recordControl_Start;
             _recordControl.Stop += _recordControl_Stop;
 
             TransparencyKey = Color.LimeGreen;
         }
+
         private void SetRecordMode(bool val)
         {
             if (val)
@@ -125,20 +130,28 @@ namespace BIUK9000.UI
 
         private void _recordControl_Stop(object sender, EventArgs e)
         {
-            _sc.StopCapture();
-            SetNewGiffer(new Giffer(_sc.Frames, _sc.FPS));
-            _sc.DisposeFrames();
+            _ssl.Stop();
+            if (_ssl.Frames.Count == 0) return;
+            SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
+            _ssl.ClearFrames();
         }
 
         private void _recordControl_Start(object sender, EventArgs e)
         {
             Point p = mainPictureBox.PointToScreen(Point.Empty);
-            _sc.X = p.X;
-            _sc.Y = p.Y;
-            _sc.Width = mainPictureBox.Width;
-            _sc.Height = mainPictureBox.Height;
-            _sc.FPS = _recordControl.FPS;
-            _sc.StartCapture();
+            bool widthCheck = (p.X + mainPictureBox.Width) >= Screen.FromControl(this).Bounds.Right;
+            bool heightCheck = (p.Y + mainPictureBox.Height) >= Screen.FromControl(this).Bounds.Bottom;
+            if (p.X < 0 || p.Y < 0 || widthCheck || heightCheck)
+            {
+                MessageBox.Show("The entire recording area must be on screen!");
+                return;
+            }
+            _ssl.X = p.X;
+            _ssl.Y = p.Y;
+            _ssl.Width = mainPictureBox.Width;
+            _ssl.Height = mainPictureBox.Height;
+            _ssl.FPS = _recordControl.FPS;
+            _ssl.Start();
         }
 
         private void ControlsPanel_ToolRecordSelected(object sender, EventArgs e)

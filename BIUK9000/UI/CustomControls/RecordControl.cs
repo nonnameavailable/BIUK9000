@@ -18,8 +18,31 @@ namespace BIUK9000.UI.CustomControls
         public RecordControl()
         {
             InitializeComponent();
-            startRecBtn.Click += (sender, args) => Start?.Invoke(sender, args);
-            stopRecBtn.Click += (sender, args) => Stop?.Invoke(sender, args);
+            startRecBtn.Click += (sender, args) =>
+            {
+                RecMode(true);
+                Start?.Invoke(sender, args);
+            };
+            stopRecBtn.Click += (sender, args) =>
+            {
+                RecMode(false);
+                Stop?.Invoke(sender, args);
+            };
+            RecMode(false);
+        }
+        private void RecMode(bool val)
+        {
+            if (val)
+            {
+                startRecBtn.Text = "Recording";
+                startRecBtn.Enabled = false;
+                stopRecBtn.Enabled = true;
+            } else
+            {
+                startRecBtn.Text = "Start";
+                startRecBtn.Enabled = true;
+                stopRecBtn.Enabled = false;
+            }
         }
     }
 }

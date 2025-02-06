@@ -83,5 +83,10 @@ namespace BIUK9000
             }
             return null;
         }
+        public static Bitmap BitmapFromByte(byte[] b)
+        {
+            using MemoryStream ms = new MemoryStream(b);
+            return (Bitmap)Image.FromStream(ms);
+        }
     }
 }
