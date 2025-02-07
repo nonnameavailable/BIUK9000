@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -30,7 +31,7 @@ namespace BIUK9000.GifferComponents
         {
             int absWidth = Math.Abs(width);
             int absHeight = Math.Abs(height);
-            Bitmap result = new Bitmap(absWidth, absHeight);
+            Bitmap result = new Bitmap(absWidth, absHeight, PixelFormat.Format32bppArgb);
             using Graphics g = Graphics.FromImage(result);
             g.InterpolationMode = interpolationMode;
             foreach (GFL layer in Layers)

@@ -19,6 +19,7 @@
 
   <ItemGroup>
 	<PackageReference Include="AnimatedGif" Version="1.0.5" />
+	<PackageReference Include="Gifski.Net" Version="1.2.0" />
 	<PackageReference Include="SharpDX" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
 	<PackageReference Include="System.Drawing.Common" Version="9.0.0" />
@@ -62,6 +63,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\gifsicle64.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\gifski.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\haarcascade_frontalcatface.xml">
