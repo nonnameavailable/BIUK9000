@@ -109,6 +109,29 @@ namespace BIUK9000.UI
             _recordControl.Stop += _recordControl_Stop;
 
             TransparencyKey = Color.LimeGreen;
+            this.Move += MainForm_Move;
+        }
+        private int CurrentScreenIndex()
+        {
+            Screen currentScreen = Screen.FromControl(this);
+            Screen[] allScreens = Screen.AllScreens;
+            for(int i = 0; i < allScreens.Length; i++)
+            {
+                if(allScreens[i].Equals(currentScreen))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        private void MainForm_Move(object sender, EventArgs e)
+        {
+            Point p = mainPictureBox.PointToScreen(Point.Empty);
+            if (CanRecord())
+            {
+                _ssl.X = p.X;
+                _ssl.Y = p.Y;
+            }
         }
 
         private void SetRecordMode(bool val)
@@ -135,7 +158,15 @@ namespace BIUK9000.UI
             SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
             _ssl.ClearFrames();
         }
-
+        private bool CanRecord()
+        {
+            Point p = mainPictureBox.PointToScreen(Point.Empty);
+            bool widthCheck = (p.X + mainPictureBox.Width) >= Screen.FromControl(this).Bounds.Right;
+            bool heightCheck = (p.Y + mainPictureBox.Height) >= Screen.FromControl(this).Bounds.Bottom;
+            bool posCheck = p.X < 0 || p.Y < 0;
+            bool minwhCheck = mainPictureBox.Width < 5 || mainPictureBox.Height < 5;
+            return !(widthCheck || heightCheck || posCheck ||  minwhCheck);
+        }
         private void _recordControl_Start(object sender, EventArgs e)
         {
             Point p = mainPictureBox.PointToScreen(Point.Empty);
@@ -146,12 +177,17 @@ namespace BIUK9000.UI
                 MessageBox.Show("The entire recording area must be on screen!");
                 return;
             }
+            if (mainPictureBox.Width < 5 || mainPictureBox.Height < 5)
+            {
+                MessageBox.Show("Recording area must be larger!");
+                return;
+            }
             _ssl.X = p.X;
             _ssl.Y = p.Y;
             _ssl.Width = mainPictureBox.Width;
             _ssl.Height = mainPictureBox.Height;
             _ssl.FPS = _recordControl.FPS;
-            _ssl.Start();
+            _ssl.Start(CurrentScreenIndex());
         }
 
         private void ControlsPanel_ToolRecordSelected(object sender, EventArgs e)
@@ -539,7 +575,7 @@ namespace BIUK9000.UI
                         if (IsLMBDown)
                         {
                             using Graphics g = Graphics.FromImage(MainImage);
-                            Painter.DrawLinesFromPoints(g, mainPictureBox.MouseTrace, [Color.Red, Color.Cyan], pc.Thickness);
+                            Painter.DrawLinesFromPoints(g, mainPictureBox.MouseTrace, [Color.Red, Color.Cyan], 3);
                             mainPictureBox.Invalidate();
                         }
                     }
