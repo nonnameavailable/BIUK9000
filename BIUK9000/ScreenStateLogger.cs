@@ -51,9 +51,9 @@ namespace BIUK9000
             //Get device from adapter
             _device = new SharpDX.Direct3D11.Device(adapter);
             Debug.Print(currentScreenIndex.ToString());
-            int outputNumber = currentScreenIndex == -1 ? 0 : currentScreenIndex;
+            int outputNumber = (currentScreenIndex == -1 || currentScreenIndex > (adapter.GetOutputCount() - 1)) ? 0 : currentScreenIndex;
             //Get front buffer of the adapter
-            _output = adapter.GetOutput(0);
+            _output = adapter.GetOutput(outputNumber);
             _output1 = _output.QueryInterface<Output1>();
 
             // Width/Height of desktop to capture
