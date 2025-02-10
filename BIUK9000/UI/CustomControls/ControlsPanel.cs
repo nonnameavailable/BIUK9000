@@ -23,17 +23,12 @@ namespace BIUK9000.UI
         public bool IsLMBDown { get; set; }
         public bool IsRMBDown { get; set; }
         public bool DraggingFileForExport { get; set; }
-        public int GifExportLossy { get => (int)(GifExportLossyNUD.Value); }
-        public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
-        public GifQuality GifQuality { get => (GifQuality)gifExportModeCBB.SelectedItem; }
         public int ImageExportJpegQuality { get => (int)ImageExportJpegQualNUD.Value; }
         public bool RotationSnap { get => rotationSnapCB.Checked; }
         public bool PositionSnap { get => positionSnapCB.Checked; }
         public ApplyParamsMode SelectedApplyParamsMode { get => (ApplyParamsMode)applyParamsCBB.SelectedItem; }
         public bool DrawHelp { get => drawHelpCB.Checked; }
-        public bool UseGifsicle { get => useGifSicleCB.Checked; }
-        public bool UseDithering { get => useDitheringCB.Checked; }
         public bool ToolMoveSelectedFlag
         {
             get => toolMoveRB.Checked;
@@ -47,7 +42,6 @@ namespace BIUK9000.UI
         public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; set => toolPaintRB.Checked = value; }
         public bool ToolRecordSelectedFlag { get => toolRecordRB.Checked; set=> toolRecordRB.Checked = value; }
         public InterpolationMode InterpolationMode { get => (InterpolationMode)mpbAAModeCBB.SelectedItem; }
-        public bool CreateFrames { get => createFramesCB.Checked; }
 
         public event EventHandler MustRedraw;
         public event EventHandler ShouldStartDragDrop;
@@ -66,7 +60,6 @@ namespace BIUK9000.UI
             OriginalMousePosition = new OVector(0, 0);
             IsLMBDown = false;
             IsRMBDown = false;
-            gifExportModeCBB.DataSource = Enum.GetValues(typeof(GifQuality));
             applyParamsCBB.DataSource = Enum.GetValues(typeof(ApplyParamsMode));
             mpbAAModeCBB.DataSource = Enum.GetValues(typeof(InterpolationMode))
                 .Cast<InterpolationMode>()
@@ -76,9 +69,7 @@ namespace BIUK9000.UI
             mpbAAModeCBB.SelectedIndexChanged += MpbAAModeCBB_SelectedIndexChanged;
             applyParamsCBB.SelectedIndex = 0;
             ImageExportFormatCBB.SelectedIndex = 1;
-            gifExportModeCBB.SelectedIndex = 1;
             saveButton.Click += (sender, args) => SaveButtonClicked?.Invoke(this, args);
-            useDitheringCB.CheckedChanged += UseDitheringCB_CheckedChanged;
             toolMoveRB.CheckedChanged += ToolMoveRB_CheckedChanged;
             toolPaintRB.CheckedChanged += ToolPaintRB_CheckedChanged;
             toolRecordRB.CheckedChanged += ToolRecordRB_CheckedChanged;
@@ -107,11 +98,6 @@ namespace BIUK9000.UI
         protected void OnMustRedraw()
         {
             MustRedraw?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void UseDitheringCB_CheckedChanged(object sender, EventArgs e)
-        {
-            if (UseDithering) ImageExportFormatCBB.SelectedItem = ".png";
         }
 
         private void SaveButton_MouseMove(object sender, MouseEventArgs e)

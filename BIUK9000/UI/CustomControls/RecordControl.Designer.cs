@@ -39,16 +39,16 @@
             // 
             startRecBtn.Location = new System.Drawing.Point(3, 3);
             startRecBtn.Name = "startRecBtn";
-            startRecBtn.Size = new System.Drawing.Size(75, 23);
+            startRecBtn.Size = new System.Drawing.Size(104, 40);
             startRecBtn.TabIndex = 0;
             startRecBtn.Text = "start";
             startRecBtn.UseVisualStyleBackColor = true;
             // 
             // stopRecBtn
             // 
-            stopRecBtn.Location = new System.Drawing.Point(84, 3);
+            stopRecBtn.Location = new System.Drawing.Point(113, 3);
             stopRecBtn.Name = "stopRecBtn";
-            stopRecBtn.Size = new System.Drawing.Size(75, 23);
+            stopRecBtn.Size = new System.Drawing.Size(104, 40);
             stopRecBtn.TabIndex = 1;
             stopRecBtn.Text = "stop";
             stopRecBtn.UseVisualStyleBackColor = true;
@@ -56,7 +56,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(3, 39);
+            label1.Location = new System.Drawing.Point(10, 51);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(23, 15);
             label1.TabIndex = 2;
@@ -64,7 +64,7 @@
             // 
             // fpsNUD
             // 
-            fpsNUD.Location = new System.Drawing.Point(39, 37);
+            fpsNUD.Location = new System.Drawing.Point(46, 49);
             fpsNUD.Maximum = new decimal(new int[] { 30, 0, 0, 0 });
             fpsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             fpsNUD.Name = "fpsNUD";

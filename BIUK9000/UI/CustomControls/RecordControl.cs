@@ -30,7 +30,7 @@ namespace BIUK9000.UI.CustomControls
             };
             RecMode(false);
         }
-        private void RecMode(bool val)
+        public void RecMode(bool val)
         {
             if (val)
             {

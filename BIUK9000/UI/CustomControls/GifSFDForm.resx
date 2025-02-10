@@ -118,13 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>146, 17</value>
+    <value>25, 17</value>
   </metadata>
-  <data name="applyParamsCBB.ToolTip" xml:space="preserve">
-    <value>Default behavior is that when a layer parameter is changed,
-the change propagates to all subsequent layer of the same ID.
-
-This can be either disabled (applyNone), or made so that ALL
-parameters are copied over to the subsequent layers (applyAll)</value>
-  </data>
 </root>

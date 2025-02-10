@@ -17,6 +17,7 @@ using BIUK9000.UI.LayerParamControls;
 using System.Drawing.Drawing2D;
 using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI.CustomControls;
+using BIUK9000.UI.ExtendedControls;
 
 namespace BIUK9000.UI
 {
@@ -111,6 +112,15 @@ namespace BIUK9000.UI
             TransparencyKey = Color.LimeGreen;
             this.Move += MainForm_Move;
         }
+        private Rectangle GetTotalScreenBounds()
+        {
+            Rectangle totalBounds = Screen.AllScreens[0].Bounds;
+            foreach (Screen screen in Screen.AllScreens)
+            {
+                totalBounds = Rectangle.Union(totalBounds, screen.Bounds);
+            }
+            return totalBounds;
+        }
         private int CurrentScreenIndex()
         {
             Screen currentScreen = Screen.FromControl(this);
@@ -160,12 +170,18 @@ namespace BIUK9000.UI
         }
         private bool CanRecord()
         {
-            Point p = mainPictureBox.PointToScreen(Point.Empty);
-            bool widthCheck = (p.X + mainPictureBox.Width) >= Screen.FromControl(this).Bounds.Right;
-            bool heightCheck = (p.Y + mainPictureBox.Height) >= Screen.FromControl(this).Bounds.Bottom;
-            bool posCheck = p.X < 0 || p.Y < 0;
+            //Point p = mainPictureBox.PointToScreen(Point.Empty);
+            //bool widthCheck = (p.X + mainPictureBox.Width) >= Screen.FromControl(this).Bounds.Right;
+            //bool heightCheck = (p.Y + mainPictureBox.Height) >= Screen.FromControl(this).Bounds.Bottom;
+            //bool posCheck = p.X < 0 || p.Y < 0;
+            //bool minwhCheck = mainPictureBox.Width < 5 || mainPictureBox.Height < 5;
+            //return !(widthCheck || heightCheck || posCheck ||  minwhCheck);
             bool minwhCheck = mainPictureBox.Width < 5 || mainPictureBox.Height < 5;
-            return !(widthCheck || heightCheck || posCheck ||  minwhCheck);
+            Rectangle totalScreenBounds = GetTotalScreenBounds();
+            Point screenLocation = mainPictureBox.PointToScreen(Point.Empty);
+            Rectangle pictureBoxBounds = new Rectangle(screenLocation, mainPictureBox.Size);
+
+            return totalScreenBounds.Contains(pictureBoxBounds) && !minwhCheck;
         }
         private void _recordControl_Start(object sender, EventArgs e)
         {
@@ -175,15 +191,20 @@ namespace BIUK9000.UI
             if (p.X < 0 || p.Y < 0 || widthCheck || heightCheck)
             {
                 MessageBox.Show("The entire recording area must be on screen!");
+                _recordControl.RecMode(false);
                 return;
             }
             if (mainPictureBox.Width < 5 || mainPictureBox.Height < 5)
             {
+                _recordControl.RecMode(false);
                 MessageBox.Show("Recording area must be larger!");
                 return;
             }
-            _ssl.X = p.X;
-            _ssl.Y = p.Y;
+            Rectangle screenBounds = GetTotalScreenBounds();
+            Point pp = new Point(p.X - screenBounds.Left, p.Y - screenBounds.Top);
+            _ssl.X = pp.X;
+            _ssl.Y = pp.Y;
+            //MessageBox.Show("X: " + p.X.ToString() + "  Y: " + p.Y.ToString());
             _ssl.Width = mainPictureBox.Width;
             _ssl.Height = mainPictureBox.Height;
             _ssl.FPS = _recordControl.FPS;
@@ -781,7 +802,7 @@ namespace BIUK9000.UI
             SaveFileDialog sfd = saveFileDialog;
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                GifferIO.SaveGif(MainGiffer, controlsPanel, sfd.FileName, controlsPanel.GifQuality, controlsPanel.CreateFrames, controlsPanel.InterpolationMode);
+                GifferIO.SaveGif(MainGiffer, sfd.FileName, controlsPanel.InterpolationMode);
             }
         }
         #endregion

@@ -16,63 +16,65 @@ using Microsoft.VisualBasic;
 using GifskiNet;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using BIUK9000.UI.CustomControls;
 
 namespace BIUK9000
 {
     public class GifferIO
     {
-        public static Image GifFromGiffer(Giffer giffer, GifQuality gifQuality, InterpolationMode interpolationMode)
+        public static Image GifFromGiffer(Giffer giffer, GifSFDForm sfdf, InterpolationMode interpolationMode)
         {
-            //MemoryStream stream = new MemoryStream();
-            //using AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
-            //foreach (GifFrame frame in giffer.Frames)
-            //{
-            //    agc.AddFrame(giffer.FrameAsBitmap(frame, false, interpolationMode), frame.FrameDelay, gifQuality);
-            //}
-            //return Image.FromStream(stream);
-
-            using var gifski = Gifski.Create(@"resources\gifski.dll", settings =>
+            using MemoryStream stream = new MemoryStream();
+            if (sfdf.ChosenExportLibrary == GifSFDForm.ExportLibrary.AnimatedGif)
             {
-                settings.Quality = 100;
-            });
-            var stream = new MemoryStream();
-            gifski.SetStreamOutput(stream);
-            //gifski.SetFileOutput(@"C:\MOJE\MyRepos\images\fasdfasdfas.gif");
-            int counter = 0;
-            double delayCumulation = 0;
-            foreach (GifFrame gf in giffer.Frames)
-            {
-                delayCumulation += gf.FrameDelay / 1000d;
-                using Bitmap frame = giffer.FrameAsBitmap(gf, false, interpolationMode);
-                using FastBitmap fbm = new FastBitmap(frame);
-                for (int i = 0; i < fbm.Width; i++)
+                using AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
+                foreach (GifFrame frame in giffer.Frames)
                 {
-                    for (int j = 0; j < fbm.Height; j++)
-                    {
-                        Color c = fbm.GetPixel(i, j);
-                        fbm.SetPixel(i, j, Color.FromArgb(c.A, c.B, c.G, c.R));
-                    }
+                    agc.AddFrame(giffer.FrameAsBitmap(frame, false, interpolationMode), frame.FrameDelay, sfdf.GifQuality);
                 }
-                byte[] argb = ImageToByte(fbm.Bitmap);
-                //byte[] rgba = new byte[argb.Length];
+            } else
+            {
+                using var gifski = Gifski.Create(@"resources\gifski.dll", settings =>
+                {
+                    settings.Quality = 100;
+                });
+                gifski.SetStreamOutput(stream);
+                int counter = 0;
+                double delayCumulation = 0;
+                foreach (GifFrame gf in giffer.Frames)
+                {
+                    delayCumulation += gf.FrameDelay / 1000d;
+                    using Bitmap frame = giffer.FrameAsBitmap(gf, false, interpolationMode);
+                    using FastBitmap fbm = new FastBitmap(frame);
+                    for (int i = 0; i < fbm.Width; i++)
+                    {
+                        for (int j = 0; j < fbm.Height; j++)
+                        {
+                            Color c = fbm.GetPixel(i, j);
+                            fbm.SetPixel(i, j, Color.FromArgb(c.A, c.B, c.G, c.R));
+                        }
+                    }
+                    byte[] argb = ImageToByte(fbm.Bitmap);
+                    //byte[] rgba = new byte[argb.Length];
 
-                //for (int i = 0; i < argb.Length; i += 4)
-                //{
-                //    byte a = argb[i];       // A
-                //    byte r = argb[i + 1];   // R
-                //    byte g = argb[i + 2];   // G
-                //    byte b = argb[i + 3];   // B
+                    //for (int i = 0; i < argb.Length; i += 4)
+                    //{
+                    //    byte a = argb[i];       // A
+                    //    byte r = argb[i + 1];   // R
+                    //    byte g = argb[i + 2];   // G
+                    //    byte b = argb[i + 3];   // B
 
-                //    // Assign values to the rgba array
-                //    rgba[i] = a;    // R
-                //    rgba[i + 1] = r; // G
-                //    rgba[i + 2] = g; // B
-                //    rgba[i + 3] = b; // A
-                //}
-                gifski.AddFrameRgba((uint)counter, delayCumulation, (uint)frame.Width, (uint)frame.Height, argb);
-                counter++;
+                    //    // Assign values to the rgba array
+                    //    rgba[i] = a;    // R
+                    //    rgba[i + 1] = r; // G
+                    //    rgba[i + 2] = g; // B
+                    //    rgba[i + 3] = b; // A
+                    //}
+                    gifski.AddFrameRgba((uint)counter, delayCumulation, (uint)frame.Width, (uint)frame.Height, argb);
+                    counter++;
+                }
+                gifski.Finish();
             }
-            gifski.Finish();
             return Image.FromStream(stream);
         }
         public static byte[] ImageToByte(Bitmap bitmap)
@@ -110,10 +112,10 @@ namespace BIUK9000
             }
             return Image.FromStream(stream);
         }
-        public static string SaveGifToTempFile(Giffer giffer, GifQuality gifQuality, InterpolationMode interpolationMode)
+        public static string SaveGifToTempFile(Giffer giffer, GifSFDForm sfdf, InterpolationMode interpolationMode)
         {
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), ".gif");
-            using Image gif = GifFromGiffer(giffer, gifQuality, interpolationMode);
+            using Image gif = GifFromGiffer(giffer, sfdf, interpolationMode);
             gif.Save(tempPath, ImageFormat.Gif);
             if (File.Exists(tempPath))
             {
@@ -146,13 +148,13 @@ namespace BIUK9000
         {
             Bitmap bitmap = mf.SelectedFrameAsBitmap;
             ControlsPanel cp = mf.MainControlsPanel;
-            if (cp.UseDithering)
-            {
-                Bitmap bitmapRefBackup = bitmap;
-                using Ditherer dtr = new Ditherer(bitmap);
-                bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, cp.GifExportColors, false));
-                bitmapRefBackup.Dispose();
-            }
+            //if (cp.UseDithering)
+            //{
+            //    Bitmap bitmapRefBackup = bitmap;
+            //    using Ditherer dtr = new Ditherer(bitmap);
+            //    bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, cp.GifExportColors, false));
+            //    bitmapRefBackup.Dispose();
+            //}
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), cp.ImageExportFormat);
             switch (cp.ImageExportFormat)
             {
@@ -181,13 +183,13 @@ namespace BIUK9000
         {
             Bitmap bitmap = mf.GifferC.GetLayer(mf.SFI, mf.SLI).MorphedBitmap(mf.MainControlsPanel.InterpolationMode);
             ControlsPanel cp = mf.MainControlsPanel;
-            if (cp.UseDithering)
-            {
-                Bitmap bitmapRefBackup = bitmap;
-                using Ditherer dtr = new Ditherer(bitmap);
-                bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, cp.GifExportColors, false));
-                bitmapRefBackup.Dispose();
-            }
+            //if (cp.UseDithering)
+            //{
+            //    Bitmap bitmapRefBackup = bitmap;
+            //    using Ditherer dtr = new Ditherer(bitmap);
+            //    bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, cp.GifExportColors, false));
+            //    bitmapRefBackup.Dispose();
+            //}
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), cp.ImageExportFormat);
             switch (cp.ImageExportFormat)
             {
@@ -284,26 +286,31 @@ namespace BIUK9000
                 MessageBox.Show(ex.Message);
             }
         }
-        public static void SaveGif(Giffer giffer, ControlsPanel cp, string path, GifQuality gifQuality, bool createFrames, InterpolationMode interpolationMode)
+        public static void SaveGif(Giffer giffer, string path, InterpolationMode interpolationMode)
         {
+
             if (Path.GetExtension(path) == string.Empty || Path.GetExtension(path) != ".gif") path += ".gif";
+            //if (cp.UseDithering)
+            //{
+            //    tempPath = SaveGifToTempFileDithered(giffer, cp.GifExportColors, gifQuality, interpolationMode);
+            //}
+            //else
+            //{
+            //    tempPath = SaveGifToTempFile(giffer, gifQuality, interpolationMode);
+            //}
             string tempPath;
-            if (cp.UseDithering)
+            using GifSFDForm sfdf = new GifSFDForm();
+            if (sfdf.ShowDialog() != DialogResult.OK) return;
+
+            tempPath = SaveGifToTempFile(giffer, sfdf, interpolationMode);
+            if (sfdf.UseGifsicle && sfdf.ChosenExportLibrary == GifSFDForm.ExportLibrary.AnimatedGif)
             {
-                tempPath = SaveGifToTempFileDithered(giffer, cp.GifExportColors, gifQuality, interpolationMode);
-            }
-            else
-            {
-                tempPath = SaveGifToTempFile(giffer, gifQuality, interpolationMode);
-            }
-            if (cp.UseGifsicle)
-            {
-                OBIMP.CompressGif(tempPath, tempPath, cp.GifExportColors, cp.GifExportLossy);
+                OBIMP.CompressGif(tempPath, tempPath, sfdf.GifExportColors, sfdf.GifExportLossy);
             }
             if (tempPath != null)
             {
                 File.Copy(tempPath, path, true);
-                if(createFrames)SaveGifAsFrames(giffer, cp, path);
+                if(sfdf.CreateFrames)SaveGifAsFrames(giffer, path, sfdf);
             }
             else
             {
@@ -312,20 +319,20 @@ namespace BIUK9000
             }
             File.Delete(tempPath);
         }
-        public static void SaveGifAsFrames(Giffer giffer, ControlsPanel cp, string path)
+        public static void SaveGifAsFrames(Giffer giffer, string path, GifSFDForm sfdf)
         {
             string framesPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_frames");
             EnsureFolderExistsAndClean(framesPath);
             for (int i = 0; i < giffer.FrameCount; i++)
             {
                 GifFrame frame = giffer.Frames[i];
-                using Bitmap bitmap = frame.CompleteBitmap(giffer.Width, giffer.Height, false, cp.InterpolationMode);
-                string frameFileName = $"frame_{i:D5}" + cp.ImageExportFormat;
+                using Bitmap bitmap = frame.CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.HighQualityBicubic);
+                string frameFileName = $"frame_{i:D5}" + sfdf.ImageExportFormat;
                 string framePath = Path.Combine(framesPath, frameFileName);
-                switch (cp.ImageExportFormat)
+                switch (sfdf.ImageExportFormat)
                 {
                     case ".jpeg":
-                        OBIMP.SaveJpeg(framePath, bitmap, cp.ImageExportJpegQuality);
+                        OBIMP.SaveJpeg(framePath, bitmap, sfdf.ImageExportJpegQuality);
                         break;
                     case ".png":
                         bitmap.Save(framePath, ImageFormat.Png);

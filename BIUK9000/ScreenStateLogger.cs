@@ -8,15 +8,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace BIUK9000
 {
     public class ScreenStateLogger
     {
-        private byte[] _previousScreen;
-        //private bool _init, _run;
-
         public int X { get; set; }
         public int Y { get; set; }
         public int Width { get; set; }
@@ -76,13 +72,9 @@ namespace BIUK9000
             };
             _screenTexture = new Texture2D(_device, _textureDesc);
             _duplicatedOutput = _output1.DuplicateOutput(_device);
-            //Task.Factory.StartNew(() =>
-            //{
-            //    // Duplicate the output
-
-            //});
             _timer = new System.Threading.Timer(TimerTick, null, 0, 1000/FPS);
         }
+
         private void TimerTick(Object o)
         {
             int xb = X;
@@ -106,7 +98,7 @@ namespace BIUK9000
                 var bitmap = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
                 var boundsRect = new Rectangle(0, 0, Width, Height);
 
-                // Copy pixels from screen capture Texture to GDI bitmap
+                //// Copy pixels from screen capture Texture to GDI bitmap
                 var mapDest = bitmap.LockBits(boundsRect, ImageLockMode.WriteOnly, bitmap.PixelFormat);
                 var sourcePtr = mapSource.DataPointer;
                 var destPtr = mapDest.Scan0;
@@ -118,20 +110,28 @@ namespace BIUK9000
                 int destStride = mapDest.Stride;
 
                 sourcePtr = IntPtr.Add(sourcePtr, (int)((long)sourceStride * yb));
-                unsafe
+                //unsafe
+                //{
+                //    byte* srcPtr = (byte*)sourcePtr.ToPointer();
+                //    byte* dstPtr = (byte*)destPtr.ToPointer();
+
+                //    for (int y = 0; y < bitmap.Height; y++)
+                //    {
+                //        byte* sourceRow = srcPtr + y * sourceStride + startPixel * bytesPerPixel;
+                //        byte* destRow = dstPtr + y * destStride;
+
+                //        System.Buffer.MemoryCopy(sourceRow, destRow, pixelsToCopy * bytesPerPixel, pixelsToCopy * bytesPerPixel);
+                //    }
+                //}
+                for (int y = 0; y < bitmap.Height; y++)
                 {
-                    byte* srcPtr = (byte*)sourcePtr.ToPointer();
-                    byte* dstPtr = (byte*)destPtr.ToPointer();
+                    IntPtr sourceRowPtr = IntPtr.Add(sourcePtr, y * sourceStride + startPixel * bytesPerPixel);
+                    IntPtr destRowPtr = IntPtr.Add(destPtr, y * destStride);
 
-                    for (int y = 0; y < bitmap.Height; y++)
-                    {
-                        byte* sourceRow = srcPtr + y * sourceStride + startPixel * bytesPerPixel;
-                        byte* destRow = dstPtr + y * destStride;
-
-                        System.Buffer.MemoryCopy(sourceRow, destRow, pixelsToCopy * bytesPerPixel, pixelsToCopy * bytesPerPixel);
-                    }
+                    byte[] rowData = new byte[pixelsToCopy * bytesPerPixel];
+                    System.Runtime.InteropServices.Marshal.Copy(sourceRowPtr, rowData, 0, rowData.Length);
+                    System.Runtime.InteropServices.Marshal.Copy(rowData, 0, destRowPtr, rowData.Length);
                 }
-                // Release source and dest locks
                 bitmap.UnlockBits(mapDest);
                 _device.ImmediateContext.UnmapSubresource(_screenTexture, 0);
                 Frames.Add(bitmap);
