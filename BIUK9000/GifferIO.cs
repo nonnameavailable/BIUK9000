@@ -17,6 +17,7 @@ using GifskiNet;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using BIUK9000.UI.CustomControls;
+using SharpDX;
 
 namespace BIUK9000
 {
@@ -219,20 +220,8 @@ namespace BIUK9000
             bool result = false;
             try
             {
-                using ImportQuestionForm iqf = new ImportQuestionForm();
-                if (mf.MainGiffer == null) iqf.SetOnlyFreshMode();
-                iqf.SelectedFresh += (sender, args) => ImportAsFresh(mf, iqf, filePaths);
-                iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, filePaths);
-                iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, filePaths);
-                if (iqf.ShowDialog() == DialogResult.OK && mf.MainGiffer != null)
-                {
-                    result = true;
-                }
-                else
-                {
-                    result = false;
-                }
-                
+                Giffer giffer = new Giffer(filePaths);
+                result = GifImport(mf, giffer);
             }
             catch (ArgumentException ex)
             {
@@ -240,21 +229,36 @@ namespace BIUK9000
             }
             return result;
         }
-        private static void ImportAsFresh(MainForm mf, ImportQuestionForm iqf, string[] filePaths)
+        public static bool GifImport(MainForm mf, Giffer giffer)
+        {
+            using ImportQuestionForm iqf = new ImportQuestionForm();
+            if (mf.MainGiffer == null) iqf.SetOnlyFreshMode();
+            iqf.SelectedFresh += (sender, args) => ImportAsFresh(mf, giffer);
+            iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, giffer);
+            iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, giffer);
+            if (iqf.ShowDialog() == DialogResult.OK && mf.MainGiffer != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private static void ImportAsFresh(MainForm mf, Giffer giffer)
         {
             try
             {
-                mf.SetNewGiffer(new Giffer(filePaths));
+                mf.SetNewGiffer(giffer);
             } catch(ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-        private static void ImportAsLayers(MainForm mf, ImportQuestionForm iqf, string[] filePaths)
+        private static void ImportAsLayers(MainForm mf, ImportQuestionForm iqf, Giffer giffer)
         {
             try
             {
-                Giffer giffer = new Giffer(filePaths);
                 mf.GifferC.AddGifferAsLayers(giffer, iqf.OLayersSpread);
                 giffer.Dispose();
             } catch(ArgumentException ex)
@@ -263,12 +267,11 @@ namespace BIUK9000
                 return;
             }
         }
-        private static void ImportAsInsert(MainForm mf, ImportQuestionForm iqf, string[] filePaths)
+        private static void ImportAsInsert(MainForm mf, ImportQuestionForm iqf, Giffer giffer)
         {
             GifferController gc = mf.GifferC;
             try
             {
-                Giffer giffer = new Giffer(filePaths);
                 if (iqf.OInsertStart)
                 {
                     gc.AddGifferAsFrames(giffer, 0);

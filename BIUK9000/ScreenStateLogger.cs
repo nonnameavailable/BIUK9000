@@ -1,6 +1,7 @@
 ﻿using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using SharpDX.Mathematics.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,8 @@ namespace BIUK9000
     {
         public int X { get; set; }
         public int Y { get; set; }
+        private int _xOffset;
+        private int _yOffset;
         public int Width { get; set; }
         public int Height { get; set; }
         public int FPS { get; set; }
@@ -36,9 +39,10 @@ namespace BIUK9000
         private Texture2DDescription _textureDesc;
         private Texture2D _screenTexture;
         private System.Threading.Timer _timer;
+        private ManualResetEvent _tickComplete = new ManualResetEvent(false);
         private OutputDuplication _duplicatedOutput;
 
-        public void Start(int currentScreenIndex)
+        public void Start()
         {
             _duplicatedOutput?.Dispose();
             var factory = new Factory1();
@@ -46,15 +50,26 @@ namespace BIUK9000
             var adapter = factory.GetAdapter1(0);
             //Get device from adapter
             _device = new SharpDX.Direct3D11.Device(adapter);
-            Debug.Print(currentScreenIndex.ToString());
-            int outputNumber = (currentScreenIndex == -1 || currentScreenIndex > (adapter.GetOutputCount() - 1)) ? 0 : currentScreenIndex;
             //Get front buffer of the adapter
-            _output = adapter.GetOutput(outputNumber);
+            //Debug.Print(outputNumber.ToString());
+            for (int i = 0; i < adapter.GetOutputCount(); i++)
+            {
+                Output output = adapter.GetOutput(i);
+                RawRectangle rr = output.Description.DesktopBounds;
+                Rectangle bounds = new Rectangle(rr.Left, rr.Top, rr.Right - rr.Left, rr.Bottom - rr.Top);
+                if (bounds.Contains(new Point(X, Y)))
+                {
+                    _output = output;
+                    break;
+                }
+            }
+            if(_output == null) throw new Exception("Unable to find screen");
             _output1 = _output.QueryInterface<Output1>();
-
+            _xOffset = -_output.Description.DesktopBounds.Left;
+            _yOffset = -_output.Description.DesktopBounds.Top;
             // Width/Height of desktop to capture
-            int width = _output.Description.DesktopBounds.Right;
-            int height = _output.Description.DesktopBounds.Bottom;
+            int width = _output.Description.DesktopBounds.Right - _output.Description.DesktopBounds.Left;
+            int height = _output.Description.DesktopBounds.Bottom - _output.Description.DesktopBounds.Top;
 
             // Create Staging texture CPU-accessible
             _textureDesc = new Texture2DDescription
@@ -72,13 +87,25 @@ namespace BIUK9000
             };
             _screenTexture = new Texture2D(_device, _textureDesc);
             _duplicatedOutput = _output1.DuplicateOutput(_device);
+            _now = DateTime.Now;
+            _tickCounter = 0;
             _timer = new System.Threading.Timer(TimerTick, null, 0, 1000/FPS);
         }
-
+        private DateTime _now;
+        private int _tickCounter;
         private void TimerTick(Object o)
         {
-            int xb = X;
-            int yb = Y;
+            DateTime nn = DateTime.Now;
+            TimeSpan ts = nn - _now;
+            if(ts.TotalMilliseconds > 1000)
+            {
+                Debug.Print((_tickCounter / ts.TotalMilliseconds * 1000).ToString());
+                _now = nn;
+                _tickCounter = 0;
+            }
+
+            int xb = X + _xOffset;
+            int yb = Y + _yOffset;
             try
             {
                 SharpDX.DXGI.Resource screenResource;
@@ -87,6 +114,7 @@ namespace BIUK9000
                 // Try to get duplicated frame within given time is ms
                 _duplicatedOutput.TryAcquireNextFrame(50, out duplicateFrameInformation, out screenResource);
                 if (screenResource == null) return;
+                _tickCounter++;
                 // copy resource into memory that can be accessed by the CPU
                 using (var screenTexture2D = screenResource.QueryInterface<Texture2D>())
                     _device.ImmediateContext.CopyResource(screenTexture2D, _screenTexture);
@@ -110,19 +138,6 @@ namespace BIUK9000
                 int destStride = mapDest.Stride;
 
                 sourcePtr = IntPtr.Add(sourcePtr, (int)((long)sourceStride * yb));
-                //unsafe
-                //{
-                //    byte* srcPtr = (byte*)sourcePtr.ToPointer();
-                //    byte* dstPtr = (byte*)destPtr.ToPointer();
-
-                //    for (int y = 0; y < bitmap.Height; y++)
-                //    {
-                //        byte* sourceRow = srcPtr + y * sourceStride + startPixel * bytesPerPixel;
-                //        byte* destRow = dstPtr + y * destStride;
-
-                //        System.Buffer.MemoryCopy(sourceRow, destRow, pixelsToCopy * bytesPerPixel, pixelsToCopy * bytesPerPixel);
-                //    }
-                //}
                 for (int y = 0; y < bitmap.Height; y++)
                 {
                     IntPtr sourceRowPtr = IntPtr.Add(sourcePtr, y * sourceStride + startPixel * bytesPerPixel);
@@ -137,6 +152,8 @@ namespace BIUK9000
                 Frames.Add(bitmap);
                 screenResource.Dispose();
                 _duplicatedOutput.ReleaseFrame();
+                _tickComplete.Set();
+                _tickComplete.Reset();
             }
             catch (SharpDXException e)
             {
@@ -159,6 +176,7 @@ namespace BIUK9000
         public void Stop()
         {
             //_run = false;
+            _tickComplete.WaitOne();
             _timer?.Dispose();
             if(Frames.Count > 0)
             {

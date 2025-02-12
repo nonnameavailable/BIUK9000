@@ -121,19 +121,6 @@ namespace BIUK9000.UI
             }
             return totalBounds;
         }
-        private int CurrentScreenIndex()
-        {
-            Screen currentScreen = Screen.FromControl(this);
-            Screen[] allScreens = Screen.AllScreens;
-            for(int i = 0; i < allScreens.Length; i++)
-            {
-                if(allScreens[i].Equals(currentScreen))
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
         private void MainForm_Move(object sender, EventArgs e)
         {
             Point p = mainPictureBox.PointToScreen(Point.Empty);
@@ -165,17 +152,21 @@ namespace BIUK9000.UI
         {
             _ssl.Stop();
             if (_ssl.Frames.Count == 0) return;
-            SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
+            if (GifferC == null)
+            {
+                SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
+            } else
+            {
+                GifferIO.GifImport(this, new Giffer(_ssl.Frames, _ssl.FPS));
+            }
+            controlsPanel.ToolMoveSelectedFlag = true;
+            ControlsEnable(true);
+            SetRecordMode(false);
+            CompleteUIUpdate();
             _ssl.ClearFrames();
         }
         private bool CanRecord()
         {
-            //Point p = mainPictureBox.PointToScreen(Point.Empty);
-            //bool widthCheck = (p.X + mainPictureBox.Width) >= Screen.FromControl(this).Bounds.Right;
-            //bool heightCheck = (p.Y + mainPictureBox.Height) >= Screen.FromControl(this).Bounds.Bottom;
-            //bool posCheck = p.X < 0 || p.Y < 0;
-            //bool minwhCheck = mainPictureBox.Width < 5 || mainPictureBox.Height < 5;
-            //return !(widthCheck || heightCheck || posCheck ||  minwhCheck);
             bool minwhCheck = mainPictureBox.Width < 5 || mainPictureBox.Height < 5;
             Rectangle totalScreenBounds = GetTotalScreenBounds();
             Point screenLocation = mainPictureBox.PointToScreen(Point.Empty);
@@ -186,29 +177,26 @@ namespace BIUK9000.UI
         private void _recordControl_Start(object sender, EventArgs e)
         {
             Point p = mainPictureBox.PointToScreen(Point.Empty);
-            bool widthCheck = (p.X + mainPictureBox.Width) >= Screen.FromControl(this).Bounds.Right;
-            bool heightCheck = (p.Y + mainPictureBox.Height) >= Screen.FromControl(this).Bounds.Bottom;
-            if (p.X < 0 || p.Y < 0 || widthCheck || heightCheck)
+            if(!CanRecord())
             {
-                MessageBox.Show("The entire recording area must be on screen!");
-                _recordControl.RecMode(false);
+                MessageBox.Show("You are either off screen or the recording area is too small!");
+                SetRecordMode(true);
                 return;
             }
-            if (mainPictureBox.Width < 5 || mainPictureBox.Height < 5)
-            {
-                _recordControl.RecMode(false);
-                MessageBox.Show("Recording area must be larger!");
-                return;
-            }
-            Rectangle screenBounds = GetTotalScreenBounds();
-            Point pp = new Point(p.X - screenBounds.Left, p.Y - screenBounds.Top);
-            _ssl.X = pp.X;
-            _ssl.Y = pp.Y;
+            _ssl.X = p.X;
+            _ssl.Y = p.Y;
             //MessageBox.Show("X: " + p.X.ToString() + "  Y: " + p.Y.ToString());
             _ssl.Width = mainPictureBox.Width;
             _ssl.Height = mainPictureBox.Height;
             _ssl.FPS = _recordControl.FPS;
-            _ssl.Start(CurrentScreenIndex());
+            try
+            {
+                _ssl.Start();
+            } catch (Exception ex)
+            {
+                _recordControl.RecMode(false);
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ControlsPanel_ToolRecordSelected(object sender, EventArgs e)
@@ -436,7 +424,7 @@ namespace BIUK9000.UI
             }
             else
             {
-                if (layerParamsPanel.Controls.Count > 0)
+                if (layerParamsPanel.Controls.Count > 0 && layerParamsPanel.Controls[0] is IGFLParamControl)
                 {
                     IGFLParamControl lpc = layerParamsPanel.Controls[0] as IGFLParamControl;
                     lpc.LoadParams(SelectedLayer);
