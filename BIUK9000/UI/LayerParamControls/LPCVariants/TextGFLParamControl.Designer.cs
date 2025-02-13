@@ -173,6 +173,7 @@
             textLayerTextTB.Name = "textLayerTextTB";
             textLayerTextTB.Size = new System.Drawing.Size(302, 122);
             textLayerTextTB.TabIndex = 1;
+            textLayerTextTB.Text = "YOUR TEXT";
             // 
             // TextGFLParamControl
             // 

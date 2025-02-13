@@ -5,7 +5,7 @@ using BIUK9000.GifferComponents.GFLVariants;
 
 namespace BIUK9000.UI.LayerParamControls
 {
-    public partial class PlainGFLParamControl : UserControl, IGFLParamControl
+    public partial class ShapeGFLParamControl : UserControl, IGFLParamControl
     {
         private ShapeGFL.DrawShape DrawShape
         {
@@ -22,7 +22,7 @@ namespace BIUK9000.UI.LayerParamControls
                 else return ShapeGFL.DrawShape.Rectangle;
             }
         }
-        public PlainGFLParamControl()
+        public ShapeGFLParamControl()
         {
             InitializeComponent();
             colorButton.ColorChanged += (sender, args) => OnParamsChanged();

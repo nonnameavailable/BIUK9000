@@ -30,7 +30,7 @@ namespace BIUK9000.UI
         public int SFI { get => MainTimelineSlider.SelectedFrameIndex; }
         public int SLI { get => mainLayersPanel.SelectedLayerIndex; }
         public Bitmap SelectedFrameAsBitmap { get => MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode); }
-        private GFL SelectedLayer { get => GifferC.GetLayer(SFI, SLI); }
+        public GFL SelectedLayer { get => GifferC == null ? null : GifferC.GetLayer(SFI, SLI); }
         private Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
         public bool IsShiftDown { get; set; }
@@ -38,7 +38,6 @@ namespace BIUK9000.UI
         private float _originalLayerRotation;
         private OVector _previousLCtM;
         private float _rotationChange;
-        private Control _lpcBackup;
         private PaintControl _paintControl;
         private RecordControl _recordControl;
         public bool IsLMBDown { get => mainPictureBox.IsLMBDown; }
@@ -49,7 +48,27 @@ namespace BIUK9000.UI
         public GifferController GifferC { get; private set; }
         //private ScreenCapture _sc;
         private ScreenStateLogger _ssl;
-        private List<byte[]> byteFrames;
+        private int _selectedLayerID;
+        public Control UpperControl
+        {
+            get
+            {
+                if(layerParamsPanel.Controls.Count > 0)
+                {
+                    return layerParamsPanel.Controls[0];
+                } else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                layerParamsPanel.Controls.Clear();
+                if(value != null)layerParamsPanel.Controls.Add(value);
+            }
+        }
+        public Mode Mode { get => controlsPanel.SelectedMode; }
+        private UpperControlManager _ucm;
         public MainForm()
         {
             InitializeComponent();
@@ -77,9 +96,10 @@ namespace BIUK9000.UI
             controlsPanel.ShouldStartDragDrop += ControlsPanel_ShouldStartDragDrop;
             controlsPanel.SaveButtonClicked += ControlsPanel_SaveButtonClicked;
             controlsPanel.InterpolationModeChanged += (sender, args) => mainPictureBox.InterpolationMode = ((ControlsPanel)sender).InterpolationMode;
-            controlsPanel.ToolPaintSelected += (sender, args) => SetPaintMode(true);
-            controlsPanel.ToolMoveSelected += (sender, args) => SetPaintMode(false);
-            controlsPanel.ToolRecordSelected += ControlsPanel_ToolRecordSelected;
+            //controlsPanel.ToolPaintSelected += (sender, args) => SetPaintMode(true);
+            //controlsPanel.ToolMoveSelected += (sender, args) => SetPaintMode(false);
+            //controlsPanel.ToolRecordSelected += ControlsPanel_ToolRecordSelected;
+            controlsPanel.ModeChanged += ControlsPanel_ModeChanged;
 
             MainTimelineSlider.FrameDelayChanged += MainTimelineSlider_FrameDelayChanged;
 
@@ -90,6 +110,7 @@ namespace BIUK9000.UI
 
             _paintControl = new PaintControl();
             _recordControl = new RecordControl();
+            _ucm = new UpperControlManager(_paintControl, _recordControl);
             lerpModeCBB.SelectedIndex = 0;
             mainPictureBox.InterpolationMode = controlsPanel.InterpolationMode;
 
@@ -103,15 +124,50 @@ namespace BIUK9000.UI
                 UpdateMainPictureBox();
             };
             //_sc = new ScreenCapture();
-            byteFrames = new List<byte[]>();
             _ssl = new ScreenStateLogger();
 
             _recordControl.Start += _recordControl_Start;
             _recordControl.Stop += _recordControl_Stop;
 
-            TransparencyKey = Color.LimeGreen;
-            this.Move += MainForm_Move;
+            Move += MainForm_Move;
         }
+
+        private void ControlsPanel_ModeChanged(object sender, EventArgs e)
+        {
+            Mode m = controlsPanel.SelectedMode;
+            if(m == Mode.Move)
+            {
+                SetRecordMode(false);
+                if (GifferC != null) UpdateMainPictureBox();
+            }
+            else if(m == Mode.Paint)
+            {
+                SetRecordMode(false);
+                if (GifferC == null)
+                {
+                    controlsPanel.SelectedMode = Mode.Move;
+                } else
+                {
+                    if (SelectedLayer is not BitmapGFL)
+                    {
+                        MessageBox.Show("Only image layers can be painted on, select an image layer.");
+                        controlsPanel.SelectedMode = Mode.Move;
+                        ControlsEnable(true);
+                    }
+                    else
+                    {
+                        ControlsEnable(false);
+                    }
+                }
+                if (GifferC != null) UpdateMainPictureBox();
+            }
+            else if(m == Mode.Record)
+            {
+                SetRecordMode(true);
+            }
+            _ucm.UpdateUpperControl(this);
+        }
+
         private Rectangle GetTotalScreenBounds()
         {
             Rectangle totalBounds = Screen.AllScreens[0].Bounds;
@@ -135,8 +191,8 @@ namespace BIUK9000.UI
         {
             if (val)
             {
-                TransparencyKey = Color.Red;
-                mainPictureBox.BackColor = Color.Red;
+                TransparencyKey = Color.LimeGreen;
+                mainPictureBox.BackColor = Color.LimeGreen;
                 if(MainImage != null){
                     using Graphics g = Graphics.FromImage(MainImage);
                     g.Clear(Color.Transparent);
@@ -159,9 +215,9 @@ namespace BIUK9000.UI
             {
                 GifferIO.GifImport(this, new Giffer(_ssl.Frames, _ssl.FPS));
             }
-            controlsPanel.ToolMoveSelectedFlag = true;
             ControlsEnable(true);
             SetRecordMode(false);
+            controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate();
             _ssl.ClearFrames();
         }
@@ -223,8 +279,8 @@ namespace BIUK9000.UI
 
         private void MainLayersPanel_SelectedLayerChanged(object sender, EventArgs e)
         {
-            UpdateLayerParamsUI();
-            GifferC.SaveLayerForLPC(SFI, SLI);
+            _ucm.UpdateUpperControl(this);
+            _selectedLayerID = SelectedLayer.LayerID;
         }
 
         private void HsbPanel_HueSatChanged(object sender, EventArgs e)
@@ -241,42 +297,6 @@ namespace BIUK9000.UI
             GifferC.DupeFrame(SFI, (int)frameDupeCountNUD.Value);
             CompleteUIUpdate();
         }
-        
-        private void SetPaintMode(bool setValue)
-        {
-            SetRecordMode(false);
-            if (layerParamsPanel.Controls.Count > 0 && layerParamsPanel.Controls[0] is RecordControl)
-            {
-                layerParamsPanel.Controls.Clear();
-            }
-            if (GifferC == null)
-            {
-                controlsPanel.ToolMoveSelectedFlag = true;
-                return;
-            }
-            if(setValue && SelectedLayer is not BitmapGFL)
-            {
-                MessageBox.Show("Only image layers can be painted on, select an image layer.");
-                controlsPanel.ToolMoveSelectedFlag = true;
-                ControlsEnable(true);
-                return;
-            }
-            ControlsEnable(!setValue);
-            if (setValue)
-            {
-                if (layerParamsPanel.Controls.Count > 0)
-                {
-                    _lpcBackup = layerParamsPanel.Controls[0];
-                    layerParamsPanel.Controls.Clear();
-                }
-                layerParamsPanel.Controls.Add(_paintControl);
-            }
-            else
-            {
-                layerParamsPanel.Controls.Clear();
-                if(_lpcBackup != null)layerParamsPanel.Controls.Add(_lpcBackup);
-            }
-        }
         private void ControlsEnable(bool val)
         {
             MainTimelineSlider.Enabled = val;
@@ -284,10 +304,6 @@ namespace BIUK9000.UI
             markLerpPanel.Enabled = val;
             controlsPanel.SetPaintMode(!val);
             AllowDrop = val;
-        }
-        private void SetRecordMode()
-        {
-
         }
         private void DeleteFramesButton_Click(object sender, EventArgs e)
         {
@@ -371,11 +387,9 @@ namespace BIUK9000.UI
                     layerParamsPanel.Controls.Clear();
                 }
             }
-            controlsPanel.ToolMoveSelectedFlag = true;
-            SetPaintMode(false);
+            controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate(false);
             GifferC.SaveLayerStateForApply(0, 0);
-            GifferC.SaveLayerForLPC(0, 0);
         }
 
         public void UpdateMainPictureBox()
@@ -395,50 +409,11 @@ namespace BIUK9000.UI
             //}
             //mainPictureBox.Invalidate();
         }
-        private void UpdateLayerParamsUI()
-        {
-            if (SelectedLayer == null) return;
-            bool cond = GifferC.ShouldSwitchLPC(SFI, SLI);
-            if (cond)
-            {
-                if (layerParamsPanel.Controls.Count > 0)
-                {
-                    layerParamsPanel.Controls[0].Dispose();
-                }
-                layerParamsPanel.Controls.Clear();
-                IGFLParamControl lpc = GFLParamsControlFactory.GFLParamControl(SelectedLayer);
-                if(lpc != null)
-                {
-                    lpc.LoadParams(SelectedLayer);
-                    lpc.ParamsChanged += (sender, args) =>
-                    {
-                        GifferC.SaveLayerStateForApply(SFI, mainLayersPanel.SelectedLayerIndex);
-                        lpc.SaveParams(SelectedLayer);
-                        UpdateMainPictureBox();
-                        ApplyLayerParamsToSubsequentLayers();
-                    };
-                    Control lpcc = lpc as Control;
-                    lpcc.Dock = DockStyle.Fill;
-                    layerParamsPanel.Controls.Add(lpcc);
-                }
-            }
-            else
-            {
-                if (layerParamsPanel.Controls.Count > 0 && layerParamsPanel.Controls[0] is IGFLParamControl)
-                {
-                    IGFLParamControl lpc = layerParamsPanel.Controls[0] as IGFLParamControl;
-                    lpc.LoadParams(SelectedLayer);
-                }
-            }
-            hsbPanel.Saturation = SelectedLayer.Saturation;
-            hsbPanel.Brightness = SelectedLayer.Brightness;
-            hsbPanel.Transparency = SelectedLayer.Transparency;
-        }
 
         #region key event handling
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            if (MainGiffer == null || ActiveControl is TextBox || ActiveControl is IGFLParamControl || controlsPanel.ToolPaintSelectedFlag || controlsPanel.ToolRecordSelectedFlag) return base.ProcessKeyPreview(ref m);
+            if (MainGiffer == null || ActiveControl is TextBox || ActiveControl is IGFLParamControl || controlsPanel.SelectedMode != Mode.Move) return base.ProcessKeyPreview(ref m);
             const int WM_KEYDOWN = 0x100;
             const int WM_KEYUP = 0x101;
             Keys keyData = (Keys)m.WParam.ToInt32();
@@ -461,7 +436,6 @@ namespace BIUK9000.UI
                     GifferC.AddLayerFromKey(keyData);
                     CompleteUIUpdate();
                     mainLayersPanel.SelectNewestLayer();
-                    GifferC.SaveLayerForLPC(SFI, SLI);
                     return true;
                 }
                 else if (keyData == Keys.F)
@@ -503,7 +477,7 @@ namespace BIUK9000.UI
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
             if (MainGiffer == null) return;
-            if (controlsPanel.ToolPaintSelectedFlag)
+            if (controlsPanel.SelectedMode == Mode.Paint)
             {
                 if(SelectedLayer is BitmapGFL)
                 {
@@ -534,7 +508,7 @@ namespace BIUK9000.UI
             _originalLayerRotation = cgfl.Rotation;
             _previousLCtM = LayerCenterToMouse();
             _rotationChange = 0;
-            if (controlsPanel.ToolPaintSelectedFlag && SelectedLayer is BitmapGFL)
+            if (controlsPanel.SelectedMode == Mode.Paint && SelectedLayer is BitmapGFL)
             {
                 if (IsLMBDown)
                 {
@@ -567,7 +541,7 @@ namespace BIUK9000.UI
             Point dd = mainPictureBox.ScaledDragDifference;
             OVector currentLCtM = LayerCenterToMouse();
             Point mpoi = GifferC.MousePositionOnLayer(SFI, SLI, mainPictureBox.MousePositionOnImage);
-            if (controlsPanel.ToolPaintSelectedFlag)
+            if (controlsPanel.SelectedMode == Mode.Paint)
             {
                 if (SelectedLayer is BitmapGFL)
                 {
@@ -717,6 +691,7 @@ namespace BIUK9000.UI
             if (!ts.PlayTimerRunning && !ts.MouseButtonIsDown)
             {
                 CompleteUIUpdate();
+                _selectedLayerID = SelectedLayer.LayerID;
             }
             else
             {
@@ -735,7 +710,7 @@ namespace BIUK9000.UI
             {
                 sfi = SFI;
                 sli = SLI;
-                slid = GifferC.PreviousLayerID();
+                slid = _selectedLayerID;
             }
             else
             {
@@ -747,8 +722,7 @@ namespace BIUK9000.UI
             if (!keepSelectedFrameAndLayer) MainTimelineSlider.ClearMarks();
             mainLayersPanel.SelectHolder(GifferC.TryGetLayerIndexById(SFI, slid));
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
-            UpdateLayerParamsUI();
-            GifferC.SaveLayerForLPC(SFI, SLI);
+            _ucm.UpdateUpperControl(this);
             UpdateMainPictureBox();
             if(SelectedLayer != null)
             {

@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using AnimatedGif;
+using System.Diagnostics.Eventing.Reader;
 
 namespace BIUK9000.UI
 {
@@ -29,25 +30,57 @@ namespace BIUK9000.UI
         public bool PositionSnap { get => positionSnapCB.Checked; }
         public ApplyParamsMode SelectedApplyParamsMode { get => (ApplyParamsMode)applyParamsCBB.SelectedItem; }
         public bool DrawHelp { get => drawHelpCB.Checked; }
-        public bool ToolMoveSelectedFlag
+        public Mode SelectedMode
         {
-            get => toolMoveRB.Checked;
+            get
+            {
+                if (toolMoveRB.Checked)
+                {
+                    return Mode.Move;
+                } else if (toolPaintRB.Checked)
+                {
+                    return Mode.Paint;
+                } else//if(toolRecordRB.Checked)
+                {
+                    return Mode.Record;
+                }
+            }
             set
             {
                 _isCodeChange = true;
-                toolMoveRB.Checked = true;
+                if(value == Mode.Move)
+                {
+                    toolMoveRB.Checked = true;
+                } else if(value == Mode.Paint)
+                {
+                    toolPaintRB.Checked = true;
+                } else if(value == Mode.Record)
+                {
+                    toolRecordRB.Checked = true;
+                }
                 _isCodeChange = false;
             }
         }
-        public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; set => toolPaintRB.Checked = value; }
-        public bool ToolRecordSelectedFlag { get => toolRecordRB.Checked; set=> toolRecordRB.Checked = value; }
+        //public bool ToolMoveSelectedFlag
+        //{
+        //    get => toolMoveRB.Checked;
+        //    set
+        //    {
+        //        _isCodeChange = true;
+        //        toolMoveRB.Checked = true;
+        //        _isCodeChange = false;
+        //    }
+        //}
+        //public bool ToolPaintSelectedFlag { get => toolPaintRB.Checked; set => toolPaintRB.Checked = value; }
+        //public bool ToolRecordSelectedFlag { get => toolRecordRB.Checked; set=> toolRecordRB.Checked = value; }
         public InterpolationMode InterpolationMode { get => (InterpolationMode)mpbAAModeCBB.SelectedItem; }
 
         public event EventHandler MustRedraw;
         public event EventHandler ShouldStartDragDrop;
         public event EventHandler SaveButtonClicked;
         public event EventHandler InterpolationModeChanged;
-        public event EventHandler ToolMoveSelected, ToolPaintSelected, ToolRecordSelected;
+        //public event EventHandler ToolMoveSelected, ToolPaintSelected, ToolRecordSelected;
+        public event EventHandler ModeChanged;
 
         private bool _isCodeChange;
         public ControlsPanel()
@@ -77,17 +110,20 @@ namespace BIUK9000.UI
 
         private void ToolRecordRB_CheckedChanged(object sender, EventArgs e)
         {
-            if (ToolRecordSelectedFlag && !_isCodeChange) ToolRecordSelected?.Invoke(this, EventArgs.Empty);
+            //if (ToolRecordSelectedFlag && !_isCodeChange) ToolRecordSelected?.Invoke(this, EventArgs.Empty);
+            if(toolRecordRB.Checked && !_isCodeChange) ModeChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void ToolPaintRB_CheckedChanged(object sender, EventArgs e)
         {
-            if (ToolPaintSelectedFlag && ! _isCodeChange) ToolPaintSelected?.Invoke(this, EventArgs.Empty);
+            //if (ToolPaintSelectedFlag && ! _isCodeChange) ToolPaintSelected?.Invoke(this, EventArgs.Empty);
+            if (toolPaintRB.Checked && !_isCodeChange) ModeChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void ToolMoveRB_CheckedChanged(object sender, EventArgs e)
         {
-            if (ToolMoveSelectedFlag && !_isCodeChange) ToolMoveSelected?.Invoke(this, EventArgs.Empty);
+            //if (ToolMoveSelectedFlag && !_isCodeChange) ToolMoveSelected?.Invoke(this, EventArgs.Empty);
+            if (toolMoveRB.Checked && !_isCodeChange) ModeChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void MpbAAModeCBB_SelectedIndexChanged(object sender, EventArgs e)
@@ -152,6 +188,12 @@ namespace BIUK9000.UI
         applyNone
     }
     public enum Tools
+    {
+        Move,
+        Paint,
+        Record
+    }
+    public enum Mode
     {
         Move,
         Paint,

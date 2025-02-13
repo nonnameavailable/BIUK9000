@@ -1,6 +1,6 @@
 ﻿namespace BIUK9000.UI.LayerParamControls
 {
-    partial class PlainGFLParamControl
+    partial class ShapeGFLParamControl
     {
         /// <summary> 
         /// Required designer variable.

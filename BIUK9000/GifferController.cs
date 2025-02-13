@@ -63,20 +63,6 @@ namespace BIUK9000
             SavedLayerForApply?.Dispose();
             SavedLayerForApply = GetLayer(frameIndex, layerIndex).Clone();
         }
-        public void SaveLayerForLPC(int frameIndex, int layerIndex)
-        {
-            SavedLayerForLPC = GetLayer(frameIndex, layerIndex);
-        }
-        public bool ShouldSwitchLPC(int frameIndex, int layerIndex)
-        {
-            GFL layer = GetLayer(frameIndex, layerIndex);
-            if (layer == null || SavedLayerForLPC == null) return true;
-            return !(layer.GetType().Name == SavedLayerForLPC.GetType().Name);
-        }
-        public int PreviousLayerID()
-        {
-            return SavedLayerForLPC.LayerID;
-        }
         public void SetSavedLayerVisibility(bool visible)
         {
             if(SavedLayerForApply != null) SavedLayerForApply.Visible = visible;
