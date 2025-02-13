@@ -47,10 +47,12 @@ namespace BIUK9000.UI.LayerParamControls
                 GFL sl = mf.SelectedLayer;
                 if (sl == null || sl is BitmapGFL) return;
                 IGFLParamControl gflpc = GFLParamControl(sl);
+                gflpc.LoadParams(sl);
                 gflpc.ParamsChanged += (sender, args) =>
                 {
                     gflpc.SaveParams(sl);
                     mf.UpdateMainPictureBox();
+                    mf.ApplyLayerParams();
                 };
                 mf.UpperControl = (Control)gflpc;
             } else if(mf.Mode == Mode.Paint)

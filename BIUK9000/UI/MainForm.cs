@@ -139,6 +139,7 @@ namespace BIUK9000.UI
             {
                 SetRecordMode(false);
                 if (GifferC != null) UpdateMainPictureBox();
+                ControlsEnable(true);
             }
             else if(m == Mode.Paint)
             {
@@ -164,6 +165,7 @@ namespace BIUK9000.UI
             else if(m == Mode.Record)
             {
                 SetRecordMode(true);
+                ControlsEnable(false);
             }
             _ucm.UpdateUpperControl(this);
         }
@@ -236,14 +238,14 @@ namespace BIUK9000.UI
             if(!CanRecord())
             {
                 MessageBox.Show("You are either off screen or the recording area is too small!");
-                SetRecordMode(true);
+                _recordControl.RecMode(false);
                 return;
             }
             _ssl.X = p.X;
             _ssl.Y = p.Y;
             //MessageBox.Show("X: " + p.X.ToString() + "  Y: " + p.Y.ToString());
-            _ssl.Width = mainPictureBox.Width;
-            _ssl.Height = mainPictureBox.Height;
+            _ssl.Width = mainPictureBox.Width - 3;
+            _ssl.Height = mainPictureBox.Height - 3;
             _ssl.FPS = _recordControl.FPS;
             try
             {
@@ -262,7 +264,10 @@ namespace BIUK9000.UI
             ControlsEnable(false);
             SetRecordMode(true);
         }
-
+        public void ApplyLayerParams()
+        {
+            GifferC.ApplyLayerParams(SFI, SLI, controlsPanel.SelectedApplyParamsMode);
+        }
         private void HsbPanel_ChangeEnded(object sender, EventArgs e)
         {
             if (GifferC == null) return;
@@ -281,6 +286,7 @@ namespace BIUK9000.UI
         {
             _ucm.UpdateUpperControl(this);
             _selectedLayerID = SelectedLayer.LayerID;
+            GifferC.SaveLayerStateForApply(SFI, SLI);
         }
 
         private void HsbPanel_HueSatChanged(object sender, EventArgs e)
@@ -691,6 +697,7 @@ namespace BIUK9000.UI
             if (!ts.PlayTimerRunning && !ts.MouseButtonIsDown)
             {
                 CompleteUIUpdate();
+                GifferC.SaveLayerStateForApply(SFI, SLI);
                 _selectedLayerID = SelectedLayer.LayerID;
             }
             else
