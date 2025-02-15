@@ -108,8 +108,10 @@ namespace BIUK9000.GifferComponents.GFLVariants
             using GraphicsPath path = new GraphicsPath();
             path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
 
-            if(interpolationMode != InterpolationMode.NearestNeighbor) g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.InterpolationMode = interpolationMode;
+            //if(interpolationMode != InterpolationMode.NearestNeighbor) g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            //g.InterpolationMode = interpolationMode;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             // Draw the border
             if (FontBorderWidth > 0)
             {
