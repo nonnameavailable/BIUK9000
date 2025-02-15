@@ -325,7 +325,20 @@ namespace BIUK9000
         public static void SaveGifAsFrames(Giffer giffer, string path, GifSFDForm sfdf)
         {
             string framesPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_frames");
-            EnsureFolderExistsAndClean(framesPath);
+            int counter = 0;
+            if (Directory.Exists(framesPath))
+            {
+                string newPath = framesPath + "_" + counter.ToString();
+                while(Directory.Exists(newPath))
+                {
+                    counter++;
+                    newPath = framesPath + "_" + counter.ToString();
+                }
+                Directory.CreateDirectory(newPath);
+            } else
+            {
+                Directory.CreateDirectory(framesPath);
+            }
             for (int i = 0; i < giffer.FrameCount; i++)
             {
                 GifFrame frame = giffer.Frames[i];
@@ -345,31 +358,6 @@ namespace BIUK9000
                         break;
                     default:
                         break;
-                }
-            }
-        }
-        public static void EnsureFolderExistsAndClean(string folderPath)
-        {
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-                Console.WriteLine($"Folder created: {folderPath}");
-            }
-            else
-            {
-                string[] files = Directory.GetFiles(folderPath);
-
-                foreach (string file in files)
-                {
-                    try
-                    {
-                        File.Delete(file);
-                        Console.WriteLine($"Deleted file: {file}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error deleting file: {file}. Exception: {ex.Message}");
-                    }
                 }
             }
         }

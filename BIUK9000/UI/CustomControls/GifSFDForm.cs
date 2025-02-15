@@ -44,6 +44,7 @@ namespace BIUK9000.UI.CustomControls
             gifskiRB.CheckedChanged += GifskiRB_CheckedChanged;
             animatedGifRB.CheckedChanged += AnimatedGifRB_CheckedChanged;
             animatedGifOptionsGB.Enabled = false;
+            ImageExportFormatCBB.SelectedIndex = 1;
         }
 
         private void AnimatedGifRB_CheckedChanged(object sender, EventArgs e)
