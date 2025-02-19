@@ -23,6 +23,8 @@ namespace BIUK9000.UI
         public event EventHandler LayerVisibilityChanged;
         public event DragEventHandler DragDropped;
         public event EventHandler DeleteButtonClicked;
+        public event EventHandler SnappedLayerToFrame;
+        public event EventHandler RestoredRatio;
         private bool _isLmbDown, _visible;
         public LayerHolder(Bitmap bitmap, bool visible)
         {
@@ -49,6 +51,8 @@ namespace BIUK9000.UI
             visibleButton.Click += VisibleButton_Click;
             deleteButton.Image = Resources.dustbin_icon;
             deleteButton.Click += (sender, args) => DeleteButtonClicked?.Invoke(this, args);
+            snapToFrameMI.Click += (sender, args) => SnappedLayerToFrame?.Invoke(this, EventArgs.Empty);
+            restoreRatioMI.Click += (sender, args) => RestoredRatio?.Invoke(this, EventArgs.Empty);
         }
 
         private void VisibleButton_Click(object sender, EventArgs e)

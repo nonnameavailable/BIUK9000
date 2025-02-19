@@ -29,6 +29,8 @@ namespace BIUK9000.UI
         public event EventHandler SelectedLayerChanged;
         public event EventHandler<IndexEventArgs> LayerVisibilityChanged;
         public event EventHandler<IndexEventArgs> LayerDeleteButtonClicked;
+        public event EventHandler<IndexEventArgs> SnapLayerToFrame;
+        public event EventHandler<IndexEventArgs> RestoredRatio;
         public LayersPanel()
         {
             InitializeComponent();
@@ -51,8 +53,10 @@ namespace BIUK9000.UI
                 LayerHolder lh = new LayerHolder(bitmap, visible);
                 lh.LayerClicked += Lh_LayerClicked;
                 lh.DragDropped += Lh_DragDropped;
-                lh.LayerVisibilityChanged += Lh_LayerVisibilityChanged;
+                lh.LayerVisibilityChanged += (sender, args) => InvokeIndexEvent(sender, LayerVisibilityChanged);
                 lh.DeleteButtonClicked += Lh_DeleteButtonClicked;
+                lh.SnappedLayerToFrame += (sender, args) => InvokeIndexEvent(sender, SnapLayerToFrame);
+                lh.RestoredRatio += (sender, args) => InvokeIndexEvent(sender, RestoredRatio);
                 layersFLP.Controls.Add(lh);
             }
             for(int i = 0; i < bitmaps.Count; i++)
@@ -62,11 +66,10 @@ namespace BIUK9000.UI
             SelectHolder(SelectedLayerIndex);
             layersFLP.Visible = true;
         }
-
-        private void Lh_LayerVisibilityChanged(object sender, EventArgs e)
+        private void InvokeIndexEvent(object sender, EventHandler<IndexEventArgs> ev)
         {
             int index = layersFLP.Controls.IndexOf((Control)sender);
-            LayerVisibilityChanged?.Invoke(sender, new IndexEventArgs(index));
+            ev?.Invoke(sender, new IndexEventArgs(index));
         }
 
         private void Lh_DeleteButtonClicked(object sender, EventArgs e)

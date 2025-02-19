@@ -29,14 +29,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             mainPictureBox = new System.Windows.Forms.PictureBox();
             panel1 = new System.Windows.Forms.Panel();
             deleteButton = new System.Windows.Forms.Button();
             visibleButton = new System.Windows.Forms.Button();
+            contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(components);
+            snapToFrameMI = new System.Windows.Forms.ToolStripMenuItem();
+            restoreRatioMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             panel1.SuspendLayout();
+            contextMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -95,16 +100,36 @@
             visibleButton.TabIndex = 0;
             visibleButton.UseVisualStyleBackColor = true;
             // 
+            // contextMenuStrip
+            // 
+            contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { snapToFrameMI, restoreRatioMI });
+            contextMenuStrip.Name = "contextMenuStrip1";
+            contextMenuStrip.Size = new System.Drawing.Size(181, 70);
+            // 
+            // snapToFrameMI
+            // 
+            snapToFrameMI.Name = "snapToFrameMI";
+            snapToFrameMI.Size = new System.Drawing.Size(180, 22);
+            snapToFrameMI.Text = "Snap to frame";
+            // 
+            // restoreRatioMI
+            // 
+            restoreRatioMI.Name = "restoreRatioMI";
+            restoreRatioMI.Size = new System.Drawing.Size(180, 22);
+            restoreRatioMI.Text = "Restore aspect ratio";
+            // 
             // LayerHolder
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ContextMenuStrip = contextMenuStrip;
             Controls.Add(tableLayoutPanel1);
             Name = "LayerHolder";
             Size = new System.Drawing.Size(121, 62);
             tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
             panel1.ResumeLayout(false);
+            contextMenuStrip.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -115,5 +140,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button visibleButton;
         private System.Windows.Forms.Button deleteButton;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem snapToFrameMI;
+        private System.Windows.Forms.ToolStripMenuItem restoreRatioMI;
     }
 }

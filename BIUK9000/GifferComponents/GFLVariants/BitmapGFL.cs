@@ -16,6 +16,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
         //private Bitmap cachedMorphedBitmap;
         public double HRatio { get => Width / (double)OriginalBitmap.Width; }
         public double VRatio { get => Height / (double)OriginalBitmap.Height; }
+        public double OriginalWidthToHeight { get => (double)OriginalBitmap.Width /  (double)OriginalBitmap.Height; }
         //private int cachedWidth, cachedHeight;
         public int OriginalWidth { get => OriginalBitmap.Width; }
         public int OriginalHeight {  get => OriginalBitmap.Height; }

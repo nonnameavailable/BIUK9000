@@ -91,6 +91,16 @@ namespace BIUK9000.UI
             mainLayersPanel.SelectedLayerChanged += MainLayersPanel_SelectedLayerChanged;
             mainLayersPanel.LayerVisibilityChanged += mainLayersPanel_LayerVisibilityChanged;
             mainLayersPanel.LayerDeleteButtonClicked += mainLayersPanel_LayerDeleteButtonClicked;
+            mainLayersPanel.SnapLayerToFrame += (sender, args) =>
+            {
+                GifferC.SnapLayerToFrame(SFI, args.Index, controlsPanel.SelectedApplyParamsMode);
+                UpdateMainPictureBox();
+            };
+            mainLayersPanel.RestoredRatio += (sender, args) =>
+            {
+                GifferC.RestoreRatio(SFI, args.Index, controlsPanel.SelectedApplyParamsMode);
+                UpdateMainPictureBox();
+            };
 
             controlsPanel.MustRedraw += (sender, args) => { if (MainGiffer != null) UpdateMainPictureBox(); };
             controlsPanel.ShouldStartDragDrop += ControlsPanel_ShouldStartDragDrop;

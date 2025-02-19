@@ -5,6 +5,7 @@ using BIUK9000.UI.CustomControls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -447,6 +448,28 @@ namespace BIUK9000
                 points[i] = new Point(newX, newY);
             }
             return result;
+        }
+        public void SnapLayerToFrame(int frameIndex, int layerIndex, ApplyParamsMode apm)
+        {
+            GFL layer = GetLayer(frameIndex, layerIndex);
+            if (layer == null) return;
+            SaveLayerStateForApply(frameIndex, layerIndex);
+            layer.Width = giffer.Width;
+            layer.Height = giffer.Height;
+            layer.Rotation = 0;
+            layer.Position = new OVector(0, 0);
+            ApplyLayerParams(frameIndex, layerIndex, apm);
+        }
+        public void RestoreRatio(int frameIndex, int layerIndex, ApplyParamsMode apm)
+        {
+            GFL layer = GetLayer(frameIndex, layerIndex);
+            if (layer == null) return;
+            if(layer is BitmapGFL bgfl)
+            {
+                SaveLayerStateForApply(frameIndex, layerIndex);
+                bgfl.Width = giffer.Width;
+                bgfl.Height = (int)(bgfl.Width / bgfl.OriginalWidthToHeight);
+            }
         }
     }
 }
