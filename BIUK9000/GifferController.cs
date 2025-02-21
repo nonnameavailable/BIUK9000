@@ -469,6 +469,16 @@ namespace BIUK9000
                 SaveLayerStateForApply(frameIndex, layerIndex);
                 bgfl.Width = giffer.Width;
                 bgfl.Height = (int)(bgfl.Width / bgfl.OriginalWidthToHeight);
+                ApplyLayerParams(frameIndex, layerIndex, apm);
+            }
+        }
+        public void OverrideLayerCenter(int frameIndex, int layerIndex, double xMult, double yMult)
+        {
+            GFL cgfl = GetLayer(frameIndex, layerIndex);
+            for(int i = 0; i < giffer.FrameCount; i++)
+            {
+                GFL layer = TryGetLayerById(i, cgfl.LayerID);
+                layer?.OverrideCenter(xMult, yMult);
             }
         }
     }

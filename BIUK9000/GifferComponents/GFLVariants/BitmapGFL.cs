@@ -45,7 +45,8 @@ namespace BIUK9000.GifferComponents.GFLVariants
         }
         public override OVector AbsoluteCenter()
         {
-            return new OVector(OriginalBitmap.Width / 2d, OriginalBitmap.Height / 2d);
+            //return new OVector(OriginalBitmap.Width / 2d, OriginalBitmap.Height / 2d);
+            return new OVector(OriginalBitmap.Width * _xMult, OriginalBitmap.Height * _yMult);
         }
         public void ReplaceOriginalBitmap(Bitmap bitmap)
         {

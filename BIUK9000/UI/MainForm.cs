@@ -36,7 +36,7 @@ namespace BIUK9000.UI
         public bool IsShiftDown { get; set; }
         public bool IsCtrlDown { get; set; }
         private float _originalLayerRotation;
-        private OVector _previousLCtM;
+        private OVector _previousLCtM, _previousLRCtM;
         private float _rotationChange;
         private PaintControl _paintControl;
         private RecordControl _recordControl;
@@ -523,6 +523,7 @@ namespace BIUK9000.UI
             GifferC.SaveLayerStateForApply(SFI, SLI);
             _originalLayerRotation = cgfl.Rotation;
             _previousLCtM = LayerCenterToMouse();
+            _previousLRCtM = LayerRotationCenterToMouse();
             _rotationChange = 0;
             if (controlsPanel.SelectedMode == Mode.Paint && SelectedLayer is BitmapGFL)
             {
@@ -547,8 +548,15 @@ namespace BIUK9000.UI
                 }
                 UpdateMainPictureBox();
                 return;
+            } else if(IsCtrlDown && IsShiftDown && IsLMBDown)
+            {
+                Point mpol = GifferC.MousePositionOnLayer(SFI, SLI, mainPictureBox.MousePositionOnImage);
+                double xMult = (double)mpol.X / cgfl.Width;
+                double yMult = (double)mpol.Y / cgfl.Height;
+                //MessageBox.Show(xMult + " x " + yMult);
+                GifferC.OverrideLayerCenter(SFI, SLI, xMult, yMult);
             }
-            _updateTimer.Start();
+                _updateTimer.Start();
         }
 
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
@@ -556,6 +564,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             Point dd = mainPictureBox.ScaledDragDifference;
             OVector currentLCtM = LayerCenterToMouse();
+            OVector currentLRCtM = LayerRotationCenterToMouse();
             Point mpoi = GifferC.MousePositionOnLayer(SFI, SLI, mainPictureBox.MousePositionOnImage);
             if (controlsPanel.SelectedMode == Mode.Paint)
             {
@@ -588,12 +597,12 @@ namespace BIUK9000.UI
                 if (IsLMBDown && !IsRMBDown)
                 {
                     //MOVE
-                    if (IsCtrlDown)
+                    if (IsCtrlDown && !IsShiftDown)
                     {
                         //MOVE WHOLE GIF (ALL LAYERS, ALL FRAMES)
                         MainGiffer.MoveFromOBR(dd.X, dd.Y);
                     }
-                    else
+                    else if(!(IsCtrlDown || IsShiftDown))
                     {
                         //MOVE JUST LAYER
                         gfl.MoveFromOBR(dd.X, dd.Y);
@@ -603,7 +612,7 @@ namespace BIUK9000.UI
                 else if (!IsLMBDown && IsRMBDown)
                 {
                     //ROTATE
-                    float angleDif = (float)currentLCtM.Rotation - (float)_previousLCtM.Rotation;
+                    float angleDif = (float)currentLRCtM.Rotation - (float)_previousLRCtM.Rotation;
                     if (angleDif > 180) angleDif -= 360;
                     if (angleDif < -180) angleDif += 360;
                     _rotationChange += angleDif;
@@ -616,6 +625,7 @@ namespace BIUK9000.UI
                         gfl.Rotation = newRotation;
                     }
                     _previousLCtM = currentLCtM;
+                    _previousLRCtM = currentLRCtM;
                 }
                 else if (IsMMBDown)
                 {
@@ -650,7 +660,15 @@ namespace BIUK9000.UI
 
         private OVector LayerCenterToMouse()
         {
+            //OVector center = SelectedLayer.Center();
             OVector center = SelectedLayer.Center();
+            Point ptm = mainPictureBox.PointToMouse(new Point(center.Xint, center.Yint));
+            return new OVector(ptm);
+        }
+        private OVector LayerRotationCenterToMouse()
+        {
+            //OVector center = SelectedLayer.Center();
+            OVector center = SelectedLayer.RotationCenter();
             Point ptm = mainPictureBox.PointToMouse(new Point(center.Xint, center.Yint));
             return new OVector(ptm);
         }

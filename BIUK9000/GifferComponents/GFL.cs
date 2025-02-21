@@ -16,6 +16,7 @@ namespace BIUK9000.GifferComponents
         protected bool _disposed;
         public OVector Position { get; set; }
         protected int _width, _height;
+        protected double _xMult, _yMult;
         public int LayerID {  get; set; }
         public float Saturation {  get; set; }
         public float Brightness { get; set; }
@@ -54,6 +55,8 @@ namespace BIUK9000.GifferComponents
             Saturation = 1;
             Brightness = 1;
             Transparency = 1;
+            _xMult = 0.5;
+            _yMult = 0.5;
             Hue = 0;
         }
         public bool Visible { get; set; }
@@ -80,7 +83,18 @@ namespace BIUK9000.GifferComponents
         }
         public virtual OVector Center()
         {
-            return new OVector(Position.X + Width / 2, Position.Y + Height / 2);
+            return new OVector(Position.X + Width * 0.5, Position.Y + Height * 0.5);
+            //return new OVector(Position.X, Position.Y);
+        }
+        public virtual OVector RotationCenter()
+        {
+            return new OVector(Position.X + Width * _xMult, Position.Y + Height * _yMult);
+        }
+        public void OverrideCenter(double xMult, double yMult)
+        {
+            _xMult = xMult;
+            _yMult = yMult;
+            //must figure out how to calculate new position later
         }
         public virtual OVector AbsoluteCenter()
         {
@@ -92,19 +106,20 @@ namespace BIUK9000.GifferComponents
             {
                 GraphicsState gs = g.Save();
 
-                OVector c = Center();
+                //OVector c = Center();
+                OVector c = RotationCenter();
                 g.TranslateTransform(c.Xint, c.Yint);
                 g.RotateTransform(Rotation);
 
                 using Bitmap morphedBitmap = MorphedBitmap(g.InterpolationMode);
                 ImageAttributes ia = HSBTAdjuster.HSBTAdjustedImageAttributes(Hue, Saturation, Brightness, Transparency);
-                g.DrawImage(morphedBitmap, new Rectangle(-morphedBitmap.Width / 2, -morphedBitmap.Height / 2, morphedBitmap.Width, morphedBitmap.Height), 0, 0, morphedBitmap.Width, morphedBitmap.Height, GraphicsUnit.Pixel, ia);
-                //using Bitmap morphedBitmap = HSBTAdjuster.HSBTAdjustedBitmap(MorphedBitmap(g.InterpolationMode), Hue, Saturation, Brightness, Transparency);
-                //g.DrawImage(morphedBitmap, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2, morphedBitmap.Width, morphedBitmap.Height);
+                //g.DrawImage(morphedBitmap, new Rectangle(-morphedBitmap.Width / 2, -morphedBitmap.Height / 2, morphedBitmap.Width, morphedBitmap.Height), 0, 0, morphedBitmap.Width, morphedBitmap.Height, GraphicsUnit.Pixel, ia);
+                g.DrawImage(morphedBitmap, new Rectangle((int)(-morphedBitmap.Width * _xMult), (int)(-morphedBitmap.Height * _yMult), morphedBitmap.Width, morphedBitmap.Height), 0, 0, morphedBitmap.Width, morphedBitmap.Height, GraphicsUnit.Pixel, ia);
                 if (drawHelp)
                 {
                     using Pen boundsPen = new Pen(Color.Red, 2f);
-                    g.DrawRectangle(boundsPen, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2, morphedBitmap.Width, morphedBitmap.Height);
+                    //g.DrawRectangle(boundsPen, -morphedBitmap.Width / 2, -morphedBitmap.Height / 2, morphedBitmap.Width, morphedBitmap.Height);
+                    g.DrawRectangle(boundsPen, (int)(-morphedBitmap.Width * _xMult), (int)(-morphedBitmap.Height * _yMult), morphedBitmap.Width, morphedBitmap.Height);
                 }
 
                 g.Restore(gs);
