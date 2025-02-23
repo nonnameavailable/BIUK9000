@@ -70,35 +70,46 @@ namespace BIUK9000.GifferComponents
         }
         public virtual void Resize(int sizeDif)
         {
+            sizeDif *= 2;
             double aspect = (double)OBR.Width / OBR.Height;
-            Position = new OVector(OBR.X - sizeDif, (int)(OBR.Y - sizeDif / aspect));
-            Width = OBR.Width + sizeDif * 2;
-            Height = (int)((OBR.Width + sizeDif * 2) / aspect);
+            double xDif = sizeDif;
+            double yDif = sizeDif / aspect;
+            double xLeft = xDif * _xMult;
+            double yLeft = yDif * _yMult;
+            Position = new OVector(OBR.X - xLeft, (int)(OBR.Y - yLeft));
+            Width = (int)(OBR.Width + xDif);
+            Height = (int)(OBR.Height + yDif);
         }
         public virtual void Resize(int xSizeDif, int ySizeDif)
         {
-            Position = new OVector(OBR.X - xSizeDif, OBR.Y - ySizeDif);
-            Width = OBR.Width + xSizeDif * 2;
-            Height = OBR.Height + ySizeDif * 2;
+            Position = new OVector(OBR.X - xSizeDif * _xMult, OBR.Y - ySizeDif * _yMult);
+            Width = OBR.Width + xSizeDif;
+            Height = OBR.Height + ySizeDif;
         }
         public virtual OVector Center()
         {
-            return new OVector(Position.X + Width * 0.5, Position.Y + Height * 0.5);
-            //return new OVector(Position.X, Position.Y);
-        }
-        public virtual OVector RotationCenter()
-        {
             return new OVector(Position.X + Width * _xMult, Position.Y + Height * _yMult);
         }
-        public void OverrideCenter(double xMult, double yMult)
+        public virtual OVector LTCorner()
         {
+            OVector c = AbsoluteCenter();
+            c.Multiply(-1);
+            c.Rotate(Rotation);
+            return Center().Add(c);
+        }
+        public virtual void OverrideCenter(double xMult, double yMult)
+        {
+            OVector ltc = LTCorner();
             _xMult = xMult;
             _yMult = yMult;
-            //must figure out how to calculate new position later
+            OVector nltc = LTCorner();
+            OVector dif = nltc.Copy().Subtract(ltc);
+            Position = Position.Copy().Subtract(dif);
+            //Position.Subtract(dif);
         }
         public virtual OVector AbsoluteCenter()
         {
-            return new OVector(Width / 2d, Height / 2d);
+            return new OVector(Width * _xMult, Height * _yMult);
         }
         public void DrawLayer(Graphics g, bool drawHelp)
         {
@@ -107,7 +118,7 @@ namespace BIUK9000.GifferComponents
                 GraphicsState gs = g.Save();
 
                 //OVector c = Center();
-                OVector c = RotationCenter();
+                OVector c = Center();
                 g.TranslateTransform(c.Xint, c.Yint);
                 g.RotateTransform(Rotation);
 
@@ -163,6 +174,8 @@ namespace BIUK9000.GifferComponents
             Brightness = layer.Brightness;
             Transparency = layer.Transparency;
             Hue = layer.Hue;
+            _xMult = layer._xMult;
+            _yMult = layer._yMult;
         }
         public abstract GFL Clone();
         public virtual void CopyDifferingParams(GFL ogState, GFL newState)
@@ -176,6 +189,8 @@ namespace BIUK9000.GifferComponents
             if(ogState.Brightness != newState.Brightness) Brightness = newState.Brightness;
             if(ogState.Transparency != newState.Transparency) Transparency = newState.Transparency;
             if (ogState.Hue != newState.Hue) Hue = newState.Hue;
+            if(ogState._xMult != newState._xMult) _xMult = newState._xMult;
+            if(ogState._yMult != newState._yMult) _yMult = newState._yMult;
         }
         public virtual void Lerp(GFL start, GFL end, double distance, OVector position = null)
         {

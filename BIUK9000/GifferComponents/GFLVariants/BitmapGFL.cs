@@ -48,6 +48,22 @@ namespace BIUK9000.GifferComponents.GFLVariants
             //return new OVector(OriginalBitmap.Width / 2d, OriginalBitmap.Height / 2d);
             return new OVector(OriginalBitmap.Width * _xMult, OriginalBitmap.Height * _yMult);
         }
+        public override void OverrideCenter(double xMult, double yMult)
+        {
+            OVector ltc = LTCorner();
+            _xMult = xMult * Width / OriginalWidth;
+            _yMult = yMult * Height / OriginalHeight;
+            OVector nltc = LTCorner();
+            OVector dif = nltc.Copy().Subtract(ltc);
+            Position = Position.Copy().Subtract(dif);
+        }
+        public override OVector LTCorner()
+        {
+            OVector c = new OVector(Width * _xMult, Height * _yMult);
+            c.Multiply(-1);
+            c.Rotate(Rotation);
+            return Center().Add(c);
+        }
         public void ReplaceOriginalBitmap(Bitmap bitmap)
         {
             OriginalBitmap?.Dispose();

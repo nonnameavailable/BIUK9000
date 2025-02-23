@@ -469,6 +469,10 @@ namespace BIUK9000.UI
                     IsCtrlDown = true;
                     return true;
                 }
+                else if(keyData == Keys.Q)
+                {
+                    Debug.Print(SelectedLayer.LTCorner().ToString());
+                }
             }
             else if (m.Msg == WM_KEYUP)
             {
@@ -553,8 +557,10 @@ namespace BIUK9000.UI
                 Point mpol = GifferC.MousePositionOnLayer(SFI, SLI, mainPictureBox.MousePositionOnImage);
                 double xMult = (double)mpol.X / cgfl.Width;
                 double yMult = (double)mpol.Y / cgfl.Height;
-                //MessageBox.Show(xMult + " x " + yMult);
+                Debug.Print(mpol.ToString());
                 GifferC.OverrideLayerCenter(SFI, SLI, xMult, yMult);
+                //Debug.Print("pb click: " + mainPictureBox.MousePositionOnImage.ToString());
+                //Debug.Print("layer click: " + cgfl.LTCorner().ToString());
             }
                 _updateTimer.Start();
         }
@@ -668,7 +674,7 @@ namespace BIUK9000.UI
         private OVector LayerRotationCenterToMouse()
         {
             //OVector center = SelectedLayer.Center();
-            OVector center = SelectedLayer.RotationCenter();
+            OVector center = SelectedLayer.Center();
             Point ptm = mainPictureBox.PointToMouse(new Point(center.Xint, center.Yint));
             return new OVector(ptm);
         }

@@ -176,21 +176,29 @@ namespace BIUK9000
         public Point MousePositionOnLayer(int frameIndex, int layerIndex, Point mousePosition)
         {
             GFL gflt = GetLayer(frameIndex, layerIndex);
-            if (gflt is BitmapGFL)
+            if (gflt is BitmapGFL gfl)
             {
-                BitmapGFL gfl = gflt as BitmapGFL;
                 OVector mousePositionOnFrame = new OVector(mousePosition);
                 OVector resultWithoutRotation = mousePositionOnFrame.Copy().Subtract(gfl.Position).Div2(gfl.HRatio, gfl.VRatio);
+                //OVector arm = resultWithoutRotation.Copy().Subtract(gfl.AbsoluteCenter());
                 OVector arm = resultWithoutRotation.Copy().Subtract(gfl.AbsoluteCenter());
                 arm.Mult2(gfl.HRatio, gfl.VRatio);
                 arm.Rotate(-gfl.Rotation);
                 arm.Div2(gfl.HRatio, gfl.VRatio);
+                //OVector result = arm.Copy().Add(gfl.AbsoluteCenter());
                 OVector result = arm.Copy().Add(gfl.AbsoluteCenter());
                 return result.ToPoint();
             }
             else
             {
-                return new Point(0, 0);
+                OVector mousePositionOnFrame = new OVector(mousePosition);
+                OVector resultWithoutRotation = mousePositionOnFrame.Copy().Subtract(gflt.Position);
+                //OVector arm = resultWithoutRotation.Copy().Subtract(gfl.AbsoluteCenter());
+                OVector arm = resultWithoutRotation.Copy().Subtract(gflt.AbsoluteCenter());
+                arm.Rotate(-gflt.Rotation);
+                //OVector result = arm.Copy().Add(gfl.AbsoluteCenter());
+                OVector result = arm.Copy().Add(gflt.AbsoluteCenter());
+                return result.ToPoint();
             }
         }
         public GFL TryGetLayerById(int frameIndex, int layerId)
