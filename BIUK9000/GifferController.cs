@@ -483,7 +483,7 @@ namespace BIUK9000
         public void OverrideLayerCenter(int frameIndex, int layerIndex, double xMult, double yMult)
         {
             GFL cgfl = GetLayer(frameIndex, layerIndex);
-            for(int i = 0; i < giffer.FrameCount; i++)
+            for(int i = frameIndex; i < giffer.FrameCount; i++)
             {
                 GFL layer = TryGetLayerById(i, cgfl.LayerID);
                 layer?.OverrideCenter(xMult, yMult);

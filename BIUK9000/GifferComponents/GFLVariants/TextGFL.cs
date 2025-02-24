@@ -65,13 +65,15 @@ namespace BIUK9000.GifferComponents.GFLVariants
         }
         public override void Resize(int sizeDif)
         {
+            Size bs = TextSize();
             FontSize = _savedFontSize + sizeDif / 5;
-            int Xbsd = BoundingRectangle.Width - OBR.Width;
-            int Ybsd = BoundingRectangle.Height - OBR.Height;
-            Position = new OVector(OBR.X - Xbsd / 2, OBR.Y - Ybsd / 2);
             Size s = TextSize();
             Width = s.Width;
             Height = s.Height;
+            double xDif = s.Width - bs.Width;
+            double yDif = s.Height - bs.Height;
+            OVector lDif = new OVector(xDif * _xMult, yDif * _yMult);
+            Position = Position.Copy().Subtract(lDif);
         }
         public override void Resize(int xSizeDif, int ySizeDif)
         {
@@ -95,13 +97,12 @@ namespace BIUK9000.GifferComponents.GFLVariants
         }
         public override void OverrideCenter(double xMult, double yMult)
         {
-            //Size s = TextSize();
-            //OVector ltc = LTCorner();
-            //_xMult = xMult * s.Width;
-            //_yMult = yMult * s.Height;
-            //OVector nltc = LTCorner();
-            //OVector dif = nltc.Copy().Subtract(ltc);
-            //Position = Position.Copy().Subtract(dif);
+            OVector ltc = LTCorner();
+            _xMult = xMult;
+            _yMult = yMult;
+            OVector nltc = LTCorner();
+            OVector dif = nltc.Copy().Subtract(ltc);
+            Position = Position.Copy().Subtract(dif);
 
         }
         public override Rectangle BoundingRectangle
@@ -160,6 +161,9 @@ namespace BIUK9000.GifferComponents.GFLVariants
             FontColor = Color.White;
             FontBorderWidth = 5;
             FontSize = 20;
+            Size s = TextSize();
+            Width = s.Width;
+            Height = s.Height;
         }
         public override void Lerp(GFL start, GFL end, double distance, OVector position = null)
         {
