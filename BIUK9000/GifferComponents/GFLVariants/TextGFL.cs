@@ -95,16 +95,6 @@ namespace BIUK9000.GifferComponents.GFLVariants
             SizeF textSize = TextSize();
             return new OVector(textSize.Width * _xMult, textSize.Height *_yMult);
         }
-        public override void OverrideCenter(double xMult, double yMult)
-        {
-            OVector ltc = LTCorner();
-            _xMult = xMult;
-            _yMult = yMult;
-            OVector nltc = LTCorner();
-            OVector dif = nltc.Copy().Subtract(ltc);
-            Position = Position.Copy().Subtract(dif);
-
-        }
         public override Rectangle BoundingRectangle
         {
             get

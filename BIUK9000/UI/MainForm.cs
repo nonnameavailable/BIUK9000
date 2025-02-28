@@ -454,10 +454,17 @@ namespace BIUK9000.UI
                     mainLayersPanel.SelectNewestLayer();
                     return true;
                 }
-                else if (keyData == Keys.F)
+                else if (keyData == Keys.F && IsShiftDown)
                 {
-                    GifferC.Mirror();
+                    GifferC.AddReversedFrames();
                     CompleteUIUpdate();
+                    return true;
+                }
+                else if(keyData == Keys.F && !IsShiftDown)
+                {
+                    GifferC.ReverseFrames();
+                    CompleteUIUpdate();
+                    return true;
                 }
                 else if (keyData == Keys.ShiftKey)
                 {
@@ -469,16 +476,11 @@ namespace BIUK9000.UI
                     IsCtrlDown = true;
                     return true;
                 }
-                else if(keyData == Keys.Q)
-                {
-                    Debug.Print(SelectedLayer.LTCorner().ToString());
-                }
             }
             else if (m.Msg == WM_KEYUP)
             {
                 if (keyData == Keys.ShiftKey)
                 {
-
                     IsShiftDown = false;
                     return true;
                 }
@@ -488,7 +490,6 @@ namespace BIUK9000.UI
                     return true;
                 }
             }
-
             return base.ProcessKeyPreview(ref m);
         }
         #endregion

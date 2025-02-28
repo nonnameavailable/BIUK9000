@@ -55,7 +55,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
             _yMult = yMult * Height / OriginalHeight;
             OVector nltc = LTCorner();
             OVector dif = nltc.Copy().Subtract(ltc);
-            Position = Position.Copy().Subtract(dif);
+            Position.Subtract(dif);
         }
         public override OVector LTCorner()
         {

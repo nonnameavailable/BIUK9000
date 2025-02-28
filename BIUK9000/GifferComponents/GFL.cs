@@ -103,9 +103,8 @@ namespace BIUK9000.GifferComponents
             _xMult = xMult;
             _yMult = yMult;
             OVector nltc = LTCorner();
-            OVector dif = nltc.Copy().Subtract(ltc);
-            Position = Position.Copy().Subtract(dif);
-            //Position.Subtract(dif);
+            OVector dif = nltc.Subtract(ltc);
+            Position.Subtract(dif);
         }
         public virtual OVector AbsoluteCenter()
         {
@@ -168,7 +167,7 @@ namespace BIUK9000.GifferComponents
         {
             Width = layer.Width;
             Height = layer.Height;
-            Position = layer.Position;
+            Position = layer.Position.Copy();
             Rotation = layer.Rotation;
             Saturation = layer.Saturation;
             Brightness = layer.Brightness;
@@ -180,7 +179,7 @@ namespace BIUK9000.GifferComponents
         public abstract GFL Clone();
         public virtual void CopyDifferingParams(GFL ogState, GFL newState)
         {
-            if (!ogState.Position.Equals(newState.Position)) Position = newState.Position;
+            if (!ogState.Position.Equals(newState.Position)) Position = newState.Position.Copy();
             if(ogState.Rotation != newState.Rotation) Rotation = newState.Rotation;
             if (ogState.Width != newState.Width) Width = newState.Width;
             if(ogState.Height != newState.Height) Height = newState.Height;
@@ -200,7 +199,7 @@ namespace BIUK9000.GifferComponents
             }
             else
             {
-                 Position = position;
+                 Position = position.Copy();
             }
             Width = Lerper.Lerp(start.Width, end.Width, distance);
             Height = Lerper.Lerp(start.Height, end.Height, distance);

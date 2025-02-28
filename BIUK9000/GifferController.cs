@@ -489,5 +489,21 @@ namespace BIUK9000
                 layer?.OverrideCenter(xMult, yMult);
             }
         }
+        public void ReverseFrames()
+        {
+            List<GifFrame> newFrames = new();
+            for(int i = FrameCount - 1; i >= 0; i--)
+            {
+                newFrames.Add(giffer.Frames[i]);
+            }
+            giffer.Frames = newFrames;
+        }
+        public void AddReversedFrames()
+        {
+            for (int i = FrameCount - 1; i >= 0; i--)
+            {
+                giffer.Frames.Add(giffer.Frames[i].Clone());
+            }
+        }
     }
 }
