@@ -20,8 +20,6 @@ namespace BIUK9000
     {
         private Giffer giffer;
         private GFL SavedLayerForApply;
-        private GFL SavedLayerForLPC;
-        int _previousLayerID;
         public int FrameCount { get => giffer.FrameCount; }
         public GifferController(Giffer giffer)
         {
@@ -80,9 +78,9 @@ namespace BIUK9000
             {
                 int startFrameIndex = marks[i];
                 int endFrameIndex = marks[i + 1];
-                GFL startLayer = giffer.Frames[startFrameIndex].Layers[selectedLayerIndex];
-                GFL endLayer = giffer.Frames[endFrameIndex].Layers.Find(layer => startLayer.LayerID == layer.LayerID);
-
+                GFL endLayer = GetLayer(endFrameIndex, selectedLayerIndex); 
+                int lid = endLayer.LayerID;
+                GFL startLayer = TryGetLayerById(startFrameIndex, lid);
                 if (startLayer == null || endLayer == null)
                 {
                     MessageBox.Show("Layers not found");
@@ -97,8 +95,7 @@ namespace BIUK9000
                 for (int j = startFrameIndex + 1; j < endFrameIndex; j++)
                 {
                     double distance = 1 - (endFrameIndex - j) / (double)totalFrames;
-                    GifFrame cgf = giffer.Frames[j];
-                    GFL layerToLerp = cgf.Layers.Find(layer => layer.LayerID == startLayer.LayerID);
+                    GFL layerToLerp = TryGetLayerById(j, lid);
                     if (mouseTrace == null || mouseTrace.Count == 0)
                     {
                         //straight line lerp
@@ -112,23 +109,23 @@ namespace BIUK9000
                     }
                 }
             }
-    
         }
 
         public void ApplyLayerParams(int currentFrameIndex, int currentLayerIndex, ApplyParamsMode apm)
         {
             if (apm == ApplyParamsMode.applyNone) return;
             int cli = currentLayerIndex;
-            GFL startLayer = giffer.Frames[currentFrameIndex].Layers[cli];
+            GFL startLayer = GetLayer(currentFrameIndex, cli);
+            int lid = startLayer.LayerID;
             for (int i = currentFrameIndex + 1; i < giffer.FrameCount; i++)
             {
                 GifFrame gf = giffer.Frames[i];
                 if (cli >= 0 && cli < gf.Layers.Count)
                 {
                     GFL layerToUpdate;
-                    if (gf.Layers[cli].LayerID != startLayer.LayerID)
+                    if (gf.Layers[cli].LayerID != lid)
                     {
-                        layerToUpdate = gf.Layers.Find(gfl => gfl.LayerID == startLayer.LayerID);
+                        layerToUpdate = TryGetLayerById(i, lid);
                     }
                     else
                     {
