@@ -69,6 +69,8 @@ namespace BIUK9000.UI
         }
         public Mode Mode { get => controlsPanel.SelectedMode; }
         private UpperControlManager _ucm;
+        public MenuStrip MainMenu { get => mainMenuStrip; }
+        private MenuEventHandler _menuEventHandler;
         public MainForm()
         {
             InitializeComponent();
@@ -140,6 +142,7 @@ namespace BIUK9000.UI
             _recordControl.Stop += _recordControl_Stop;
 
             Move += MainForm_Move;
+            _menuEventHandler = new MenuEventHandler(this);
         }
 
         private void ControlsPanel_ModeChanged(object sender, EventArgs e)
