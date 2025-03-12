@@ -502,5 +502,27 @@ namespace BIUK9000
                 giffer.Frames.Add(giffer.Frames[i].Clone());
             }
         }
+        public void AddGifferAsReplace(Giffer newGiffer, int frameIndex, int layerIndex, bool spread)
+        {
+            GFL gfl = GetLayer(frameIndex, layerIndex);
+            if(gfl is not BitmapGFL)
+            {
+                MessageBox.Show("You must select an image layer for this to work");
+                return;
+            }
+            int lid = gfl.LayerID;
+            if (spread)
+            {
+                
+            }else
+            {
+                for(int i = 0; i < newGiffer.FrameCount; i++)
+                {
+                    BitmapGFL bgfl = (BitmapGFL)TryGetLayerById(frameIndex + i, lid);
+                    bgfl.ReplaceOriginalBitmap(newGiffer.Frames[i].CompleteBitmap(bgfl.Width, bgfl.Height, false, InterpolationMode.HighQualityBicubic));
+                }
+
+            }
+        }
     }
 }

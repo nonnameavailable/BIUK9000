@@ -44,6 +44,7 @@
             groupBox3 = new System.Windows.Forms.GroupBox();
             freshAsFramesRB = new System.Windows.Forms.RadioButton();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            replaceButton = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -52,16 +53,18 @@
             // 
             // tableLayoutPanel1
             // 
-            tableLayoutPanel1.ColumnCount = 3;
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F));
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F));
+            tableLayoutPanel1.ColumnCount = 4;
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0626545F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0626545F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.8120327F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0626583F));
+            tableLayoutPanel1.Controls.Add(replaceButton, 2, 1);
             tableLayoutPanel1.Controls.Add(label1, 0, 0);
-            tableLayoutPanel1.Controls.Add(insertButton, 2, 1);
+            tableLayoutPanel1.Controls.Add(insertButton, 3, 1);
             tableLayoutPanel1.Controls.Add(asLayersButton, 1, 1);
             tableLayoutPanel1.Controls.Add(freshButton, 0, 1);
             tableLayoutPanel1.Controls.Add(groupBox1, 1, 2);
-            tableLayoutPanel1.Controls.Add(groupBox2, 2, 2);
+            tableLayoutPanel1.Controls.Add(groupBox2, 3, 2);
             tableLayoutPanel1.Controls.Add(groupBox3, 0, 2);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -76,7 +79,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            tableLayoutPanel1.SetColumnSpan(label1, 3);
+            tableLayoutPanel1.SetColumnSpan(label1, 4);
             label1.Dock = System.Windows.Forms.DockStyle.Fill;
             label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             label1.Location = new System.Drawing.Point(3, 0);
@@ -90,9 +93,9 @@
             // 
             insertButton.Dock = System.Windows.Forms.DockStyle.Fill;
             insertButton.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            insertButton.Location = new System.Drawing.Point(219, 103);
+            insertButton.Location = new System.Drawing.Point(245, 103);
             insertButton.Name = "insertButton";
-            insertButton.Size = new System.Drawing.Size(102, 94);
+            insertButton.Size = new System.Drawing.Size(76, 94);
             insertButton.TabIndex = 1;
             insertButton.Text = "Insert";
             insertButton.UseVisualStyleBackColor = true;
@@ -101,9 +104,9 @@
             // 
             asLayersButton.Dock = System.Windows.Forms.DockStyle.Fill;
             asLayersButton.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            asLayersButton.Location = new System.Drawing.Point(111, 103);
+            asLayersButton.Location = new System.Drawing.Point(84, 103);
             asLayersButton.Name = "asLayersButton";
-            asLayersButton.Size = new System.Drawing.Size(102, 94);
+            asLayersButton.Size = new System.Drawing.Size(75, 94);
             asLayersButton.TabIndex = 2;
             asLayersButton.Text = "Import as layers";
             asLayersButton.UseVisualStyleBackColor = true;
@@ -114,19 +117,20 @@
             freshButton.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             freshButton.Location = new System.Drawing.Point(3, 103);
             freshButton.Name = "freshButton";
-            freshButton.Size = new System.Drawing.Size(102, 94);
+            freshButton.Size = new System.Drawing.Size(75, 94);
             freshButton.TabIndex = 3;
             freshButton.Text = "Start fresh";
             freshButton.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
+            tableLayoutPanel1.SetColumnSpan(groupBox1, 2);
             groupBox1.Controls.Add(layerRepeatRB);
             groupBox1.Controls.Add(layerSpreadRB);
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox1.Location = new System.Drawing.Point(111, 203);
+            groupBox1.Location = new System.Drawing.Point(84, 203);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(102, 96);
+            groupBox1.Size = new System.Drawing.Size(155, 96);
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "settings";
@@ -161,9 +165,9 @@
             groupBox2.Controls.Add(insertEndRB);
             groupBox2.Controls.Add(insertStartRB);
             groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox2.Location = new System.Drawing.Point(219, 203);
+            groupBox2.Location = new System.Drawing.Point(245, 203);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(102, 96);
+            groupBox2.Size = new System.Drawing.Size(76, 96);
             groupBox2.TabIndex = 5;
             groupBox2.TabStop = false;
             groupBox2.Text = "settings";
@@ -209,7 +213,7 @@
             groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox3.Location = new System.Drawing.Point(3, 203);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(102, 96);
+            groupBox3.Size = new System.Drawing.Size(75, 96);
             groupBox3.TabIndex = 6;
             groupBox3.TabStop = false;
             groupBox3.Text = "settings";
@@ -225,6 +229,17 @@
             freshAsFramesRB.TabStop = true;
             freshAsFramesRB.Text = "as frames";
             freshAsFramesRB.UseVisualStyleBackColor = true;
+            // 
+            // replaceButton
+            // 
+            replaceButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            replaceButton.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            replaceButton.Location = new System.Drawing.Point(165, 103);
+            replaceButton.Name = "replaceButton";
+            replaceButton.Size = new System.Drawing.Size(74, 94);
+            replaceButton.TabIndex = 7;
+            replaceButton.Text = "Import as replace";
+            replaceButton.UseVisualStyleBackColor = true;
             // 
             // ImportQuestionForm
             // 
@@ -262,5 +277,6 @@
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RadioButton freshAsFramesRB;
+        private System.Windows.Forms.Button replaceButton;
     }
 }

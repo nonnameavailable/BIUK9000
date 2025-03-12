@@ -236,6 +236,7 @@ namespace BIUK9000
             iqf.SelectedFresh += (sender, args) => ImportAsFresh(mf, giffer);
             iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, giffer);
             iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, giffer);
+            iqf.SelectedReplace += (sender, args) => ImportAsReplace(mf, iqf, giffer);
             if (iqf.ShowDialog() == DialogResult.OK && mf.MainGiffer != null)
             {
                 return true;
@@ -243,6 +244,17 @@ namespace BIUK9000
             else
             {
                 return false;
+            }
+        }
+        private static void ImportAsReplace(MainForm mf, ImportQuestionForm iqf, Giffer giffer)
+        {
+            try
+            {
+                mf.GifferC.AddGifferAsReplace(giffer, mf.SFI, mf.SLI, iqf.OLayersSpread);
+                giffer.Dispose();
+            }catch(ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         private static void ImportAsFresh(MainForm mf, Giffer giffer)

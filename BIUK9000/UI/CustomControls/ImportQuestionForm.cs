@@ -15,6 +15,7 @@ namespace BIUK9000.UI
         public event EventHandler SelectedFresh;
         public event EventHandler SelectedAsLayers;
         public event EventHandler SelectedInsert;
+        public event EventHandler SelectedReplace;
 
         public bool OLayersSpread { get => layerSpreadRB.Checked; }
         public bool OLayersRepeat { get => layerRepeatRB.Checked; }
@@ -29,10 +30,17 @@ namespace BIUK9000.UI
             freshButton.Click += FreshButton_Click;
             asLayersButton.Click += AsLayersButton_Click;
             insertButton.Click += InsertButton_Click;
+            replaceButton.Click += ReplaceButton_Click;
 
             freshButton.DialogResult = DialogResult.OK;
             asLayersButton.DialogResult = DialogResult.OK;
             insertButton.DialogResult = DialogResult.OK;
+            replaceButton.DialogResult = DialogResult.OK;
+        }
+
+        private void ReplaceButton_Click(object sender, EventArgs e)
+        {
+            SelectedReplace?.Invoke(this, EventArgs.Empty);
         }
 
         private void InsertButton_Click(object sender, EventArgs e)
@@ -53,6 +61,7 @@ namespace BIUK9000.UI
         {
             insertButton.Enabled = false;
             asLayersButton.Enabled = false;
+            replaceButton.Enabled = false;
         }
     }
 }
