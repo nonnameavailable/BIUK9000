@@ -120,7 +120,15 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="replaceButton.ToolTip" xml:space="preserve">
+    <value>Dragged image(s) will replace the selected layer
+Only works when image layer is selected
+
+Options:
+Spread - Only works when 2 or more marks are present
+The dragged image(s) will be spread across the marked frames
+
+Repeat - All frames from dragged images will be used
+starting from selected frame</value>
+  </data>
 </root>

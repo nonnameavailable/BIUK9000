@@ -71,6 +71,7 @@ namespace BIUK9000.UI
         private UpperControlManager _ucm;
         public MenuStrip MainMenu { get => mainMenuStrip; }
         private MenuEventHandler _menuEventHandler;
+        public List<int> Marks { get => mainTimelineSlider.Marks; }
         public MainForm()
         {
             InitializeComponent();

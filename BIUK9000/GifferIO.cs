@@ -250,8 +250,15 @@ namespace BIUK9000
         {
             try
             {
-                mf.GifferC.AddGifferAsReplace(giffer, mf.SFI, mf.SLI, iqf.OLayersSpread);
-                giffer.Dispose();
+                if (iqf.OLayersRepeat)
+                {
+                    mf.GifferC.AddGifferAsReplace(giffer, mf.SFI, mf.SLI);
+                }else
+                {
+                    mf.GifferC.AddGifferAsReplace(giffer, mf.SFI, mf.SLI, mf.Marks);
+                    mf.MainTimelineSlider.ClearMarks();
+                }
+                    giffer.Dispose();
             }catch(ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);

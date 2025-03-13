@@ -29,7 +29,9 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportQuestionForm));
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            replaceButton = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             insertButton = new System.Windows.Forms.Button();
             asLayersButton = new System.Windows.Forms.Button();
@@ -44,7 +46,6 @@
             groupBox3 = new System.Windows.Forms.GroupBox();
             freshAsFramesRB = new System.Windows.Forms.RadioButton();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            replaceButton = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -76,6 +77,18 @@
             tableLayoutPanel1.Size = new System.Drawing.Size(324, 302);
             tableLayoutPanel1.TabIndex = 0;
             // 
+            // replaceButton
+            // 
+            replaceButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            replaceButton.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            replaceButton.Location = new System.Drawing.Point(165, 103);
+            replaceButton.Name = "replaceButton";
+            replaceButton.Size = new System.Drawing.Size(74, 94);
+            replaceButton.TabIndex = 7;
+            replaceButton.Text = "Import as replace";
+            toolTip.SetToolTip(replaceButton, resources.GetString("replaceButton.ToolTip"));
+            replaceButton.UseVisualStyleBackColor = true;
+            // 
             // label1
             // 
             label1.AutoSize = true;
@@ -98,6 +111,7 @@
             insertButton.Size = new System.Drawing.Size(76, 94);
             insertButton.TabIndex = 1;
             insertButton.Text = "Insert";
+            toolTip.SetToolTip(insertButton, "Dragged images will be inserted as new frames\r\nat the location specified below");
             insertButton.UseVisualStyleBackColor = true;
             // 
             // asLayersButton
@@ -109,6 +123,7 @@
             asLayersButton.Size = new System.Drawing.Size(75, 94);
             asLayersButton.TabIndex = 2;
             asLayersButton.Text = "Import as layers";
+            toolTip.SetToolTip(asLayersButton, "New layer will be created from the dragged image(s)");
             asLayersButton.UseVisualStyleBackColor = true;
             // 
             // freshButton
@@ -120,6 +135,7 @@
             freshButton.Size = new System.Drawing.Size(75, 94);
             freshButton.TabIndex = 3;
             freshButton.Text = "Start fresh";
+            toolTip.SetToolTip(freshButton, "This will delete everything and import whatever you dragged as a new gif");
             freshButton.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -229,17 +245,6 @@
             freshAsFramesRB.TabStop = true;
             freshAsFramesRB.Text = "as frames";
             freshAsFramesRB.UseVisualStyleBackColor = true;
-            // 
-            // replaceButton
-            // 
-            replaceButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            replaceButton.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            replaceButton.Location = new System.Drawing.Point(165, 103);
-            replaceButton.Name = "replaceButton";
-            replaceButton.Size = new System.Drawing.Size(74, 94);
-            replaceButton.TabIndex = 7;
-            replaceButton.Text = "Import as replace";
-            replaceButton.UseVisualStyleBackColor = true;
             // 
             // ImportQuestionForm
             // 

@@ -502,7 +502,7 @@ namespace BIUK9000
                 giffer.Frames.Add(giffer.Frames[i].Clone());
             }
         }
-        public void AddGifferAsReplace(Giffer newGiffer, int frameIndex, int layerIndex, bool spread)
+        public void AddGifferAsReplace(Giffer newGiffer, int frameIndex, int layerIndex, List<int> marks = null)
         {
             GFL gfl = GetLayer(frameIndex, layerIndex);
             if(gfl is not BitmapGFL)
@@ -511,17 +511,32 @@ namespace BIUK9000
                 return;
             }
             int lid = gfl.LayerID;
-            if (spread)
-            {
-                
-            }else
+            if (marks == null)
             {
                 for(int i = 0; i < newGiffer.FrameCount; i++)
                 {
-                    BitmapGFL bgfl = (BitmapGFL)TryGetLayerById(frameIndex + i, lid);
+                    BitmapGFL bgfl = (BitmapGFL)TryGetLayerById((frameIndex + i) % FrameCount, lid);
                     bgfl.ReplaceOriginalBitmap(newGiffer.Frames[i].CompleteBitmap(bgfl.Width, bgfl.Height, false, InterpolationMode.HighQualityBicubic));
                 }
-
+            }else
+            {
+                if(marks.Count % 2 != 0 && marks.Count >= 2)
+                {
+                    MessageBox.Show("Mark count must be even and larger or equal to 2");
+                    return;
+                }
+                marks.Sort();
+                for(int i = 0; i < marks.Count; i += 2)
+                {
+                    int startFrameIndex = marks[i];
+                    int endFrameIndex = marks[i + 1];
+                    for(int j = startFrameIndex; j <= endFrameIndex; j++)
+                    {
+                        int newGifferFrameIndex = (int)((double)(j - startFrameIndex) / (endFrameIndex - startFrameIndex) * (newGiffer.FrameCount - 1));
+                        BitmapGFL bgfl = (BitmapGFL)TryGetLayerById(j, lid);
+                        bgfl.ReplaceOriginalBitmap(newGiffer.Frames[newGifferFrameIndex].CompleteBitmap(bgfl.Width, bgfl.Height, false, InterpolationMode.HighQualityBicubic));
+                    }
+                }
             }
         }
     }
