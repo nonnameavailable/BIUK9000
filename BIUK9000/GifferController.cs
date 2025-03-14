@@ -502,7 +502,7 @@ namespace BIUK9000
                 giffer.Frames.Add(giffer.Frames[i].Clone());
             }
         }
-        public void AddGifferAsReplace(Giffer newGiffer, int frameIndex, int layerIndex, List<int> marks = null)
+        public void AddGifferAsReplaceSpread(Giffer newGiffer, int frameIndex, int layerIndex, List<int> marks)
         {
             GFL gfl = GetLayer(frameIndex, layerIndex);
             if(gfl is not BitmapGFL)
@@ -511,31 +511,40 @@ namespace BIUK9000
                 return;
             }
             int lid = gfl.LayerID;
-            if (marks == null)
+            if(marks.Count % 2 != 0 && marks.Count >= 2)
             {
-                for(int i = 0; i < newGiffer.FrameCount; i++)
+                MessageBox.Show("Mark count must be even and larger or equal to 2");
+                return;
+            }
+            marks.Sort();
+            for(int i = 0; i < marks.Count; i += 2)
+            {
+                int startFrameIndex = marks[i];
+                int endFrameIndex = marks[i + 1];
+                for(int j = startFrameIndex; j <= endFrameIndex; j++)
                 {
-                    BitmapGFL bgfl = (BitmapGFL)TryGetLayerById((frameIndex + i) % FrameCount, lid);
+                    int newGifferFrameIndex = (int)((double)(j - startFrameIndex) / (endFrameIndex - startFrameIndex) * (newGiffer.FrameCount - 1));
+                    BitmapGFL bgfl = (BitmapGFL)TryGetLayerById(j, lid);
+                    bgfl.ReplaceOriginalBitmap(newGiffer.Frames[newGifferFrameIndex].CompleteBitmap(bgfl.Width, bgfl.Height, false, InterpolationMode.HighQualityBicubic));
+                }
+            }
+        }
+        public void AddGifferAsReplaceRepeat(Giffer newGiffer, int frameIndex, int layerIndex, List<int> marks)
+        {
+            GFL gfl = GetLayer(frameIndex, layerIndex);
+            if(gfl is not BitmapGFL)
+            {
+                MessageBox.Show("You must select an image layer for this to work");
+                return;
+            }
+            int lid = gfl.LayerID;
+            if (marks.Count == 0) marks.Add(frameIndex);
+            for (int j = 0; j < marks.Count; j++)
+            {
+                for (int i = 0; i < newGiffer.FrameCount; i++)
+                {
+                    BitmapGFL bgfl = (BitmapGFL)TryGetLayerById((marks[j] + i) % FrameCount, lid);
                     bgfl.ReplaceOriginalBitmap(newGiffer.Frames[i].CompleteBitmap(bgfl.Width, bgfl.Height, false, InterpolationMode.HighQualityBicubic));
-                }
-            }else
-            {
-                if(marks.Count % 2 != 0 && marks.Count >= 2)
-                {
-                    MessageBox.Show("Mark count must be even and larger or equal to 2");
-                    return;
-                }
-                marks.Sort();
-                for(int i = 0; i < marks.Count; i += 2)
-                {
-                    int startFrameIndex = marks[i];
-                    int endFrameIndex = marks[i + 1];
-                    for(int j = startFrameIndex; j <= endFrameIndex; j++)
-                    {
-                        int newGifferFrameIndex = (int)((double)(j - startFrameIndex) / (endFrameIndex - startFrameIndex) * (newGiffer.FrameCount - 1));
-                        BitmapGFL bgfl = (BitmapGFL)TryGetLayerById(j, lid);
-                        bgfl.ReplaceOriginalBitmap(newGiffer.Frames[newGifferFrameIndex].CompleteBitmap(bgfl.Width, bgfl.Height, false, InterpolationMode.HighQualityBicubic));
-                    }
                 }
             }
         }

@@ -252,13 +252,13 @@ namespace BIUK9000
             {
                 if (iqf.OLayersRepeat)
                 {
-                    mf.GifferC.AddGifferAsReplace(giffer, mf.SFI, mf.SLI);
+                    mf.GifferC.AddGifferAsReplaceRepeat(giffer, mf.SFI, mf.SLI, mf.Marks);
                 }else
                 {
-                    mf.GifferC.AddGifferAsReplace(giffer, mf.SFI, mf.SLI, mf.Marks);
-                    mf.MainTimelineSlider.ClearMarks();
+                    mf.GifferC.AddGifferAsReplaceSpread(giffer, mf.SFI, mf.SLI, mf.Marks);
                 }
-                    giffer.Dispose();
+                mf.MainTimelineSlider.ClearMarks();
+                giffer.Dispose();
             }catch(ArgumentException ex)
             {
                 MessageBox.Show(ex.Message);
