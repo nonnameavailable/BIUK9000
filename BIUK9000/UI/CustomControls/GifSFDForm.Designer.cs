@@ -30,6 +30,12 @@
         {
             components = new System.ComponentModel.Container();
             panel1 = new System.Windows.Forms.Panel();
+            framerateChangeGB = new System.Windows.Forms.GroupBox();
+            currentFramerateLabel = new System.Windows.Forms.Label();
+            newFramerateNUD = new System.Windows.Forms.NumericUpDown();
+            label6 = new System.Windows.Forms.Label();
+            changeFramerateCB = new System.Windows.Forms.CheckBox();
+            label5 = new System.Windows.Forms.Label();
             framesAsFilesGB = new System.Windows.Forms.GroupBox();
             ImageExportJpegQualNUD = new System.Windows.Forms.NumericUpDown();
             label3 = new System.Windows.Forms.Label();
@@ -50,6 +56,8 @@
             gifExportModeCBB = new System.Windows.Forms.ComboBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             panel1.SuspendLayout();
+            framerateChangeGB.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)newFramerateNUD).BeginInit();
             framesAsFilesGB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ImageExportJpegQualNUD).BeginInit();
             groupBox1.SuspendLayout();
@@ -61,6 +69,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(framerateChangeGB);
             panel1.Controls.Add(framesAsFilesGB);
             panel1.Controls.Add(saveBTN);
             panel1.Controls.Add(groupBox1);
@@ -68,8 +77,69 @@
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             panel1.Location = new System.Drawing.Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(296, 306);
+            panel1.Size = new System.Drawing.Size(296, 416);
             panel1.TabIndex = 0;
+            // 
+            // framerateChangeGB
+            // 
+            framerateChangeGB.Controls.Add(currentFramerateLabel);
+            framerateChangeGB.Controls.Add(newFramerateNUD);
+            framerateChangeGB.Controls.Add(label6);
+            framerateChangeGB.Controls.Add(changeFramerateCB);
+            framerateChangeGB.Controls.Add(label5);
+            framerateChangeGB.Location = new System.Drawing.Point(150, 185);
+            framerateChangeGB.Name = "framerateChangeGB";
+            framerateChangeGB.Size = new System.Drawing.Size(134, 110);
+            framerateChangeGB.TabIndex = 20;
+            framerateChangeGB.TabStop = false;
+            framerateChangeGB.Text = "Change framerate";
+            // 
+            // currentFramerateLabel
+            // 
+            currentFramerateLabel.AutoSize = true;
+            currentFramerateLabel.Location = new System.Drawing.Point(67, 40);
+            currentFramerateLabel.Name = "currentFramerateLabel";
+            currentFramerateLabel.Size = new System.Drawing.Size(0, 15);
+            currentFramerateLabel.TabIndex = 16;
+            // 
+            // newFramerateNUD
+            // 
+            newFramerateNUD.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            newFramerateNUD.Location = new System.Drawing.Point(67, 64);
+            newFramerateNUD.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
+            newFramerateNUD.Minimum = new decimal(new int[] { 1, 0, 0, 65536 });
+            newFramerateNUD.Name = "newFramerateNUD";
+            newFramerateNUD.Size = new System.Drawing.Size(57, 23);
+            newFramerateNUD.TabIndex = 15;
+            newFramerateNUD.Value = new decimal(new int[] { 60, 0, 0, 0 });
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(19, 66);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(37, 15);
+            label6.TabIndex = 14;
+            label6.Text = "New: ";
+            // 
+            // changeFramerateCB
+            // 
+            changeFramerateCB.AutoSize = true;
+            changeFramerateCB.Location = new System.Drawing.Point(6, 19);
+            changeFramerateCB.Name = "changeFramerateCB";
+            changeFramerateCB.Size = new System.Drawing.Size(121, 19);
+            changeFramerateCB.TabIndex = 13;
+            changeFramerateCB.Text = "Change framerate";
+            changeFramerateCB.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(6, 41);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(50, 15);
+            label5.TabIndex = 0;
+            label5.Text = "Current:";
             // 
             // framesAsFilesGB
             // 
@@ -126,9 +196,10 @@
             // 
             // saveBTN
             // 
-            saveBTN.Location = new System.Drawing.Point(151, 193);
+            saveBTN.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
+            saveBTN.Location = new System.Drawing.Point(12, 301);
             saveBTN.Name = "saveBTN";
-            saveBTN.Size = new System.Drawing.Size(133, 102);
+            saveBTN.Size = new System.Drawing.Size(272, 102);
             saveBTN.TabIndex = 18;
             saveBTN.Text = "Save";
             saveBTN.UseVisualStyleBackColor = true;
@@ -266,12 +337,15 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(296, 306);
+            ClientSize = new System.Drawing.Size(296, 416);
             Controls.Add(panel1);
             Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "GifSFDForm";
             Text = "GifSFDForm";
             panel1.ResumeLayout(false);
+            framerateChangeGB.ResumeLayout(false);
+            framerateChangeGB.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)newFramerateNUD).EndInit();
             framesAsFilesGB.ResumeLayout(false);
             framesAsFilesGB.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)ImageExportJpegQualNUD).EndInit();
@@ -308,5 +382,11 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox ImageExportFormatCBB;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.GroupBox framerateChangeGB;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox changeFramerateCB;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label currentFramerateLabel;
+        private System.Windows.Forms.NumericUpDown newFramerateNUD;
     }
 }

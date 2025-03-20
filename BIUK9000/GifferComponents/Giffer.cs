@@ -215,5 +215,14 @@ namespace BIUK9000.GifferComponents
             }
             _disposed = true;
         }
+        public double AverageFramerate()
+        {
+            double totalDelay = 0;
+            foreach(GifFrame frame in Frames)
+            {
+                totalDelay += frame.FrameDelay;
+            }
+            return Math.Round(FrameCount / totalDelay * 1000, 2); 
+        }
     }
 }

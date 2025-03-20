@@ -175,6 +175,7 @@ namespace BIUK9000.GifferComponents
             Hue = layer.Hue;
             _xMult = layer._xMult;
             _yMult = layer._yMult;
+            Visible = layer.Visible;
         }
         public abstract GFL Clone();
         public virtual void CopyDifferingParams(GFL ogState, GFL newState)

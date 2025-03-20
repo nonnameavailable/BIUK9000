@@ -35,6 +35,21 @@ namespace BIUK9000.UI.CustomControls
         public bool CreateFrames { get => createFramesCB.Checked; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
         public int ImageExportJpegQuality { get => (int)ImageExportJpegQualNUD.Value; }
+        public double NewFramerate { get => (double)newFramerateNUD.Value; }
+        private double _currentFramerate;
+        public double CurrentFramerate {
+            get
+            { 
+                return _currentFramerate;
+            }
+            set
+            {
+                _currentFramerate = value;
+                currentFramerateLabel.Text = value.ToString();
+                newFramerateNUD.Value = (decimal)value;
+            }
+        }
+        public bool ChangeFramerate { get =>  changeFramerateCB.Checked; set => changeFramerateCB.Checked = value; }
         public GifSFDForm()
         {
             InitializeComponent();

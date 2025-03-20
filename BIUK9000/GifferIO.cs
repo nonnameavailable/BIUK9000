@@ -25,13 +25,21 @@ namespace BIUK9000
     {
         public static Image GifFromGiffer(Giffer giffer, GifSFDForm sfdf, InterpolationMode interpolationMode)
         {
+            double delayMultiplier = 1;
+            double frameStep = 1;
+            if (sfdf.ChangeFramerate)
+            {
+                delayMultiplier = sfdf.CurrentFramerate / sfdf.NewFramerate;
+                frameStep = delayMultiplier;
+            }
             using MemoryStream stream = new MemoryStream();
             if (sfdf.ChosenExportLibrary == GifSFDForm.ExportLibrary.AnimatedGif)
             {
                 using AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
-                foreach (GifFrame frame in giffer.Frames)
+                for (double i = 0; i < giffer.FrameCount; i += frameStep)
                 {
-                    agc.AddFrame(giffer.FrameAsBitmap(frame, false, interpolationMode), frame.FrameDelay, sfdf.GifQuality);
+                    GifFrame frame = giffer.Frames[(int) i];
+                    agc.AddFrame(giffer.FrameAsBitmap(frame, false, interpolationMode), (int)(frame.FrameDelay * delayMultiplier), sfdf.GifQuality);
                 }
             } else
             {
@@ -42,9 +50,10 @@ namespace BIUK9000
                 gifski.SetStreamOutput(stream);
                 int counter = 0;
                 double delayCumulation = 0;
-                foreach (GifFrame gf in giffer.Frames)
+                for (double k = 0; k < giffer.FrameCount; k += frameStep)
                 {
-                    delayCumulation += gf.FrameDelay / 1000d;
+                    GifFrame gf = giffer.Frames[(int) k];
+                    delayCumulation += gf.FrameDelay / 1000d * delayMultiplier;
                     using Bitmap frame = giffer.FrameAsBitmap(gf, false, interpolationMode);
                     using FastBitmap fbm = new FastBitmap(frame);
                     for (int i = 0; i < fbm.Width; i++)
@@ -322,6 +331,7 @@ namespace BIUK9000
             //}
             string tempPath;
             using GifSFDForm sfdf = new GifSFDForm();
+            sfdf.CurrentFramerate = giffer.AverageFramerate();
             if (sfdf.ShowDialog() != DialogResult.OK) return;
 
             tempPath = SaveGifToTempFile(giffer, sfdf, interpolationMode);
@@ -358,11 +368,17 @@ namespace BIUK9000
             {
                 Directory.CreateDirectory(framesPath);
             }
-            for (int i = 0; i < giffer.FrameCount; i++)
+            double frameStep = 1;
+            if (sfdf.ChangeFramerate)
             {
-                GifFrame frame = giffer.Frames[i];
+                frameStep = sfdf.CurrentFramerate / sfdf.NewFramerate;
+            }
+            int frameCounter = 0;
+            for (double i = 0; i < giffer.FrameCount; i += frameStep)
+            {
+                GifFrame frame = giffer.Frames[(int)i];
                 using Bitmap bitmap = frame.CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.HighQualityBicubic);
-                string frameFileName = $"frame_{i:D5}" + sfdf.ImageExportFormat;
+                string frameFileName = $"frame_{frameCounter:D5}" + sfdf.ImageExportFormat;
                 string framePath = Path.Combine(framesPath, frameFileName);
                 switch (sfdf.ImageExportFormat)
                 {
@@ -378,6 +394,7 @@ namespace BIUK9000
                     default:
                         break;
                 }
+                frameCounter++;
             }
         }
     }
