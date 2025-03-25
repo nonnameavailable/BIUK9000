@@ -55,6 +55,8 @@
             label1 = new System.Windows.Forms.Label();
             gifExportModeCBB = new System.Windows.Forms.ComboBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            createVideoGB = new System.Windows.Forms.GroupBox();
+            createVideoCB = new System.Windows.Forms.CheckBox();
             panel1.SuspendLayout();
             framerateChangeGB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)newFramerateNUD).BeginInit();
@@ -65,10 +67,12 @@
             groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).BeginInit();
+            createVideoGB.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
+            panel1.Controls.Add(createVideoGB);
             panel1.Controls.Add(framerateChangeGB);
             panel1.Controls.Add(framesAsFilesGB);
             panel1.Controls.Add(saveBTN);
@@ -77,7 +81,7 @@
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             panel1.Location = new System.Drawing.Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(296, 416);
+            panel1.Size = new System.Drawing.Size(296, 471);
             panel1.TabIndex = 0;
             // 
             // framerateChangeGB
@@ -197,7 +201,7 @@
             // saveBTN
             // 
             saveBTN.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            saveBTN.Location = new System.Drawing.Point(12, 301);
+            saveBTN.Location = new System.Drawing.Point(12, 360);
             saveBTN.Name = "saveBTN";
             saveBTN.Size = new System.Drawing.Size(272, 102);
             saveBTN.TabIndex = 18;
@@ -333,11 +337,31 @@
             gifExportModeCBB.TabIndex = 11;
             toolTip.SetToolTip(gifExportModeCBB, "Bit 8 - no dithering\r\ndefault - dithering");
             // 
+            // createVideoGB
+            // 
+            createVideoGB.Controls.Add(createVideoCB);
+            createVideoGB.Location = new System.Drawing.Point(12, 301);
+            createVideoGB.Name = "createVideoGB";
+            createVideoGB.Size = new System.Drawing.Size(272, 53);
+            createVideoGB.TabIndex = 21;
+            createVideoGB.TabStop = false;
+            createVideoGB.Text = "Create video";
+            // 
+            // createVideoCB
+            // 
+            createVideoCB.AutoSize = true;
+            createVideoCB.Location = new System.Drawing.Point(5, 22);
+            createVideoCB.Name = "createVideoCB";
+            createVideoCB.Size = new System.Drawing.Size(92, 19);
+            createVideoCB.TabIndex = 0;
+            createVideoCB.Text = "Create video";
+            createVideoCB.UseVisualStyleBackColor = true;
+            // 
             // GifSFDForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(296, 416);
+            ClientSize = new System.Drawing.Size(296, 471);
             Controls.Add(panel1);
             Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "GifSFDForm";
@@ -357,6 +381,8 @@
             groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).EndInit();
+            createVideoGB.ResumeLayout(false);
+            createVideoGB.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -388,5 +414,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label currentFramerateLabel;
         private System.Windows.Forms.NumericUpDown newFramerateNUD;
+        private System.Windows.Forms.GroupBox createVideoGB;
+        private System.Windows.Forms.CheckBox createVideoCB;
     }
 }

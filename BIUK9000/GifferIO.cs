@@ -350,6 +350,10 @@ namespace BIUK9000
                 return;
             }
             File.Delete(tempPath);
+            if (sfdf.CreateVideo)
+            {
+                SaveGifAsMp4(giffer, path, sfdf);
+            }
         }
         public static void SaveGifAsFrames(Giffer giffer, string path, GifSFDForm sfdf)
         {
@@ -395,6 +399,95 @@ namespace BIUK9000
                         break;
                 }
                 frameCounter++;
+            }
+        }
+        public static void SaveGifAsMp4(Giffer giffer, string path, GifSFDForm sfdf)
+        {
+            if (!IsFFmpegAvailable())
+            {
+                MessageBox.Show("ffmpeg must be in PATH for this to work!");
+                return;
+            }
+            string videoPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_video.mp4");
+            if(File.Exists(videoPath))
+            {
+                if(MessageBox.Show("The video file " + Environment.NewLine + videoPath + Environment.NewLine + "already exists." + Environment.NewLine + "Do you want to overwrite it?", "careful", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    File.Delete(videoPath);
+                } else
+                {
+                    return;
+                }
+            }
+            var ffmpeg = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "ffmpeg",
+                    Arguments = $"-f rawvideo -pix_fmt bgr24 -s {giffer.Width}x{giffer.Height} -r {(int)giffer.AverageFramerate()} -i pipe:0 -c:v libx264 -pix_fmt yuv420p {videoPath}",
+                    RedirectStandardInput = true,
+                    //RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+            ffmpeg.Start();
+            //_ = Task.Run(() =>
+            //{
+            //    using (var reader = ffmpeg.StandardError)
+            //    {
+            //        string line;
+            //        while ((line = reader.ReadLine()) != null)
+            //        {
+            //           Debug.Print($"FFmpeg Error: {line}");
+            //        }
+            //    }
+            //});
+            using var stream = ffmpeg.StandardInput.BaseStream;
+            int counter = 0;
+            foreach(GifFrame frame in giffer.Frames)
+            {
+                //Debug.Print(counter.ToString());
+                var bitmapData = new byte[giffer.Width * giffer.Height * 3];
+                var rect = new Rectangle(0, 0, giffer.Width, giffer.Height);
+                using Bitmap bitmap = frame.CompleteBitmap24rgb(giffer.Width, giffer.Height, false, InterpolationMode.HighQualityBicubic);
+                var bitmapLock = bitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+                Marshal.Copy(bitmapLock.Scan0, bitmapData, 0, bitmapData.Length);
+                bitmap.UnlockBits(bitmapLock);
+                stream.Write(bitmapData, 0, bitmapData.Length);
+                counter++;
+            }
+            stream.Close();
+            ffmpeg.WaitForExit();
+        }
+        public static bool IsFFmpegAvailable()
+        {
+            try
+            {
+                // Create a process to check ffmpeg
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "ffmpeg",
+                        Arguments = "-version", // Check ffmpeg version
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                process.WaitForExit();
+
+                // If ffmpeg runs successfully, it should exit with a code of 0
+                return process.ExitCode == 0;
+            }
+            catch
+            {
+                // If an exception occurs, ffmpeg is likely not in the PATH
+                return false;
             }
         }
     }

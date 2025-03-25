@@ -48,8 +48,13 @@ namespace BIUK9000.GifferComponents
         {
             Width = OBR.Width + xSizeDif * 2;
             Height = OBR.Height + ySizeDif * 2;
+            MakeSizeEven();
         }
-
+        private void MakeSizeEven()
+        {
+            if (Width % 4 != 0) Width -= Width % 4;
+            if (Height % 4 != 0) Height -= Height % 4;
+        }
         //public Giffer(string path)
         //{
         //    _nextLayerID = 0;
@@ -100,6 +105,7 @@ namespace BIUK9000.GifferComponents
             Width = fl.Width;
             Height = fl.Height;
             Position = new OVector(0, 0);
+            MakeSizeEven();
         }
         public Giffer(List<Bitmap> bitmapList, int fps)
         {
@@ -113,6 +119,7 @@ namespace BIUK9000.GifferComponents
             Width = fl.Width;
             Height = fl.Height;
             Position = new OVector(0, 0);
+            MakeSizeEven();
         }
         private List<GifFrame> FramesFromGif(Image gif)
         {

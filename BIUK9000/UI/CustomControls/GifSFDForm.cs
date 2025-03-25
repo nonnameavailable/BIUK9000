@@ -33,6 +33,7 @@ namespace BIUK9000.UI.CustomControls
         public int GifExportLossy { get => (int)GifExportLossyNUD.Value; }
         public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
         public bool CreateFrames { get => createFramesCB.Checked; }
+        public bool CreateVideo { get => createVideoCB.Checked; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
         public int ImageExportJpegQuality { get => (int)ImageExportJpegQualNUD.Value; }
         public double NewFramerate { get => (double)newFramerateNUD.Value; }

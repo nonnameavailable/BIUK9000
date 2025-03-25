@@ -45,6 +45,14 @@ namespace BIUK9000.GifferComponents
             }
             return result;
         }
+        public Bitmap CompleteBitmap24rgb(int width, int height, bool drawHelp, InterpolationMode interpolationMode)
+        {
+            using Bitmap cb = CompleteBitmap(width, height, drawHelp, interpolationMode);
+            Bitmap result = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            using Graphics g = Graphics.FromImage(result);
+            g.DrawImage(cb, 0, 0);
+            return result;
+        }
         public void DrawCompleteBitmap(int width, int height, bool drawHelp, Graphics g)
         {
             int absWidth = Math.Abs(width);
