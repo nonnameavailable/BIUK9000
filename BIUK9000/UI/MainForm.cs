@@ -520,6 +520,7 @@ namespace BIUK9000.UI
                 UpdateTimer.Stop();
                 if(!IsCtrlDown)ApplyLayerParamsToSubsequentLayers();
             }
+            MainGiffer.MakeSizeDivisible4();
             UpdateMainPictureBox();
         }
 
@@ -762,7 +763,7 @@ namespace BIUK9000.UI
             {
                 sfi = 0;
                 sli = 0;
-                slid = 0;
+                slid = MainGiffer.Frames[0].Layers[0].LayerID;
             }
             mainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
             if (!keepSelectedFrameAndLayer) MainTimelineSlider.ClearMarks();

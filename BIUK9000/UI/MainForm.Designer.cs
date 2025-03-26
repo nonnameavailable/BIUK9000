@@ -57,6 +57,9 @@ namespace BIUK9000.UI
             layerAddShapeMI = new System.Windows.Forms.ToolStripMenuItem();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            layerFlattenMI = new System.Windows.Forms.ToolStripMenuItem();
+            layerSnapToFrameMI = new System.Windows.Forms.ToolStripMenuItem();
+            layerRestoreRatioMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -274,18 +277,18 @@ namespace BIUK9000.UI
             // framesReverseMI
             // 
             framesReverseMI.Name = "framesReverseMI";
-            framesReverseMI.Size = new System.Drawing.Size(180, 22);
+            framesReverseMI.Size = new System.Drawing.Size(146, 22);
             framesReverseMI.Text = "Reverse";
             // 
             // framesAddReversedMI
             // 
             framesAddReversedMI.Name = "framesAddReversedMI";
-            framesAddReversedMI.Size = new System.Drawing.Size(180, 22);
+            framesAddReversedMI.Size = new System.Drawing.Size(146, 22);
             framesAddReversedMI.Text = "Add Reversed";
             // 
             // layersMI
             // 
-            layersMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddMI });
+            layersMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddMI, layerFlattenMI, layerSnapToFrameMI, layerRestoreRatioMI });
             layersMI.Name = "layersMI";
             layersMI.Size = new System.Drawing.Size(52, 26);
             layersMI.Text = "Layers";
@@ -294,24 +297,42 @@ namespace BIUK9000.UI
             // 
             layerAddMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddTextMI, layerAddShapeMI });
             layerAddMI.Name = "layerAddMI";
-            layerAddMI.Size = new System.Drawing.Size(96, 22);
+            layerAddMI.Size = new System.Drawing.Size(180, 22);
             layerAddMI.Text = "Add";
             // 
             // layerAddTextMI
             // 
             layerAddTextMI.Name = "layerAddTextMI";
-            layerAddTextMI.Size = new System.Drawing.Size(106, 22);
+            layerAddTextMI.Size = new System.Drawing.Size(180, 22);
             layerAddTextMI.Text = "Text";
             // 
             // layerAddShapeMI
             // 
             layerAddShapeMI.Name = "layerAddShapeMI";
-            layerAddShapeMI.Size = new System.Drawing.Size(106, 22);
+            layerAddShapeMI.Size = new System.Drawing.Size(180, 22);
             layerAddShapeMI.Text = "Shape";
             // 
             // saveFileDialog
             // 
             saveFileDialog.Filter = "GIF files|*.gif";
+            // 
+            // layerFlattenMI
+            // 
+            layerFlattenMI.Name = "layerFlattenMI";
+            layerFlattenMI.Size = new System.Drawing.Size(180, 22);
+            layerFlattenMI.Text = "Flatten";
+            // 
+            // layerSnapToFrameMI
+            // 
+            layerSnapToFrameMI.Name = "layerSnapToFrameMI";
+            layerSnapToFrameMI.Size = new System.Drawing.Size(180, 22);
+            layerSnapToFrameMI.Text = "Snap to frame";
+            // 
+            // layerRestoreRatioMI
+            // 
+            layerRestoreRatioMI.Name = "layerRestoreRatioMI";
+            layerRestoreRatioMI.Size = new System.Drawing.Size(180, 22);
+            layerRestoreRatioMI.Text = "Restore ratio";
             // 
             // MainForm
             // 
@@ -364,6 +385,9 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem framesAddReversedMI;
         private System.Windows.Forms.ToolStripMenuItem layerAddTextMI;
         private System.Windows.Forms.ToolStripMenuItem layerAddShapeMI;
+        private System.Windows.Forms.ToolStripMenuItem layerFlattenMI;
+        private System.Windows.Forms.ToolStripMenuItem layerSnapToFrameMI;
+        private System.Windows.Forms.ToolStripMenuItem layerRestoreRatioMI;
     }
 }
 
