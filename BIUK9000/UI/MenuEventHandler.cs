@@ -23,13 +23,13 @@ namespace BIUK9000.UI
             var layerFlattenMI = FindMenuItemByName("layerFlattenMI");
             var layerSnapToFrameMI = FindMenuItemByName("layerSnapToFrameMI");
             var layerRestoreRatioMI = FindMenuItemByName("layerRestoreRatioMI");
-            layerRestoreRatioMI.Click += LayerRestoreRatioMI_Click;
-            layerSnapToFrameMI.Click += LayerSnapToFrameMI_Click;
-            layerFlattenMI.Click += LayerFlattenMI_Click;
-            framesReverseMI.Click += FramesReverseMI_Click;
-            framesAddReversedMI.Click += FramesAddReversedMI_Click;
-            layerAddTextMI.Click += LayerAddTextMI_Click;
-            layerAddShapeMI.Click += LayerAddShapeMI_Click;
+            layerRestoreRatioMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.RestoreRatio(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
+            layerSnapToFrameMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.SnapLayerToFrame(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
+            layerFlattenMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.Flatten());
+            framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames());
+            framesAddReversedMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddReversedFrames());
+            layerAddTextMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddLayerFromKey(Keys.T));
+            layerAddShapeMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddLayerFromKey(Keys.B));
         }
 
 
@@ -54,50 +54,11 @@ namespace BIUK9000.UI
             }
             return null;
         }
-        private void LayerRestoreRatioMI_Click(object sender, EventArgs e)
-        {
-            if (CheckNull()) return;
-            _mf.GifferC.RestoreRatio(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode);
-            _mf.UpdateMainPictureBox();
-        }
-        private void LayerSnapToFrameMI_Click(object sender, EventArgs e)
-        {
-            if (CheckNull()) return;
-            _mf.GifferC.SnapLayerToFrame(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode);
-            _mf.UpdateMainPictureBox();
-        }
-        private void LayerFlattenMI_Click(object sender, EventArgs e)
-        {
-            if (CheckNull()) return;
-            _mf.GifferC.Flatten();
-            _mf.CompleteUIUpdate(false);
-        }
-        private void LayerAddShapeMI_Click(object sender, EventArgs e)
-        {
-            if (CheckNull()) return;
-            _mf.GifferC.AddLayerFromKey(Keys.B);
-            _mf.GifferC.Mirror();
-            _mf.CompleteUIUpdate();
-        }
 
-        private void LayerAddTextMI_Click(object sender, EventArgs e)
+        private void CheckNullActionUpdate(Action action)
         {
             if (CheckNull()) return;
-            _mf.GifferC.AddLayerFromKey(Keys.T);
-            _mf.CompleteUIUpdate();
-        }
-
-        private void FramesAddReversedMI_Click(object sender, EventArgs e)
-        {
-            if (CheckNull()) return;
-            _mf.GifferC.AddReversedFrames();
-            _mf.CompleteUIUpdate();
-        }
-
-        private void FramesReverseMI_Click(object sender, EventArgs e)
-        {
-            if (CheckNull()) return;
-            _mf.GifferC.ReverseFrames();
+            action();
             _mf.CompleteUIUpdate();
         }
         private bool CheckNull()

@@ -246,6 +246,7 @@ namespace BIUK9000
             iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, giffer);
             iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, giffer);
             iqf.SelectedReplace += (sender, args) => ImportAsReplace(mf, iqf, giffer);
+            if (mf.MainGiffer != null) iqf.SpreadCount = Math.Max((int)Math.Round(mf.MainGiffer.FrameCount / giffer.FrameCount / mf.MainGiffer.AverageFramerate() * giffer.AverageFramerate()), 1);
             if (iqf.ShowDialog() == DialogResult.OK && mf.MainGiffer != null)
             {
                 return true;
@@ -287,7 +288,7 @@ namespace BIUK9000
         {
             try
             {
-                mf.GifferC.AddGifferAsLayers(giffer, iqf.OLayersSpread);
+                mf.GifferC.AddGifferAsLayers(giffer, iqf.OLayersSpread, iqf.SpreadCount);
                 giffer.Dispose();
             } catch(ArgumentException ex)
             {

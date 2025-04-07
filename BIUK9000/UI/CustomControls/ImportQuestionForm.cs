@@ -23,6 +23,7 @@ namespace BIUK9000.UI
         public bool OInsertEnd { get =>  insertEndRB.Checked; }
         public bool OInsertHere { get => insertHereRB.Checked; }
         public bool OFreshAsFrames { get => freshAsFramesRB.Checked; }
+        public int SpreadCount { get => (int)spreadCountNUD.Value; set => spreadCountNUD.Value = value; }
 
         public ImportQuestionForm()
         {

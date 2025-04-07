@@ -37,6 +37,7 @@
             asLayersButton = new System.Windows.Forms.Button();
             freshButton = new System.Windows.Forms.Button();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            spreadCountNUD = new System.Windows.Forms.NumericUpDown();
             layerRepeatRB = new System.Windows.Forms.RadioButton();
             layerSpreadRB = new System.Windows.Forms.RadioButton();
             groupBox2 = new System.Windows.Forms.GroupBox();
@@ -48,6 +49,7 @@
             toolTip = new System.Windows.Forms.ToolTip(components);
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)spreadCountNUD).BeginInit();
             groupBox2.SuspendLayout();
             groupBox3.SuspendLayout();
             SuspendLayout();
@@ -141,6 +143,7 @@
             // groupBox1
             // 
             tableLayoutPanel1.SetColumnSpan(groupBox1, 2);
+            groupBox1.Controls.Add(spreadCountNUD);
             groupBox1.Controls.Add(layerRepeatRB);
             groupBox1.Controls.Add(layerSpreadRB);
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -150,6 +153,16 @@
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "settings";
+            // 
+            // spreadCountNUD
+            // 
+            spreadCountNUD.Location = new System.Drawing.Point(72, 18);
+            spreadCountNUD.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
+            spreadCountNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            spreadCountNUD.Name = "spreadCountNUD";
+            spreadCountNUD.Size = new System.Drawing.Size(72, 23);
+            spreadCountNUD.TabIndex = 2;
+            spreadCountNUD.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // layerRepeatRB
             // 
@@ -258,6 +271,7 @@
             tableLayoutPanel1.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)spreadCountNUD).EndInit();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             groupBox3.ResumeLayout(false);
@@ -283,5 +297,6 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RadioButton freshAsFramesRB;
         private System.Windows.Forms.Button replaceButton;
+        private System.Windows.Forms.NumericUpDown spreadCountNUD;
     }
 }

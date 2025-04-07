@@ -55,17 +55,20 @@ namespace BIUK9000.UI
             layerAddMI = new System.Windows.Forms.ToolStripMenuItem();
             layerAddTextMI = new System.Windows.Forms.ToolStripMenuItem();
             layerAddShapeMI = new System.Windows.Forms.ToolStripMenuItem();
-            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            toolTip = new System.Windows.Forms.ToolTip(components);
             layerFlattenMI = new System.Windows.Forms.ToolStripMenuItem();
             layerSnapToFrameMI = new System.Windows.Forms.ToolStripMenuItem();
             layerRestoreRatioMI = new System.Windows.Forms.ToolStripMenuItem();
+            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            toolTip = new System.Windows.Forms.ToolTip(components);
+            statusStrip = new System.Windows.Forms.StatusStrip();
+            statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
             tableLayoutPanel2.SuspendLayout();
             mainMenuStrip.SuspendLayout();
+            statusStrip.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -79,24 +82,26 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Controls.Add(markLerpPanel, 2, 3);
             tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 2);
             tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 2);
+            tableLayoutPanel1.Controls.Add(statusStrip, 0, 4);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 1, 1);
             tableLayoutPanel1.Controls.Add(mainMenuStrip, 0, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 4;
+            tableLayoutPanel1.RowCount = 5;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 158F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(918, 551);
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            tableLayoutPanel1.Size = new System.Drawing.Size(918, 586);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // mainTimelineSlider
             // 
             mainTimelineSlider.Dock = System.Windows.Forms.DockStyle.Fill;
             mainTimelineSlider.FrameDelay = 10;
-            mainTimelineSlider.Location = new System.Drawing.Point(148, 454);
+            mainTimelineSlider.Location = new System.Drawing.Point(148, 459);
             mainTimelineSlider.Maximum = 9;
             mainTimelineSlider.MouseButtonIsDown = false;
             mainTimelineSlider.Name = "mainTimelineSlider";
@@ -114,7 +119,7 @@ namespace BIUK9000.UI
             controlsPanel.Name = "controlsPanel";
             tableLayoutPanel1.SetRowSpan(controlsPanel, 3);
             controlsPanel.SelectedMode = Mode.Move;
-            controlsPanel.Size = new System.Drawing.Size(139, 515);
+            controlsPanel.Size = new System.Drawing.Size(139, 520);
             controlsPanel.TabIndex = 5;
             // 
             // markLerpPanel
@@ -126,7 +131,7 @@ namespace BIUK9000.UI
             markLerpPanel.Controls.Add(deleteFramesButton);
             markLerpPanel.Controls.Add(lerpButton);
             markLerpPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            markLerpPanel.Location = new System.Drawing.Point(771, 454);
+            markLerpPanel.Location = new System.Drawing.Point(771, 459);
             markLerpPanel.Name = "markLerpPanel";
             markLerpPanel.Size = new System.Drawing.Size(144, 94);
             markLerpPanel.TabIndex = 8;
@@ -207,7 +212,7 @@ namespace BIUK9000.UI
             mainPictureBox.Location = new System.Drawing.Point(148, 191);
             mainPictureBox.Name = "mainPictureBox";
             mainPictureBox.ScaledDragDifference = new System.Drawing.Point(0, 0);
-            mainPictureBox.Size = new System.Drawing.Size(617, 257);
+            mainPictureBox.Size = new System.Drawing.Size(617, 262);
             mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             mainPictureBox.TabIndex = 9;
             mainPictureBox.TabStop = false;
@@ -218,7 +223,7 @@ namespace BIUK9000.UI
             mainLayersPanel.Location = new System.Drawing.Point(771, 191);
             mainLayersPanel.Name = "mainLayersPanel";
             mainLayersPanel.SelectedLayerIndex = 0;
-            mainLayersPanel.Size = new System.Drawing.Size(144, 257);
+            mainLayersPanel.Size = new System.Drawing.Size(144, 262);
             mainLayersPanel.TabIndex = 2;
             // 
             // tableLayoutPanel2
@@ -297,42 +302,58 @@ namespace BIUK9000.UI
             // 
             layerAddMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddTextMI, layerAddShapeMI });
             layerAddMI.Name = "layerAddMI";
-            layerAddMI.Size = new System.Drawing.Size(180, 22);
+            layerAddMI.Size = new System.Drawing.Size(148, 22);
             layerAddMI.Text = "Add";
             // 
             // layerAddTextMI
             // 
             layerAddTextMI.Name = "layerAddTextMI";
-            layerAddTextMI.Size = new System.Drawing.Size(180, 22);
+            layerAddTextMI.Size = new System.Drawing.Size(106, 22);
             layerAddTextMI.Text = "Text";
             // 
             // layerAddShapeMI
             // 
             layerAddShapeMI.Name = "layerAddShapeMI";
-            layerAddShapeMI.Size = new System.Drawing.Size(180, 22);
+            layerAddShapeMI.Size = new System.Drawing.Size(106, 22);
             layerAddShapeMI.Text = "Shape";
-            // 
-            // saveFileDialog
-            // 
-            saveFileDialog.Filter = "GIF files|*.gif";
             // 
             // layerFlattenMI
             // 
             layerFlattenMI.Name = "layerFlattenMI";
-            layerFlattenMI.Size = new System.Drawing.Size(180, 22);
+            layerFlattenMI.Size = new System.Drawing.Size(148, 22);
             layerFlattenMI.Text = "Flatten";
             // 
             // layerSnapToFrameMI
             // 
             layerSnapToFrameMI.Name = "layerSnapToFrameMI";
-            layerSnapToFrameMI.Size = new System.Drawing.Size(180, 22);
+            layerSnapToFrameMI.Size = new System.Drawing.Size(148, 22);
             layerSnapToFrameMI.Text = "Snap to frame";
             // 
             // layerRestoreRatioMI
             // 
             layerRestoreRatioMI.Name = "layerRestoreRatioMI";
-            layerRestoreRatioMI.Size = new System.Drawing.Size(180, 22);
+            layerRestoreRatioMI.Size = new System.Drawing.Size(148, 22);
             layerRestoreRatioMI.Text = "Restore ratio";
+            // 
+            // saveFileDialog
+            // 
+            saveFileDialog.Filter = "GIF files|*.gif";
+            // 
+            // statusStrip
+            // 
+            tableLayoutPanel1.SetColumnSpan(statusStrip, 3);
+            statusStrip.Dock = System.Windows.Forms.DockStyle.Fill;
+            statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { statusLabel });
+            statusStrip.Location = new System.Drawing.Point(0, 556);
+            statusStrip.Name = "statusStrip";
+            statusStrip.Size = new System.Drawing.Size(918, 30);
+            statusStrip.TabIndex = 13;
+            statusStrip.Text = "statusStrip1";
+            // 
+            // statusLabel
+            // 
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new System.Drawing.Size(0, 25);
             // 
             // MainForm
             // 
@@ -340,7 +361,7 @@ namespace BIUK9000.UI
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.SystemColors.Control;
-            ClientSize = new System.Drawing.Size(918, 551);
+            ClientSize = new System.Drawing.Size(918, 586);
             Controls.Add(tableLayoutPanel1);
             Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
             ForeColor = System.Drawing.SystemColors.Desktop;
@@ -356,6 +377,8 @@ namespace BIUK9000.UI
             tableLayoutPanel2.ResumeLayout(false);
             mainMenuStrip.ResumeLayout(false);
             mainMenuStrip.PerformLayout();
+            statusStrip.ResumeLayout(false);
+            statusStrip.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -388,6 +411,8 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem layerFlattenMI;
         private System.Windows.Forms.ToolStripMenuItem layerSnapToFrameMI;
         private System.Windows.Forms.ToolStripMenuItem layerRestoreRatioMI;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }
 

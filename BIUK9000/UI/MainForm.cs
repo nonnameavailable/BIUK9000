@@ -29,7 +29,7 @@ namespace BIUK9000.UI
         public GifFrame SelectedFrame { get => MainGiffer.Frames[MainTimelineSlider.SelectedFrameIndex]; }
         public int SFI { get => MainTimelineSlider.SelectedFrameIndex; }
         public int SLI { get => mainLayersPanel.SelectedLayerIndex; }
-        public Bitmap SelectedFrameAsBitmap { get => MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode); }
+        public Bitmap SelectedFrameAsBitmap { get => MainGiffer.FrameAsBitmap(SelectedFrame, false, controlsPanel.InterpolationMode); }
         public GFL SelectedLayer { get => GifferC == null ? null : GifferC.GetLayer(SFI, SLI); }
         private Timer UpdateTimer { get => _updateTimer; }
         public Giffer MainGiffer { get; set; }
@@ -83,7 +83,10 @@ namespace BIUK9000.UI
 
             _updateTimer = new Timer();
             _updateTimer.Interval = 17;
-            _updateTimer.Tick += (sender, args) => UpdateMainPictureBox();
+            _updateTimer.Tick += (sender, args) =>
+            {
+                UpdateMainPictureBox();
+            };
             KeyPreview = true;
 
             mainPictureBox.MouseMove += MainPictureBox_MouseMove;
@@ -144,6 +147,10 @@ namespace BIUK9000.UI
 
             Move += MainForm_Move;
             _menuEventHandler = new MenuEventHandler(this);
+        }
+        public void Report(string message)
+        {
+            statusLabel.Text = message;
         }
 
         private void ControlsPanel_ModeChanged(object sender, EventArgs e)
@@ -236,6 +243,7 @@ namespace BIUK9000.UI
             controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate();
             _ssl.ClearFrames();
+            Report("Recording stopped.");
         }
         private bool CanRecord()
         {
@@ -264,6 +272,7 @@ namespace BIUK9000.UI
             try
             {
                 _ssl.Start();
+                Report("Now recording.");
             } catch (Exception ex)
             {
                 _recordControl.RecMode(false);
@@ -410,6 +419,7 @@ namespace BIUK9000.UI
             controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate(false);
             GifferC.SaveLayerStateForApply(0, 0);
+            Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}");
         }
 
         public void UpdateMainPictureBox()
@@ -521,6 +531,7 @@ namespace BIUK9000.UI
                 if(!IsCtrlDown)ApplyLayerParamsToSubsequentLayers();
             }
             MainGiffer.MakeSizeDivisible4();
+            Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}");
             UpdateMainPictureBox();
         }
 
@@ -649,6 +660,7 @@ namespace BIUK9000.UI
                     {
                         //RESIZE GIF FREE (ALL FRAMES)
                         MainGiffer.Resize(xSizeDif, ySizeDif);
+                        Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}");
                     }
                     else
                     {

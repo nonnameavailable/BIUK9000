@@ -225,7 +225,7 @@ namespace BIUK9000
             int idToDelete = GetLayer(frameIndex, layerIndex).LayerID;
             DeleteLayerByID(idToDelete);
         }
-        public void AddGifferAsLayers(Giffer newGiffer, bool spread)
+        public void AddGifferAsLayers(Giffer newGiffer, bool spread, int spreadCount)
         {
             int nextLayerID = giffer.NextLayerID();
             int sizeDif = Math.Max(newGiffer.Width - giffer.Width, newGiffer.Height - giffer.Height);
@@ -245,7 +245,7 @@ namespace BIUK9000
                 int newGifferIndex;
                 if (spread)
                 {
-                    newGifferIndex = (int)(i / (double)giffer.FrameCount * newGiffer.FrameCount);
+                    newGifferIndex = (int)(i * spreadCount / (double)giffer.FrameCount * newGiffer.FrameCount) % newGiffer.FrameCount;
                 }
                 else
                 {

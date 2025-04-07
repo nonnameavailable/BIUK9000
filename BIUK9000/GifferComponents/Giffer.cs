@@ -23,8 +23,17 @@ namespace BIUK9000.GifferComponents
         public List<GifFrame> Frames { get; set; }
         private bool _disposed;
         private int _nextLayerID;
-        public int Width { get; set; }
-        public int Height { get; set; }
+        private int _width, _height;
+        public int Width 
+        {
+            get { return _width; }
+            set { _width = Math.Max(value, 8); }
+        }
+        public int Height 
+        {
+            get { return _height; }
+            set { _height = Math.Max(value, 8);}
+        }
         public OVector Position { get; set; }
         public int FrameCount { get =>  Frames.Count; }
 
@@ -51,8 +60,20 @@ namespace BIUK9000.GifferComponents
         }
         public void MakeSizeDivisible4()
         {
-            Width -= Width % 4;
-            Height -= Height % 4;
+            if(Width >= 8)
+            {
+                Width -= Width % 4;
+            } else
+            {
+                Width = 8;
+            }
+            if(Height >= 8)
+            {
+                Height -= Height % 4;
+            }else
+            {
+                Height = 8;
+            }
         }
         //public Giffer(string path)
         //{
