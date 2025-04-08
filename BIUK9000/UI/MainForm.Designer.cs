@@ -44,6 +44,8 @@ namespace BIUK9000.UI
             lerpButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
             mainLayersPanel = new LayersPanel();
+            statusStrip = new System.Windows.Forms.StatusStrip();
+            statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             layerParamsPanel = new System.Windows.Forms.Panel();
             hsbPanel = new BIUK9000.UI.CustomControls.HSBPanel();
@@ -60,15 +62,14 @@ namespace BIUK9000.UI
             layerRestoreRatioMI = new System.Windows.Forms.ToolStripMenuItem();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            statusStrip = new System.Windows.Forms.StatusStrip();
-            statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            layerShiftHereMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
+            statusStrip.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             mainMenuStrip.SuspendLayout();
-            statusStrip.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -226,6 +227,22 @@ namespace BIUK9000.UI
             mainLayersPanel.Size = new System.Drawing.Size(144, 262);
             mainLayersPanel.TabIndex = 2;
             // 
+            // statusStrip
+            // 
+            tableLayoutPanel1.SetColumnSpan(statusStrip, 3);
+            statusStrip.Dock = System.Windows.Forms.DockStyle.Fill;
+            statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { statusLabel });
+            statusStrip.Location = new System.Drawing.Point(0, 556);
+            statusStrip.Name = "statusStrip";
+            statusStrip.Size = new System.Drawing.Size(918, 30);
+            statusStrip.TabIndex = 13;
+            statusStrip.Text = "statusStrip1";
+            // 
+            // statusLabel
+            // 
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new System.Drawing.Size(0, 25);
+            // 
             // tableLayoutPanel2
             // 
             tableLayoutPanel2.ColumnCount = 2;
@@ -293,7 +310,7 @@ namespace BIUK9000.UI
             // 
             // layersMI
             // 
-            layersMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddMI, layerFlattenMI, layerSnapToFrameMI, layerRestoreRatioMI });
+            layersMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddMI, layerFlattenMI, layerSnapToFrameMI, layerRestoreRatioMI, layerShiftHereMI });
             layersMI.Name = "layersMI";
             layersMI.Size = new System.Drawing.Size(52, 26);
             layersMI.Text = "Layers";
@@ -339,21 +356,11 @@ namespace BIUK9000.UI
             // 
             saveFileDialog.Filter = "GIF files|*.gif";
             // 
-            // statusStrip
+            // layerShiftHereMI
             // 
-            tableLayoutPanel1.SetColumnSpan(statusStrip, 3);
-            statusStrip.Dock = System.Windows.Forms.DockStyle.Fill;
-            statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { statusLabel });
-            statusStrip.Location = new System.Drawing.Point(0, 556);
-            statusStrip.Name = "statusStrip";
-            statusStrip.Size = new System.Drawing.Size(918, 30);
-            statusStrip.TabIndex = 13;
-            statusStrip.Text = "statusStrip1";
-            // 
-            // statusLabel
-            // 
-            statusLabel.Name = "statusLabel";
-            statusLabel.Size = new System.Drawing.Size(0, 25);
+            layerShiftHereMI.Name = "layerShiftHereMI";
+            layerShiftHereMI.Size = new System.Drawing.Size(148, 22);
+            layerShiftHereMI.Text = "Shift here";
             // 
             // MainForm
             // 
@@ -374,11 +381,11 @@ namespace BIUK9000.UI
             markLerpPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
+            statusStrip.ResumeLayout(false);
+            statusStrip.PerformLayout();
             tableLayoutPanel2.ResumeLayout(false);
             mainMenuStrip.ResumeLayout(false);
             mainMenuStrip.PerformLayout();
-            statusStrip.ResumeLayout(false);
-            statusStrip.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -413,6 +420,7 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem layerRestoreRatioMI;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+        private System.Windows.Forms.ToolStripMenuItem layerShiftHereMI;
     }
 }
 

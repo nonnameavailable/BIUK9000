@@ -559,5 +559,36 @@ namespace BIUK9000
                 gf.AddLayer(flatGfl);
             }
         }
+
+        public void ShiftLayer(int frameIndex, int layerIndex, int shiftValue)
+        {
+            if (shiftValue == 0) return;
+            if (shiftValue < 0) shiftValue += FrameCount;
+            int layerID = GetLayer(frameIndex, layerIndex).LayerID;
+            List<GFL> newLayerOrderList = new List<GFL>();
+            List<int> originalLayerPositions = new List<int>();
+            for( int i = 0; i < FrameCount; i++)
+            {
+                originalLayerPositions.Add(TryGetLayerIndexById(i, layerID));
+            }
+            for (int i = shiftValue; i < FrameCount + shiftValue; i++)
+            {
+                GFL layer = TryGetLayerById(i % FrameCount, layerID);
+                newLayerOrderList.Add(layer);
+                GetFrame(i % FrameCount).Layers.Remove(layer);
+            }
+            for (int i = 0; i < FrameCount; i++)
+            {
+                int oi = originalLayerPositions[i];
+                Debug.Print(oi.ToString());
+                if (oi >= GetFrame(i).Layers.Count)
+                {
+                    GetFrame(i).Layers.Add(newLayerOrderList[i]); 
+                } else
+                {
+                    GetFrame(i).Layers.Insert(oi, newLayerOrderList[i]);
+                }
+            }
+        }
     }
 }

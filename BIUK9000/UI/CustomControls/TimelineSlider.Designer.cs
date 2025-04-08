@@ -37,6 +37,7 @@ namespace BIUK9000.UI
             playButton = new System.Windows.Forms.Button();
             addMarkButton = new System.Windows.Forms.Button();
             frameDelayNUD = new System.Windows.Forms.NumericUpDown();
+            clearMarksBTN = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)timeLineTrackBar).BeginInit();
             panel1.SuspendLayout();
@@ -69,6 +70,7 @@ namespace BIUK9000.UI
             // 
             // panel1
             // 
+            panel1.Controls.Add(clearMarksBTN);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(playButton);
             panel1.Controls.Add(addMarkButton);
@@ -118,6 +120,15 @@ namespace BIUK9000.UI
             frameDelayNUD.TabIndex = 0;
             frameDelayNUD.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
+            // clearMarksBTN
+            // 
+            clearMarksBTN.Location = new System.Drawing.Point(423, 3);
+            clearMarksBTN.Name = "clearMarksBTN";
+            clearMarksBTN.Size = new System.Drawing.Size(50, 38);
+            clearMarksBTN.TabIndex = 3;
+            clearMarksBTN.Text = "Clear marks";
+            clearMarksBTN.UseVisualStyleBackColor = true;
+            // 
             // TimelineSlider
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -142,5 +153,6 @@ namespace BIUK9000.UI
         private System.Windows.Forms.Button playButton;
         private System.Windows.Forms.Button addMarkButton;
         private System.Windows.Forms.NumericUpDown frameDelayNUD;
+        private System.Windows.Forms.Button clearMarksBTN;
     }
 }

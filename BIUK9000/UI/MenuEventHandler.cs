@@ -23,6 +23,7 @@ namespace BIUK9000.UI
             var layerFlattenMI = FindMenuItemByName("layerFlattenMI");
             var layerSnapToFrameMI = FindMenuItemByName("layerSnapToFrameMI");
             var layerRestoreRatioMI = FindMenuItemByName("layerRestoreRatioMI");
+            var layerShiftHereMI = FindMenuItemByName("layerShiftHereMI");
             layerRestoreRatioMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.RestoreRatio(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
             layerSnapToFrameMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.SnapLayerToFrame(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
             layerFlattenMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.Flatten());
@@ -30,8 +31,21 @@ namespace BIUK9000.UI
             framesAddReversedMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddReversedFrames());
             layerAddTextMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddLayerFromKey(Keys.T));
             layerAddShapeMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddLayerFromKey(Keys.B));
+            layerShiftHereMI.Click += LayerShiftHereMI_Click;
         }
 
+        private void LayerShiftHereMI_Click(object sender, EventArgs e)
+        {
+            if (CheckNull()) return;
+            if(_mf.Marks.Count != 1)
+            {
+                MessageBox.Show("There must be exactly one mark for this to work!");
+                return;
+            }
+            int shiftValue = _mf.Marks[0] - _mf.SFI ;
+            _mf.GifferC.ShiftLayer(_mf.SFI, _mf.SLI, shiftValue);
+            _mf.CompleteUIUpdate();
+        }
 
         private ToolStripMenuItem FindMenuItemByName(string name)
         {
