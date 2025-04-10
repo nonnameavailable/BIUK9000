@@ -332,23 +332,21 @@ namespace BIUK9000
             Color c = obm.GetPixel(p.X, p.Y);
             currentLayer.ReplaceOriginalBitmap(Painter.FloodFill(obm, p, fillColor, tolerance));
         }
-        public void Mirror()
+        public void Mirror(int frameIndex, int layerIndex)
         {
-            foreach (GifFrame frame in giffer.Frames)
+            int layerID = GetLayer(frameIndex, layerIndex).LayerID;
+            for (int i = frameIndex; i < FrameCount; i++)
             {
-                foreach (GFL gfl in frame.Layers)
+                GFL layer = TryGetLayerById(i, layerID);
+                if (layer is BitmapGFL bgfl)
                 {
-                    if (gfl is BitmapGFL)
-                    {
-                        BitmapGFL bgfl = gfl as BitmapGFL;
-                        Bitmap obmp = bgfl.OriginalBitmap;
-                        using Bitmap flipped = new Bitmap(obmp.Width, obmp.Height);
-                        using Graphics g = Graphics.FromImage(flipped);
-                        g.DrawImage(obmp, new Rectangle(0, 0, obmp.Width, obmp.Height),
-                            new Rectangle(obmp.Width, 0, -obmp.Width, obmp.Height),
-                            GraphicsUnit.Pixel);
-                        bgfl.ReplaceOriginalBitmap(flipped);
-                    }
+                    Bitmap obmp = bgfl.OriginalBitmap;
+                    using Bitmap flipped = new Bitmap(obmp.Width, obmp.Height);
+                    using Graphics g = Graphics.FromImage(flipped);
+                    g.DrawImage(obmp, new Rectangle(0, 0, obmp.Width, obmp.Height),
+                        new Rectangle(obmp.Width, 0, -obmp.Width, obmp.Height),
+                        GraphicsUnit.Pixel);
+                    bgfl.ReplaceOriginalBitmap(flipped);
                 }
             }
         }
@@ -580,14 +578,16 @@ namespace BIUK9000
             for (int i = 0; i < FrameCount; i++)
             {
                 int oi = originalLayerPositions[i];
-                Debug.Print(oi.ToString());
-                if (oi >= GetFrame(i).Layers.Count)
-                {
-                    GetFrame(i).Layers.Add(newLayerOrderList[i]); 
-                } else
-                {
-                    GetFrame(i).Layers.Insert(oi, newLayerOrderList[i]);
-                }
+                GetFrame(i).Layers.Insert(oi, newLayerOrderList[i]);
+            }
+        }
+        public void MakePreviousLayersInvisible(int frameIndex, int layerIndex)
+        {
+            int layerID = GetLayer(frameIndex, layerIndex).LayerID;
+            for(int i = 0; i < frameIndex; i++)
+            {
+                GFL layer = TryGetLayerById(i, layerID);
+                if (layer != null) layer.Visible = false;
             }
         }
     }

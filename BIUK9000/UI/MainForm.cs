@@ -417,7 +417,7 @@ namespace BIUK9000.UI
                 }
             }
             controlsPanel.SelectedMode = Mode.Move;
-            CompleteUIUpdate(false);
+            CompleteUIUpdate(false, false);
             GifferC.SaveLayerStateForApply(0, 0);
             Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}");
         }
@@ -758,27 +758,33 @@ namespace BIUK9000.UI
                 UpdateMainPictureBox();
             }
         }
-        public void CompleteUIUpdate(bool keepSelectedFrameAndLayer = true)
+        public void CompleteUIUpdate(bool keepSelectedLayer = true, bool keepsSelectedFrame = true)
         {
             MainTimelineSlider.Maximum = MainGiffer.FrameCount - 1;
             MainTimelineSlider.SelectedFrameChanged -= MainTimelineSlider_SelectedFrameChanged;
             MainTimelineSlider.SelectedFrameIndex = Math.Clamp(SFI, 0, MainTimelineSlider.Maximum);
             MainTimelineSlider.SelectedFrameChanged += MainTimelineSlider_SelectedFrameChanged;
             int sfi, sli, slid;
-            if (keepSelectedFrameAndLayer)
+            if (keepSelectedLayer)
             {
-                sfi = SFI;
                 sli = SLI;
                 slid = _selectedLayerID;
             }
             else
             {
-                sfi = 0;
                 sli = 0;
                 slid = MainGiffer.Frames[0].Layers[0].LayerID;
             }
-            mainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
-            if (!keepSelectedFrameAndLayer) MainTimelineSlider.ClearMarks();
+            if (keepsSelectedFrame)
+            {
+                sfi = SFI;
+            }
+            else
+            {
+                sfi = 0;
+            }
+                mainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
+            if (!keepSelectedLayer) MainTimelineSlider.ClearMarks();
             mainLayersPanel.SelectHolder(GifferC.TryGetLayerIndexById(SFI, slid));
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
             _ucm.UpdateUpperControl(this);

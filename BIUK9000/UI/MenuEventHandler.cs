@@ -24,14 +24,25 @@ namespace BIUK9000.UI
             var layerSnapToFrameMI = FindMenuItemByName("layerSnapToFrameMI");
             var layerRestoreRatioMI = FindMenuItemByName("layerRestoreRatioMI");
             var layerShiftHereMI = FindMenuItemByName("layerShiftHereMI");
+            var layerMirrorMI = FindMenuItemByName("layerMirrorMI");
+            var layerMakePreviousInvisibleMI = FindMenuItemByName("layerMakePreviousInvisibleMI");
             layerRestoreRatioMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.RestoreRatio(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
             layerSnapToFrameMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.SnapLayerToFrame(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
-            layerFlattenMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.Flatten());
+            layerFlattenMI.Click += LayerFlattenMI_Click;
             framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames());
             framesAddReversedMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddReversedFrames());
             layerAddTextMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddLayerFromKey(Keys.T));
             layerAddShapeMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddLayerFromKey(Keys.B));
             layerShiftHereMI.Click += LayerShiftHereMI_Click;
+            layerMirrorMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.Mirror(_mf.SFI, _mf.SLI));
+            layerMakePreviousInvisibleMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.MakePreviousLayersInvisible(_mf.SFI, _mf.SLI));
+        }
+
+        private void LayerFlattenMI_Click(object sender, EventArgs e)
+        {
+            if (CheckNull()) return;
+            _mf.GifferC.Flatten();
+            _mf.CompleteUIUpdate(false, true);
         }
 
         private void LayerShiftHereMI_Click(object sender, EventArgs e)

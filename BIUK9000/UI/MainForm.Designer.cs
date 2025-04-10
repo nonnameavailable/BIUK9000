@@ -60,9 +60,11 @@ namespace BIUK9000.UI
             layerFlattenMI = new System.Windows.Forms.ToolStripMenuItem();
             layerSnapToFrameMI = new System.Windows.Forms.ToolStripMenuItem();
             layerRestoreRatioMI = new System.Windows.Forms.ToolStripMenuItem();
+            layerShiftHereMI = new System.Windows.Forms.ToolStripMenuItem();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            layerShiftHereMI = new System.Windows.Forms.ToolStripMenuItem();
+            layerMirrorMI = new System.Windows.Forms.ToolStripMenuItem();
+            layerMakePreviousInvisibleMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -310,7 +312,7 @@ namespace BIUK9000.UI
             // 
             // layersMI
             // 
-            layersMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddMI, layerFlattenMI, layerSnapToFrameMI, layerRestoreRatioMI, layerShiftHereMI });
+            layersMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddMI, layerFlattenMI, layerSnapToFrameMI, layerRestoreRatioMI, layerShiftHereMI, layerMirrorMI, layerMakePreviousInvisibleMI });
             layersMI.Name = "layersMI";
             layersMI.Size = new System.Drawing.Size(52, 26);
             layersMI.Text = "Layers";
@@ -319,7 +321,7 @@ namespace BIUK9000.UI
             // 
             layerAddMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddTextMI, layerAddShapeMI });
             layerAddMI.Name = "layerAddMI";
-            layerAddMI.Size = new System.Drawing.Size(148, 22);
+            layerAddMI.Size = new System.Drawing.Size(197, 22);
             layerAddMI.Text = "Add";
             // 
             // layerAddTextMI
@@ -337,30 +339,42 @@ namespace BIUK9000.UI
             // layerFlattenMI
             // 
             layerFlattenMI.Name = "layerFlattenMI";
-            layerFlattenMI.Size = new System.Drawing.Size(148, 22);
+            layerFlattenMI.Size = new System.Drawing.Size(197, 22);
             layerFlattenMI.Text = "Flatten";
             // 
             // layerSnapToFrameMI
             // 
             layerSnapToFrameMI.Name = "layerSnapToFrameMI";
-            layerSnapToFrameMI.Size = new System.Drawing.Size(148, 22);
+            layerSnapToFrameMI.Size = new System.Drawing.Size(197, 22);
             layerSnapToFrameMI.Text = "Snap to frame";
             // 
             // layerRestoreRatioMI
             // 
             layerRestoreRatioMI.Name = "layerRestoreRatioMI";
-            layerRestoreRatioMI.Size = new System.Drawing.Size(148, 22);
+            layerRestoreRatioMI.Size = new System.Drawing.Size(197, 22);
             layerRestoreRatioMI.Text = "Restore ratio";
+            // 
+            // layerShiftHereMI
+            // 
+            layerShiftHereMI.Name = "layerShiftHereMI";
+            layerShiftHereMI.Size = new System.Drawing.Size(197, 22);
+            layerShiftHereMI.Text = "Shift here";
             // 
             // saveFileDialog
             // 
             saveFileDialog.Filter = "GIF files|*.gif";
             // 
-            // layerShiftHereMI
+            // layerMirrorMI
             // 
-            layerShiftHereMI.Name = "layerShiftHereMI";
-            layerShiftHereMI.Size = new System.Drawing.Size(148, 22);
-            layerShiftHereMI.Text = "Shift here";
+            layerMirrorMI.Name = "layerMirrorMI";
+            layerMirrorMI.Size = new System.Drawing.Size(197, 22);
+            layerMirrorMI.Text = "Mirror";
+            // 
+            // layerMakePreviousInvisibleMI
+            // 
+            layerMakePreviousInvisibleMI.Name = "layerMakePreviousInvisibleMI";
+            layerMakePreviousInvisibleMI.Size = new System.Drawing.Size(197, 22);
+            layerMakePreviousInvisibleMI.Text = "Make previous invisible";
             // 
             // MainForm
             // 
@@ -421,6 +435,8 @@ namespace BIUK9000.UI
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.ToolStripMenuItem layerShiftHereMI;
+        private System.Windows.Forms.ToolStripMenuItem layerMirrorMI;
+        private System.Windows.Forms.ToolStripMenuItem layerMakePreviousInvisibleMI;
     }
 }
 
