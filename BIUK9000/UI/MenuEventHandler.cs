@@ -26,6 +26,9 @@ namespace BIUK9000.UI
             var layerShiftHereMI = FindMenuItemByName("layerShiftHereMI");
             var layerMirrorMI = FindMenuItemByName("layerMirrorMI");
             var layerMakePreviousInvisibleMI = FindMenuItemByName("layerMakePreviousInvisibleMI");
+            var framesDeleteBetweenMarksMI = FindMenuItemByName("framesDeleteBetweenMarksMI");
+            var framesDeleteOutsideOfMarksMI = FindMenuItemByName("framesDeleteOutsideOfMarksMI");
+
             layerRestoreRatioMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.RestoreRatio(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
             layerSnapToFrameMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.SnapLayerToFrame(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
             layerFlattenMI.Click += LayerFlattenMI_Click;
@@ -36,6 +39,28 @@ namespace BIUK9000.UI
             layerShiftHereMI.Click += LayerShiftHereMI_Click;
             layerMirrorMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.Mirror(_mf.SFI, _mf.SLI));
             layerMakePreviousInvisibleMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.MakePreviousLayersInvisible(_mf.SFI, _mf.SLI));
+            framesDeleteBetweenMarksMI.Click += FramesDeleteBetweenMarksMI_Click;
+            framesDeleteOutsideOfMarksMI.Click += FramesDeleteOutsideOfMarksMI_Click;
+        }
+
+        private void FramesDeleteOutsideOfMarksMI_Click(object sender, EventArgs e)
+        {
+            if (CheckNull()) return;
+            if(_mf.GifferC.DeleteFramesOutsideOfMarks(_mf.Marks, _mf.AskBeforeFrameDelete))
+            {
+                _mf.MainTimelineSlider.ClearMarks();
+                _mf.CompleteUIUpdate();
+            }
+        }
+
+        private void FramesDeleteBetweenMarksMI_Click(object sender, EventArgs e)
+        {
+            if (CheckNull()) return;
+            if(_mf.GifferC.DeleteFramesBetweenMarks(_mf.Marks, _mf.AskBeforeFrameDelete))
+            {
+                _mf.MainTimelineSlider.ClearMarks();
+                _mf.CompleteUIUpdate();
+            }
         }
 
         private void LayerFlattenMI_Click(object sender, EventArgs e)

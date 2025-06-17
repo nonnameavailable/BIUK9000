@@ -61,10 +61,13 @@ namespace BIUK9000.UI
             layerSnapToFrameMI = new System.Windows.Forms.ToolStripMenuItem();
             layerRestoreRatioMI = new System.Windows.Forms.ToolStripMenuItem();
             layerShiftHereMI = new System.Windows.Forms.ToolStripMenuItem();
-            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            toolTip = new System.Windows.Forms.ToolTip(components);
             layerMirrorMI = new System.Windows.Forms.ToolStripMenuItem();
             layerMakePreviousInvisibleMI = new System.Windows.Forms.ToolStripMenuItem();
+            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            toolTip = new System.Windows.Forms.ToolTip(components);
+            deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            framesDeleteBetweenMarksMI = new System.Windows.Forms.ToolStripMenuItem();
+            framesDeleteOutsideOfMarksMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -293,7 +296,7 @@ namespace BIUK9000.UI
             // 
             // framesMI
             // 
-            framesMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { framesReverseMI, framesAddReversedMI });
+            framesMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { framesReverseMI, framesAddReversedMI, deleteToolStripMenuItem });
             framesMI.Name = "framesMI";
             framesMI.Size = new System.Drawing.Size(57, 26);
             framesMI.Text = "Frames";
@@ -301,13 +304,13 @@ namespace BIUK9000.UI
             // framesReverseMI
             // 
             framesReverseMI.Name = "framesReverseMI";
-            framesReverseMI.Size = new System.Drawing.Size(146, 22);
+            framesReverseMI.Size = new System.Drawing.Size(180, 22);
             framesReverseMI.Text = "Reverse";
             // 
             // framesAddReversedMI
             // 
             framesAddReversedMI.Name = "framesAddReversedMI";
-            framesAddReversedMI.Size = new System.Drawing.Size(146, 22);
+            framesAddReversedMI.Size = new System.Drawing.Size(180, 22);
             framesAddReversedMI.Text = "Add Reversed";
             // 
             // layersMI
@@ -327,13 +330,13 @@ namespace BIUK9000.UI
             // layerAddTextMI
             // 
             layerAddTextMI.Name = "layerAddTextMI";
-            layerAddTextMI.Size = new System.Drawing.Size(106, 22);
+            layerAddTextMI.Size = new System.Drawing.Size(180, 22);
             layerAddTextMI.Text = "Text";
             // 
             // layerAddShapeMI
             // 
             layerAddShapeMI.Name = "layerAddShapeMI";
-            layerAddShapeMI.Size = new System.Drawing.Size(106, 22);
+            layerAddShapeMI.Size = new System.Drawing.Size(180, 22);
             layerAddShapeMI.Text = "Shape";
             // 
             // layerFlattenMI
@@ -360,10 +363,6 @@ namespace BIUK9000.UI
             layerShiftHereMI.Size = new System.Drawing.Size(197, 22);
             layerShiftHereMI.Text = "Shift here";
             // 
-            // saveFileDialog
-            // 
-            saveFileDialog.Filter = "GIF files|*.gif";
-            // 
             // layerMirrorMI
             // 
             layerMirrorMI.Name = "layerMirrorMI";
@@ -375,6 +374,29 @@ namespace BIUK9000.UI
             layerMakePreviousInvisibleMI.Name = "layerMakePreviousInvisibleMI";
             layerMakePreviousInvisibleMI.Size = new System.Drawing.Size(197, 22);
             layerMakePreviousInvisibleMI.Text = "Make previous invisible";
+            // 
+            // saveFileDialog
+            // 
+            saveFileDialog.Filter = "GIF files|*.gif";
+            // 
+            // deleteToolStripMenuItem
+            // 
+            deleteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { framesDeleteBetweenMarksMI, framesDeleteOutsideOfMarksMI });
+            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            deleteToolStripMenuItem.Text = "Delete";
+            // 
+            // framesDeleteBetweenMarksMI
+            // 
+            framesDeleteBetweenMarksMI.Name = "framesDeleteBetweenMarksMI";
+            framesDeleteBetweenMarksMI.Size = new System.Drawing.Size(180, 22);
+            framesDeleteBetweenMarksMI.Text = "Between marks";
+            // 
+            // framesDeleteOutsideOfMarksMI
+            // 
+            framesDeleteOutsideOfMarksMI.Name = "framesDeleteOutsideOfMarksMI";
+            framesDeleteOutsideOfMarksMI.Size = new System.Drawing.Size(180, 22);
+            framesDeleteOutsideOfMarksMI.Text = "Outside of marks";
             // 
             // MainForm
             // 
@@ -437,6 +459,9 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem layerShiftHereMI;
         private System.Windows.Forms.ToolStripMenuItem layerMirrorMI;
         private System.Windows.Forms.ToolStripMenuItem layerMakePreviousInvisibleMI;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem framesDeleteBetweenMarksMI;
+        private System.Windows.Forms.ToolStripMenuItem framesDeleteOutsideOfMarksMI;
     }
 }
 

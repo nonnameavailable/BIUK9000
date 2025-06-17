@@ -72,6 +72,7 @@ namespace BIUK9000.UI
         public MenuStrip MainMenu { get => mainMenuStrip; }
         private MenuEventHandler _menuEventHandler;
         public List<int> Marks { get => mainTimelineSlider.Marks; }
+        public bool AskBeforeFrameDelete { get => askDeleteCB.Checked; }
         public MainForm()
         {
             InitializeComponent();
@@ -168,6 +169,7 @@ namespace BIUK9000.UI
                 if (GifferC == null)
                 {
                     controlsPanel.SelectedMode = Mode.Move;
+                    ControlsEnable(true);
                 } else
                 {
                     if (SelectedLayer is not BitmapGFL)
@@ -323,6 +325,7 @@ namespace BIUK9000.UI
 
         private void DupeFrameButton_Click(object sender, EventArgs e)
         {
+            if (GifferC == null) return;
             GifferC.DupeFrame(SFI, (int)frameDupeCountNUD.Value);
             CompleteUIUpdate();
         }
@@ -337,19 +340,16 @@ namespace BIUK9000.UI
         private void DeleteFramesButton_Click(object sender, EventArgs e)
         {
             if (MainGiffer == null || MainGiffer.FrameCount < 2) return;
-            if (askDeleteCB.Checked)
+            if (Marks.Count > 0)
             {
-                if (MessageBox.Show("Do you really want to delete these frames?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return;
+                if(GifferC.DeleteFramesBetweenMarks(MainTimelineSlider.Marks, askDeleteCB.Checked))
+                {
+                    mainTimelineSlider.ClearMarks();
+                }
+            } else
+            {
+                MainGiffer.Frames.RemoveAt(SFI);
             }
-            List<int> marks = MainTimelineSlider.Marks;
-            if(marks.Count == 0)
-            {
-                MainGiffer.RemoveFrames(new List<int>() { SFI });
-            } else if(marks.Count > 0)
-            {
-                MainGiffer.RemoveFrames(MainTimelineSlider.Marks);
-            }
-            mainTimelineSlider.ClearMarks();
             CompleteUIUpdate();
         }
 
@@ -426,6 +426,17 @@ namespace BIUK9000.UI
         {
             MainImage?.Dispose();
             MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode);
+            //if(MainGiffer.Width > 500 || MainGiffer.Height > 500)
+            //{
+            //    double widthRatio = MainGiffer.Width / 500d;
+            //    double heightRatio = MainGiffer.Height / 500d;
+            //    double ratio = Math.Max(widthRatio, heightRatio);
+            //    using Bitmap newFrame = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode);
+            //    MainImage = new Bitmap(newFrame, (int)(MainGiffer.Width / ratio), (int) (MainGiffer.Height / ratio));
+            //} else
+            //{
+            //    MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode);
+            //}
             //if (MainImage == null)
             //{
             //    MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp);

@@ -590,5 +590,36 @@ namespace BIUK9000
                 if (layer != null) layer.Visible = false;
             }
         }
+        public bool DeleteFramesBetweenMarks(List<int> marks, bool ask)
+        {
+            if (marks.Count != 2)
+            {
+                MessageBox.Show("Exactly 2 frames must be marked!");
+                return false;
+            }
+            if (ask)
+            {
+                if (MessageBox.Show("Do you really want to delete these frames?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return false;
+            }
+            giffer.RemoveFrames(marks);
+            return true;
+        }
+        public bool DeleteFramesOutsideOfMarks(List<int> marks, bool ask)
+        {
+            if (marks.Count != 2)
+            {
+                MessageBox.Show("Exactly 2 frames must be marked!");
+                return false;
+            }
+            if (ask)
+            {
+                if (MessageBox.Show("Do you really want to delete these frames?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return false;
+            }
+            int secondIndex = Math.Clamp(Math.Max(marks[1], marks[0]) + 1, 0, FrameCount - 1);
+            int firstIndex = Math.Clamp(Math.Min(marks[0], marks[1]) - 1, 0, FrameCount - 1);
+            if(secondIndex < FrameCount - 1)DeleteFramesBetweenMarks([secondIndex, FrameCount - 1], false);
+            if(firstIndex > 0) DeleteFramesBetweenMarks([0, firstIndex], false);
+            return true;
+        }
     }
 }

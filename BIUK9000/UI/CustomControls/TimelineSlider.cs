@@ -68,7 +68,7 @@ namespace BIUK9000.UI
                 SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
             };
             addMarkButton.Click += (sender, args) => timeLineTrackBar.AddMark(SelectedFrameIndex);
-            clearMarksBTN.Click += (sender, args) => Marks.Clear();
+            clearMarksBTN.Click += (sender, args) => timeLineTrackBar.ClearMarks();
         }
 
         private void PlayTimer_Tick(object sender, EventArgs e)
