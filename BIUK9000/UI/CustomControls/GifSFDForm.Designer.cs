@@ -30,6 +30,8 @@
         {
             components = new System.ComponentModel.Container();
             panel1 = new System.Windows.Forms.Panel();
+            createVideoGB = new System.Windows.Forms.GroupBox();
+            createVideoCB = new System.Windows.Forms.CheckBox();
             framerateChangeGB = new System.Windows.Forms.GroupBox();
             currentFramerateLabel = new System.Windows.Forms.Label();
             newFramerateNUD = new System.Windows.Forms.NumericUpDown();
@@ -55,9 +57,8 @@
             label1 = new System.Windows.Forms.Label();
             gifExportModeCBB = new System.Windows.Forms.ComboBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            createVideoGB = new System.Windows.Forms.GroupBox();
-            createVideoCB = new System.Windows.Forms.CheckBox();
             panel1.SuspendLayout();
+            createVideoGB.SuspendLayout();
             framerateChangeGB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)newFramerateNUD).BeginInit();
             framesAsFilesGB.SuspendLayout();
@@ -67,7 +68,6 @@
             groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).BeginInit();
-            createVideoGB.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -83,6 +83,26 @@
             panel1.Name = "panel1";
             panel1.Size = new System.Drawing.Size(296, 471);
             panel1.TabIndex = 0;
+            // 
+            // createVideoGB
+            // 
+            createVideoGB.Controls.Add(createVideoCB);
+            createVideoGB.Location = new System.Drawing.Point(12, 301);
+            createVideoGB.Name = "createVideoGB";
+            createVideoGB.Size = new System.Drawing.Size(272, 53);
+            createVideoGB.TabIndex = 21;
+            createVideoGB.TabStop = false;
+            createVideoGB.Text = "Create video";
+            // 
+            // createVideoCB
+            // 
+            createVideoCB.AutoSize = true;
+            createVideoCB.Location = new System.Drawing.Point(5, 22);
+            createVideoCB.Name = "createVideoCB";
+            createVideoCB.Size = new System.Drawing.Size(92, 19);
+            createVideoCB.TabIndex = 0;
+            createVideoCB.Text = "Create video";
+            createVideoCB.UseVisualStyleBackColor = true;
             // 
             // framerateChangeGB
             // 
@@ -110,7 +130,7 @@
             // 
             newFramerateNUD.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             newFramerateNUD.Location = new System.Drawing.Point(67, 64);
-            newFramerateNUD.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
+            newFramerateNUD.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             newFramerateNUD.Minimum = new decimal(new int[] { 1, 0, 0, 65536 });
             newFramerateNUD.Name = "newFramerateNUD";
             newFramerateNUD.Size = new System.Drawing.Size(57, 23);
@@ -337,26 +357,6 @@
             gifExportModeCBB.TabIndex = 11;
             toolTip.SetToolTip(gifExportModeCBB, "Bit 8 - no dithering\r\ndefault - dithering");
             // 
-            // createVideoGB
-            // 
-            createVideoGB.Controls.Add(createVideoCB);
-            createVideoGB.Location = new System.Drawing.Point(12, 301);
-            createVideoGB.Name = "createVideoGB";
-            createVideoGB.Size = new System.Drawing.Size(272, 53);
-            createVideoGB.TabIndex = 21;
-            createVideoGB.TabStop = false;
-            createVideoGB.Text = "Create video";
-            // 
-            // createVideoCB
-            // 
-            createVideoCB.AutoSize = true;
-            createVideoCB.Location = new System.Drawing.Point(5, 22);
-            createVideoCB.Name = "createVideoCB";
-            createVideoCB.Size = new System.Drawing.Size(92, 19);
-            createVideoCB.TabIndex = 0;
-            createVideoCB.Text = "Create video";
-            createVideoCB.UseVisualStyleBackColor = true;
-            // 
             // GifSFDForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -367,6 +367,8 @@
             Name = "GifSFDForm";
             Text = "GifSFDForm";
             panel1.ResumeLayout(false);
+            createVideoGB.ResumeLayout(false);
+            createVideoGB.PerformLayout();
             framerateChangeGB.ResumeLayout(false);
             framerateChangeGB.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)newFramerateNUD).EndInit();
@@ -381,8 +383,6 @@
             groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)GifExportLossyNUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).EndInit();
-            createVideoGB.ResumeLayout(false);
-            createVideoGB.PerformLayout();
             ResumeLayout(false);
         }
 
