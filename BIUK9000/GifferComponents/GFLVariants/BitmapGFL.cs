@@ -20,6 +20,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
         //private int cachedWidth, cachedHeight;
         public int OriginalWidth { get => OriginalBitmap.Width; }
         public int OriginalHeight {  get => OriginalBitmap.Height; }
+
         public override Bitmap MorphedBitmap(InterpolationMode interpolationMode)
         {
             //if (cachedMorphedBitmap == null || Width != cachedWidth || Height != cachedHeight)

@@ -28,6 +28,7 @@ namespace BIUK9000.UI
             var layerMakePreviousInvisibleMI = FindMenuItemByName("layerMakePreviousInvisibleMI");
             var framesDeleteBetweenMarksMI = FindMenuItemByName("framesDeleteBetweenMarksMI");
             var framesDeleteOutsideOfMarksMI = FindMenuItemByName("framesDeleteOutsideOfMarksMI");
+            var layerConvertToBitmapMI = FindMenuItemByName("layerConvertToBitmapMI");
 
             layerRestoreRatioMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.RestoreRatio(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
             layerSnapToFrameMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.SnapLayerToFrame(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
@@ -41,6 +42,7 @@ namespace BIUK9000.UI
             layerMakePreviousInvisibleMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.MakePreviousLayersInvisible(_mf.SFI, _mf.SLI));
             framesDeleteBetweenMarksMI.Click += FramesDeleteBetweenMarksMI_Click;
             framesDeleteOutsideOfMarksMI.Click += FramesDeleteOutsideOfMarksMI_Click;
+            layerConvertToBitmapMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ConvertLayerToBitmap(_mf.SFI, _mf.SLI));
         }
 
         private void FramesDeleteOutsideOfMarksMI_Click(object sender, EventArgs e)

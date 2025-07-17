@@ -621,5 +621,16 @@ namespace BIUK9000
             if(firstIndex > 0) DeleteFramesBetweenMarks([0, firstIndex], false);
             return true;
         }
+        public void ConvertLayerToBitmap(int sfi, int sli)
+        {
+            GFL gfl = GetLayer(sfi, sli);
+            if (gfl == null || gfl is BitmapGFL) return;
+            int lid = giffer.NextLayerID();
+            GFL bgfl = new BitmapGFL(gfl.MorphedBitmap(InterpolationMode.HighQualityBicubic), lid);
+            bgfl.Rotation = gfl.Rotation;
+            bgfl.Position = gfl.Position;
+            AddLayer(bgfl);
+            DeleteLayerByID(gfl.LayerID);
+        }
     }
 }

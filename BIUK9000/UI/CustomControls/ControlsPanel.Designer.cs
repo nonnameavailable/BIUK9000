@@ -96,6 +96,7 @@
             // 
             // optionsTP
             // 
+            optionsTP.AutoScroll = true;
             optionsTP.Controls.Add(groupBox2);
             optionsTP.Controls.Add(groupBox4);
             optionsTP.Controls.Add(mpbAAModeCBB);
@@ -118,7 +119,7 @@
             groupBox2.Controls.Add(ImageExportFormatCBB);
             groupBox2.Location = new System.Drawing.Point(6, 253);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(118, 86);
+            groupBox2.Size = new System.Drawing.Size(99, 86);
             groupBox2.TabIndex = 6;
             groupBox2.TabStop = false;
             groupBox2.Text = "Image export";
@@ -126,7 +127,7 @@
             // ImageExportJpegQualNUD
             // 
             ImageExportJpegQualNUD.Increment = new decimal(new int[] { 10, 0, 0, 0 });
-            ImageExportJpegQualNUD.Location = new System.Drawing.Point(71, 51);
+            ImageExportJpegQualNUD.Location = new System.Drawing.Point(56, 51);
             ImageExportJpegQualNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             ImageExportJpegQualNUD.Name = "ImageExportJpegQualNUD";
             ImageExportJpegQualNUD.Size = new System.Drawing.Size(41, 23);
@@ -151,7 +152,7 @@
             ImageExportFormatCBB.Items.AddRange(new object[] { ".jpeg", ".png", ".gif" });
             ImageExportFormatCBB.Location = new System.Drawing.Point(6, 22);
             ImageExportFormatCBB.Name = "ImageExportFormatCBB";
-            ImageExportFormatCBB.Size = new System.Drawing.Size(106, 23);
+            ImageExportFormatCBB.Size = new System.Drawing.Size(87, 23);
             ImageExportFormatCBB.TabIndex = 0;
             toolTip.SetToolTip(ImageExportFormatCBB, "When you export a single frame or layer,\r\nthe resulting file will be in this format.");
             // 
@@ -162,7 +163,7 @@
             groupBox4.Controls.Add(toolMoveRB);
             groupBox4.Location = new System.Drawing.Point(6, 147);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new System.Drawing.Size(113, 100);
+            groupBox4.Size = new System.Drawing.Size(99, 100);
             groupBox4.TabIndex = 5;
             groupBox4.TabStop = false;
             groupBox4.Text = "Mode";
@@ -205,7 +206,7 @@
             mpbAAModeCBB.FormattingEnabled = true;
             mpbAAModeCBB.Location = new System.Drawing.Point(6, 118);
             mpbAAModeCBB.Name = "mpbAAModeCBB";
-            mpbAAModeCBB.Size = new System.Drawing.Size(113, 23);
+            mpbAAModeCBB.Size = new System.Drawing.Size(99, 23);
             mpbAAModeCBB.TabIndex = 4;
             toolTip.SetToolTip(mpbAAModeCBB, "Sets the interpolation mode of the displayed and exported images.\r\nChoose nearest neighbor for no antialiasing.\r\n");
             // 
@@ -215,7 +216,7 @@
             applyParamsCBB.FormattingEnabled = true;
             applyParamsCBB.Location = new System.Drawing.Point(6, 87);
             applyParamsCBB.Name = "applyParamsCBB";
-            applyParamsCBB.Size = new System.Drawing.Size(113, 23);
+            applyParamsCBB.Size = new System.Drawing.Size(99, 23);
             applyParamsCBB.TabIndex = 3;
             toolTip.SetToolTip(applyParamsCBB, resources.GetString("applyParamsCBB.ToolTip"));
             // 
