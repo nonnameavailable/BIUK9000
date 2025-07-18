@@ -16,8 +16,11 @@ namespace BIUK9000.UI
             _mf = mainForm;
             _menu = _mf.MainMenu;
             var framesReverseMI = FindMenuItemByName("framesReverseMI");
-            
             var framesAddReversedMI = FindMenuItemByName("framesAddReversedMI");
+            var framesDeleteBetweenMarksMI = FindMenuItemByName("framesDeleteBetweenMarksMI");
+            var framesDeleteOutsideOfMarksMI = FindMenuItemByName("framesDeleteOutsideOfMarksMI");
+            var framesDeleteDuplicatesMI = FindMenuItemByName("framesDeleteDuplicatesMI");
+
             var layerAddTextMI = FindMenuItemByName("layerAddTextMI");
             var layerAddShapeMI = FindMenuItemByName("layerAddShapeMI");
             var layerFlattenMI = FindMenuItemByName("layerFlattenMI");
@@ -26,22 +29,23 @@ namespace BIUK9000.UI
             var layerShiftHereMI = FindMenuItemByName("layerShiftHereMI");
             var layerMirrorMI = FindMenuItemByName("layerMirrorMI");
             var layerMakePreviousInvisibleMI = FindMenuItemByName("layerMakePreviousInvisibleMI");
-            var framesDeleteBetweenMarksMI = FindMenuItemByName("framesDeleteBetweenMarksMI");
-            var framesDeleteOutsideOfMarksMI = FindMenuItemByName("framesDeleteOutsideOfMarksMI");
             var layerConvertToBitmapMI = FindMenuItemByName("layerConvertToBitmapMI");
+
+
+            framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames());
+            framesAddReversedMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddReversedFrames());
+            framesDeleteBetweenMarksMI.Click += FramesDeleteBetweenMarksMI_Click;
+            framesDeleteOutsideOfMarksMI.Click += FramesDeleteOutsideOfMarksMI_Click;
+            framesDeleteDuplicatesMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.DeleteDuplicateFrames());
 
             layerRestoreRatioMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.RestoreRatio(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
             layerSnapToFrameMI.Click += (sender, args) => CheckNullActionUpdate(()=> _mf.GifferC.SnapLayerToFrame(_mf.SFI, _mf.SLI, _mf.MainControlsPanel.SelectedApplyParamsMode));
             layerFlattenMI.Click += LayerFlattenMI_Click;
-            framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames());
-            framesAddReversedMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddReversedFrames());
             layerAddTextMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddLayerFromKey(Keys.T));
             layerAddShapeMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddLayerFromKey(Keys.B));
             layerShiftHereMI.Click += LayerShiftHereMI_Click;
-            layerMirrorMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.Mirror(_mf.SFI, _mf.SLI));
+            layerMirrorMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.Mirror(_mf.SFI, _mf.SLI, _mf.PaintOnSubsequentFrames));
             layerMakePreviousInvisibleMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.MakePreviousLayersInvisible(_mf.SFI, _mf.SLI));
-            framesDeleteBetweenMarksMI.Click += FramesDeleteBetweenMarksMI_Click;
-            framesDeleteOutsideOfMarksMI.Click += FramesDeleteOutsideOfMarksMI_Click;
             layerConvertToBitmapMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ConvertLayerToBitmap(_mf.SFI, _mf.SLI));
         }
 

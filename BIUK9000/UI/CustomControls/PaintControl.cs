@@ -12,7 +12,7 @@ namespace BIUK9000.UI.CustomControls
 {
     public partial class PaintControl : UserControl
     {
-        public Color PaintColorRGB { get => paintColorButton.Color; }
+        public Color PaintColorRGB { get => paintColorButton.Color; set => paintColorButton.Color = value; }
         public Color PaintColorARGB
         {
             get

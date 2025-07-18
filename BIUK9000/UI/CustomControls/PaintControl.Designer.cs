@@ -43,13 +43,13 @@
             lassoConstrainCB = new System.Windows.Forms.CheckBox();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             panel1 = new System.Windows.Forms.Panel();
+            label2 = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
             toleranceDisplayLabel = new System.Windows.Forms.Label();
             toolsGroupBox = new System.Windows.Forms.GroupBox();
             lassoRB = new System.Windows.Forms.RadioButton();
             drawLineRB = new System.Windows.Forms.RadioButton();
             groupBox1 = new System.Windows.Forms.GroupBox();
-            label1 = new System.Windows.Forms.Label();
-            label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)transparencyTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)thicknessNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)toleranceTrackBar).BeginInit();
@@ -67,7 +67,7 @@
             paintColorButton.Name = "paintColorButton";
             paintColorButton.Size = new System.Drawing.Size(42, 29);
             paintColorButton.TabIndex = 0;
-            toolTip.SetToolTip(paintColorButton, "Fill color for painting");
+            toolTip.SetToolTip(paintColorButton, "Fill color for painting, fill and replace.");
             // 
             // transparencyTrackBar
             // 
@@ -125,7 +125,7 @@
             fillColorRB.TabIndex = 3;
             fillColorRB.TabStop = true;
             fillColorRB.Text = "fill color";
-            toolTip.SetToolTip(fillColorRB, "Works just like fill tool in any other image editing software.\r\nThe fill is only performed on selected frame.");
+            toolTip.SetToolTip(fillColorRB, "Works just like fill tool in any other image editing software.");
             fillColorRB.UseVisualStyleBackColor = true;
             // 
             // replaceColorRB
@@ -136,7 +136,7 @@
             replaceColorRB.Size = new System.Drawing.Size(93, 19);
             replaceColorRB.TabIndex = 1;
             replaceColorRB.Text = "replace color";
-            toolTip.SetToolTip(replaceColorRB, "Replaces all pixels of the same color as the color you clicked on\r\n(or similar color, based on the tolerance)\r\nwith the color specified in the button.");
+            toolTip.SetToolTip(replaceColorRB, "Replaces all pixels of the same color to the color you clicked on\r\n(or similar color, based on the tolerance)\r\nwith the color specified in the button.");
             replaceColorRB.UseVisualStyleBackColor = true;
             // 
             // animateComplementCB
@@ -221,6 +221,24 @@
             panel1.Size = new System.Drawing.Size(173, 111);
             panel1.TabIndex = 4;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(3, 68);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(21, 15);
+            label2.TabIndex = 7;
+            label2.Text = "tol";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(3, 15);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(21, 15);
+            label1.TabIndex = 6;
+            label1.Text = "tra";
+            // 
             // toleranceDisplayLabel
             // 
             toleranceDisplayLabel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
@@ -282,24 +300,6 @@
             groupBox1.TabIndex = 6;
             groupBox1.TabStop = false;
             groupBox1.Text = "lasso options";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(3, 15);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(21, 15);
-            label1.TabIndex = 6;
-            label1.Text = "tra";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(3, 68);
-            label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(21, 15);
-            label2.TabIndex = 7;
-            label2.Text = "tol";
             // 
             // PaintControl
             // 

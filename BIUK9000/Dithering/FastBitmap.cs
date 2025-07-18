@@ -55,7 +55,10 @@ namespace BIUK9000.Dithering
         {
             return Bits[x + (y * Width)];
         }
-
+        public bool Equals(FastBitmap fbm)
+        {
+            return Bits.SequenceEqual(fbm.Bits);
+        }
         public void Dispose()
         {
             if (Disposed) return;

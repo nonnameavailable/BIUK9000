@@ -13,6 +13,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BIUK9000.Dithering;
 
 namespace BIUK9000
 {
@@ -295,47 +296,42 @@ namespace BIUK9000
                 MessageBox.Show("First layer on the first frame must be an image layer for this to work!");
             }
         }
-        public void DeleteColor(int frameIndex, int layerIndex, Point p, int tolerance)
+        public void ReplaceColor(int sfi, int sli, Point p, Color replacementColor, int tolerance, bool subsequent)
         {
-            BitmapGFL currentLayer = GetLayer(frameIndex, layerIndex) as BitmapGFL;
+            BitmapGFL currentLayer = GetLayer(sfi, sli) as BitmapGFL;
             int layerID = currentLayer.LayerID;
             Bitmap obm = currentLayer.OriginalBitmap;
             if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
             Color c = obm.GetPixel(p.X, p.Y);
-            foreach (GifFrame frame in giffer.Frames)
+            int endFrameIndex = subsequent ? FrameCount : sfi + 1;
+            for (int i = sfi; i < endFrameIndex; i++)
             {
-                BitmapGFL gfl = frame.Layers.Find(layer => layer.LayerID == layerID) as BitmapGFL;
-                using Bitmap deletedBitmap = Painter.DeleteColor(gfl.OriginalBitmap, c, tolerance);
-                gfl.ReplaceOriginalBitmap(deletedBitmap);
+                BitmapGFL gfl = (BitmapGFL)TryGetLayerById(i, layerID);
+                gfl.ReplaceOriginalBitmap(Painter.ReplaceColor(gfl.OriginalBitmap, c, replacementColor, tolerance));
             }
         }
-        public void ReplaceColor(int frameIndex, int layerIndex, Point p, Color replacementColor, int tolerance)
+        public void FloodFill(int sfi, int sli, Point p, Color fillColor, int tolerance, bool subsequent)
         {
-            BitmapGFL currentLayer = GetLayer(frameIndex, layerIndex) as BitmapGFL;
-            int layerID = currentLayer.LayerID;
-            Bitmap obm = currentLayer.OriginalBitmap;
-            if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
-            Color c = obm.GetPixel(p.X, p.Y);
-            foreach (GifFrame frame in giffer.Frames)
+            int lid = GetLayer(sfi, sli).LayerID;
+            int endFrameIndex = subsequent ? FrameCount : sfi + 1;
+            Color firstColor = ((BitmapGFL)TryGetLayerById(sfi, lid)).OriginalBitmap.GetPixel(p.X, p.Y);
+            for (int i = sfi; i < endFrameIndex; i++)
             {
-                BitmapGFL gfl = frame.Layers.Find(layer => layer.LayerID == layerID) as BitmapGFL;
-                using Bitmap replacedBitmap = Painter.ReplaceColor(gfl.OriginalBitmap, c, replacementColor, tolerance);
-                gfl.ReplaceOriginalBitmap(replacedBitmap);
+                BitmapGFL currentLayer = (BitmapGFL)TryGetLayerById(i, lid);
+                Bitmap obm = currentLayer.OriginalBitmap;
+                if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
+                Color c = obm.GetPixel(p.X, p.Y);
+                if (c.Equals(firstColor))
+                {
+                    currentLayer.ReplaceOriginalBitmap(Painter.FloodFill(obm, p, fillColor, tolerance));
+                }
             }
         }
-        public void FloodFill(int frameIndex, int layerIndex, Point p, Color fillColor, int tolerance)
+        public void Mirror(int sfi, int sli, bool subsequent)
         {
-            BitmapGFL currentLayer = GetLayer(frameIndex, layerIndex) as BitmapGFL;
-            int layerID = currentLayer.LayerID;
-            Bitmap obm = currentLayer.OriginalBitmap;
-            if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
-            Color c = obm.GetPixel(p.X, p.Y);
-            currentLayer.ReplaceOriginalBitmap(Painter.FloodFill(obm, p, fillColor, tolerance));
-        }
-        public void Mirror(int frameIndex, int layerIndex)
-        {
-            int layerID = GetLayer(frameIndex, layerIndex).LayerID;
-            for (int i = frameIndex; i < FrameCount; i++)
+            int layerID = GetLayer(sfi, sli).LayerID;
+            int endFrameIndex = subsequent ? FrameCount : sfi + 1;
+            for (int i = sfi; i < endFrameIndex; i++)
             {
                 GFL layer = TryGetLayerById(i, layerID);
                 if (layer is BitmapGFL bgfl)
@@ -631,6 +627,42 @@ namespace BIUK9000
             bgfl.Position = gfl.Position;
             AddLayer(bgfl);
             DeleteLayerByID(gfl.LayerID);
+        }
+
+        public void DeleteDuplicateFrames()
+        {
+            if (FrameCount < 3) return;
+            FastBitmap compareFbm = new(GetFrame(FrameCount - 1).CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.NearestNeighbor));
+            for(int i = FrameCount - 2; i >= 0; i--)
+            {
+                FastBitmap currentFbm = new(GetFrame(i).CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.NearestNeighbor));
+                if (compareFbm.Equals(currentFbm))
+                {
+                    giffer.RemoveFrames([i]);
+                    currentFbm.Dispose();
+                } else
+                {
+                    compareFbm.Dispose();
+                    compareFbm = currentFbm;
+                }
+                if (i == 0) currentFbm?.Dispose();
+            }
+            compareFbm?.Dispose();
+        }
+        public void DrawLineOnSubsequentFrames(int sfi, int sli, List<Point> points, Color color, float thickness)
+        {
+            GFL gfl = GetLayer(sfi, sli);
+            if (gfl is BitmapGFL bgfl)
+            {
+                int lid = bgfl.LayerID;
+                for(int i = sfi + 1; i < FrameCount; i++)
+                {
+                    using Graphics g = Graphics.FromImage(((BitmapGFL)TryGetLayerById(i, lid)).OriginalBitmap);
+                    Painter.DrawLinesFromPoints(g, points, color, thickness);
+                }
+            }
+            else return;
+
         }
     }
 }

@@ -69,6 +69,7 @@ namespace BIUK9000.UI
             layerConvertToBitmapMI = new System.Windows.Forms.ToolStripMenuItem();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            framesDeleteDuplicatesMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -306,20 +307,20 @@ namespace BIUK9000.UI
             // framesReverseMI
             // 
             framesReverseMI.Name = "framesReverseMI";
-            framesReverseMI.Size = new System.Drawing.Size(146, 22);
+            framesReverseMI.Size = new System.Drawing.Size(180, 22);
             framesReverseMI.Text = "Reverse";
             // 
             // framesAddReversedMI
             // 
             framesAddReversedMI.Name = "framesAddReversedMI";
-            framesAddReversedMI.Size = new System.Drawing.Size(146, 22);
+            framesAddReversedMI.Size = new System.Drawing.Size(180, 22);
             framesAddReversedMI.Text = "Add Reversed";
             // 
             // deleteToolStripMenuItem
             // 
-            deleteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { framesDeleteBetweenMarksMI, framesDeleteOutsideOfMarksMI });
+            deleteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { framesDeleteBetweenMarksMI, framesDeleteOutsideOfMarksMI, framesDeleteDuplicatesMI });
             deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            deleteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             deleteToolStripMenuItem.Text = "Delete";
             // 
             // framesDeleteBetweenMarksMI
@@ -406,6 +407,12 @@ namespace BIUK9000.UI
             // 
             saveFileDialog.Filter = "GIF files|*.gif";
             // 
+            // framesDeleteDuplicatesMI
+            // 
+            framesDeleteDuplicatesMI.Name = "framesDeleteDuplicatesMI";
+            framesDeleteDuplicatesMI.Size = new System.Drawing.Size(164, 22);
+            framesDeleteDuplicatesMI.Text = "Duplicates";
+            // 
             // MainForm
             // 
             AllowDrop = true;
@@ -471,6 +478,7 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem framesDeleteBetweenMarksMI;
         private System.Windows.Forms.ToolStripMenuItem framesDeleteOutsideOfMarksMI;
         private System.Windows.Forms.ToolStripMenuItem layerConvertToBitmapMI;
+        private System.Windows.Forms.ToolStripMenuItem framesDeleteDuplicatesMI;
     }
 }
 

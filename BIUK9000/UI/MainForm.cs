@@ -73,6 +73,7 @@ namespace BIUK9000.UI
         private MenuEventHandler _menuEventHandler;
         public List<int> Marks { get => mainTimelineSlider.Marks; }
         public bool AskBeforeFrameDelete { get => askDeleteCB.Checked; }
+        public bool PaintOnSubsequentFrames { get => controlsPanel.SelectedApplyParamsMode != ApplyParamsMode.applyNone; }
         public MainForm()
         {
             InitializeComponent();
@@ -534,6 +535,11 @@ namespace BIUK9000.UI
                         GifferC.Lasso(SFI, SLI, translatedPoints, pc.LassoIncludeComplement, pc.LassoConstrainBounds, pc.LassoAnimateCutout, pc.LassoAnimateComplement);
                         mainLayersPanel.DisplayLayers(SelectedFrame);
                     }
+                    else if (pc.SelectedPaintTool == PaintControl.PaintTool.DrawLine && PaintOnSubsequentFrames)
+                    {
+                        List<Point> points = mainPictureBox.MouseTrace.Select(point => point = GifferC.MousePositionOnLayer(SFI, SLI, point)).ToList();
+                        GifferC.DrawLineOnSubsequentFrames(SFI, SLI, points, _paintControl.PaintColorARGB, _paintControl.Thickness);
+                    }
                 }
             }
             if (!IsLMBDown && !IsMMBDown & !IsRMBDown)
@@ -571,26 +577,30 @@ namespace BIUK9000.UI
                     }
                     else if (pc.SelectedPaintTool == PaintControl.PaintTool.ReplaceColor)
                     {
-                        GifferC.ReplaceColor(SFI, SLI, mpoi, pc.PaintColorARGB, pc.Tolerance);
+                        GifferC.ReplaceColor(SFI, SLI, mpoi, pc.PaintColorARGB, pc.Tolerance, PaintOnSubsequentFrames);
                     }
                     else if (pc.SelectedPaintTool == PaintControl.PaintTool.FillColor)
                     {
-                        GifferC.FloodFill(SFI, SLI, mpoi, pc.PaintColorARGB, pc.Tolerance);
+                        GifferC.FloodFill(SFI, SLI, mpoi, pc.PaintColorARGB, pc.Tolerance, PaintOnSubsequentFrames);
                     }
+                } else if (IsRMBDown)
+                {
+                    Point p = mainPictureBox.MousePositionOnImage;
+                    _paintControl.PaintColorRGB = ((Bitmap)MainImage).GetPixel(p.X, p.Y);
                 }
                 UpdateMainPictureBox();
                 return;
-            } else if(IsCtrlDown && IsShiftDown && IsLMBDown)
+            } else if(IsCtrlDown && IsShiftDown && IsLMBDown && controlsPanel.SelectedMode == Mode.Move)
             {
                 Point mpol = GifferC.MousePositionOnLayer(SFI, SLI, mainPictureBox.MousePositionOnImage);
                 double xMult = (double)mpol.X / cgfl.Width;
                 double yMult = (double)mpol.Y / cgfl.Height;
-                Debug.Print(mpol.ToString());
                 GifferC.OverrideLayerCenter(SFI, SLI, xMult, yMult);
+                return;
                 //Debug.Print("pb click: " + mainPictureBox.MousePositionOnImage.ToString());
                 //Debug.Print("layer click: " + cgfl.LTCorner().ToString());
             }
-                _updateTimer.Start();
+            _updateTimer.Start();
         }
 
         private void MainPictureBox_MouseMove(object sender, MouseEventArgs e)
