@@ -28,7 +28,7 @@ namespace BIUK9000
         }
         public GifFrame GetFrame(int frameIndex)
         {
-            if(frameIndex < giffer.Frames.Count && frameIndex >= 0)
+            if (frameIndex < giffer.Frames.Count && frameIndex >= 0)
             {
                 return giffer.Frames[frameIndex];
             } else
@@ -39,9 +39,9 @@ namespace BIUK9000
         public GFL GetLayer(int frameIndex, int layerIndex)
         {
             GifFrame frame = GetFrame(frameIndex);
-            if(frame != null)
+            if (frame != null)
             {
-                if(layerIndex < frame.Layers.Count && layerIndex >= 0)
+                if (layerIndex < frame.Layers.Count && layerIndex >= 0)
                 {
                     return frame.Layers[layerIndex];
                 }
@@ -65,7 +65,7 @@ namespace BIUK9000
         }
         public void SetSavedLayerVisibility(bool visible)
         {
-            if(SavedLayerForApply != null) SavedLayerForApply.Visible = visible;
+            if (SavedLayerForApply != null) SavedLayerForApply.Visible = visible;
         }
         public void LerpExecute(List<int> marks, int selectedLayerIndex, List<Point> mouseTrace = null)
         {
@@ -75,11 +75,11 @@ namespace BIUK9000
                 return;
             }
             marks.Sort();
-            for(int i = 0; i < marks.Count - 1; i++)
+            for (int i = 0; i < marks.Count - 1; i++)
             {
                 int startFrameIndex = marks[i];
                 int endFrameIndex = marks[i + 1];
-                GFL endLayer = GetLayer(endFrameIndex, selectedLayerIndex); 
+                GFL endLayer = GetLayer(endFrameIndex, selectedLayerIndex);
                 int lid = endLayer.LayerID;
                 GFL startLayer = TryGetLayerById(startFrameIndex, lid);
                 if (startLayer == null || endLayer == null)
@@ -211,7 +211,7 @@ namespace BIUK9000
         {
             foreach (GifFrame gf in giffer.Frames)
             {
-                if(gf.Layers.Count > 1)
+                if (gf.Layers.Count > 1)
                 {
                     GFL layerToDelete = gf.Layers.Find(layer => layer.LayerID == layerID);
                     if (layerToDelete != null)
@@ -284,7 +284,7 @@ namespace BIUK9000
                 foreach (GifFrame frame in newGiffer.Frames)
                 {
                     frame.Layers[0].LayerID = firstLayer.LayerID;
-                    for(int i = 1; i < firstFrame.Layers.Count; i++)
+                    for (int i = 1; i < firstFrame.Layers.Count; i++)
                     {
                         frame.AddLayer(firstFrame.Layers[i].Clone());
                     }
@@ -349,7 +349,7 @@ namespace BIUK9000
         public void DupeFrame(int frameIndex, int dupeCount)
         {
             GifFrame originalFrame = giffer.Frames[frameIndex];
-            for(int i = 0; i < dupeCount; i++)
+            for (int i = 0; i < dupeCount; i++)
             {
                 giffer.Frames.Insert(frameIndex, originalFrame.Clone());
             }
@@ -359,12 +359,12 @@ namespace BIUK9000
             if (lassoPoints.Length < 3) return;
             BitmapGFL bgfl = (BitmapGFL)GetLayer(frameIndex, layerIndex);
 
-            if(!ClampPoints(lassoPoints, 0, bgfl.OriginalWidth, 0 , bgfl.OriginalHeight)) return;
+            if (!ClampPoints(lassoPoints, 0, bgfl.OriginalWidth, 0, bgfl.OriginalHeight)) return;
 
             int cutoutLayerId = giffer.NextLayerID();
             if (animateCutout)
             {
-                for(int i = frameIndex; i < FrameCount; i++)
+                for (int i = frameIndex; i < FrameCount; i++)
                 {
                     BitmapGFL currentBgfl = (BitmapGFL)TryGetLayerById(i, bgfl.LayerID);
                     if (currentBgfl == null) continue;
@@ -437,7 +437,7 @@ namespace BIUK9000
         private bool ClampPoints(Point[] points, int xMin, int xMax, int yMin, int yMax)
         {
             bool result = false;
-            for(int i = 0; i < points.Length; i++)
+            for (int i = 0; i < points.Length; i++)
             {
                 Point cp = points[i];
                 int newX = Math.Clamp(cp.X, xMin, xMax);
@@ -463,7 +463,7 @@ namespace BIUK9000
         {
             GFL layer = GetLayer(frameIndex, layerIndex);
             if (layer == null) return;
-            if(layer is BitmapGFL bgfl)
+            if (layer is BitmapGFL bgfl)
             {
                 SaveLayerStateForApply(frameIndex, layerIndex);
                 bgfl.Width = giffer.Width;
@@ -474,7 +474,7 @@ namespace BIUK9000
         public void OverrideLayerCenter(int frameIndex, int layerIndex, double xMult, double yMult)
         {
             GFL cgfl = GetLayer(frameIndex, layerIndex);
-            for(int i = frameIndex; i < giffer.FrameCount; i++)
+            for (int i = frameIndex; i < giffer.FrameCount; i++)
             {
                 GFL layer = TryGetLayerById(i, cgfl.LayerID);
                 layer?.OverrideCenter(xMult, yMult);
@@ -483,7 +483,7 @@ namespace BIUK9000
         public void ReverseFrames()
         {
             List<GifFrame> newFrames = new();
-            for(int i = FrameCount - 1; i >= 0; i--)
+            for (int i = FrameCount - 1; i >= 0; i--)
             {
                 newFrames.Add(giffer.Frames[i]);
             }
@@ -499,23 +499,23 @@ namespace BIUK9000
         public void AddGifferAsReplaceSpread(Giffer newGiffer, int frameIndex, int layerIndex, List<int> marks)
         {
             GFL gfl = GetLayer(frameIndex, layerIndex);
-            if(gfl is not BitmapGFL)
+            if (gfl is not BitmapGFL)
             {
                 MessageBox.Show("You must select an image layer for this to work");
                 return;
             }
             int lid = gfl.LayerID;
-            if(marks.Count % 2 != 0 && marks.Count >= 2)
+            if (marks.Count % 2 != 0 && marks.Count >= 2)
             {
                 MessageBox.Show("Mark count must be even and larger or equal to 2");
                 return;
             }
             marks.Sort();
-            for(int i = 0; i < marks.Count; i += 2)
+            for (int i = 0; i < marks.Count; i += 2)
             {
                 int startFrameIndex = marks[i];
                 int endFrameIndex = marks[i + 1];
-                for(int j = startFrameIndex; j <= endFrameIndex; j++)
+                for (int j = startFrameIndex; j <= endFrameIndex; j++)
                 {
                     int newGifferFrameIndex = (int)((double)(j - startFrameIndex) / (endFrameIndex - startFrameIndex) * (newGiffer.FrameCount - 1));
                     BitmapGFL bgfl = (BitmapGFL)TryGetLayerById(j, lid);
@@ -526,7 +526,7 @@ namespace BIUK9000
         public void AddGifferAsReplaceRepeat(Giffer newGiffer, int frameIndex, int layerIndex, List<int> marks)
         {
             GFL gfl = GetLayer(frameIndex, layerIndex);
-            if(gfl is not BitmapGFL)
+            if (gfl is not BitmapGFL)
             {
                 MessageBox.Show("You must select an image layer for this to work");
                 return;
@@ -545,7 +545,7 @@ namespace BIUK9000
         public void Flatten()
         {
             int nextId = giffer.NextLayerID();
-            foreach(GifFrame gf in giffer.Frames)
+            foreach (GifFrame gf in giffer.Frames)
             {
                 BitmapGFL flatGfl = new BitmapGFL(gf.CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.HighQualityBicubic), nextId);
                 gf.Layers.ForEach(layer => layer.Dispose());
@@ -561,7 +561,7 @@ namespace BIUK9000
             int layerID = GetLayer(frameIndex, layerIndex).LayerID;
             List<GFL> newLayerOrderList = new List<GFL>();
             List<int> originalLayerPositions = new List<int>();
-            for( int i = 0; i < FrameCount; i++)
+            for (int i = 0; i < FrameCount; i++)
             {
                 originalLayerPositions.Add(TryGetLayerIndexById(i, layerID));
             }
@@ -580,7 +580,7 @@ namespace BIUK9000
         public void MakePreviousLayersInvisible(int frameIndex, int layerIndex)
         {
             int layerID = GetLayer(frameIndex, layerIndex).LayerID;
-            for(int i = 0; i < frameIndex; i++)
+            for (int i = 0; i < frameIndex; i++)
             {
                 GFL layer = TryGetLayerById(i, layerID);
                 if (layer != null) layer.Visible = false;
@@ -613,8 +613,8 @@ namespace BIUK9000
             }
             int secondIndex = Math.Clamp(Math.Max(marks[1], marks[0]) + 1, 0, FrameCount - 1);
             int firstIndex = Math.Clamp(Math.Min(marks[0], marks[1]) - 1, 0, FrameCount - 1);
-            if(secondIndex < FrameCount - 1)DeleteFramesBetweenMarks([secondIndex, FrameCount - 1], false);
-            if(firstIndex > 0) DeleteFramesBetweenMarks([0, firstIndex], false);
+            if (secondIndex < FrameCount - 1) DeleteFramesBetweenMarks([secondIndex, FrameCount - 1], false);
+            if (firstIndex > 0) DeleteFramesBetweenMarks([0, firstIndex], false);
             return true;
         }
         public void ConvertLayerToBitmap(int sfi, int sli)
@@ -632,8 +632,9 @@ namespace BIUK9000
         public void DeleteDuplicateFrames()
         {
             if (FrameCount < 3) return;
+            int originalFrameCount = FrameCount;
             FastBitmap compareFbm = new(GetFrame(FrameCount - 1).CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.NearestNeighbor));
-            for(int i = FrameCount - 2; i >= 0; i--)
+            for (int i = FrameCount - 2; i >= 0; i--)
             {
                 FastBitmap currentFbm = new(GetFrame(i).CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.NearestNeighbor));
                 if (compareFbm.Equals(currentFbm))
@@ -648,6 +649,13 @@ namespace BIUK9000
                 if (i == 0) currentFbm?.Dispose();
             }
             compareFbm?.Dispose();
+            try
+            {
+                MultiplyFrameTimings(1d / ((double)FrameCount / originalFrameCount));
+            } catch(Exception ex)
+            {
+                MessageBox.Show("Frame timing adjustment failed. Error: " + Environment.NewLine + ex.Message);
+            }
         }
         public void DrawLineOnSubsequentFrames(int sfi, int sli, List<Point> points, Color color, float thickness)
         {
@@ -655,7 +663,7 @@ namespace BIUK9000
             if (gfl is BitmapGFL bgfl)
             {
                 int lid = bgfl.LayerID;
-                for(int i = sfi + 1; i < FrameCount; i++)
+                for (int i = sfi + 1; i < FrameCount; i++)
                 {
                     using Graphics g = Graphics.FromImage(((BitmapGFL)TryGetLayerById(i, lid)).OriginalBitmap);
                     Painter.DrawLinesFromPoints(g, points, color, thickness);
@@ -663,6 +671,15 @@ namespace BIUK9000
             }
             else return;
 
+        }
+        public void MultiplyFrameTimings(double val)
+        {
+            if (val == 1 || val == 0) return;
+
+            foreach(GifFrame gf in giffer.Frames)
+            {
+                gf.FrameDelay = (int)(gf.FrameDelay * val);
+            }
         }
     }
 }
