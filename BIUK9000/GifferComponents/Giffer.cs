@@ -141,6 +141,18 @@ namespace BIUK9000.GifferComponents
             Position = new OVector(0, 0);
             MakeSizeDivisible4();
         }
+        private Giffer(Giffer gifferToCopy)
+        {
+            Width = gifferToCopy.Width;
+            Height = gifferToCopy.Height;
+            Position = new OVector(0, 0);
+            _nextLayerID = gifferToCopy._nextLayerID;
+            Frames = new();
+            foreach(GifFrame gf in gifferToCopy.Frames)
+            {
+                Frames.Add(gf.Clone());
+            }
+        }
         private List<GifFrame> FramesFromGif(Image gif)
         {
             List<GifFrame> result = new();
@@ -250,6 +262,10 @@ namespace BIUK9000.GifferComponents
                 totalDelay += frame.FrameDelay;
             }
             return Math.Round(FrameCount / totalDelay * 1000, 2); 
+        }
+        public Giffer Clone()
+        {
+            return new Giffer(this);
         }
     }
 }

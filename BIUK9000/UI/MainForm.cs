@@ -74,6 +74,7 @@ namespace BIUK9000.UI
         public List<int> Marks { get => mainTimelineSlider.Marks; }
         public bool AskBeforeFrameDelete { get => askDeleteCB.Checked; }
         public bool PaintOnSubsequentFrames { get => controlsPanel.SelectedApplyParamsMode != ApplyParamsMode.applyNone; }
+        public List<Giffer> GifferHistory { get; }
         public MainForm()
         {
             InitializeComponent();
@@ -149,6 +150,23 @@ namespace BIUK9000.UI
 
             Move += MainForm_Move;
             _menuEventHandler = new MenuEventHandler(this);
+            GifferHistory = new();
+        }
+        public void SaveGiffer()
+        {
+            if (MainGiffer == null) return;
+            GifferHistory.Add(MainGiffer.Clone());
+        }
+        public void LoadGiffer()
+        {
+            if(GifferHistory.Count == 0)
+            {
+                Report("No saved giffers!");
+                return;
+            }
+            SetNewGiffer(GifferHistory[GifferHistory.Count - 1]);
+            GifferHistory.RemoveAt(GifferHistory.Count - 1);
+            Report("Giffer loaded!");
         }
         public void Report(string message)
         {
@@ -491,6 +509,16 @@ namespace BIUK9000.UI
                     GifferC.ReverseFrames();
                     CompleteUIUpdate();
                     return true;
+                }
+                else if(keyData == Keys.S && IsCtrlDown)
+                {
+                    SaveGiffer();
+                    Report("Giffer saved!");
+                }
+                else if(keyData == Keys.L && IsCtrlDown)
+                {
+                    LoadGiffer();
+                    CompleteUIUpdate(false, false);
                 }
                 else if (keyData == Keys.ShiftKey)
                 {
