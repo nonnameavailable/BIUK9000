@@ -147,6 +147,7 @@ namespace BIUK9000.UI
 
             _recordControl.Start += _recordControl_Start;
             _recordControl.Stop += _recordControl_Stop;
+            _recordControl.Screenshot += (sender, args) => CaptureSingleFrame();
 
             Move += MainForm_Move;
             _menuEventHandler = new MenuEventHandler(this);
@@ -156,6 +157,11 @@ namespace BIUK9000.UI
         {
             if (MainGiffer == null) return;
             GifferHistory.Add(MainGiffer.Clone());
+            if(GifferHistory.Count > 1) //temporary, until I make it so that going further into history is possible
+            {
+                GifferHistory[0].Dispose();
+                GifferHistory.RemoveAt(0);
+            }
         }
         public void LoadGiffer()
         {
@@ -164,8 +170,7 @@ namespace BIUK9000.UI
                 Report("No saved giffers!");
                 return;
             }
-            SetNewGiffer(GifferHistory[GifferHistory.Count - 1]);
-            GifferHistory.RemoveAt(GifferHistory.Count - 1);
+            SetNewGiffer(GifferHistory[GifferHistory.Count - 1].Clone(), true);
             Report("Giffer loaded!");
         }
         public void Report(string message)
@@ -247,7 +252,36 @@ namespace BIUK9000.UI
                 TransparencyKey = default;
             }
         }
-
+        private void CaptureSingleFrame()
+        {
+            Point p = mainPictureBox.PointToScreen(Point.Empty);
+            if (!CanRecord())
+            {
+                MessageBox.Show("You are either off screen or the recording area is too small!");
+                _recordControl.RecMode(false);
+                return;
+            }
+            _ssl.X = p.X;
+            _ssl.Y = p.Y;
+            //MessageBox.Show("X: " + p.X.ToString() + "  Y: " + p.Y.ToString());
+            _ssl.Width = mainPictureBox.Width - 3;
+            _ssl.Height = mainPictureBox.Height - 3;
+            _ssl.Screenshot();
+            if (GifferC == null)
+            {
+                SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
+            }
+            else
+            {
+                GifferIO.GifImport(this, new Giffer(_ssl.Frames, _ssl.FPS));
+            }
+            ControlsEnable(true);
+            SetRecordMode(false);
+            controlsPanel.SelectedMode = Mode.Move;
+            CompleteUIUpdate();
+            _ssl.ClearFrames();
+            Report("Screenshot captured.");
+        }
         private void _recordControl_Stop(object sender, EventArgs e)
         {
             _ssl.Stop();
@@ -350,7 +384,7 @@ namespace BIUK9000.UI
         }
         private void ControlsEnable(bool val)
         {
-            MainTimelineSlider.Enabled = val;
+            //MainTimelineSlider.Enabled = val;
             mainLayersPanel.Enabled = val;
             markLerpPanel.Enabled = val;
             controlsPanel.SetPaintMode(!val);
@@ -419,8 +453,17 @@ namespace BIUK9000.UI
             }
         }
 
-        public void SetNewGiffer(Giffer newGiffer)
+        public void SetNewGiffer(Giffer newGiffer, bool preserveMode = false)
         {
+            if(MainGiffer != null && preserveMode)
+            {
+                if(newGiffer.FrameCount < MainGiffer.FrameCount ||
+                    newGiffer.Frames[SFI].Layers.Count != MainGiffer.Frames[SFI].Layers.Count ||
+                    newGiffer.Frames[SFI].Layers[SLI] is not BitmapGFL)
+                {
+                    preserveMode = false;
+                }
+            }
             MainGiffer?.Dispose();
             MainGiffer = newGiffer;
             GifferC = new GifferController(newGiffer);
@@ -435,7 +478,7 @@ namespace BIUK9000.UI
                     layerParamsPanel.Controls.Clear();
                 }
             }
-            controlsPanel.SelectedMode = Mode.Move;
+            if(!preserveMode)controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate(false, false);
             GifferC.SaveLayerStateForApply(0, 0);
             Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}");
@@ -473,7 +516,7 @@ namespace BIUK9000.UI
         #region key event handling
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            if (MainGiffer == null || ActiveControl is TextBox || ActiveControl is IGFLParamControl || controlsPanel.SelectedMode != Mode.Move) return base.ProcessKeyPreview(ref m);
+            if(MainGiffer == null) return base.ProcessKeyPreview(ref m);
             const int WM_KEYDOWN = 0x100;
             const int WM_KEYUP = 0x101;
             Keys keyData = (Keys)m.WParam.ToInt32();
@@ -491,7 +534,45 @@ namespace BIUK9000.UI
                     CompleteUIUpdate();
                     return true;
                 }
-                else if (keyData == Keys.T || keyData == Keys.B)
+                else if (keyData == Keys.ShiftKey)
+                {
+                    IsShiftDown = true;
+                    return true;
+                }
+                else if (keyData == Keys.ControlKey)
+                {
+                    IsCtrlDown = true;
+                    return true;
+                }
+                else if (keyData == Keys.S && IsCtrlDown)
+                {
+                    SaveGiffer();
+                    Report("Giffer saved!");
+                }
+                else if (keyData == Keys.L && IsCtrlDown)
+                {
+                    LoadGiffer();
+                    CompleteUIUpdate(false, false);
+                }
+            }
+            else if (m.Msg == WM_KEYUP)
+            {
+                if (keyData == Keys.ShiftKey)
+                {
+                    IsShiftDown = false;
+                    return true;
+                }
+                if (keyData == Keys.ControlKey)
+                {
+                    IsCtrlDown = false;
+                    return true;
+                }
+            }
+            if (ActiveControl is TextBox || ActiveControl is IGFLParamControl || controlsPanel.SelectedMode != Mode.Move) return base.ProcessKeyPreview(ref m);
+
+            if (m.Msg == WM_KEYDOWN)
+            {
+                if (keyData == Keys.T || keyData == Keys.B)
                 {
                     GifferC.AddLayerFromKey(keyData);
                     CompleteUIUpdate();
@@ -508,39 +589,6 @@ namespace BIUK9000.UI
                 {
                     GifferC.ReverseFrames();
                     CompleteUIUpdate();
-                    return true;
-                }
-                else if(keyData == Keys.S && IsCtrlDown)
-                {
-                    SaveGiffer();
-                    Report("Giffer saved!");
-                }
-                else if(keyData == Keys.L && IsCtrlDown)
-                {
-                    LoadGiffer();
-                    CompleteUIUpdate(false, false);
-                }
-                else if (keyData == Keys.ShiftKey)
-                {
-                    IsShiftDown = true;
-                    return true;
-                }
-                else if (keyData == Keys.ControlKey)
-                {
-                    IsCtrlDown = true;
-                    return true;
-                }
-            }
-            else if (m.Msg == WM_KEYUP)
-            {
-                if (keyData == Keys.ShiftKey)
-                {
-                    IsShiftDown = false;
-                    return true;
-                }
-                if (keyData == Keys.ControlKey)
-                {
-                    IsCtrlDown = false;
                     return true;
                 }
             }
@@ -832,7 +880,7 @@ namespace BIUK9000.UI
             {
                 sfi = 0;
             }
-                mainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
+            mainLayersPanel.DisplayLayers(MainGiffer.Frames[sfi]);
             if (!keepSelectedLayer) MainTimelineSlider.ClearMarks();
             mainLayersPanel.SelectHolder(GifferC.TryGetLayerIndexById(SFI, slid));
             MainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;

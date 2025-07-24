@@ -40,6 +40,13 @@ namespace BIUK9000
             _timer.Interval = 1000/fps;
             _timer.Start();
         }
+        public static Bitmap CaptureSingleFrame(int x, int y, int width, int height)
+        {
+            Bitmap result = new Bitmap(width, height);
+            using Graphics g = Graphics.FromImage(result);
+            g.CopyFromScreen(x, y, 0, 0, new Size(width, height), CopyPixelOperation.SourceCopy);
+            return result;
+        }
         public void StartCapture()
         {
             DisposeFrames();
@@ -49,16 +56,7 @@ namespace BIUK9000
             _graphics = Graphics.FromImage(_bitmap);
             _timer.Start();
         }
-        public void Screenshot(int x, int y, int width, int height)
-        {
-            X = x;
-            Y = y;
-            Width = width;
-            Height = height;
-            _bitmap = new Bitmap(Width, Height);
-            _graphics = Graphics.FromImage(_bitmap);
-            _timer_Tick(null, null);
-        }
+
         public void StopCapture()
         {
             _timer.Stop();

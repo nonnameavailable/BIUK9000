@@ -14,6 +14,7 @@ namespace BIUK9000.UI.CustomControls
     {
         public event EventHandler Start;
         public event EventHandler Stop;
+        public event EventHandler Screenshot;
         public int FPS { get => (int)fpsNUD.Value; set => fpsNUD.Value = value; }
         public RecordControl()
         {
@@ -28,6 +29,7 @@ namespace BIUK9000.UI.CustomControls
                 RecMode(false);
                 Stop?.Invoke(sender, args);
             };
+            screenshotBTN.Click += (sender, args) => Screenshot?.Invoke(sender, args);
             RecMode(false);
         }
         public void RecMode(bool val)

@@ -32,6 +32,7 @@
             stopRecBtn = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             fpsNUD = new System.Windows.Forms.NumericUpDown();
+            screenshotBTN = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)fpsNUD).BeginInit();
             SuspendLayout();
             // 
@@ -72,10 +73,20 @@
             fpsNUD.TabIndex = 3;
             fpsNUD.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
+            // screenshotBTN
+            // 
+            screenshotBTN.Location = new System.Drawing.Point(3, 82);
+            screenshotBTN.Name = "screenshotBTN";
+            screenshotBTN.Size = new System.Drawing.Size(104, 40);
+            screenshotBTN.TabIndex = 4;
+            screenshotBTN.Text = "Screenshot";
+            screenshotBTN.UseVisualStyleBackColor = true;
+            // 
             // RecordControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(screenshotBTN);
             Controls.Add(fpsNUD);
             Controls.Add(label1);
             Controls.Add(stopRecBtn);
@@ -93,5 +104,6 @@
         private System.Windows.Forms.Button stopRecBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown fpsNUD;
+        private System.Windows.Forms.Button screenshotBTN;
     }
 }

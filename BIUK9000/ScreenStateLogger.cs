@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace BIUK9000
 {
@@ -44,6 +45,11 @@ namespace BIUK9000
 
         public void Start()
         {
+            Initialize();
+            _timer = new System.Threading.Timer(TimerTick, null, 0, 1000/FPS);
+        }
+        private void Initialize()
+        {
             _duplicatedOutput?.Dispose();
             var factory = new Factory1();
             //Get first adapter
@@ -63,7 +69,7 @@ namespace BIUK9000
                     break;
                 }
             }
-            if(_output == null) throw new Exception("Unable to find screen");
+            if (_output == null) throw new Exception("Unable to find screen");
             _output1 = _output.QueryInterface<Output1>();
             _xOffset = -_output.Description.DesktopBounds.Left;
             _yOffset = -_output.Description.DesktopBounds.Top;
@@ -89,7 +95,6 @@ namespace BIUK9000
             _duplicatedOutput = _output1.DuplicateOutput(_device);
             _now = DateTime.Now;
             _tickCounter = 0;
-            _timer = new System.Threading.Timer(TimerTick, null, 0, 1000/FPS);
         }
         private DateTime _now;
         private int _tickCounter;
@@ -108,11 +113,8 @@ namespace BIUK9000
             int yb = Y + _yOffset;
             try
             {
-                SharpDX.DXGI.Resource screenResource;
-                OutputDuplicateFrameInformation duplicateFrameInformation;
-
                 // Try to get duplicated frame within given time is ms
-                _duplicatedOutput.TryAcquireNextFrame(50, out duplicateFrameInformation, out screenResource);
+                _duplicatedOutput.TryAcquireNextFrame(50, out OutputDuplicateFrameInformation duplicateFrameInformation, out SharpDX.DXGI.Resource screenResource);
                 if (screenResource == null) return;
                 _tickCounter++;
                 // copy resource into memory that can be accessed by the CPU
@@ -183,9 +185,26 @@ namespace BIUK9000
                 Frames[0].Dispose();
                 Frames.RemoveAt(0);
             }
-
         }
+        public void Screenshot()
+        {
+            Initialize();
+            int counter = 0;
+            while(Frames.Count < 2)
+            {
+                if (counter > 10)
+                {
+                    MessageBox.Show("Screenshot failed!");
 
+                    return;
+                }
+                TimerTick(null);
+                Thread.Sleep(100);
+                counter++;
+            }
+            Frames[0].Dispose();
+            Frames.RemoveAt(0);
+        }
         //public event EventHandler<byte[]> ScreenRefreshed;
     }
 }
