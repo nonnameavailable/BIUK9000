@@ -32,7 +32,7 @@ namespace BIUK9000.UI
             var layerConvertToBitmapMI = FindMenuItemByName("layerConvertToBitmapMI");
 
 
-            framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames());
+            framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames(_mf.Marks));
             framesAddReversedMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddReversedFrames());
             framesDeleteBetweenMarksMI.Click += FramesDeleteBetweenMarksMI_Click;
             framesDeleteOutsideOfMarksMI.Click += FramesDeleteOutsideOfMarksMI_Click;

@@ -379,7 +379,7 @@ namespace BIUK9000.UI
         private void DupeFrameButton_Click(object sender, EventArgs e)
         {
             if (GifferC == null) return;
-            GifferC.DupeFrame(SFI, (int)frameDupeCountNUD.Value);
+            GifferC.DupeFrames(Marks, SFI, (int)frameDupeCountNUD.Value);
             CompleteUIUpdate();
         }
         private void ControlsEnable(bool val)
@@ -587,7 +587,7 @@ namespace BIUK9000.UI
                 }
                 else if(keyData == Keys.F && !IsShiftDown)
                 {
-                    GifferC.ReverseFrames();
+                    GifferC.ReverseFrames(Marks);
                     CompleteUIUpdate();
                     return true;
                 }

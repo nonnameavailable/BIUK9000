@@ -346,12 +346,34 @@ namespace BIUK9000
                 }
             }
         }
-        public void DupeFrame(int frameIndex, int dupeCount)
+        public void DupeFrames(List<int> marks, int sfi, int dupeCount)
         {
-            GifFrame originalFrame = giffer.Frames[frameIndex];
-            for (int i = 0; i < dupeCount; i++)
+            if(marks.Count < 2)
             {
-                giffer.Frames.Insert(frameIndex, originalFrame.Clone());
+                GifFrame originalFrame = giffer.Frames[sfi];
+                if (marks.Count == 1)
+                {
+                    originalFrame = giffer.Frames[marks[0]];
+                }
+                for (int i = 0; i < dupeCount; i++)
+                {
+                    giffer.Frames.Insert(sfi, originalFrame.Clone());
+                }
+            } else
+            {
+                List<GifFrame> framesToDupe = new();
+                for (int i = marks[0]; i <= marks[1]; i++)
+                {
+                    framesToDupe.Add(giffer.Frames[i]);
+                }
+                for(int i = 0; i < dupeCount; i++)
+                {
+                    for (int j = framesToDupe.Count - 1; j >= 0; j--)
+                    {
+                        GifFrame gf = framesToDupe[j];
+                        giffer.Frames.Insert(sfi + 1, gf.Clone());
+                    }
+                }
             }
         }
         public void Lasso(int frameIndex, int layerIndex, Point[] lassoPoints, bool includeComplement, bool constrain, bool animateCutout, bool animateComplement)
@@ -480,14 +502,17 @@ namespace BIUK9000
                 layer?.OverrideCenter(xMult, yMult);
             }
         }
-        public void ReverseFrames()
+        public void ReverseFrames(List<int> marks)
         {
-            List<GifFrame> newFrames = new();
-            for (int i = FrameCount - 1; i >= 0; i--)
+            int startIndex = 0;
+            int endIndex = FrameCount - 1;
+            marks.Sort();
+            if(marks.Count >= 2)
             {
-                newFrames.Add(giffer.Frames[i]);
+                startIndex = marks[0];
+                endIndex = marks[1];
             }
-            giffer.Frames = newFrames;
+            giffer.Frames.Reverse(startIndex, endIndex - startIndex + 1);
         }
         public void AddReversedFrames()
         {
