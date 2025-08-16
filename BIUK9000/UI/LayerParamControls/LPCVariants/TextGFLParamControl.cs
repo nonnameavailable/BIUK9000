@@ -72,5 +72,9 @@ namespace BIUK9000.UI.LayerParamControls
                 textLayerFontCBB.SelectedIndex = 0;
             }
         }
+        public bool TextBoxHasFocus()
+        {
+            return textLayerTextTB.Focused;
+        }
     }
 }

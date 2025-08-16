@@ -514,9 +514,15 @@ namespace BIUK9000.UI
         }
 
         #region key event handling
+        private bool ShouldIgnoreKeyPresses()
+        {
+            return (MainGiffer == null ||
+                SelectedLayer is TextGFL && ((TextGFLParamControl)UpperControl).TextBoxHasFocus()
+                );
+        }
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            if(MainGiffer == null) return base.ProcessKeyPreview(ref m);
+            if(ShouldIgnoreKeyPresses()) return base.ProcessKeyPreview(ref m);
             const int WM_KEYDOWN = 0x100;
             const int WM_KEYUP = 0x101;
             Keys keyData = (Keys)m.WParam.ToInt32();
