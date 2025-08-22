@@ -16,21 +16,21 @@ namespace BIUK9000
 {
     public class Painter
     {
-        public static void DrawLine(Graphics g, Point p1, Point p2, Color paintColor, float thickness)
+        public static void DrawLine(Graphics g, Point p1, Point p2, PaintParams pm)
         {
-            using Pen p = new Pen(new SolidBrush(paintColor), thickness);
+            using Pen p = new Pen(new SolidBrush(pm.Color), pm.Thickness);
             p.LineJoin = LineJoin.Round;
             p.StartCap = LineCap.Round;
             p.EndCap = LineCap.Round;
             g.CompositingMode = CompositingMode.SourceCopy;
             g.DrawLine(p, p1, p2);
         }
-        public static void DrawLinesFromPoints(Graphics g, List<Point> points, Color paintColor, float thickness)
+        public static void DrawLinesFromPoints(Graphics g, List<Point> points, PaintParams pm)
         {
             if(points.Count < 2) return;
             for(int i = 1; i < points.Count; i++)
             {
-                DrawLine(g, points[i], points[i-1], paintColor, thickness);
+                DrawLine(g, points[i], points[i-1], pm);
             }
         }
         public static void DrawLinesFromPoints(Graphics g, List<Point> points, List<Color> colors, float thickness)
@@ -39,7 +39,7 @@ namespace BIUK9000
             for (int i = 1; i < points.Count; i++)
             {
                 Color color = colors[i % colors.Count];
-                DrawLine(g, points[i], points[i - 1], color, thickness);
+                DrawLine(g, points[i], points[i - 1], new PaintParams(0, 0, thickness, color));
             }
         }
         public static Bitmap DeleteColor(Bitmap bmp, Point p, int tolerance)

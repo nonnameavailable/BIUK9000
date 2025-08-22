@@ -26,7 +26,7 @@ namespace BIUK9000.UI
         }
         public int SelectedLayerIndex { get; set; }
         public event EventHandler<LayerOrderEventArgs> LayerOrderChanged;
-        public event EventHandler SelectedLayerChanged;
+        public event EventHandler<IndexEventArgs> SelectedLayerChanged;
         public event EventHandler<IndexEventArgs> LayerVisibilityChanged;
         public event EventHandler<IndexEventArgs> LayerDeleteButtonClicked;
         public event EventHandler<IndexEventArgs> SnapLayerToFrame;
@@ -85,7 +85,7 @@ namespace BIUK9000.UI
             int targetIndex = layersFLP.Controls.IndexOf((LayerHolder)sender);
             LayerOrderEventArgs loea = new LayerOrderEventArgs(originalIndex, targetIndex);
             LayerOrderChanged?.Invoke(this, loea);
-            SelectedLayerChanged?.Invoke(this, EventArgs.Empty);
+            SelectedLayerChanged?.Invoke(this, new IndexEventArgs(SelectedLayerIndex));
         }
 
         public void SelectHolder(int index)
@@ -105,14 +105,14 @@ namespace BIUK9000.UI
             lh.Highlight(true);
             SelectedLayerIndex = layersFLP.Controls.IndexOf(lh);
             if (ClickedLayerHolder != null) ClickedLayerHolder.StayHighlighted = true;
-            SelectedLayerChanged?.Invoke(this, EventArgs.Empty);
+            SelectedLayerChanged?.Invoke(this, new IndexEventArgs(SelectedLayerIndex));
         }
 
         public void SelectNewestLayer()
         {
             int lhIndex = layersFLP.Controls.Count - 1;
             SelectHolder(lhIndex);
-            SelectedLayerChanged?.Invoke(this, EventArgs.Empty);
+            SelectedLayerChanged?.Invoke(this, new IndexEventArgs(SelectedLayerIndex));
         }
         public class IndexEventArgs : EventArgs
         {

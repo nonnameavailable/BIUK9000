@@ -28,6 +28,7 @@ namespace BIUK9000.UI.CustomControls
         public bool LassoConstrainBounds { get => lassoConstrainCB.Checked; }
         public bool LassoAnimateCutout { get => animateCutoutCB.Checked; }
         public bool LassoAnimateComplement {  get => animateComplementCB.Checked; }
+
         public PaintTool SelectedPaintTool
         {
             get
@@ -66,5 +67,41 @@ namespace BIUK9000.UI.CustomControls
             FillColor,
             Lasso
         }
+        public PaintParams GetPaintParams()
+        {
+            return new PaintParams(Transparency, Tolerance, Thickness, PaintColorARGB);
+        }
+        public LassoParams GetLassoParams()
+        {
+            return new LassoParams(LassoIncludeComplement, LassoConstrainBounds, LassoAnimateCutout, LassoAnimateComplement);
+        }
+    }
+    public struct PaintParams
+    {
+        public PaintParams(int transparency, int tolerance, float thickness, Color color)
+        {
+            Transparency = transparency;
+            Tolerance = tolerance;
+            Thickness = thickness;
+            Color = color;
+        }
+        public int Transparency { get; }
+        public int Tolerance { get; }
+        public float Thickness { get; }
+        public Color Color { get; }
+    }
+    public struct LassoParams
+    {
+        public LassoParams(bool lic, bool lcb, bool lacu, bool laco)
+        {
+            IncludeComplement = lic;
+            ConstrainBounds = lcb;
+            AnimateCutout = lacu;
+            AnimateComplement = laco;
+        }
+        public bool IncludeComplement { get; }
+        public bool ConstrainBounds { get; }
+        public bool AnimateCutout { get; }
+        public bool AnimateComplement { get; }
     }
 }

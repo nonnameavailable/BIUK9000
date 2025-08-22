@@ -22,6 +22,26 @@ namespace BIUK9000
         private Giffer giffer;
         private GFL SavedLayerForApply;
         public int FrameCount { get => giffer.FrameCount; }
+        private int _sfi, _sli;
+        public int SFI {
+            get => _sfi;
+            set
+            {
+                _sfi = Math.Clamp(value, 0, FrameCount - 1);
+                giffer.SFI = _sfi;
+            }
+        }
+        public int SLI {
+            get => _sli;
+            set
+            {
+                _sli = Math.Clamp(value, 0, SelectedFrame.Layers.Count - 1);
+            }
+        }
+        public int Width { get => giffer.Width; }
+        public int Height { get => giffer.Height; }
+        public GifFrame SelectedFrame { get => giffer.Frames[SFI]; }
+        public GFL SelectedLayer { get => SelectedFrame.Layers[SLI]; }
         public GifferController(Giffer giffer)
         {
             this.giffer = giffer;
@@ -171,6 +191,10 @@ namespace BIUK9000
                 gf.AddLayer(gfl.Clone());
             }
         }
+        public int NextLayerID()
+        {
+            return giffer.NextLayerID();
+        }
         public Point MousePositionOnLayer(int frameIndex, int layerIndex, Point mousePosition)
         {
             GFL gflt = GetLayer(frameIndex, layerIndex);
@@ -296,7 +320,7 @@ namespace BIUK9000
                 MessageBox.Show("First layer on the first frame must be an image layer for this to work!");
             }
         }
-        public void ReplaceColor(int sfi, int sli, Point p, Color replacementColor, int tolerance, bool subsequent)
+        public void ReplaceColor(int sfi, int sli, Point p, PaintParams pm, bool subsequent)
         {
             BitmapGFL currentLayer = GetLayer(sfi, sli) as BitmapGFL;
             int layerID = currentLayer.LayerID;
@@ -307,10 +331,10 @@ namespace BIUK9000
             for (int i = sfi; i < endFrameIndex; i++)
             {
                 BitmapGFL gfl = (BitmapGFL)TryGetLayerById(i, layerID);
-                gfl.ReplaceOriginalBitmap(Painter.ReplaceColor(gfl.OriginalBitmap, c, replacementColor, tolerance));
+                gfl.ReplaceOriginalBitmap(Painter.ReplaceColor(gfl.OriginalBitmap, c, pm.Color, pm.Tolerance));
             }
         }
-        public void FloodFill(int sfi, int sli, Point p, Color fillColor, int tolerance, bool subsequent)
+        public void FloodFill(int sfi, int sli, Point p, PaintParams pm, bool subsequent)
         {
             int lid = GetLayer(sfi, sli).LayerID;
             int endFrameIndex = subsequent ? FrameCount : sfi + 1;
@@ -323,7 +347,7 @@ namespace BIUK9000
                 Color c = obm.GetPixel(p.X, p.Y);
                 if (c.Equals(firstColor))
                 {
-                    currentLayer.ReplaceOriginalBitmap(Painter.FloodFill(obm, p, fillColor, tolerance));
+                    currentLayer.ReplaceOriginalBitmap(Painter.FloodFill(obm, p, pm.Color, pm.Tolerance));
                 }
             }
         }
@@ -376,7 +400,7 @@ namespace BIUK9000
                 }
             }
         }
-        public void Lasso(int frameIndex, int layerIndex, Point[] lassoPoints, bool includeComplement, bool constrain, bool animateCutout, bool animateComplement)
+        public void Lasso(int frameIndex, int layerIndex, Point[] lassoPoints, LassoParams lp)
         {
             if (lassoPoints.Length < 3) return;
             BitmapGFL bgfl = (BitmapGFL)GetLayer(frameIndex, layerIndex);
@@ -384,30 +408,30 @@ namespace BIUK9000
             if (!ClampPoints(lassoPoints, 0, bgfl.OriginalWidth, 0, bgfl.OriginalHeight)) return;
 
             int cutoutLayerId = giffer.NextLayerID();
-            if (animateCutout)
+            if (lp.AnimateCutout)
             {
                 for (int i = frameIndex; i < FrameCount; i++)
                 {
                     BitmapGFL currentBgfl = (BitmapGFL)TryGetLayerById(i, bgfl.LayerID);
                     if (currentBgfl == null) continue;
-                    using Bitmap cutout = Painter.LassoCutout(currentBgfl.OriginalBitmap, lassoPoints, constrain);
+                    using Bitmap cutout = Painter.LassoCutout(currentBgfl.OriginalBitmap, lassoPoints, lp.ConstrainBounds);
                     BitmapGFL newBgfl = new BitmapGFL(cutout, cutoutLayerId);
                     //newBgfl.CopyParameters(bgfl);
-                    CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
+                    CopyLassoParams(newBgfl, bgfl, lp.ConstrainBounds, lassoPoints);
                     GetFrame(i).AddLayer(newBgfl);
                 }
             } else
             {
-                using Bitmap cutoutBitmap = Painter.LassoCutout(bgfl.OriginalBitmap, lassoPoints, constrain);
+                using Bitmap cutoutBitmap = Painter.LassoCutout(bgfl.OriginalBitmap, lassoPoints, lp.ConstrainBounds);
                 using BitmapGFL newBgfl = new BitmapGFL(cutoutBitmap, cutoutLayerId);
                 //newBgfl.CopyParameters(bgfl);
-                CopyLassoParams(newBgfl, bgfl, constrain, lassoPoints);
+                CopyLassoParams(newBgfl, bgfl, lp.ConstrainBounds, lassoPoints);
                 AddLayer(newBgfl);
             }
-            if (includeComplement)
+            if (lp.IncludeComplement)
             {
                 int complementLayerId = giffer.NextLayerID();
-                if (animateComplement)
+                if (lp.AnimateComplement)
                 {
                     for (int i = frameIndex; i < FrameCount; i++)
                     {
@@ -682,7 +706,7 @@ namespace BIUK9000
                 MessageBox.Show("Frame timing adjustment failed. Error: " + Environment.NewLine + ex.Message);
             }
         }
-        public void DrawLineOnSubsequentFrames(int sfi, int sli, List<Point> points, Color color, float thickness)
+        public void DrawLineOnSubsequentFrames(int sfi, int sli, List<Point> points, PaintParams pm)
         {
             GFL gfl = GetLayer(sfi, sli);
             if (gfl is BitmapGFL bgfl)
@@ -691,7 +715,7 @@ namespace BIUK9000
                 for (int i = sfi + 1; i < FrameCount; i++)
                 {
                     using Graphics g = Graphics.FromImage(((BitmapGFL)TryGetLayerById(i, lid)).OriginalBitmap);
-                    Painter.DrawLinesFromPoints(g, points, color, thickness);
+                    Painter.DrawLinesFromPoints(g, points, pm);
                 }
             }
             else return;
@@ -705,6 +729,15 @@ namespace BIUK9000
             {
                 gf.FrameDelay = (int)(gf.FrameDelay * val);
             }
+        }
+
+        public void MoveFromOBR(int x, int y)
+        {
+            giffer.MoveFromOBR(x, y);
+        }
+        public void ResizeFrame(int x, int y)
+        {
+            giffer.Resize(x, y);
         }
     }
 }

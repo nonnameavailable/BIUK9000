@@ -21,6 +21,8 @@ namespace BIUK9000.GifferComponents
     public class Giffer : IDisposable
     {
         public List<GifFrame> Frames { get; set; }
+        public int SFI { get; set; }
+        public int SLI { get; set; }
         private bool _disposed;
         private int _nextLayerID;
         private int _width, _height;
@@ -75,22 +77,7 @@ namespace BIUK9000.GifferComponents
                 Height = 8;
             }
         }
-        //public Giffer(string path)
-        //{
-        //    _nextLayerID = 0;
-        //    try
-        //    {
-        //        using Image gif = Image.FromFile(path);
-        //        Frames = FramesFromGif(gif);
-        //        //OriginalImagePath = path;
-        //        Width = gif.Width;
-        //        Height = gif.Height;
-        //        Position = new OVector(0, 0);
-        //    } catch(Exception ex)
-        //    {
-        //        throw new ArgumentException(path + " is not an image file", ex);
-        //    }
-        //}
+
         public Giffer(string[] paths)
         {
             int lid = NextLayerID();
@@ -125,6 +112,8 @@ namespace BIUK9000.GifferComponents
             Width = fl.Width;
             Height = fl.Height;
             Position = new OVector(0, 0);
+            SFI = 0;
+            SLI = 0;
             MakeSizeDivisible4();
         }
         public Giffer(List<Bitmap> bitmapList, int fps)
@@ -139,6 +128,8 @@ namespace BIUK9000.GifferComponents
             Width = fl.Width;
             Height = fl.Height;
             Position = new OVector(0, 0);
+            SFI = 0;
+            SLI = 0;
             MakeSizeDivisible4();
         }
         private Giffer(Giffer gifferToCopy)
@@ -146,6 +137,8 @@ namespace BIUK9000.GifferComponents
             Width = gifferToCopy.Width;
             Height = gifferToCopy.Height;
             Position = new OVector(0, 0);
+            SFI = gifferToCopy.SFI;
+            SLI = gifferToCopy.SLI;
             _nextLayerID = gifferToCopy._nextLayerID;
             Frames = new();
             foreach(GifFrame gf in gifferToCopy.Frames)
@@ -204,10 +197,6 @@ namespace BIUK9000.GifferComponents
         public Bitmap FrameAsBitmap(GifFrame frame, bool drawHelp, InterpolationMode interpolationMode)
         {
             return frame.CompleteBitmap(Width, Height, drawHelp, interpolationMode);
-        }
-        public void DrawFrame(GifFrame frame, bool drawHelp, Graphics g)
-        {
-            frame.DrawCompleteBitmap(Width, Height, drawHelp, g);
         }
         public Bitmap FrameAsBitmap(int frameIndex, bool drawHelp, InterpolationMode interpolationMode)
         {
