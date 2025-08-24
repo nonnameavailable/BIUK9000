@@ -484,7 +484,13 @@ namespace BIUK9000.UI
             if(!preserveMode)controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate(false, false);
             GifferC.SaveLayerStateForApply(0, 0);
-            InputBinder = new(InputTranslator, GifferC, this);
+            if(InputBinder == null)
+            {
+                InputBinder = new(InputTranslator, GifferC, this);
+            } else
+            {
+                InputBinder.SetNewController(GifferC);
+            }
             Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}");
         }
         private bool ShouldIgnoreKeyPresses()
@@ -679,6 +685,11 @@ namespace BIUK9000.UI
             OVector center = SelectedLayer.Center();
             Point ptm = mainPictureBox.PointToMouse(new Point(center.Xint, center.Yint));
             return new OVector(ptm);
+        }
+        public void SelectNewestLayer()
+        {
+            mainLayersPanel.SelectNewestLayer();
+            GifferC.SLI = mainLayersPanel.SelectedLayerIndex;
         }
     }
 }

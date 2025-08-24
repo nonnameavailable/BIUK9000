@@ -3,6 +3,7 @@ using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI.CustomControls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace BIUK9000.UI.InputHandling
     public class InputBinder
     {
         private readonly InputTranslator _translator;
-        private readonly GifferController _controller;
+        private GifferController _controller;
         private readonly MainForm _mainForm;
         private int SFI { get => _controller.SFI; }
         private int SLI { get => _controller.SLI; }
@@ -156,12 +157,14 @@ namespace BIUK9000.UI.InputHandling
         {
             _controller.AddLayer(new ShapeGFL(_controller.NextLayerID()));
             CompleteUIUpdate();
+            _mainForm.SelectNewestLayer();
         }
 
         private void OnAddTextLayer(object sender, EventArgs e)
         {
             _controller.AddLayer(new TextGFL(_controller.NextLayerID()));
             CompleteUIUpdate();
+            _mainForm.SelectNewestLayer();
         }
 
         private void CompleteUIUpdate()
@@ -177,7 +180,10 @@ namespace BIUK9000.UI.InputHandling
             action();
             CompleteUIUpdate();
         }
-
+        public void SetNewController(GifferController controller)
+        {
+            _controller = controller;
+        }
         private static class MathHelp
         {
             public static float SnappedRotation(float rotation, float snapAngle)
