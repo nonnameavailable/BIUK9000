@@ -331,7 +331,8 @@ namespace BIUK9000
             for (int i = sfi; i < endFrameIndex; i++)
             {
                 BitmapGFL gfl = (BitmapGFL)TryGetLayerById(i, layerID);
-                gfl.ReplaceOriginalBitmap(Painter.ReplaceColor(gfl.OriginalBitmap, c, pm.Color, pm.Tolerance));
+                using Bitmap newBitmap = Painter.ReplaceColor(gfl.OriginalBitmap, c, pm.Color, pm.Tolerance);
+                gfl.ReplaceOriginalBitmap(newBitmap);
             }
         }
         public void FloodFill(int sfi, int sli, Point p, PaintParams pm, bool subsequent)
@@ -347,7 +348,8 @@ namespace BIUK9000
                 Color c = obm.GetPixel(p.X, p.Y);
                 if (c.Equals(firstColor))
                 {
-                    currentLayer.ReplaceOriginalBitmap(Painter.FloodFill(obm, p, pm.Color, pm.Tolerance));
+                    using Bitmap newBitmap = Painter.FloodFill(obm, p, pm.Color, pm.Tolerance);
+                    currentLayer.ReplaceOriginalBitmap(newBitmap);
                 }
             }
         }
@@ -568,7 +570,8 @@ namespace BIUK9000
                 {
                     int newGifferFrameIndex = (int)((double)(j - startFrameIndex) / (endFrameIndex - startFrameIndex) * (newGiffer.FrameCount - 1));
                     BitmapGFL bgfl = (BitmapGFL)TryGetLayerById(j, lid);
-                    bgfl.ReplaceOriginalBitmap(newGiffer.Frames[newGifferFrameIndex].CompleteBitmap(bgfl.Width, bgfl.Height, false, InterpolationMode.HighQualityBicubic));
+                    using Bitmap newBitmap = newGiffer.Frames[newGifferFrameIndex].CompleteBitmap(newGiffer.Width, newGiffer.Height, false, InterpolationMode.HighQualityBicubic);
+                    bgfl.ReplaceOriginalBitmap(newBitmap);
                 }
             }
         }
@@ -587,7 +590,8 @@ namespace BIUK9000
                 for (int i = 0; i < newGiffer.FrameCount; i++)
                 {
                     BitmapGFL bgfl = (BitmapGFL)TryGetLayerById((marks[j] + i) % FrameCount, lid);
-                    bgfl.ReplaceOriginalBitmap(newGiffer.Frames[i].CompleteBitmap(bgfl.Width, bgfl.Height, false, InterpolationMode.HighQualityBicubic));
+                    using Bitmap newBitmap = newGiffer.Frames[i].CompleteBitmap(newGiffer.Width, newGiffer.Height, false, InterpolationMode.HighQualityBicubic);
+                    bgfl.ReplaceOriginalBitmap(newBitmap);
                 }
             }
         }

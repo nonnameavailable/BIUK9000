@@ -44,20 +44,25 @@
             insertHereRB = new System.Windows.Forms.RadioButton();
             insertEndRB = new System.Windows.Forms.RadioButton();
             insertStartRB = new System.Windows.Forms.RadioButton();
-            groupBox3 = new System.Windows.Forms.GroupBox();
-            freshAsFramesRB = new System.Windows.Forms.RadioButton();
+            panel1 = new System.Windows.Forms.Panel();
+            newMaxSideLengthNUD = new System.Windows.Forms.NumericUpDown();
+            label3 = new System.Windows.Forms.Label();
+            originalSizeLabel = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            reduceSizeCB = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)spreadCountNUD).BeginInit();
             groupBox2.SuspendLayout();
-            groupBox3.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)newMaxSideLengthNUD).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 4;
-            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0626545F));
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.06265F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0626545F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.8120327F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0626583F));
@@ -68,15 +73,16 @@
             tableLayoutPanel1.Controls.Add(freshButton, 0, 1);
             tableLayoutPanel1.Controls.Add(groupBox1, 1, 2);
             tableLayoutPanel1.Controls.Add(groupBox2, 3, 2);
-            tableLayoutPanel1.Controls.Add(groupBox3, 0, 2);
+            tableLayoutPanel1.Controls.Add(panel1, 0, 3);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowCount = 4;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(324, 302);
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            tableLayoutPanel1.Size = new System.Drawing.Size(324, 353);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // replaceButton
@@ -149,7 +155,7 @@
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(84, 203);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(155, 96);
+            groupBox1.Size = new System.Drawing.Size(155, 94);
             groupBox1.TabIndex = 4;
             groupBox1.TabStop = false;
             groupBox1.Text = "settings";
@@ -169,9 +175,9 @@
             layerRepeatRB.AutoSize = true;
             layerRepeatRB.Location = new System.Drawing.Point(6, 47);
             layerRepeatRB.Name = "layerRepeatRB";
-            layerRepeatRB.Size = new System.Drawing.Size(58, 19);
+            layerRepeatRB.Size = new System.Drawing.Size(61, 19);
             layerRepeatRB.TabIndex = 1;
-            layerRepeatRB.Text = "repeat";
+            layerRepeatRB.Text = "Repeat";
             toolTip.SetToolTip(layerRepeatRB, "Frames are assigned layers 1:1,\r\nIf original gif has more frames than new, the new frames are repeated until the end");
             layerRepeatRB.UseVisualStyleBackColor = true;
             // 
@@ -181,10 +187,10 @@
             layerSpreadRB.Checked = true;
             layerSpreadRB.Location = new System.Drawing.Point(6, 22);
             layerSpreadRB.Name = "layerSpreadRB";
-            layerSpreadRB.Size = new System.Drawing.Size(60, 19);
+            layerSpreadRB.Size = new System.Drawing.Size(61, 19);
             layerSpreadRB.TabIndex = 0;
             layerSpreadRB.TabStop = true;
-            layerSpreadRB.Text = "spread";
+            layerSpreadRB.Text = "Spread";
             toolTip.SetToolTip(layerSpreadRB, "First frame - first frame as layer\r\nLast frame - last frame as layer");
             layerSpreadRB.UseVisualStyleBackColor = true;
             // 
@@ -196,7 +202,7 @@
             groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox2.Location = new System.Drawing.Point(245, 203);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(76, 96);
+            groupBox2.Size = new System.Drawing.Size(76, 94);
             groupBox2.TabIndex = 5;
             groupBox2.TabStop = false;
             groupBox2.Text = "settings";
@@ -206,9 +212,9 @@
             insertHereRB.AutoSize = true;
             insertHereRB.Location = new System.Drawing.Point(6, 72);
             insertHereRB.Name = "insertHereRB";
-            insertHereRB.Size = new System.Drawing.Size(48, 19);
+            insertHereRB.Size = new System.Drawing.Size(50, 19);
             insertHereRB.TabIndex = 2;
-            insertHereRB.Text = "here";
+            insertHereRB.Text = "Here";
             toolTip.SetToolTip(insertHereRB, "Insert after current frame");
             insertHereRB.UseVisualStyleBackColor = true;
             // 
@@ -219,7 +225,7 @@
             insertEndRB.Name = "insertEndRB";
             insertEndRB.Size = new System.Drawing.Size(45, 19);
             insertEndRB.TabIndex = 1;
-            insertEndRB.Text = "end";
+            insertEndRB.Text = "End";
             toolTip.SetToolTip(insertEndRB, "Insert at the end");
             insertEndRB.UseVisualStyleBackColor = true;
             // 
@@ -229,41 +235,81 @@
             insertStartRB.Checked = true;
             insertStartRB.Location = new System.Drawing.Point(6, 22);
             insertStartRB.Name = "insertStartRB";
-            insertStartRB.Size = new System.Drawing.Size(48, 19);
+            insertStartRB.Size = new System.Drawing.Size(49, 19);
             insertStartRB.TabIndex = 0;
             insertStartRB.TabStop = true;
-            insertStartRB.Text = "start";
+            insertStartRB.Text = "Start";
             toolTip.SetToolTip(insertStartRB, "Insert at the start\r\n");
             insertStartRB.UseVisualStyleBackColor = true;
             // 
-            // groupBox3
+            // panel1
             // 
-            groupBox3.Controls.Add(freshAsFramesRB);
-            groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox3.Location = new System.Drawing.Point(3, 203);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(75, 96);
-            groupBox3.TabIndex = 6;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "settings";
+            tableLayoutPanel1.SetColumnSpan(panel1, 4);
+            panel1.Controls.Add(newMaxSideLengthNUD);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(originalSizeLabel);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(reduceSizeCB);
+            panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel1.Location = new System.Drawing.Point(3, 303);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(318, 47);
+            panel1.TabIndex = 8;
             // 
-            // freshAsFramesRB
+            // newMaxSideLengthNUD
             // 
-            freshAsFramesRB.AutoSize = true;
-            freshAsFramesRB.Checked = true;
-            freshAsFramesRB.Location = new System.Drawing.Point(6, 22);
-            freshAsFramesRB.Name = "freshAsFramesRB";
-            freshAsFramesRB.Size = new System.Drawing.Size(75, 19);
-            freshAsFramesRB.TabIndex = 1;
-            freshAsFramesRB.TabStop = true;
-            freshAsFramesRB.Text = "as frames";
-            freshAsFramesRB.UseVisualStyleBackColor = true;
+            newMaxSideLengthNUD.Increment = new decimal(new int[] { 100, 0, 0, 0 });
+            newMaxSideLengthNUD.Location = new System.Drawing.Point(153, 21);
+            newMaxSideLengthNUD.Maximum = new decimal(new int[] { 2000, 0, 0, 0 });
+            newMaxSideLengthNUD.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
+            newMaxSideLengthNUD.Name = "newMaxSideLengthNUD";
+            newMaxSideLengthNUD.Size = new System.Drawing.Size(74, 23);
+            newMaxSideLengthNUD.TabIndex = 4;
+            newMaxSideLengthNUD.Value = new decimal(new int[] { 800, 0, 0, 0 });
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(153, 3);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(149, 15);
+            label3.TabIndex = 3;
+            label3.Text = "New maximum side length";
+            // 
+            // originalSizeLabel
+            // 
+            originalSizeLabel.AutoSize = true;
+            originalSizeLabel.Location = new System.Drawing.Point(81, 27);
+            originalSizeLabel.Name = "originalSizeLabel";
+            originalSizeLabel.Size = new System.Drawing.Size(0, 15);
+            originalSizeLabel.TabIndex = 2;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(3, 26);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(77, 15);
+            label2.TabIndex = 1;
+            label2.Text = "Original size: ";
+            // 
+            // reduceSizeCB
+            // 
+            reduceSizeCB.AutoSize = true;
+            reduceSizeCB.Checked = true;
+            reduceSizeCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            reduceSizeCB.Location = new System.Drawing.Point(3, 5);
+            reduceSizeCB.Name = "reduceSizeCB";
+            reduceSizeCB.Size = new System.Drawing.Size(87, 19);
+            reduceSizeCB.TabIndex = 0;
+            reduceSizeCB.Text = "Reduce size";
+            reduceSizeCB.UseVisualStyleBackColor = true;
             // 
             // ImportQuestionForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(324, 302);
+            ClientSize = new System.Drawing.Size(324, 353);
             Controls.Add(tableLayoutPanel1);
             Name = "ImportQuestionForm";
             Text = "ImportQuestionForm";
@@ -274,8 +320,9 @@
             ((System.ComponentModel.ISupportInitialize)spreadCountNUD).EndInit();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
-            groupBox3.ResumeLayout(false);
-            groupBox3.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)newMaxSideLengthNUD).EndInit();
             ResumeLayout(false);
         }
 
@@ -294,9 +341,13 @@
         private System.Windows.Forms.RadioButton insertEndRB;
         private System.Windows.Forms.RadioButton insertStartRB;
         private System.Windows.Forms.ToolTip toolTip;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.RadioButton freshAsFramesRB;
         private System.Windows.Forms.Button replaceButton;
         private System.Windows.Forms.NumericUpDown spreadCountNUD;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox reduceSizeCB;
+        private System.Windows.Forms.NumericUpDown newMaxSideLengthNUD;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label originalSizeLabel;
+        private System.Windows.Forms.Label label2;
     }
 }

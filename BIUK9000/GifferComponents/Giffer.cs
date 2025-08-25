@@ -1,6 +1,7 @@
 ﻿using AnimatedGif;
 using BIUK9000.Dithering;
 using BIUK9000.GifferComponents.GFLVariants;
+using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -11,10 +12,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 namespace BIUK9000.GifferComponents
 {
@@ -255,6 +252,25 @@ namespace BIUK9000.GifferComponents
         public Giffer Clone()
         {
             return new Giffer(this);
+        }
+        public void ReduceSize(int maxSideLength)
+        {
+            int largerSide = Math.Max(Width, Height);
+            if (largerSide <= maxSideLength) return;
+            double multiplier = maxSideLength / (double)largerSide;
+            Width = (int)(Width * multiplier);
+            Height = (int)(Height * multiplier);
+            foreach (GifFrame gf in Frames)
+            {
+                GFL gfl = gf.Layers[0];
+                gfl.Width = Width;
+                gfl.Height = Height;
+                if(gfl is BitmapGFL bgfl)
+                {
+                    using Bitmap newBitmap = new Bitmap(bgfl.OriginalBitmap, Width, Height);
+                    bgfl.ReplaceOriginalBitmap(newBitmap);
+                }
+            }
         }
     }
 }

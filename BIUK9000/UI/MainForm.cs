@@ -468,6 +468,7 @@ namespace BIUK9000.UI
                 }
             }
             MainGiffer?.Dispose();
+
             MainGiffer = newGiffer;
             GifferC = new GifferController(newGiffer);
             if(layerParamsPanel.Controls.Count > 0)

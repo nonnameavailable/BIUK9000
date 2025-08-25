@@ -22,8 +22,9 @@ namespace BIUK9000.UI
         public bool OInsertStart { get => insertStartRB.Checked; }
         public bool OInsertEnd { get =>  insertEndRB.Checked; }
         public bool OInsertHere { get => insertHereRB.Checked; }
-        public bool OFreshAsFrames { get => freshAsFramesRB.Checked; }
         public int SpreadCount { get => (int)spreadCountNUD.Value; set => spreadCountNUD.Value = value; }
+        public int NewMaxSideLength { get => (int)newMaxSideLengthNUD.Value; private set => newMaxSideLengthNUD.Value = value; }
+        public bool ReduceSize { get => reduceSizeCB.Checked; }
 
         public ImportQuestionForm()
         {
@@ -37,8 +38,13 @@ namespace BIUK9000.UI
             asLayersButton.DialogResult = DialogResult.OK;
             insertButton.DialogResult = DialogResult.OK;
             replaceButton.DialogResult = DialogResult.OK;
-        }
 
+            NewMaxSideLength = 800;
+        }
+        public void DisplayOriginalSize(Size size)
+        {
+            originalSizeLabel.Text = size.Width + "x" + size.Height;
+        }
         private void ReplaceButton_Click(object sender, EventArgs e)
         {
             SelectedReplace?.Invoke(this, EventArgs.Empty);

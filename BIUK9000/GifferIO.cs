@@ -241,8 +241,9 @@ namespace BIUK9000
         public static bool GifImport(MainForm mf, Giffer giffer)
         {
             using ImportQuestionForm iqf = new ImportQuestionForm();
+            iqf.DisplayOriginalSize(new Size(giffer.Width, giffer.Height));
             if (mf.MainGiffer == null) iqf.SetOnlyFreshMode();
-            iqf.SelectedFresh += (sender, args) => ImportAsFresh(mf, giffer);
+            iqf.SelectedFresh += (sender, args) => ImportAsFresh(mf, iqf, giffer);
             iqf.SelectedAsLayers += (sender, args) => ImportAsLayers(mf, iqf, giffer);
             iqf.SelectedInsert += (sender, args) => ImportAsInsert(mf, iqf, giffer);
             iqf.SelectedReplace += (sender, args) => ImportAsReplace(mf, iqf, giffer);
@@ -260,6 +261,7 @@ namespace BIUK9000
         {
             try
             {
+                if (iqf.ReduceSize) giffer.ReduceSize(iqf.NewMaxSideLength);
                 if (iqf.OLayersRepeat)
                 {
                     mf.GifferC.AddGifferAsReplaceRepeat(giffer, mf.SFI, mf.SLI, mf.Marks);
@@ -274,10 +276,11 @@ namespace BIUK9000
                 MessageBox.Show(ex.Message);
             }
         }
-        private static void ImportAsFresh(MainForm mf, Giffer giffer)
+        private static void ImportAsFresh(MainForm mf, ImportQuestionForm iqf, Giffer giffer)
         {
             try
             {
+                if (iqf.ReduceSize) giffer.ReduceSize(iqf.NewMaxSideLength);
                 mf.SetNewGiffer(giffer);
             } catch(ArgumentException ex)
             {
@@ -288,6 +291,7 @@ namespace BIUK9000
         {
             try
             {
+                if (iqf.ReduceSize) giffer.ReduceSize(iqf.NewMaxSideLength);
                 mf.GifferC.AddGifferAsLayers(giffer, iqf.OLayersSpread, iqf.SpreadCount);
                 giffer.Dispose();
             } catch(ArgumentException ex)
@@ -301,6 +305,7 @@ namespace BIUK9000
             GifferController gc = mf.GifferC;
             try
             {
+                if (iqf.ReduceSize) giffer.ReduceSize(iqf.NewMaxSideLength);
                 if (iqf.OInsertStart)
                 {
                     gc.AddGifferAsFrames(giffer, 0);
