@@ -406,6 +406,7 @@ namespace BIUK9000.UI
             {
                 MainGiffer.Frames.RemoveAt(SFI);
             }
+            SFI = mainTimelineSlider.SelectedFrameIndex;
             CompleteUIUpdate();
         }
 
