@@ -1,6 +1,7 @@
 ﻿using BIUK9000.GifferComponents;
 using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI.CustomControls;
+using BIUK9000.UI.LayerParamControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000.UI.LayerParamControls
+namespace BIUK9000.UI.TopControls.LayerParamControls
 {
     public class UpperControlManager
     {

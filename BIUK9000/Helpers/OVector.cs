@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic.ApplicationServices;
 
-namespace BIUK9000
+namespace BIUK9000.Helpers
 {
     public class OVector
     {
@@ -119,7 +119,7 @@ namespace BIUK9000
         }
         public override string ToString()
         {
-            return ("X: " + X + ", Y: " + Y);
+            return "X: " + X + ", Y: " + Y;
         }
         public Point ToPoint()
         {

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000.Dithering
+namespace BIUK9000.MyGraphics.Dithering
 {
     public class KMeans
     {
@@ -116,8 +116,8 @@ namespace BIUK9000.Dithering
                 {
                     int pixelColor = fbm.GetPixelAsInt(i, j);
                     int nearestCentroidIndex = ClosestPaletteColorIndex(pixelColor, palette);
-                    sumRGB[nearestCentroidIndex][0] += (pixelColor >> 16) & 0xFF;
-                    sumRGB[nearestCentroidIndex][1] += (pixelColor >> 8) & 0xFF;
+                    sumRGB[nearestCentroidIndex][0] += pixelColor >> 16 & 0xFF;
+                    sumRGB[nearestCentroidIndex][1] += pixelColor >> 8 & 0xFF;
                     sumRGB[nearestCentroidIndex][2] += pixelColor & 0xFF;
                     count[nearestCentroidIndex]++;
                 }
@@ -167,7 +167,7 @@ namespace BIUK9000.Dithering
                 double[] distances = Distances(fbm, palette);
                 int wri = WeightedRandomIndex(distances);
                 int newX = wri % fbm.Width;
-                int newY = (int)(wri / fbm.Width);
+                int newY = wri / fbm.Width;
                 return fbm.GetPixelAsInt(newX, newY);
             }
         }
@@ -265,13 +265,13 @@ namespace BIUK9000.Dithering
         private static double ColorDistance(int c1, int c2)
         {
             // Extract RGB components from the first color
-            byte r1 = (byte)((c1 >> 16) & 0xFF);
-            byte g1 = (byte)((c1 >> 8) & 0xFF);
+            byte r1 = (byte)(c1 >> 16 & 0xFF);
+            byte g1 = (byte)(c1 >> 8 & 0xFF);
             byte b1 = (byte)(c1 & 0xFF);
 
             // Extract RGB components from the second color
-            byte r2 = (byte)((c2 >> 16) & 0xFF);
-            byte g2 = (byte)((c2 >> 8) & 0xFF);
+            byte r2 = (byte)(c2 >> 16 & 0xFF);
+            byte g2 = (byte)(c2 >> 8 & 0xFF);
             byte b2 = (byte)(c2 & 0xFF);
 
             // Calculate the Euclidean distance

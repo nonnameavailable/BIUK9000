@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BIUK9000.UI.LayerParamControls
+namespace BIUK9000.UI.TopControls.LayerParamControls
 {
     public interface IGFLParamControl
     {

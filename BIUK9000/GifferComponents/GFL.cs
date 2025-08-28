@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BIUK9000.Helpers;
+using BIUK9000.MyGraphics;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;

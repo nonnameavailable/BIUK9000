@@ -1,7 +1,8 @@
-﻿using BIUK9000.GifferComponents;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using BIUK9000.UI.TopControls.LayerParamControls;
 using BIUK9000.GifferComponents.GFLVariants;
+using BIUK9000.GifferComponents;
 
 namespace BIUK9000.UI.LayerParamControls
 {

@@ -43,11 +43,11 @@ namespace BIUK9000.UI
             deleteFramesButton = new System.Windows.Forms.Button();
             lerpButton = new System.Windows.Forms.Button();
             mainPictureBox = new MyPictureBox();
-            mainLayersPanel = new LayersPanel();
+            rightPanel = new LayersPanel();
             statusStrip = new System.Windows.Forms.StatusStrip();
             statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            layerParamsPanel = new System.Windows.Forms.Panel();
+            topPanel = new System.Windows.Forms.Panel();
             hsbPanel = new BIUK9000.UI.CustomControls.HSBPanel();
             mainMenuStrip = new System.Windows.Forms.MenuStrip();
             framesMI = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,6 +56,7 @@ namespace BIUK9000.UI
             deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             framesDeleteBetweenMarksMI = new System.Windows.Forms.ToolStripMenuItem();
             framesDeleteOutsideOfMarksMI = new System.Windows.Forms.ToolStripMenuItem();
+            framesDeleteDuplicatesMI = new System.Windows.Forms.ToolStripMenuItem();
             layersMI = new System.Windows.Forms.ToolStripMenuItem();
             layerAddMI = new System.Windows.Forms.ToolStripMenuItem();
             layerAddTextMI = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +70,6 @@ namespace BIUK9000.UI
             layerConvertToBitmapMI = new System.Windows.Forms.ToolStripMenuItem();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            framesDeleteDuplicatesMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -89,7 +89,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.Controls.Add(controlsPanel, 0, 1);
             tableLayoutPanel1.Controls.Add(markLerpPanel, 2, 3);
             tableLayoutPanel1.Controls.Add(mainPictureBox, 1, 2);
-            tableLayoutPanel1.Controls.Add(mainLayersPanel, 2, 2);
+            tableLayoutPanel1.Controls.Add(rightPanel, 2, 2);
             tableLayoutPanel1.Controls.Add(statusStrip, 0, 4);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 1, 1);
             tableLayoutPanel1.Controls.Add(mainMenuStrip, 0, 0);
@@ -226,14 +226,14 @@ namespace BIUK9000.UI
             mainPictureBox.TabIndex = 9;
             mainPictureBox.TabStop = false;
             // 
-            // mainLayersPanel
+            // rightPanel
             // 
-            mainLayersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainLayersPanel.Location = new System.Drawing.Point(828, 191);
-            mainLayersPanel.Name = "mainLayersPanel";
-            mainLayersPanel.SelectedLayerIndex = 0;
-            mainLayersPanel.Size = new System.Drawing.Size(144, 296);
-            mainLayersPanel.TabIndex = 2;
+            rightPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            rightPanel.Location = new System.Drawing.Point(828, 191);
+            rightPanel.Name = "rightPanel";
+            rightPanel.SelectedLayerIndex = 0;
+            rightPanel.Size = new System.Drawing.Size(144, 296);
+            rightPanel.TabIndex = 2;
             // 
             // statusStrip
             // 
@@ -257,7 +257,7 @@ namespace BIUK9000.UI
             tableLayoutPanel1.SetColumnSpan(tableLayoutPanel2, 2);
             tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 196F));
-            tableLayoutPanel2.Controls.Add(layerParamsPanel, 0, 0);
+            tableLayoutPanel2.Controls.Add(topPanel, 0, 0);
             tableLayoutPanel2.Controls.Add(hsbPanel, 1, 0);
             tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel2.Location = new System.Drawing.Point(148, 33);
@@ -267,13 +267,13 @@ namespace BIUK9000.UI
             tableLayoutPanel2.Size = new System.Drawing.Size(824, 152);
             tableLayoutPanel2.TabIndex = 11;
             // 
-            // layerParamsPanel
+            // topPanel
             // 
-            layerParamsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            layerParamsPanel.Location = new System.Drawing.Point(3, 3);
-            layerParamsPanel.Name = "layerParamsPanel";
-            layerParamsPanel.Size = new System.Drawing.Size(622, 146);
-            layerParamsPanel.TabIndex = 8;
+            topPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            topPanel.Location = new System.Drawing.Point(3, 3);
+            topPanel.Name = "topPanel";
+            topPanel.Size = new System.Drawing.Size(622, 146);
+            topPanel.TabIndex = 8;
             // 
             // hsbPanel
             // 
@@ -307,20 +307,20 @@ namespace BIUK9000.UI
             // framesReverseMI
             // 
             framesReverseMI.Name = "framesReverseMI";
-            framesReverseMI.Size = new System.Drawing.Size(180, 22);
+            framesReverseMI.Size = new System.Drawing.Size(146, 22);
             framesReverseMI.Text = "Reverse";
             // 
             // framesAddReversedMI
             // 
             framesAddReversedMI.Name = "framesAddReversedMI";
-            framesAddReversedMI.Size = new System.Drawing.Size(180, 22);
+            framesAddReversedMI.Size = new System.Drawing.Size(146, 22);
             framesAddReversedMI.Text = "Add Reversed";
             // 
             // deleteToolStripMenuItem
             // 
             deleteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { framesDeleteBetweenMarksMI, framesDeleteOutsideOfMarksMI, framesDeleteDuplicatesMI });
             deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            deleteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             deleteToolStripMenuItem.Text = "Delete";
             // 
             // framesDeleteBetweenMarksMI
@@ -334,6 +334,12 @@ namespace BIUK9000.UI
             framesDeleteOutsideOfMarksMI.Name = "framesDeleteOutsideOfMarksMI";
             framesDeleteOutsideOfMarksMI.Size = new System.Drawing.Size(164, 22);
             framesDeleteOutsideOfMarksMI.Text = "Outside of marks";
+            // 
+            // framesDeleteDuplicatesMI
+            // 
+            framesDeleteDuplicatesMI.Name = "framesDeleteDuplicatesMI";
+            framesDeleteDuplicatesMI.Size = new System.Drawing.Size(164, 22);
+            framesDeleteDuplicatesMI.Text = "Duplicates";
             // 
             // layersMI
             // 
@@ -407,12 +413,6 @@ namespace BIUK9000.UI
             // 
             saveFileDialog.Filter = "GIF files|*.gif";
             // 
-            // framesDeleteDuplicatesMI
-            // 
-            framesDeleteDuplicatesMI.Name = "framesDeleteDuplicatesMI";
-            framesDeleteDuplicatesMI.Size = new System.Drawing.Size(164, 22);
-            framesDeleteDuplicatesMI.Text = "Duplicates";
-            // 
             // MainForm
             // 
             AllowDrop = true;
@@ -442,7 +442,7 @@ namespace BIUK9000.UI
 
         #endregion
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private LayersPanel mainLayersPanel;
+        private LayersPanel rightPanel;
         private TimelineSlider mainTimelineSlider;
         private ControlsPanel controlsPanel;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
@@ -456,7 +456,7 @@ namespace BIUK9000.UI
         private System.Windows.Forms.Button dupeFrameButton;
         private CustomControls.HSBPanel hsbPanel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Panel layerParamsPanel;
+        private System.Windows.Forms.Panel topPanel;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.MenuStrip mainMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem framesMI;

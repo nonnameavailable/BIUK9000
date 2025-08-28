@@ -1,10 +1,6 @@
-﻿using AnimatedGif;
-using BIUK9000.Dithering;
-using BIUK9000.GifferComponents.GFLVariants;
-using SharpDX.Direct3D11;
+﻿using BIUK9000.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -12,6 +8,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using BIUK9000.GifferComponents.GFLVariants;
 
 namespace BIUK9000.GifferComponents
 {

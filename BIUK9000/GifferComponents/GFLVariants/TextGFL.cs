@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BIUK9000.GifferComponents;
+using BIUK9000.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;

@@ -1,5 +1,4 @@
 ﻿using AnimatedGif;
-using BIUK9000.GifferComponents;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using BIUK9000.Dithering;
 using BIUK9000.UI;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
@@ -18,8 +16,11 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using BIUK9000.UI.CustomControls;
 using SharpDX;
+using BIUK9000.MyGraphics;
+using BIUK9000.MyGraphics.Dithering;
+using BIUK9000.GifferComponents;
 
-namespace BIUK9000
+namespace BIUK9000.GifferManipulation
 {
     public class GifferIO
     {
@@ -96,7 +97,7 @@ namespace BIUK9000
                 bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
                 int numbytes = bmpdata.Stride * bitmap.Height;
                 byte[] bytedata = new byte[numbytes];
-                IntPtr ptr = bmpdata.Scan0;
+                nint ptr = bmpdata.Scan0;
 
                 Marshal.Copy(ptr, bytedata, 0, numbytes);
 

@@ -11,14 +11,18 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using Microsoft.VisualBasic;
-using BIUK9000.GifferComponents;
 using System.Drawing.Text;
 using BIUK9000.UI.LayerParamControls;
 using System.Drawing.Drawing2D;
-using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI.CustomControls;
 using BIUK9000.UI.ExtendedControls;
 using BIUK9000.UI.InputHandling;
+using BIUK9000.UI.TopControls.LayerParamControls;
+using BIUK9000.ScreenRecording;
+using BIUK9000.Helpers;
+using BIUK9000.GifferComponents;
+using BIUK9000.GifferComponents.GFLVariants;
+using BIUK9000.GifferManipulation;
 
 namespace BIUK9000.UI
 {
@@ -53,9 +57,9 @@ namespace BIUK9000.UI
         {
             get
             {
-                if(layerParamsPanel.Controls.Count > 0)
+                if(topPanel.Controls.Count > 0)
                 {
-                    return layerParamsPanel.Controls[0];
+                    return topPanel.Controls[0];
                 } else
                 {
                     return null;
@@ -63,8 +67,8 @@ namespace BIUK9000.UI
             }
             set
             {
-                layerParamsPanel.Controls.Clear();
-                if(value != null)layerParamsPanel.Controls.Add(value);
+                topPanel.Controls.Clear();
+                if(value != null)topPanel.Controls.Add(value);
             }
         }
         public Mode Mode { get => controlsPanel.SelectedMode; }
@@ -98,16 +102,16 @@ namespace BIUK9000.UI
             mainPictureBox.MouseDown += MainPictureBox_MouseDown;
             mainPictureBox.MouseUp += MainPictureBox_MouseUp;
 
-            mainLayersPanel.LayerOrderChanged += mainLayersPanel_LayerOrderChanged;
-            mainLayersPanel.SelectedLayerChanged += MainLayersPanel_SelectedLayerChanged;
-            mainLayersPanel.LayerVisibilityChanged += mainLayersPanel_LayerVisibilityChanged;
-            mainLayersPanel.LayerDeleteButtonClicked += mainLayersPanel_LayerDeleteButtonClicked;
-            mainLayersPanel.SnapLayerToFrame += (sender, args) =>
+            rightPanel.LayerOrderChanged += mainLayersPanel_LayerOrderChanged;
+            rightPanel.SelectedLayerChanged += MainLayersPanel_SelectedLayerChanged;
+            rightPanel.LayerVisibilityChanged += mainLayersPanel_LayerVisibilityChanged;
+            rightPanel.LayerDeleteButtonClicked += mainLayersPanel_LayerDeleteButtonClicked;
+            rightPanel.SnapLayerToFrame += (sender, args) =>
             {
                 GifferC.SnapLayerToFrame(SFI, args.Index, controlsPanel.SelectedApplyParamsMode);
                 UpdateMainPictureBox();
             };
-            mainLayersPanel.RestoredRatio += (sender, args) =>
+            rightPanel.RestoredRatio += (sender, args) =>
             {
                 GifferC.RestoreRatio(SFI, args.Index, controlsPanel.SelectedApplyParamsMode);
                 UpdateMainPictureBox();
@@ -339,8 +343,8 @@ namespace BIUK9000.UI
 
         private void ControlsPanel_ToolRecordSelected(object sender, EventArgs e)
         {
-            layerParamsPanel.Controls.Clear();
-            layerParamsPanel.Controls.Add(_recordControl);
+            topPanel.Controls.Clear();
+            topPanel.Controls.Add(_recordControl);
             ControlsEnable(false);
             SetRecordMode(true);
         }
@@ -388,7 +392,7 @@ namespace BIUK9000.UI
         private void ControlsEnable(bool val)
         {
             //mainTimelineSlider.Enabled = val;
-            mainLayersPanel.Enabled = val;
+            rightPanel.Enabled = val;
             markLerpPanel.Enabled = val;
             controlsPanel.SetPaintMode(!val);
             AllowDrop = val;
@@ -453,7 +457,7 @@ namespace BIUK9000.UI
             if (importSucceeded)
             {
                 CompleteUIUpdate();
-                mainLayersPanel.SelectNewestLayer();
+                rightPanel.SelectNewestLayer();
             }
         }
 
@@ -472,15 +476,15 @@ namespace BIUK9000.UI
 
             MainGiffer = newGiffer;
             GifferC = new GifferController(newGiffer);
-            if(layerParamsPanel.Controls.Count > 0)
+            if(topPanel.Controls.Count > 0)
             {
                 //layerParamsPanel.Controls[0].Dispose();
-                if (layerParamsPanel.Controls[0] is IGFLParamControl)
+                if (topPanel.Controls[0] is IGFLParamControl)
                 {
-                    layerParamsPanel.Controls[0].Dispose();
+                    topPanel.Controls[0].Dispose();
                 } else
                 {
-                    layerParamsPanel.Controls.Clear();
+                    topPanel.Controls.Clear();
                 }
             }
             if(!preserveMode)controlsPanel.SelectedMode = Mode.Move;
@@ -618,8 +622,8 @@ namespace BIUK9000.UI
         {
             if (MainGiffer == null) return;
             SLI = GifferC.TryGetLayerIndexById(SFI, _selectedLayerID);
-            mainLayersPanel.SelectedLayerIndex = SLI;
-            mainLayersPanel.DisplayLayers(GifferC.GetFrame(SFI));
+            rightPanel.SelectedLayerIndex = SLI;
+            rightPanel.DisplayLayers(GifferC.GetFrame(SFI));
         }
         public void UpdateTimeline()
         {
@@ -681,7 +685,7 @@ namespace BIUK9000.UI
             return (float)(LayerRotationCenterToMouse().Magnitude - ClickedLRCtM.Magnitude);
         }
         public void InvalidatePictureBox() => mainPictureBox.Invalidate();
-        public void SelectLastLayer() => mainLayersPanel.SelectNewestLayer();
+        public void SelectLastLayer() => rightPanel.SelectNewestLayer();
         private OVector LayerRotationCenterToMouse()
         {
             OVector center = SelectedLayer.Center();
@@ -690,8 +694,8 @@ namespace BIUK9000.UI
         }
         public void SelectNewestLayer()
         {
-            mainLayersPanel.SelectNewestLayer();
-            GifferC.SLI = mainLayersPanel.SelectedLayerIndex;
+            rightPanel.SelectNewestLayer();
+            GifferC.SLI = rightPanel.SelectedLayerIndex;
         }
     }
 }

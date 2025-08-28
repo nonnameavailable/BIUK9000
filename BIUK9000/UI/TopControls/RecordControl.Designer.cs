@@ -66,7 +66,7 @@
             // fpsNUD
             // 
             fpsNUD.Location = new System.Drawing.Point(46, 49);
-            fpsNUD.Maximum = new decimal(new int[] { 30, 0, 0, 0 });
+            fpsNUD.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
             fpsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             fpsNUD.Name = "fpsNUD";
             fpsNUD.Size = new System.Drawing.Size(120, 23);

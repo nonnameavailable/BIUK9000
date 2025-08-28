@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000
+namespace BIUK9000.MyGraphics
 {
     public class OBIMP
     {
@@ -17,7 +17,7 @@ namespace BIUK9000
         {
             //string gifsiclePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "gifsicle.exe");
 
-            bool is64Bit = IntPtr.Size == 8;
+            bool is64Bit = nint.Size == 8;
             string gifsiclePath;
 
             if (is64Bit)

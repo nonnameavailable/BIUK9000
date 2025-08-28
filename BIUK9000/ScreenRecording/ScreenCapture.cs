@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BIUK9000
+namespace BIUK9000.ScreenRecording
 {
     public class ScreenCapture : IDisposable
     {

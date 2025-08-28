@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BIUK9000
+namespace BIUK9000.MyGraphics
 {
     public class HSBTAdjuster
     {

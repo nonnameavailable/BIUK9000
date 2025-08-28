@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using static AnimatedGif.Quantizer;
 using BIUK9000.GifferComponents;
 
-namespace BIUK9000.Dithering
+namespace BIUK9000.MyGraphics.Dithering
 {
     public class Ditherer : IDisposable
     {

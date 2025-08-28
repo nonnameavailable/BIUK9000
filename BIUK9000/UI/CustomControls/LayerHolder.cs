@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BIUK9000.GifferComponents;
+using BIUK9000.Helpers;
 using BIUK9000.Properties;
 
 namespace BIUK9000.UI

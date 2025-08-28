@@ -15,6 +15,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using AnimatedGif;
 using System.Diagnostics.Eventing.Reader;
+using BIUK9000.Helpers;
 
 namespace BIUK9000.UI
 {

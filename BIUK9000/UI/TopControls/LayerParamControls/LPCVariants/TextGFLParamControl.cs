@@ -1,5 +1,5 @@
 ﻿using BIUK9000.GifferComponents;
-using BIUK9000.GifferComponents.GFLVariants;
+using BIUK9000.UI.TopControls.LayerParamControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BIUK9000.GifferComponents.GFLVariants;
 
 namespace BIUK9000.UI.LayerParamControls
 {

@@ -1,5 +1,4 @@
-﻿using BIUK9000.GifferComponents;
-using BIUK9000.GifferComponents.GFLVariants;
+﻿using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.UI;
 using BIUK9000.UI.CustomControls;
 using System;
@@ -13,9 +12,12 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BIUK9000.Dithering;
+using BIUK9000.MyGraphics;
+using BIUK9000.MyGraphics.Dithering;
+using BIUK9000.Helpers;
+using BIUK9000.GifferComponents;
 
-namespace BIUK9000
+namespace BIUK9000.GifferManipulation
 {
     public class GifferController
     {

@@ -1,6 +1,6 @@
-﻿using BIUK9000.Dithering;
-using BIUK9000.GifferComponents;
+﻿using BIUK9000.GifferComponents;
 using BIUK9000.GifferComponents.GFLVariants;
+using BIUK9000.MyGraphics.Dithering;
 using BIUK9000.UI.CustomControls;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BIUK9000
+namespace BIUK9000.MyGraphics
 {
     public class Painter
     {

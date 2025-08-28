@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000
+namespace BIUK9000.Helpers
 {
     public static class Lerper
     {

@@ -1,5 +1,6 @@
-﻿using BIUK9000.GifferComponents;
-using BIUK9000.GifferComponents.GFLVariants;
+﻿using BIUK9000.GifferComponents.GFLVariants;
+using BIUK9000.Helpers;
+using BIUK9000.MyGraphics;
 using BIUK9000.UI.CustomControls;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BIUK9000.GifferComponents;
+using BIUK9000.GifferManipulation;
 
 namespace BIUK9000.UI.InputHandling
 {

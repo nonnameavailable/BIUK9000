@@ -11,7 +11,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace BIUK9000
+namespace BIUK9000.ScreenRecording
 {
     public class ScreenStateLogger
     {
@@ -98,7 +98,7 @@ namespace BIUK9000
         }
         private DateTime _now;
         private int _tickCounter;
-        private void TimerTick(Object o)
+        private void TimerTick(object o)
         {
             DateTime nn = DateTime.Now;
             TimeSpan ts = nn - _now;
@@ -139,11 +139,11 @@ namespace BIUK9000
                 int sourceStride = mapSource.RowPitch;
                 int destStride = mapDest.Stride;
 
-                sourcePtr = IntPtr.Add(sourcePtr, (int)((long)sourceStride * yb));
+                sourcePtr = nint.Add(sourcePtr, (int)((long)sourceStride * yb));
                 for (int y = 0; y < bitmap.Height; y++)
                 {
-                    IntPtr sourceRowPtr = IntPtr.Add(sourcePtr, y * sourceStride + startPixel * bytesPerPixel);
-                    IntPtr destRowPtr = IntPtr.Add(destPtr, y * destStride);
+                    nint sourceRowPtr = nint.Add(sourcePtr, y * sourceStride + startPixel * bytesPerPixel);
+                    nint destRowPtr = nint.Add(destPtr, y * destStride);
 
                     byte[] rowData = new byte[pixelsToCopy * bytesPerPixel];
                     System.Runtime.InteropServices.Marshal.Copy(sourceRowPtr, rowData, 0, rowData.Length);
