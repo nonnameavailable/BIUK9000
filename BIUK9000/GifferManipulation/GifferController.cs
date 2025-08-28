@@ -670,6 +670,7 @@ namespace BIUK9000.GifferManipulation
             int firstIndex = Math.Clamp(Math.Min(marks[0], marks[1]) - 1, 0, FrameCount - 1);
             if (secondIndex < FrameCount - 1) DeleteFramesBetweenMarks([secondIndex, FrameCount - 1], false);
             if (firstIndex > 0) DeleteFramesBetweenMarks([0, firstIndex], false);
+            if(SFI >= FrameCount) SFI = FrameCount - 1;
             return true;
         }
         public void ConvertLayerToBitmap(int sfi, int sli)
@@ -711,6 +712,7 @@ namespace BIUK9000.GifferManipulation
             {
                 MessageBox.Show("Frame timing adjustment failed. Error: " + Environment.NewLine + ex.Message);
             }
+            if (SFI >= FrameCount) SFI = FrameCount - 1;
         }
         public void DrawLineOnSubsequentFrames(int sfi, int sli, List<Point> points, PaintParams pm)
         {
