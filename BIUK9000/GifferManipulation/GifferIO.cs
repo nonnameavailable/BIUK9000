@@ -19,6 +19,7 @@ using SharpDX;
 using BIUK9000.MyGraphics;
 using BIUK9000.MyGraphics.Dithering;
 using BIUK9000.GifferComponents;
+using BIUK9000.Helpers;
 
 namespace BIUK9000.GifferManipulation
 {
@@ -235,7 +236,14 @@ namespace BIUK9000.GifferManipulation
             }
             catch (ArgumentException ex)
             {
-                MessageBox.Show(ex.Message);
+                try
+                {
+                    Giffer giffer = new Giffer(VideoFrameExtractor.ExtractFrames(filePaths[0]), 20);
+                    result = GifImport(mf, giffer);
+                } catch (Exception ex2)
+                {
+                    MessageBox.Show(ex.Message + Environment.NewLine + ex2.Message);
+                }
             }
             return result;
         }
