@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace BIUK9000.Helpers
+namespace BIUK9000.IO
 {
     //GPT-5 wrote this. It seems to work fine.
     public static class VideoFrameExtractor
@@ -72,7 +72,7 @@ namespace BIUK9000.Helpers
             using (var process = Process.Start(psi))
             using (var reader = process.StandardOutput)
             {
-                string? line = reader.ReadLine();
+                string line = reader.ReadLine();
                 if (line == null)
                     throw new Exception("Could not read video dimensions from ffprobe output.");
 

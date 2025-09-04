@@ -19,7 +19,7 @@ using SharpDX;
 using BIUK9000.MyGraphics;
 using BIUK9000.MyGraphics.Dithering;
 using BIUK9000.GifferComponents;
-using BIUK9000.Helpers;
+using BIUK9000.IO;
 
 namespace BIUK9000.GifferManipulation
 {
@@ -29,86 +29,24 @@ namespace BIUK9000.GifferManipulation
         {
             double delayMultiplier = 1;
             double frameStep = 1;
+            List<Bitmap> bitmaps = giffer.Frames.Select(frame => frame.CompleteBitmap(giffer.Width, giffer.Height, false, interpolationMode)).ToList();
+            List<int> delays = giffer.Frames.Select(frame => frame.FrameDelay).ToList();
+            Image result;
             if (sfdf.ChangeFramerate)
             {
                 delayMultiplier = sfdf.CurrentFramerate / sfdf.NewFramerate;
                 frameStep = delayMultiplier;
             }
-            using MemoryStream stream = new MemoryStream();
             if (sfdf.ChosenExportLibrary == GifSFDForm.ExportLibrary.AnimatedGif)
             {
-                using AnimatedGifCreator agc = new AnimatedGifCreator(stream, 20);
-                for (double i = 0; i < giffer.FrameCount; i += frameStep)
-                {
-                    GifFrame frame = giffer.Frames[(int) i];
-                    agc.AddFrame(giffer.FrameAsBitmap(frame, false, interpolationMode), (int)(frame.FrameDelay * delayMultiplier), sfdf.GifQuality);
-                }
+                result = BMPToGifConvertor.GifAnimatedGif(bitmaps, delays, frameStep, sfdf.GifQuality);
             } else
             {
-                using var gifski = Gifski.Create(@"resources\gifski.dll", settings =>
-                {
-                    settings.Quality = 100;
-                });
-                gifski.SetStreamOutput(stream);
-                int counter = 0;
-                double delayCumulation = 0;
-                for (double k = 0; k < giffer.FrameCount; k += frameStep)
-                {
-                    GifFrame gf = giffer.Frames[(int) k];
-                    delayCumulation += gf.FrameDelay / 1000d * delayMultiplier;
-                    using Bitmap frame = giffer.FrameAsBitmap(gf, false, interpolationMode);
-                    using FastBitmap fbm = new FastBitmap(frame);
-                    for (int i = 0; i < fbm.Width; i++)
-                    {
-                        for (int j = 0; j < fbm.Height; j++)
-                        {
-                            Color c = fbm.GetPixel(i, j);
-                            fbm.SetPixel(i, j, Color.FromArgb(c.A, c.B, c.G, c.R));
-                        }
-                    }
-                    byte[] argb = ImageToByte(fbm.Bitmap);
-                    //byte[] rgba = new byte[argb.Length];
-
-                    //for (int i = 0; i < argb.Length; i += 4)
-                    //{
-                    //    byte a = argb[i];       // A
-                    //    byte r = argb[i + 1];   // R
-                    //    byte g = argb[i + 2];   // G
-                    //    byte b = argb[i + 3];   // B
-
-                    //    // Assign values to the rgba array
-                    //    rgba[i] = a;    // R
-                    //    rgba[i + 1] = r; // G
-                    //    rgba[i + 2] = g; // B
-                    //    rgba[i + 3] = b; // A
-                    //}
-                    gifski.AddFrameRgba((uint)counter, delayCumulation, (uint)frame.Width, (uint)frame.Height, argb);
-                    counter++;
-                }
-                gifski.Finish();
+                result = BMPToGifConvertor.GifGifski(bitmaps, delays, frameStep, 90);
             }
-            return Image.FromStream(stream);
-        }
-        public static byte[] ImageToByte(Bitmap bitmap)
-        {
-            BitmapData bmpdata = null;
-
-            try
-            {
-                bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
-                int numbytes = bmpdata.Stride * bitmap.Height;
-                byte[] bytedata = new byte[numbytes];
-                nint ptr = bmpdata.Scan0;
-
-                Marshal.Copy(ptr, bytedata, 0, numbytes);
-
-                return bytedata;
-            }
-            finally
-            {
-                if (bmpdata != null)
-                    bitmap.UnlockBits(bmpdata);
-            }
+            bitmaps.ForEach(bitmap =>  bitmap.Dispose());
+            bitmaps.Clear();
+            return result;
         }
         private static Image GifFromGifferDithered(Giffer giffer, List<Color> paletteForDithering, GifQuality gifQuality, InterpolationMode interpolationMode)
         {
@@ -231,19 +169,13 @@ namespace BIUK9000.GifferManipulation
             bool result = false;
             try
             {
-                Giffer giffer = new Giffer(filePaths);
+                Giffer giffer = new Giffer(FileToBitmapConvertor.FilesToBitmapList(filePaths), 50);
                 result = GifImport(mf, giffer);
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
-                try
-                {
-                    Giffer giffer = new Giffer(VideoFrameExtractor.ExtractFrames(filePaths[0]), 20);
-                    result = GifImport(mf, giffer);
-                } catch (Exception ex2)
-                {
-                    MessageBox.Show(ex.Message + Environment.NewLine + ex2.Message);
-                }
+                MessageBox.Show(ex.Message);
+                result = false;
             }
             return result;
         }

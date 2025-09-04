@@ -544,7 +544,8 @@ namespace BIUK9000.GifferManipulation
         }
         public void AddReversedFrames()
         {
-            for (int i = FrameCount - 1; i >= 0; i--)
+            if (FrameCount < 3) return;
+            for (int i = FrameCount - 2; i > 0; i--)
             {
                 giffer.Frames.Add(giffer.Frames[i].Clone());
             }
