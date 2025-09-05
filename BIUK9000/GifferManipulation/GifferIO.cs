@@ -169,7 +169,11 @@ namespace BIUK9000.GifferManipulation
             bool result = false;
             try
             {
-                Giffer giffer = new Giffer(FileToBitmapConvertor.FilesToBitmapList(filePaths), 50);
+                List<Bitmap> bitmaps = FileToBitmapConvertor.FilesToBitmapList(filePaths);
+                int delay = FileToBitmapConvertor.FrameDelayFromFile(filePaths[0]);
+                Giffer giffer = new Giffer(bitmaps, 1000 / delay);
+                bitmaps.ForEach(bitmap => bitmap.Dispose());
+                bitmaps.Clear();
                 result = GifImport(mf, giffer);
             }
             catch (Exception ex)
@@ -350,7 +354,7 @@ namespace BIUK9000.GifferManipulation
         }
         public static void SaveGifAsMp4(Giffer giffer, string path, GifSFDForm sfdf)
         {
-            if (!IsFFmpegAvailable())
+            if (!IsFFInPath("ffmpeg"))
             {
                 MessageBox.Show("ffmpeg must be in PATH for this to work!");
                 return;
@@ -379,17 +383,6 @@ namespace BIUK9000.GifferManipulation
                 }
             };
             ffmpeg.Start();
-            //_ = Task.Run(() =>
-            //{
-            //    using (var reader = ffmpeg.StandardError)
-            //    {
-            //        string line;
-            //        while ((line = reader.ReadLine()) != null)
-            //        {
-            //           Debug.Print($"FFmpeg Error: {line}");
-            //        }
-            //    }
-            //});
             using var stream = ffmpeg.StandardInput.BaseStream;
             int counter = 0;
             foreach(GifFrame frame in giffer.Frames)
@@ -407,7 +400,7 @@ namespace BIUK9000.GifferManipulation
             stream.Close();
             ffmpeg.WaitForExit();
         }
-        public static bool IsFFmpegAvailable()
+        public static bool IsFFInPath(string fileName)
         {
             try
             {
@@ -416,7 +409,7 @@ namespace BIUK9000.GifferManipulation
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = "ffmpeg",
+                        FileName = fileName,
                         Arguments = "-version", // Check ffmpeg version
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,

@@ -12,6 +12,10 @@ namespace BIUK9000.IO
     {
         public static List<Bitmap> ExtractFrames(string videoPath)
         {
+            if(!IsFFInPath("ffmpeg") || !IsFFInPath("ffprobe"))
+            {
+                throw new Exception("Both ffmpeg and ffprobe must be in PATH for this to work!");
+            }
             // 1. Get video dimensions using ffprobe
             (int width, int height) = GetVideoDimensions(videoPath);
 
@@ -81,6 +85,73 @@ namespace BIUK9000.IO
                     throw new Exception("Unexpected ffprobe output format.");
 
                 return (int.Parse(parts[0]), int.Parse(parts[1]));
+            }
+        }
+        public static double GetVideoFrameDelay(string videoPath)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "ffprobe",
+                Arguments = $"-v error -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 \"{videoPath}\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            };
+
+            using (var process = Process.Start(psi))
+            using (var reader = process.StandardOutput)
+            {
+                string line = reader.ReadLine();
+                if (string.IsNullOrWhiteSpace(line))
+                    throw new Exception("Could not read framerate from ffprobe output.");
+
+                // r_frame_rate is usually like "30000/1001" or "25/1"
+                var parts = line.Split('/');
+                if (parts.Length == 2 &&
+                    double.TryParse(parts[0], out double numerator) &&
+                    double.TryParse(parts[1], out double denominator) &&
+                    denominator != 0)
+                {
+                    return numerator / denominator;
+                }
+                else if (double.TryParse(line, out double fps))
+                {
+                    return 1000d / fps;
+                }
+                else
+                {
+                    throw new Exception("Unexpected framerate format from ffprobe.");
+                }
+            }
+        }
+        private static bool IsFFInPath(string fileName)
+        {
+            try
+            {
+                // Create a process to check ffmpeg
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = fileName,
+                        Arguments = "-version", // Check ffmpeg version
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                process.WaitForExit();
+
+                // If ffmpeg runs successfully, it should exit with a code of 0
+                return process.ExitCode == 0;
+            }
+            catch
+            {
+                // If an exception occurs, ffmpeg is likely not in the PATH
+                return false;
             }
         }
     }

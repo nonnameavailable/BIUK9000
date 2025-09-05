@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -19,7 +20,7 @@ namespace BIUK9000.IO
             {
                 try
                 {
-                    result.AddRange(FileToBitmapList(path));
+                    result.AddRange(BitmapListFromFile(path));
                 }
                 catch (Exception ex)
                 {
@@ -42,23 +43,29 @@ namespace BIUK9000.IO
             }
             return result;
         }
-        public static List<Bitmap> FileToBitmapList(string path)
+        private static List<Bitmap> BitmapListFromFile(string path)
         {
             string extension = Path.GetExtension(path).ToLowerInvariant();
-            try
+            return extension switch
             {
-                return extension switch
-                {
-                    ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => VideoFrameExtractor.ExtractFrames(path),
-                    ".gif" => FramesFromGif(Image.FromFile(path)),
-                    _ => [(Bitmap)Image.FromFile(path)]
-                };
-            }
-            catch
-            {
-                throw new Exception("Failed to load file: " + path);
-            }
+                ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => VideoFrameExtractor.ExtractFrames(path),
+                ".gif" => FramesFromGif(Image.FromFile(path)),
+                ".bmp" or ".jpeg" or ".png" or ".tiff" => [(Bitmap)Image.FromFile(path)],
+                _ => throw new Exception("Unsupported file format.")
+            };
         }
+        public static int FrameDelayFromFile(string path)
+        {
+            string extension = Path.GetExtension(path).ToLowerInvariant();
+            return extension switch
+            {
+                ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => (int)VideoFrameExtractor.GetVideoFrameDelay(path),
+                ".gif" => GifFrameDelay(path),
+                ".bmp" or ".jpeg" or ".png" or ".tiff" => 100,
+                _ => throw new Exception("Unsupported file format.")
+            };
+        }
+        //public static (List<Bitmap> bitmaps, int delay) 
         private static List<Bitmap> FramesFromGif(Image gif)
         {
             List<Bitmap> result = new();
@@ -66,6 +73,7 @@ namespace BIUK9000.IO
             if (frameCount == 1)
             {
                 result.Add(new Bitmap(gif));
+                gif.Dispose();
                 return result;
             }
             for (int i = 0; i < frameCount; i++)
@@ -73,12 +81,15 @@ namespace BIUK9000.IO
                 gif.SelectActiveFrame(FrameDimension.Time, i);
                 result.Add(new Bitmap(gif));
             }
+            gif.Dispose();
             return result;
         }
-        private static int FrameDelay(Image img)
+        private static int GifFrameDelay(string path)
         {
+            using Image img = Image.FromFile(path);
             PropertyItem propertyItem = img.GetPropertyItem(0x5100);
-            return BitConverter.ToInt32(propertyItem.Value, 0) * 10;
+            int result = BitConverter.ToInt32(propertyItem.Value, 0) * 10;
+            return result;
         }
         private static int ImageFrameCount(Image img)
         {
