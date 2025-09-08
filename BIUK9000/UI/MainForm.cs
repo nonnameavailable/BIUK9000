@@ -80,7 +80,7 @@ namespace BIUK9000.UI
         public bool PaintOnSubsequentFrames { get => controlsPanel.SelectedApplyParamsMode != ApplyParamsMode.applyNone; }
         public List<Giffer> GifferHistory { get; }
         private InputTranslator InputTranslator { get; }
-        private InputBinder InputBinder { get; set; }
+        private InputHandler InputBinder { get; set; }
         public MainForm()
         {
             InitializeComponent();
@@ -157,6 +157,8 @@ namespace BIUK9000.UI
             GifferHistory = new();
 
             InputTranslator = new();
+
+            KeyPreview = true;
         }
         public void SaveGiffer()
         {
@@ -508,11 +510,17 @@ namespace BIUK9000.UI
         protected override bool ProcessKeyPreview(ref Message m)
         {
             if(ShouldIgnoreKeyPresses()) return base.ProcessKeyPreview(ref m);
-            if (!InputTranslator.HandleKey(m))
+            return InputTranslator.HandleKey(m);
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Left || keyData == Keys.Right ||
+                keyData == Keys.Up || keyData == Keys.Down)
             {
-                return base.ProcessKeyPreview(ref m);
+                return InputTranslator.HandleKey(msg);
             }
-            else return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)

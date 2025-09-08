@@ -18,8 +18,8 @@ namespace BIUK9000.UI.InputHandling
         public event EventHandler NextFrame, PreviousFrame;
         public event EventHandler SaveGif, LoadGif;
         public event EventHandler AddTextLayer, AddShapeLayer;
-        public event EventHandler MoveLayer, MoveAll, ResizeLayerKeepRatio, ResizeLayerFree, ResizeFrame, RotateLayer;
-        public event MouseEventHandler DrawLine, ReplaceColor, FloodFill, LassoPointAdded, Pipette, OverrideLayerCenter;
+        public event EventHandler MoveAll, ResizeLayerKeepRatio, ResizeLayerFree, ResizeFrame, RotateLayer;
+        public event MouseEventHandler DrawLine, ReplaceColor, FloodFill, LassoPointAdded, Pipette, OverrideLayerCenter, MoveLayer;
         public event MouseEventHandler LassoCompleted, DrawLineCompleted;
         public event EventHandler StartTimer, StopTimer, ApplyLayerParams;
         private bool IsShiftDown { get; set; }
@@ -81,6 +81,30 @@ namespace BIUK9000.UI.InputHandling
                 else if (keyData == Keys.B)
                 {
                     AddShapeLayer?.Invoke(this, null);
+                    return true;
+                }
+                else if (keyData == Keys.Right)
+                {
+                    int moveValue = IsShiftDown ? 2 : 1;
+                    MoveLayer?.Invoke(this, DefaultMouseEventArgs(moveValue, 0));
+                    return true;
+                }
+                else if (keyData == Keys.Left)
+                {
+                    int moveValue = IsShiftDown ? 2 : 1;
+                    MoveLayer?.Invoke(this, DefaultMouseEventArgs(-moveValue, 0));
+                    return true;
+                }
+                else if(keyData == Keys.Up)
+                {
+                    int moveValue = IsShiftDown ? 2 : 1;
+                    MoveLayer?.Invoke(this, DefaultMouseEventArgs(0, -moveValue));
+                    return true;
+                }
+                else if(keyData == Keys.Down)
+                {
+                    int moveValue = IsShiftDown ? 2 : 1;
+                    MoveLayer?.Invoke(this, DefaultMouseEventArgs(0, moveValue));
                     return true;
                 }
             }
@@ -237,6 +261,10 @@ namespace BIUK9000.UI.InputHandling
                     LassoPointAdded?.Invoke(this, e);
                 }
             }
+        }
+        private MouseEventArgs DefaultMouseEventArgs(int x, int y)
+        {
+            return new MouseEventArgs(MouseButtons.Left, 1, x, y, 0);
         }
     }
 }

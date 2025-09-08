@@ -15,7 +15,7 @@ using BIUK9000.GifferManipulation;
 
 namespace BIUK9000.UI.InputHandling
 {
-    public class InputBinder
+    public class InputHandler
     {
         private readonly InputTranslator _translator;
         private GifferController _controller;
@@ -23,7 +23,7 @@ namespace BIUK9000.UI.InputHandling
         private int SFI { get => _controller.SFI; }
         private int SLI { get => _controller.SLI; }
 
-        public InputBinder(InputTranslator translator, GifferController controller, MainForm mainForm)
+        public InputHandler(InputTranslator translator, GifferController controller, MainForm mainForm)
         {
             _translator = translator;
             _controller = controller;
@@ -33,8 +33,8 @@ namespace BIUK9000.UI.InputHandling
             _translator.AddTextLayer += OnAddTextLayer;
             _translator.SaveGif += (sender, args) => _mainForm.SaveGiffer();
             _translator.LoadGif += (sender, args) => _mainForm.LoadGiffer();
-            _translator.NextFrame += (sender, args) => ActionAndCompleteUpdate(() => _controller.SFI++);
-            _translator.PreviousFrame += (sender, args) => ActionAndCompleteUpdate(() => _controller.SFI--);
+            _translator.NextFrame += OnNextFrame;
+            _translator.PreviousFrame += OnPreviousFrame;
 
             _translator.LassoCompleted += OnLassoCompleted;
             _translator.DrawLineCompleted += OnDrawLineCompleted;
@@ -55,6 +55,30 @@ namespace BIUK9000.UI.InputHandling
             _translator.ResizeFrame += OnResizeFrame;
             _translator.ResizeLayerKeepRatio += OnResizeLayerKeepRatio;
             _translator.ResizeLayerFree += OnResizeLayerFree;
+        }
+
+        private void OnPreviousFrame(object sender, EventArgs e)
+        {
+            if(_controller.SFI == 0)
+            {
+                _controller.SFI = _controller.FrameCount - 1;
+            } else
+            {
+                _controller.SFI--;
+            }
+            CompleteUIUpdate();
+        }
+
+        private void OnNextFrame(object sender, EventArgs e)
+        {
+            if (_controller.SFI == _controller.FrameCount - 1)
+            {
+                _controller.SFI = 0;
+            } else
+            {
+                _controller.SFI++;
+            }
+            CompleteUIUpdate();
         }
 
         private void OnResizeLayerFree(object sender, EventArgs e)
@@ -93,12 +117,19 @@ namespace BIUK9000.UI.InputHandling
             }
         }
 
-        private void OnMoveLayer(object sender, EventArgs e)
+        private void OnMoveLayer(object sender, MouseEventArgs e)
         {
             GFL gfl = _controller.SelectedLayer;
-            Point drag = _mainForm.ScaledDragVector();
-            gfl.MoveFromOBR(drag.X, drag.Y);
-            if (_mainForm.PositionSnap) gfl.Position = MathHelp.SnappedPosition(gfl.Position, 10);
+            if (e == null)
+            {
+                Point drag = _mainForm.ScaledDragVector();
+                gfl.MoveFromOBR(drag.X, drag.Y);
+                if (_mainForm.PositionSnap) gfl.Position = MathHelp.SnappedPosition(gfl.Position, 10);
+            } else
+            {
+               gfl.Move(e.X, e.Y);
+                _mainForm.UpdateMainPictureBox();
+            }
         }
 
         private void OnMoveAll(object sender, EventArgs e)
