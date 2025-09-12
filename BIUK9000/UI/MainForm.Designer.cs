@@ -409,10 +409,6 @@ namespace BIUK9000.UI
             layerConvertToBitmapMI.Size = new System.Drawing.Size(197, 22);
             layerConvertToBitmapMI.Text = "Convert to bitmap";
             // 
-            // saveFileDialog
-            // 
-            saveFileDialog.Filter = "GIF files|*.gif";
-            // 
             // MainForm
             // 
             AllowDrop = true;

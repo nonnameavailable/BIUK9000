@@ -30,6 +30,7 @@
         {
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             panel2 = new System.Windows.Forms.Panel();
+            importBTN = new System.Windows.Forms.Button();
             timelineSlider1 = new TimelineSlider();
             myPictureBox1 = new BIUK9000.UI.ExtendedControls.MyPictureBox();
             statusStrip = new System.Windows.Forms.StatusStrip();
@@ -39,7 +40,6 @@
             changeFpsCB = new System.Windows.Forms.CheckBox();
             maxSideLengthNUD = new System.Windows.Forms.NumericUpDown();
             maxSideLengthCB = new System.Windows.Forms.CheckBox();
-            importBTN = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)myPictureBox1).BeginInit();
@@ -78,6 +78,17 @@
             panel2.Name = "panel2";
             panel2.Size = new System.Drawing.Size(94, 277);
             panel2.TabIndex = 3;
+            // 
+            // importBTN
+            // 
+            importBTN.DialogResult = System.Windows.Forms.DialogResult.OK;
+            importBTN.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 238);
+            importBTN.Location = new System.Drawing.Point(3, 9);
+            importBTN.Name = "importBTN";
+            importBTN.Size = new System.Drawing.Size(88, 48);
+            importBTN.TabIndex = 4;
+            importBTN.Text = "Import";
+            importBTN.UseVisualStyleBackColor = true;
             // 
             // timelineSlider1
             // 
@@ -141,7 +152,7 @@
             changeFpsNUD.Enabled = false;
             changeFpsNUD.Location = new System.Drawing.Point(3, 88);
             changeFpsNUD.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
-            changeFpsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            changeFpsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 131072 });
             changeFpsNUD.Name = "changeFpsNUD";
             changeFpsNUD.Size = new System.Drawing.Size(120, 23);
             changeFpsNUD.TabIndex = 3;
@@ -178,17 +189,6 @@
             maxSideLengthCB.TabIndex = 0;
             maxSideLengthCB.Text = "Change max side";
             maxSideLengthCB.UseVisualStyleBackColor = true;
-            // 
-            // importBTN
-            // 
-            importBTN.DialogResult = System.Windows.Forms.DialogResult.OK;
-            importBTN.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 238);
-            importBTN.Location = new System.Drawing.Point(3, 9);
-            importBTN.Name = "importBTN";
-            importBTN.Size = new System.Drawing.Size(88, 48);
-            importBTN.TabIndex = 4;
-            importBTN.Text = "Import";
-            importBTN.UseVisualStyleBackColor = true;
             // 
             // VideoImportForm
             // 

@@ -499,7 +499,7 @@ namespace BIUK9000.UI
             {
                 InputBinder.SetNewController(GifferC);
             }
-            Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}");
+            Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}, Framecount: {MainGiffer.FrameCount}");
         }
         private bool ShouldIgnoreKeyPresses()
         {

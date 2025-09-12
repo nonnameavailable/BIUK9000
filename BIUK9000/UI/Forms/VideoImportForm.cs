@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace BIUK9000.UI.Forms
 {
     public partial class VideoImportForm : Form
     {
-        private const int MaxPreviewFrames = 100;
+        private const int MaxPreviewFrames = 50;
         private const int MaxPreviewSideLength = 300;
         private double PreviewFPS
         {
@@ -64,6 +65,7 @@ namespace BIUK9000.UI.Forms
             FormClosed += OnFormClosed;
             changeFpsCB.CheckedChanged += ChangeFpsCB_CheckedChanged;
             maxSideLengthCB.CheckedChanged += MaxSideLengthCB_CheckedChanged;
+            _previewFrames = new();
         }
 
         private void MaxSideLengthCB_CheckedChanged(object sender, EventArgs e)
@@ -106,7 +108,7 @@ namespace BIUK9000.UI.Forms
                     MaxSideLength = MaxPreviewSideLength,
                     TargetFPS = PreviewFPS
                 };
-                _previewFrames = VideoFrameExtractor.ExtractFramesAdvanced(path, feo);
+                _previewFrames = VideoFrameExtractor.ExtractFrames(path, feo);
                 timelineSlider1.Maximum = Math.Min(MaxPreviewFrames - 1, _vi.FrameCount -1);
                 UpdateMainPictureBox();
 

@@ -57,6 +57,7 @@
             label1 = new System.Windows.Forms.Label();
             gifExportModeCBB = new System.Windows.Forms.ComboBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            noneRB = new System.Windows.Forms.RadioButton();
             panel1.SuspendLayout();
             createVideoGB.SuspendLayout();
             framerateChangeGB.SuspendLayout();
@@ -81,13 +82,13 @@
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             panel1.Location = new System.Drawing.Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(296, 471);
+            panel1.Size = new System.Drawing.Size(295, 489);
             panel1.TabIndex = 0;
             // 
             // createVideoGB
             // 
             createVideoGB.Controls.Add(createVideoCB);
-            createVideoGB.Location = new System.Drawing.Point(12, 301);
+            createVideoGB.Location = new System.Drawing.Point(12, 317);
             createVideoGB.Name = "createVideoGB";
             createVideoGB.Size = new System.Drawing.Size(272, 53);
             createVideoGB.TabIndex = 21;
@@ -111,7 +112,7 @@
             framerateChangeGB.Controls.Add(label6);
             framerateChangeGB.Controls.Add(changeFramerateCB);
             framerateChangeGB.Controls.Add(label5);
-            framerateChangeGB.Location = new System.Drawing.Point(150, 185);
+            framerateChangeGB.Location = new System.Drawing.Point(150, 201);
             framerateChangeGB.Name = "framerateChangeGB";
             framerateChangeGB.Size = new System.Drawing.Size(134, 110);
             framerateChangeGB.TabIndex = 20;
@@ -171,7 +172,7 @@
             framesAsFilesGB.Controls.Add(label3);
             framesAsFilesGB.Controls.Add(ImageExportFormatCBB);
             framesAsFilesGB.Controls.Add(createFramesCB);
-            framesAsFilesGB.Location = new System.Drawing.Point(12, 185);
+            framesAsFilesGB.Location = new System.Drawing.Point(12, 201);
             framesAsFilesGB.Name = "framesAsFilesGB";
             framesAsFilesGB.Size = new System.Drawing.Size(132, 110);
             framesAsFilesGB.TabIndex = 19;
@@ -221,7 +222,7 @@
             // saveBTN
             // 
             saveBTN.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            saveBTN.Location = new System.Drawing.Point(12, 360);
+            saveBTN.Location = new System.Drawing.Point(12, 376);
             saveBTN.Name = "saveBTN";
             saveBTN.Size = new System.Drawing.Size(272, 102);
             saveBTN.TabIndex = 18;
@@ -230,11 +231,12 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(noneRB);
             groupBox1.Controls.Add(gifskiRB);
             groupBox1.Controls.Add(animatedGifRB);
             groupBox1.Location = new System.Drawing.Point(12, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(132, 167);
+            groupBox1.Size = new System.Drawing.Size(132, 183);
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Export library";
@@ -243,12 +245,10 @@
             // 
             gifskiRB.AutoSize = true;
             gifskiRB.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            gifskiRB.Checked = true;
-            gifskiRB.Location = new System.Drawing.Point(6, 17);
+            gifskiRB.Location = new System.Drawing.Point(6, 58);
             gifskiRB.Name = "gifskiRB";
             gifskiRB.Size = new System.Drawing.Size(90, 49);
             gifskiRB.TabIndex = 14;
-            gifskiRB.TabStop = true;
             gifskiRB.Text = "Gifski\r\n- best colors\r\n- large files";
             gifskiRB.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             gifskiRB.UseVisualStyleBackColor = true;
@@ -257,11 +257,10 @@
             // 
             animatedGifRB.AutoSize = true;
             animatedGifRB.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            animatedGifRB.Location = new System.Drawing.Point(6, 82);
+            animatedGifRB.Location = new System.Drawing.Point(6, 113);
             animatedGifRB.Name = "animatedGifRB";
             animatedGifRB.Size = new System.Drawing.Size(99, 64);
             animatedGifRB.TabIndex = 15;
-            animatedGifRB.TabStop = true;
             animatedGifRB.Text = "AnimatedGif\r\n- worse colors\r\n- smaller files\r\nwith gifsicle";
             animatedGifRB.UseVisualStyleBackColor = true;
             // 
@@ -272,7 +271,7 @@
             animatedGifOptionsGB.Controls.Add(gifExportModeCBB);
             animatedGifOptionsGB.Location = new System.Drawing.Point(150, 12);
             animatedGifOptionsGB.Name = "animatedGifOptionsGB";
-            animatedGifOptionsGB.Size = new System.Drawing.Size(134, 167);
+            animatedGifOptionsGB.Size = new System.Drawing.Size(134, 183);
             animatedGifOptionsGB.TabIndex = 16;
             animatedGifOptionsGB.TabStop = false;
             animatedGifOptionsGB.Text = "AnimatedGif options";
@@ -357,11 +356,23 @@
             gifExportModeCBB.TabIndex = 11;
             toolTip.SetToolTip(gifExportModeCBB, "Bit 8 - no dithering\r\ndefault - dithering");
             // 
+            // noneRB
+            // 
+            noneRB.AutoSize = true;
+            noneRB.Checked = true;
+            noneRB.Location = new System.Drawing.Point(5, 17);
+            noneRB.Name = "noneRB";
+            noneRB.Size = new System.Drawing.Size(124, 34);
+            noneRB.TabIndex = 16;
+            noneRB.TabStop = true;
+            noneRB.Text = "None\r\n- Do not create GIF";
+            noneRB.UseVisualStyleBackColor = true;
+            // 
             // GifSFDForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(296, 471);
+            ClientSize = new System.Drawing.Size(295, 489);
             Controls.Add(panel1);
             Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "GifSFDForm";
@@ -416,5 +427,6 @@
         private System.Windows.Forms.NumericUpDown newFramerateNUD;
         private System.Windows.Forms.GroupBox createVideoGB;
         private System.Windows.Forms.CheckBox createVideoCB;
+        private System.Windows.Forms.RadioButton noneRB;
     }
 }

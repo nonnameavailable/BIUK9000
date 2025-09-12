@@ -32,6 +32,7 @@ namespace BIUK9000.UI.CustomControls
         public bool UseGifsicle { get => useGifSicleCB.Checked; }
         public int GifExportLossy { get => (int)GifExportLossyNUD.Value; }
         public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
+        public bool CreateGIF { get => !noneRB.Checked; }
         public bool CreateFrames { get => createFramesCB.Checked; }
         public bool CreateVideo { get => createVideoCB.Checked; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }

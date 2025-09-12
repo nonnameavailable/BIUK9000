@@ -62,7 +62,7 @@ namespace BIUK9000.IO
             var feo = new FrameExtractOptions();
             if(vif.ShowDialog() == DialogResult.OK) feo = vif.FrameExtractOptions();
             //return VideoFrameExtractor.ExtractFrames(path);
-            return VideoFrameExtractor.ExtractFramesAdvanced(path, feo);
+            return VideoFrameExtractor.ExtractFrames(path, feo);
         }
         public static int FrameDelayFromFile(string path)
         {

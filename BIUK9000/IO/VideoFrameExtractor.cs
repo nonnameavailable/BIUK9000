@@ -14,26 +14,8 @@ namespace BIUK9000.IO
     //GPT-5 wrote most of this. It seems to work fine.
     public static class VideoFrameExtractor
     {
-        public static List<Bitmap> ExtractFrames(string videoPath)
-        {
-            if(!IsFFInPath("ffmpeg") || !IsFFInPath("ffprobe"))
-            {
-                throw new Exception("Both ffmpeg and ffprobe must be in PATH for this to work!");
-            }
-            // 1. Get video dimensions using ffprobe
-            VideoInfo vi = GetVideoInfo(videoPath);
-            if(MessageBox.Show($"This video has {vi.FrameCount} frames. {Environment.NewLine}" +
-                $" Estimated memory usage after import is: {vi.EstimatedMemoryUsageMB} MB {Environment.NewLine}" +
-                $"Are you sure you want to proceed?", "Video information", buttons:MessageBoxButtons.YesNo) != DialogResult.Yes)
-            {
-                throw new Exception("You pressed no :)");
-            }
-            var frames = new List<Bitmap>();
-            string command = $"-i \"{videoPath}\" -f image2pipe -pix_fmt bgr24 -vcodec rawvideo -";
-            return FramesFromCommand(command, vi.Width, vi.Height);
-        }
 
-        public static List<Bitmap> ExtractFramesAdvanced(string path, FrameExtractOptions feo)
+        public static List<Bitmap> ExtractFrames(string path, FrameExtractOptions feo)
         {
             if (!IsFFInPath("ffmpeg") || !IsFFInPath("ffprobe"))
             {
@@ -100,7 +82,7 @@ namespace BIUK9000.IO
                 Arguments = command,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                RedirectStandardError = false,
                 CreateNoWindow = true
             };
 
@@ -173,12 +155,15 @@ namespace BIUK9000.IO
                 }
                 else
                 {
-                    throw new Exception("Could not parse framerate.");
+                    throw new Exception($"Could not parse framerate. Ffprobe returned:{Environment.NewLine}{line}");
                 }
 
                 // Parse duration
                 if (!double.TryParse(parts[3], NumberStyles.Any, CultureInfo.InvariantCulture, out double durationSeconds))
-                    throw new Exception("Could not parse duration.");
+                {
+                    //throw new Exception($"Could not parse duration. Ffprobe returned:{Environment.NewLine}{line}");
+                    durationSeconds = 100;
+                }
 
                 return new VideoInfo
                 {
@@ -266,5 +251,11 @@ namespace BIUK9000.IO
         public int? MaxSideLength { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? Duration { get; set; }
+        public override string ToString()
+        {
+            return $"******" + $"Target FPS: {TargetFPS}{Environment.NewLine}" +
+                $"Max side: {MaxSideLength}{Environment.NewLine}" +
+                "******";
+        }
     }
 }

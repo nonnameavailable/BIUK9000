@@ -284,27 +284,26 @@ namespace BIUK9000.GifferManipulation
             using GifSFDForm sfdf = new GifSFDForm();
             sfdf.CurrentFramerate = giffer.AverageFramerate();
             if (sfdf.ShowDialog() != DialogResult.OK) return;
-
-            tempPath = SaveGifToTempFile(giffer, sfdf, interpolationMode);
-            if (sfdf.UseGifsicle && sfdf.ChosenExportLibrary == GifSFDForm.ExportLibrary.AnimatedGif)
+            if (sfdf.CreateGIF)
             {
-                OBIMP.CompressGif(tempPath, tempPath, sfdf.GifExportColors, sfdf.GifExportLossy);
+                tempPath = SaveGifToTempFile(giffer, sfdf, interpolationMode);
+                if (sfdf.UseGifsicle && sfdf.ChosenExportLibrary == GifSFDForm.ExportLibrary.AnimatedGif)
+                {
+                    OBIMP.CompressGif(tempPath, tempPath, sfdf.GifExportColors, sfdf.GifExportLossy);
+                }
+                if (tempPath != null)
+                {
+                    File.Copy(tempPath, path, true);
+                    File.Delete(tempPath);
+                }
+                else
+                {
+                    MessageBox.Show("Gif was not created");
+                    return;
+                }
             }
-            if (tempPath != null)
-            {
-                File.Copy(tempPath, path, true);
-                if(sfdf.CreateFrames)SaveGifAsFrames(giffer, path, sfdf);
-            }
-            else
-            {
-                MessageBox.Show("Gif was not created");
-                return;
-            }
-            File.Delete(tempPath);
-            if (sfdf.CreateVideo)
-            {
-                SaveGifAsMp4(giffer, path, sfdf);
-            }
+            if (sfdf.CreateFrames) SaveGifAsFrames(giffer, path, sfdf);
+            if (sfdf.CreateVideo) SaveGifAsMp4(giffer, path, sfdf);
         }
         public static void SaveGifAsFrames(Giffer giffer, string path, GifSFDForm sfdf)
         {
