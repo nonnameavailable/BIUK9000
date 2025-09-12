@@ -1,8 +1,10 @@
-﻿using System;
+﻿using BIUK9000.GifferComponents;
+using BIUK9000.GifferComponents.GFLVariants;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -87,6 +89,15 @@ namespace BIUK9000.MyGraphics
         {
             using MemoryStream ms = new MemoryStream(b);
             return (Bitmap)Image.FromStream(ms);
+        }
+        public static Bitmap ReducedSizeBitmap(Bitmap bmp, int maxSideLength)
+        {
+            int largerSide = Math.Max(bmp.Width, bmp.Height);
+            if (largerSide <= maxSideLength) return new Bitmap(bmp);
+            double multiplier = maxSideLength / (double)largerSide;
+            int newWidth = (int)(bmp.Width * multiplier);
+            int newHeight = (int)(bmp.Height * multiplier);
+            return new Bitmap(bmp, newWidth, newHeight);
         }
     }
 }

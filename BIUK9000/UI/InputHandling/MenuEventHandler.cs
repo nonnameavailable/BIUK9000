@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BIUK9000.UI
+namespace BIUK9000.UI.InputHandling
 {
     class MenuEventHandler
     {

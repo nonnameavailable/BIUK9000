@@ -12,7 +12,14 @@ namespace BIUK9000.UI.ExtendedControls
     public class MyTrackBar : TrackBar
     {
         private List<int> marks = new();
-        public List<int> Marks { get => marks; }
+        public List<int> Marks 
+        {
+            get
+            {
+                marks.Sort();
+                return marks;
+            }
+        }
         public MyTrackBar() : base()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);

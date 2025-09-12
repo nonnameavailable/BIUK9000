@@ -1,13 +1,17 @@
-﻿using System;
+﻿using BIUK9000.MyGraphics;
+using BIUK9000.UI.Forms;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace BIUK9000.IO
 {
-    //GPT-5 wrote this. It seems to work fine.
+    //GPT-5 wrote most of this. It seems to work fine.
     public static class VideoFrameExtractor
     {
         public static List<Bitmap> ExtractFrames(string videoPath)
@@ -17,82 +21,123 @@ namespace BIUK9000.IO
                 throw new Exception("Both ffmpeg and ffprobe must be in PATH for this to work!");
             }
             // 1. Get video dimensions using ffprobe
-            (int width, int height) = GetVideoDimensions(videoPath);
-
+            VideoInfo vi = GetVideoInfo(videoPath);
+            if(MessageBox.Show($"This video has {vi.FrameCount} frames. {Environment.NewLine}" +
+                $" Estimated memory usage after import is: {vi.EstimatedMemoryUsageMB} MB {Environment.NewLine}" +
+                $"Are you sure you want to proceed?", "Video information", buttons:MessageBoxButtons.YesNo) != DialogResult.Yes)
+            {
+                throw new Exception("You pressed no :)");
+            }
             var frames = new List<Bitmap>();
+            string command = $"-i \"{videoPath}\" -f image2pipe -pix_fmt bgr24 -vcodec rawvideo -";
+            return FramesFromCommand(command, vi.Width, vi.Height);
+        }
 
+        public static List<Bitmap> ExtractFramesAdvanced(string path, FrameExtractOptions feo)
+        {
+            if (!IsFFInPath("ffmpeg") || !IsFFInPath("ffprobe"))
+            {
+                throw new Exception("Both ffmpeg and ffprobe must be in PATH for this to work!");
+            }
+
+            // Get original video info
+            VideoInfo vi = GetVideoInfo(path);
+
+            // Calculate new dimensions while keeping aspect ratio
+            int width = vi.Width;
+            int height = vi.Height;
+            if(feo.MaxSideLength.HasValue && (width > feo.MaxSideLength || height > feo.MaxSideLength))
+            {
+                int largerSide = Math.Max(vi.Width, vi.Height);
+                double multiplier = feo.MaxSideLength.Value / (double)largerSide;
+                width = (int)(vi.Width * multiplier);
+                height = (int)(vi.Height * multiplier);
+            }
+            width = width / 4 * 4;
+            height = height / 4 * 4;
+
+            return FramesFromCommand(FffmpegCommand(path, feo), width, height);
+        }
+        private static string FffmpegCommand(string path, FrameExtractOptions feo)
+        {
+            VideoInfo vi = GetVideoInfo(path);
+            List<string> filters = new();
+            string timeArgs = "";
+            if (feo.StartTime.HasValue)
+            {
+                timeArgs += $"-ss {feo.StartTime.Value.ToString("c", CultureInfo.InvariantCulture)} ";
+            }
+            if (feo.Duration.HasValue)
+            {
+                timeArgs += $"-t {feo.Duration?.ToString("c", CultureInfo.InvariantCulture)} ";
+            }
+            if (feo.TargetFPS.HasValue)
+            {
+                filters.Add($"fps={feo.TargetFPS.Value.ToString(CultureInfo.InvariantCulture)}");
+            }
+            if (feo.MaxSideLength.HasValue)
+            {
+                int newWidth = vi.Width;
+                int newHeight = vi.Height;
+                if (newWidth > feo.MaxSideLength || newHeight > feo.MaxSideLength)
+                {
+                    int largerSide = Math.Max(vi.Width, vi.Height);
+                    double multiplier = feo.MaxSideLength.Value / (double)largerSide;
+                    newWidth = ((int)(vi.Width * multiplier / 4)) * 4;
+                    newHeight = ((int)(vi.Height * multiplier / 4)) * 4;
+                    filters.Add($"scale={newWidth}:{newHeight}");
+                }
+            }
+            string filterArg = filters.Count > 0 ? $"-vf \"{string.Join(",", filters)}\" " : "";
+            return $"{timeArgs}-i \"{path}\" {filterArg}-pix_fmt bgr24 -f image2pipe -vcodec rawvideo -";
+        }
+        private static List<Bitmap> FramesFromCommand(string command, int width, int height)
+        {
+            List<Bitmap> result = new();
             var psi = new ProcessStartInfo
             {
                 FileName = "ffmpeg",
-                Arguments = $"-i \"{videoPath}\" -f image2pipe -pix_fmt bgr24 -vcodec rawvideo -",
+                Arguments = command,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true, // ffmpeg writes logs to stderr
+                RedirectStandardError = true,
                 CreateNoWindow = true
             };
 
-            using (var process = Process.Start(psi))
-            using (var stdout = process.StandardOutput.BaseStream)
-            {
-                int frameSize = width * height * 3; // 3 bytes per pixel (BGR)
-                byte[] buffer = new byte[frameSize];
+            using var process = Process.Start(psi);
+            using var stdout = process.StandardOutput.BaseStream;
+            int frameSize = width * height * 3; // 3 bytes per pixel (BGR)
+            byte[] buffer = new byte[frameSize];
 
-                while (true)
+            while (true)
+            {
+                int bytesRead = 0;
+                while (bytesRead < frameSize)
                 {
-                    int bytesRead = 0;
-                    while (bytesRead < frameSize)
-                    {
-                        int read = stdout.Read(buffer, bytesRead, frameSize - bytesRead);
-                        if (read == 0) // End of stream
-                            return frames;
-                        bytesRead += read;
-                    }
-
-                    var bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-                    var bmpData = bmp.LockBits(
-                        new Rectangle(0, 0, width, height),
-                        ImageLockMode.WriteOnly,
-                        bmp.PixelFormat);
-
-                    Marshal.Copy(buffer, 0, bmpData.Scan0, buffer.Length);
-                    bmp.UnlockBits(bmpData);
-
-                    frames.Add(bmp);
+                    int read = stdout.Read(buffer, bytesRead, frameSize - bytesRead);
+                    if (read == 0) // End of stream
+                        return result;
+                    bytesRead += read;
                 }
+
+                var bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+                var bmpData = bmp.LockBits(
+                    new Rectangle(0, 0, width, height),
+                    ImageLockMode.WriteOnly,
+                    bmp.PixelFormat);
+
+                Marshal.Copy(buffer, 0, bmpData.Scan0, buffer.Length);
+                bmp.UnlockBits(bmpData);
+
+                result.Add(bmp);
             }
         }
-
-        private static (int width, int height) GetVideoDimensions(string videoPath)
+        public static VideoInfo GetVideoInfo(string videoPath)
         {
             var psi = new ProcessStartInfo
             {
                 FileName = "ffprobe",
-                Arguments = $"-v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 \"{videoPath}\"",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true
-            };
-
-            using (var process = Process.Start(psi))
-            using (var reader = process.StandardOutput)
-            {
-                string line = reader.ReadLine();
-                if (line == null)
-                    throw new Exception("Could not read video dimensions from ffprobe output.");
-
-                var parts = line.Split(',');
-                if (parts.Length != 2)
-                    throw new Exception("Unexpected ffprobe output format.");
-
-                return (int.Parse(parts[0]), int.Parse(parts[1]));
-            }
-        }
-        public static double GetVideoFrameDelay(string videoPath)
-        {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "ffprobe",
-                Arguments = $"-v error -select_streams v:0 -show_entries stream=r_frame_rate -of csv=p=0 \"{videoPath}\"",
+                Arguments = $"-v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate,duration -of csv=p=0 \"{videoPath}\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true
@@ -103,25 +148,45 @@ namespace BIUK9000.IO
             {
                 string line = reader.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
-                    throw new Exception("Could not read framerate from ffprobe output.");
+                    throw new Exception("Could not read video info from ffprobe output.");
 
-                // r_frame_rate is usually like "30000/1001" or "25/1"
-                var parts = line.Split('/');
-                if (parts.Length == 2 &&
-                    double.TryParse(parts[0], out double numerator) &&
-                    double.TryParse(parts[1], out double denominator) &&
-                    denominator != 0)
+                var parts = line.Split(',');
+                if (parts.Length != 4)
+                    throw new Exception("Unexpected ffprobe output format.");
+
+                int width = int.Parse(parts[0], CultureInfo.InvariantCulture);
+                int height = int.Parse(parts[1], CultureInfo.InvariantCulture);
+
+                // Parse framerate
+                double framerate;
+                var frParts = parts[2].Split('/');
+                if (frParts.Length == 2 &&
+                    double.TryParse(frParts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double num) &&
+                    double.TryParse(frParts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out double den) &&
+                    den != 0)
                 {
-                    return numerator / denominator;
+                    framerate = num / den;
                 }
-                else if (double.TryParse(line, out double fps))
+                else if (double.TryParse(parts[2], NumberStyles.Any, CultureInfo.InvariantCulture, out double simpleFps))
                 {
-                    return 1000d / fps;
+                    framerate = simpleFps;
                 }
                 else
                 {
-                    throw new Exception("Unexpected framerate format from ffprobe.");
+                    throw new Exception("Could not parse framerate.");
                 }
+
+                // Parse duration
+                if (!double.TryParse(parts[3], NumberStyles.Any, CultureInfo.InvariantCulture, out double durationSeconds))
+                    throw new Exception("Could not parse duration.");
+
+                return new VideoInfo
+                {
+                    Width = width,
+                    Height = height,
+                    FPS = framerate,
+                    DurationSeconds = durationSeconds
+                };
             }
         }
         private static bool IsFFInPath(string fileName)
@@ -154,5 +219,52 @@ namespace BIUK9000.IO
                 return false;
             }
         }
+    }
+    public struct VideoInfo
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public double FPS { get; set; }
+        public double DurationSeconds { get; set; }
+        public double FrameDelay { get => 1000d / FPS; }
+        public int FrameCount { get => (int)(FPS * DurationSeconds); }
+        public long EstimatedMemoryUsageMB
+        {
+            get
+            {
+                return (long)Width * Height * FrameCount * 4 / 1048576;
+            }
+        }
+        public string DurationString
+        {
+            get
+            {
+                string result = "";
+                double duration = DurationSeconds;
+                if(duration > 3600)
+                {
+                    result += (int)(duration / 3600) + "h ";
+                    duration -= (int)(duration / 3600);
+                }
+                if(duration > 60)
+                {
+                    result += (int)(duration / 60) + "m ";
+                    duration -= (int)(duration / 60);
+                }
+                result += Math.Round(duration).ToString() + "s";
+                return result;
+            }
+        }
+        public override string ToString()
+        {
+            return $"Resolution: {Width}x{Height}, FPS: {FPS}, Duration: {DurationString}";
+        }
+    }
+    public struct FrameExtractOptions
+    {
+        public double? TargetFPS { get; set; }
+        public int? MaxSideLength { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? Duration { get; set; }
     }
 }

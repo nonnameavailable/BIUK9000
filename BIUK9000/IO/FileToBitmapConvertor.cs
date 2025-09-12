@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BIUK9000.UI.Forms;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -48,18 +49,27 @@ namespace BIUK9000.IO
             string extension = Path.GetExtension(path).ToLowerInvariant();
             return extension switch
             {
-                ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => VideoFrameExtractor.ExtractFrames(path),
+                ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => VideoFromPath(path),
                 ".gif" => FramesFromGif(Image.FromFile(path)),
                 ".bmp" or ".jpeg" or ".png" or ".tiff" => [(Bitmap)Image.FromFile(path)],
                 _ => throw new Exception("Unsupported file format.")
             };
+        }
+        private static List<Bitmap> VideoFromPath(string path)
+        {
+            using VideoImportForm vif = new();
+            vif.LoadVideo(path);
+            var feo = new FrameExtractOptions();
+            if(vif.ShowDialog() == DialogResult.OK) feo = vif.FrameExtractOptions();
+            //return VideoFrameExtractor.ExtractFrames(path);
+            return VideoFrameExtractor.ExtractFramesAdvanced(path, feo);
         }
         public static int FrameDelayFromFile(string path)
         {
             string extension = Path.GetExtension(path).ToLowerInvariant();
             return extension switch
             {
-                ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => (int)VideoFrameExtractor.GetVideoFrameDelay(path),
+                ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => (int)VideoFrameExtractor.GetVideoInfo(path).FrameDelay,
                 ".gif" => GifFrameDelay(path),
                 ".bmp" or ".jpeg" or ".png" or ".tiff" => 100,
                 _ => throw new Exception("Unsupported file format.")
