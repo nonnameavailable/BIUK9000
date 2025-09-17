@@ -99,24 +99,22 @@ namespace BIUK9000.UI.Forms
 
         public void LoadVideo(string path)
         {
-            try
+            _vi = VideoFrameExtractor.GetVideoInfo(path);
+            if(VI.DurationSeconds < 60)
             {
-                _vi = VideoFrameExtractor.GetVideoInfo(path);
-                statusLabel.Text = _vi.ToString();
                 var feo = new FrameExtractOptions
                 {
                     MaxSideLength = MaxPreviewSideLength,
                     TargetFPS = PreviewFPS
                 };
                 _previewFrames = VideoFrameExtractor.ExtractFrames(path, feo);
-                timelineSlider1.Maximum = Math.Min(MaxPreviewFrames - 1, _vi.FrameCount -1);
-                UpdateMainPictureBox();
-
-            }
-            catch(Exception ex)
+            } else
             {
-                MessageBox.Show("Video import failed because: " + ex.Message);
+                _previewFrames = VideoFrameExtractor.ExtractFramesFast(path, MaxPreviewSideLength, MaxPreviewFrames);
             }
+            timelineSlider1.Maximum = _previewFrames.Count - 1;
+            Report(_vi.ToString());
+            UpdateMainPictureBox();
         }
         private void UpdateMainPictureBox()
         {
@@ -135,6 +133,10 @@ namespace BIUK9000.UI.Forms
                 StartTime = StartTime,
                 Duration = MarkedDuration
             };
+        }
+        private void Report(string text)
+        {
+            statusLabel.Text = text;
         }
     }
 }

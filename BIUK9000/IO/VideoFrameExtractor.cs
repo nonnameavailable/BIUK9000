@@ -26,9 +26,34 @@ namespace BIUK9000.IO
             VideoInfo vi = GetVideoInfo(path);
 
             // Calculate new dimensions while keeping aspect ratio
+            Size newSize = NewSize(vi, feo);
+
+            return FramesFromCommand(FffmpegCommand(path, feo), newSize.Width, newSize.Height);
+        }
+        public static List<Bitmap> ExtractFramesFast(string path, int maxSideLength, int frameCount)
+        {
+            VideoInfo vi = GetVideoInfo(path);
+            TimeSpan timeIncrement = TimeSpan.FromSeconds(vi.DurationSeconds / frameCount);
+            List<Bitmap> result = new();
+            for(int i = 0; i < frameCount; i++)
+            {
+                var feo = new FrameExtractOptions
+                {
+                    StartTime = timeIncrement * i,
+                    FrameCount = 1,
+                    MaxSideLength = maxSideLength
+                };
+                string command = FffmpegCommand(path, feo);
+                Size size = NewSize(vi, feo);
+                result.AddRange(FramesFromCommand(command, size.Width, size.Height));
+            }
+            return result;
+        }
+        private static Size NewSize(VideoInfo vi, FrameExtractOptions feo)
+        {
             int width = vi.Width;
             int height = vi.Height;
-            if(feo.MaxSideLength.HasValue && (width > feo.MaxSideLength || height > feo.MaxSideLength))
+            if (feo.MaxSideLength.HasValue && (width > feo.MaxSideLength || height > feo.MaxSideLength))
             {
                 int largerSide = Math.Max(vi.Width, vi.Height);
                 double multiplier = feo.MaxSideLength.Value / (double)largerSide;
@@ -37,8 +62,7 @@ namespace BIUK9000.IO
             }
             width = width / 4 * 4;
             height = height / 4 * 4;
-
-            return FramesFromCommand(FffmpegCommand(path, feo), width, height);
+            return new Size(width, height);
         }
         private static string FffmpegCommand(string path, FrameExtractOptions feo)
         {
@@ -70,8 +94,13 @@ namespace BIUK9000.IO
                     filters.Add($"scale={newWidth}:{newHeight}");
                 }
             }
+            string frameCount = "";
+            if (feo.FrameCount.HasValue)
+            {
+                frameCount = "-frames:v " + feo.FrameCount.Value;
+            }
             string filterArg = filters.Count > 0 ? $"-vf \"{string.Join(",", filters)}\" " : "";
-            return $"{timeArgs}-i \"{path}\" {filterArg}-pix_fmt bgr24 -f image2pipe -vcodec rawvideo -";
+            return $"{timeArgs} -i \"{path}\" {filterArg} {frameCount} -pix_fmt bgr24 -f image2pipe -vcodec rawvideo -";
         }
         private static List<Bitmap> FramesFromCommand(string command, int width, int height)
         {
@@ -114,6 +143,10 @@ namespace BIUK9000.IO
                 result.Add(bmp);
             }
         }
+        //public static string FfmpegCommandSingleFrame(string path, TimeSpan time)
+        //{
+        //    return $"ffmpeg - ss {time.ToString("c", CultureInfo.InvariantCulture)} - i {path} - frames:v 1 - f rawvideo - pix_fmt bgr24 -";
+        //}
         public static VideoInfo GetVideoInfo(string videoPath)
         {
             var psi = new ProcessStartInfo
@@ -229,12 +262,12 @@ namespace BIUK9000.IO
                 if(duration > 3600)
                 {
                     result += (int)(duration / 3600) + "h ";
-                    duration -= (int)(duration / 3600);
+                    duration = duration % 3600;
                 }
                 if(duration > 60)
                 {
                     result += (int)(duration / 60) + "m ";
-                    duration -= (int)(duration / 60);
+                    duration = duration % 60;
                 }
                 result += Math.Round(duration).ToString() + "s";
                 return result;
@@ -251,6 +284,7 @@ namespace BIUK9000.IO
         public int? MaxSideLength { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? Duration { get; set; }
+        public int? FrameCount { get; set; }
         public override string ToString()
         {
             return $"******" + $"Target FPS: {TargetFPS}{Environment.NewLine}" +

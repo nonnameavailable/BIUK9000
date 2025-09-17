@@ -59,10 +59,15 @@ namespace BIUK9000.IO
         {
             using VideoImportForm vif = new();
             vif.LoadVideo(path);
-            var feo = new FrameExtractOptions();
-            if(vif.ShowDialog() == DialogResult.OK) feo = vif.FrameExtractOptions();
+            if (vif.ShowDialog() == DialogResult.OK)
+            {
+                var feo = vif.FrameExtractOptions();
+                return VideoFrameExtractor.ExtractFrames(path, feo);
+            } else
+            {
+                throw new Exception("User closed form");
+            }
             //return VideoFrameExtractor.ExtractFrames(path);
-            return VideoFrameExtractor.ExtractFrames(path, feo);
         }
         public static int FrameDelayFromFile(string path)
         {

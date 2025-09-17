@@ -302,10 +302,10 @@ namespace BIUK9000.GifferManipulation
                     return;
                 }
             }
-            if (sfdf.CreateFrames) SaveGifAsFrames(giffer, path, sfdf);
-            if (sfdf.CreateVideo) SaveGifAsMp4(giffer, path, sfdf);
+            if (sfdf.CreateFrames) SaveGifAsFrames(giffer, path, sfdf, interpolationMode);
+            if (sfdf.CreateVideo) SaveGifAsMp4(giffer, path, sfdf, interpolationMode);
         }
-        public static void SaveGifAsFrames(Giffer giffer, string path, GifSFDForm sfdf)
+        public static void SaveGifAsFrames(Giffer giffer, string path, GifSFDForm sfdf, InterpolationMode interpolationMode)
         {
             string framesPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_frames");
             int counter = 0;
@@ -331,7 +331,7 @@ namespace BIUK9000.GifferManipulation
             for (double i = 0; i < giffer.FrameCount; i += frameStep)
             {
                 GifFrame frame = giffer.Frames[(int)i];
-                using Bitmap bitmap = frame.CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.HighQualityBicubic);
+                using Bitmap bitmap = frame.CompleteBitmap(giffer.Width, giffer.Height, false, interpolationMode);
                 string frameFileName = $"frame_{frameCounter:D5}" + sfdf.ImageExportFormat;
                 string framePath = Path.Combine(framesPath, frameFileName);
                 switch (sfdf.ImageExportFormat)
@@ -351,7 +351,7 @@ namespace BIUK9000.GifferManipulation
                 frameCounter++;
             }
         }
-        public static void SaveGifAsMp4(Giffer giffer, string path, GifSFDForm sfdf)
+        public static void SaveGifAsMp4(Giffer giffer, string path, GifSFDForm sfdf, InterpolationMode interpolationMode)
         {
             if (!IsFFInPath("ffmpeg"))
             {
@@ -389,7 +389,7 @@ namespace BIUK9000.GifferManipulation
                 //Debug.Print(counter.ToString());
                 var bitmapData = new byte[giffer.Width * giffer.Height * 3];
                 var rect = new Rectangle(0, 0, giffer.Width, giffer.Height);
-                using Bitmap bitmap = frame.CompleteBitmap24rgb(giffer.Width, giffer.Height, false, InterpolationMode.HighQualityBicubic);
+                using Bitmap bitmap = frame.CompleteBitmap24rgb(giffer.Width, giffer.Height, false, interpolationMode);
                 var bitmapLock = bitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
                 Marshal.Copy(bitmapLock.Scan0, bitmapData, 0, bitmapData.Length);
                 bitmap.UnlockBits(bitmapLock);
