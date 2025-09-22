@@ -81,6 +81,7 @@ namespace BIUK9000.UI
         public List<Giffer> GifferHistory { get; }
         private InputTranslator InputTranslator { get; }
         private InputHandler InputBinder { get; set; }
+        private AudioRecorder AudioRecorder { get; set; }
         public MainForm()
         {
             InitializeComponent();
@@ -306,6 +307,9 @@ namespace BIUK9000.UI
             controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate();
             _ssl.ClearFrames();
+            AudioRecorder.StopRecording();
+            MainGiffer.SoundPath = AudioRecorder.Path;
+            Debug.Print(AudioRecorder.Path);
             Report("Recording stopped.");
         }
         private bool CanRecord()
@@ -335,6 +339,9 @@ namespace BIUK9000.UI
             try
             {
                 _ssl.Start();
+                AudioRecorder?.Dispose();
+                AudioRecorder = new AudioRecorder(Path.ChangeExtension(Path.GetTempFileName(), ".wav"));
+                AudioRecorder.StartRecording();
                 Report("Now recording.");
             } catch (Exception ex)
             {

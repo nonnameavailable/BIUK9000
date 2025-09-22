@@ -1,25 +1,26 @@
 ﻿using AnimatedGif;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using BIUK9000.UI;
-using System.Windows.Forms;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
-using Microsoft.VisualBasic;
-using GifskiNet;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using BIUK9000.UI.CustomControls;
-using SharpDX;
-using BIUK9000.MyGraphics;
-using BIUK9000.MyGraphics.Dithering;
 using BIUK9000.GifferComponents;
 using BIUK9000.IO;
+using BIUK9000.MyGraphics;
+using BIUK9000.MyGraphics.Dithering;
+using BIUK9000.UI;
+using BIUK9000.UI.CustomControls;
+using GifskiNet;
+using Microsoft.VisualBasic;
+using SharpDX;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BIUK9000.GifferManipulation
 {
@@ -369,12 +370,24 @@ namespace BIUK9000.GifferManipulation
                     return;
                 }
             }
+            string soundCmdPart = "";
+            if (!string.IsNullOrEmpty(giffer.SoundPath))
+            {
+                soundCmdPart = $"-i \"{giffer.SoundPath}\" -c:a aac";
+            }
+
+            string command = $"-f rawvideo -pix_fmt bgr24 -s {giffer.Width}x{giffer.Height} " +
+                             $"-r {giffer.AverageFramerate().ToString(CultureInfo.InvariantCulture)} " +
+                             $"-i pipe:0 {soundCmdPart} -c:v libx264 -pix_fmt yuv420p " +
+                             $"-map 0:v:0 {(string.IsNullOrEmpty(soundCmdPart) ? "" : "-map 1:a:0")} -shortest " +
+                             $"\"{videoPath}\"";
+            Debug.Print(command);
             var ffmpeg = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "ffmpeg",
-                    Arguments = $"-f rawvideo -pix_fmt bgr24 -s {giffer.Width}x{giffer.Height} -r {(int)giffer.AverageFramerate()} -i pipe:0 -c:v libx264 -pix_fmt yuv420p {videoPath}",
+                    Arguments = command,
                     RedirectStandardInput = true,
                     //RedirectStandardError = true,
                     UseShellExecute = false,

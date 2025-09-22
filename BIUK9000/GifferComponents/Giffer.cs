@@ -42,6 +42,7 @@ namespace BIUK9000.GifferComponents
                 frame.Layers.ForEach(layer => layer.Save());
             }
         }
+        public string SoundPath { get; set; }
         public void MoveFromOBR(int x, int y)
         {
             foreach(GifFrame frame in Frames)
@@ -85,6 +86,7 @@ namespace BIUK9000.GifferComponents
             Position = new OVector(0, 0);
             SFI = 0;
             SLI = 0;
+            SoundPath = "";
             MakeSizeDivisible4();
         }
         private Giffer(Giffer gifferToCopy)
@@ -96,6 +98,7 @@ namespace BIUK9000.GifferComponents
             SLI = gifferToCopy.SLI;
             _nextLayerID = gifferToCopy._nextLayerID;
             Frames = new();
+            SoundPath = gifferToCopy.SoundPath;
             foreach(GifFrame gf in gifferToCopy.Frames)
             {
                 Frames.Add(gf.Clone());
