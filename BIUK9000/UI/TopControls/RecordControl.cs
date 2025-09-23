@@ -15,6 +15,8 @@ namespace BIUK9000.UI.CustomControls
         public event EventHandler Start;
         public event EventHandler Stop;
         public event EventHandler Screenshot;
+
+        public bool RecordSound { get => recordSoundCB.Checked; }
         public int FPS { get => (int)fpsNUD.Value; set => fpsNUD.Value = value; }
         public RecordControl()
         {

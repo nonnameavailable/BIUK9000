@@ -294,6 +294,7 @@ namespace BIUK9000.UI
         private void _recordControl_Stop(object sender, EventArgs e)
         {
             _ssl.Stop();
+            if (_recordControl.RecordSound) AudioRecorder.StopRecording();
             if (_ssl.Frames.Count == 0) return;
             if (GifferC == null)
             {
@@ -304,12 +305,10 @@ namespace BIUK9000.UI
             }
             ControlsEnable(true);
             SetRecordMode(false);
+            if(_recordControl.RecordSound) MainGiffer.SoundPath = AudioRecorder.Path;
             controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate();
             _ssl.ClearFrames();
-            AudioRecorder.StopRecording();
-            MainGiffer.SoundPath = AudioRecorder.Path;
-            Debug.Print(AudioRecorder.Path);
             Report("Recording stopped.");
         }
         private bool CanRecord()
@@ -339,9 +338,12 @@ namespace BIUK9000.UI
             try
             {
                 _ssl.Start();
-                AudioRecorder?.Dispose();
-                AudioRecorder = new AudioRecorder(Path.ChangeExtension(Path.GetTempFileName(), ".wav"));
-                AudioRecorder.StartRecording();
+                if (_recordControl.RecordSound)
+                {
+                    AudioRecorder?.Dispose();
+                    AudioRecorder = new AudioRecorder(Path.ChangeExtension(Path.GetTempFileName(), ".wav"));
+                    AudioRecorder.StartRecording();
+                }
                 Report("Now recording.");
             } catch (Exception ex)
             {

@@ -32,7 +32,7 @@ namespace BIUK9000.UI.CustomControls
         public bool UseGifsicle { get => useGifSicleCB.Checked; }
         public int GifExportLossy { get => (int)GifExportLossyNUD.Value; }
         public int GifExportColors { get => (int)GifExportColorsNUD.Value; }
-        public bool CreateGIF { get => !noneRB.Checked; }
+        public bool CreateGIF { get => createGifCB.Checked; }
         public bool CreateFrames { get => createFramesCB.Checked; }
         public bool CreateVideo { get => createVideoCB.Checked; }
         public string ImageExportFormat { get => ImageExportFormatCBB.Text; }
@@ -62,6 +62,10 @@ namespace BIUK9000.UI.CustomControls
             animatedGifRB.CheckedChanged += AnimatedGifRB_CheckedChanged;
             animatedGifOptionsGB.Enabled = false;
             ImageExportFormatCBB.SelectedIndex = 1;
+
+            createGifCB.CheckedChanged += (sender, args) => gifOptionsPanel.Visible = createGifCB.Checked;
+            createFramesCB.CheckedChanged += (sender, args) => framesOptionsPanel.Visible = createFramesCB.Checked;
+            changeFramerateCB.CheckedChanged += (sender, args) => changeFramerateOptionsPanel.Visible = changeFramerateCB.Checked;
         }
 
         private void AnimatedGifRB_CheckedChanged(object sender, EventArgs e)

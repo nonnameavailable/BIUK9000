@@ -379,7 +379,7 @@ namespace BIUK9000.GifferManipulation
             string command = $"-f rawvideo -pix_fmt bgr24 -s {giffer.Width}x{giffer.Height} " +
                              $"-r {giffer.AverageFramerate().ToString(CultureInfo.InvariantCulture)} " +
                              $"-i pipe:0 {soundCmdPart} -c:v libx264 -pix_fmt yuv420p " +
-                             $"-map 0:v:0 {(string.IsNullOrEmpty(soundCmdPart) ? "" : "-map 1:a:0")} -shortest " +
+                             $"-map 0:v:0 {(string.IsNullOrEmpty(soundCmdPart) ? "" : "-map 1:a:0 ")} " +
                              $"\"{videoPath}\"";
             Debug.Print(command);
             var ffmpeg = new Process

@@ -33,6 +33,7 @@
             label1 = new System.Windows.Forms.Label();
             fpsNUD = new System.Windows.Forms.NumericUpDown();
             screenshotBTN = new System.Windows.Forms.Button();
+            recordSoundCB = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)fpsNUD).BeginInit();
             SuspendLayout();
             // 
@@ -69,7 +70,7 @@
             fpsNUD.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
             fpsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             fpsNUD.Name = "fpsNUD";
-            fpsNUD.Size = new System.Drawing.Size(120, 23);
+            fpsNUD.Size = new System.Drawing.Size(61, 23);
             fpsNUD.TabIndex = 3;
             fpsNUD.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
@@ -82,10 +83,21 @@
             screenshotBTN.Text = "Screenshot";
             screenshotBTN.UseVisualStyleBackColor = true;
             // 
+            // recordSoundCB
+            // 
+            recordSoundCB.AutoSize = true;
+            recordSoundCB.Location = new System.Drawing.Point(113, 53);
+            recordSoundCB.Name = "recordSoundCB";
+            recordSoundCB.Size = new System.Drawing.Size(99, 19);
+            recordSoundCB.TabIndex = 5;
+            recordSoundCB.Text = "Record sound";
+            recordSoundCB.UseVisualStyleBackColor = true;
+            // 
             // RecordControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(recordSoundCB);
             Controls.Add(screenshotBTN);
             Controls.Add(fpsNUD);
             Controls.Add(label1);
@@ -105,5 +117,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown fpsNUD;
         private System.Windows.Forms.Button screenshotBTN;
+        private System.Windows.Forms.CheckBox recordSoundCB;
     }
 }
