@@ -49,7 +49,7 @@ namespace BIUK9000.IO
             }
             return result;
         }
-        private static Size NewSize(VideoInfo vi, FrameExtractOptions feo)
+        public static Size NewSize(VideoInfo vi, FrameExtractOptions feo)
         {
             int width = vi.Width;
             int height = vi.Height;
@@ -195,7 +195,7 @@ namespace BIUK9000.IO
                 if (!double.TryParse(parts[3], NumberStyles.Any, CultureInfo.InvariantCulture, out double durationSeconds))
                 {
                     //throw new Exception($"Could not parse duration. Ffprobe returned:{Environment.NewLine}{line}");
-                    durationSeconds = 100;
+                    durationSeconds = -1;
                 }
 
                 return new VideoInfo
@@ -246,11 +246,11 @@ namespace BIUK9000.IO
         public double DurationSeconds { get; set; }
         public double FrameDelay { get => 1000d / FPS; }
         public int FrameCount { get => (int)(FPS * DurationSeconds); }
-        public long EstimatedMemoryUsageMB
+        public long EstimatedMemoryUsageBytes
         {
             get
             {
-                return (long)Width * Height * FrameCount * 4 / 1048576;
+                return (long)Width * Height * FrameCount * 4;
             }
         }
         public string DurationString
@@ -276,6 +276,16 @@ namespace BIUK9000.IO
         public override string ToString()
         {
             return $"Resolution: {Width}x{Height}, FPS: {FPS}, Duration: {DurationString}";
+        }
+        public VideoInfo Copy()
+        {
+            return new()
+            {
+                Width = Width,
+                Height = Height,
+                FPS = FPS,
+                DurationSeconds = DurationSeconds
+            };
         }
     }
     public struct FrameExtractOptions

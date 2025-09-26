@@ -58,6 +58,8 @@ namespace BIUK9000.UI.Forms
                 else return null;
             }
         }
+        private bool ChangeFPS { get => changeFpsCB.Checked; }
+        private bool ChangeMaxSide { get => maxSideLengthCB.Checked; }
         public VideoImportForm()
         {
             InitializeComponent();
@@ -65,9 +67,14 @@ namespace BIUK9000.UI.Forms
             FormClosed += OnFormClosed;
             changeFpsCB.CheckedChanged += ChangeFpsCB_CheckedChanged;
             maxSideLengthCB.CheckedChanged += MaxSideLengthCB_CheckedChanged;
+            maxSideLengthNUD.ValueChanged += (sender, args) => UpdateMemoryLabel();
+            changeFpsNUD.ValueChanged += (sender, args) => UpdateMemoryLabel();
             _previewFrames = new();
         }
-
+        private void UpdateMemoryLabel()
+        {
+            memoryLabel.Text = EstimatedMemoryConsumption();
+        }
         private void MaxSideLengthCB_CheckedChanged(object sender, EventArgs e)
         {
             if (maxSideLengthCB.Checked)
@@ -75,6 +82,7 @@ namespace BIUK9000.UI.Forms
                 maxSideLengthNUD.Enabled = true;
             }
             else maxSideLengthNUD.Enabled = false;
+            UpdateMemoryLabel();
         }
 
         private void ChangeFpsCB_CheckedChanged(object sender, EventArgs e)
@@ -83,12 +91,14 @@ namespace BIUK9000.UI.Forms
             {
                 changeFpsNUD.Enabled = true;
             } else changeFpsNUD.Enabled = false;
+            UpdateMemoryLabel();
         }
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
         {
             _previewFrames.ForEach(frame =>  frame.Dispose());
             _previewFrames.Clear();
+            myPictureBox1.Image?.Dispose();
         }
 
         private void OnSFIChanged(object sender, EventArgs e)
@@ -100,7 +110,12 @@ namespace BIUK9000.UI.Forms
         public void LoadVideo(string path)
         {
             _vi = VideoFrameExtractor.GetVideoInfo(path);
-            if(VI.DurationSeconds < 60)
+            if (_vi.DurationSeconds < 0)
+            {
+                PutDurationNotFoundImage();
+                timelineSlider1.Enabled = false;
+                return;
+            } else if (VI.DurationSeconds < 60)
             {
                 var feo = new FrameExtractOptions
                 {
@@ -108,12 +123,14 @@ namespace BIUK9000.UI.Forms
                     TargetFPS = PreviewFPS
                 };
                 _previewFrames = VideoFrameExtractor.ExtractFrames(path, feo);
-            } else
+            }
+            else
             {
                 _previewFrames = VideoFrameExtractor.ExtractFramesFast(path, MaxPreviewSideLength, MaxPreviewFrames);
             }
             timelineSlider1.Maximum = _previewFrames.Count - 1;
             Report(_vi.ToString());
+            memoryLabel.Text = EstimatedMemoryConsumption();
             UpdateMainPictureBox();
         }
         private void UpdateMainPictureBox()
@@ -137,6 +154,39 @@ namespace BIUK9000.UI.Forms
         private void Report(string text)
         {
             statusLabel.Text = text;
+        }
+        private void PutDurationNotFoundImage()
+        {
+            Bitmap bmp = new(myPictureBox1.Width, myPictureBox1.Height);
+            using Graphics g = Graphics.FromImage(bmp);
+            g.Clear(Color.Black);
+            using Font f = new Font("Arial", myPictureBox1.Height * 0.1f);
+            g.DrawString($"Duration could not be determined{Environment.NewLine}Preview will not be loaded", f, Brushes.Black, 10, 10);
+            myPictureBox1.Image = bmp;
+        }
+        private string EstimatedMemoryConsumption()
+        {
+            VideoInfo tvi = VI.Copy();
+            if (ChangeFPS)
+            {
+                tvi.FPS = (double)changeFpsNUD.Value;
+            }
+            if (ChangeMaxSide)
+            {
+                Size s = VideoFrameExtractor.NewSize(tvi, FrameExtractOptions());
+                tvi.Width = s.Width;
+                tvi.Height = s.Height;
+            }
+            long bytes = tvi.EstimatedMemoryUsageBytes;
+            string[] Suffix = { "B", "KB", "MB", "GB", "TB" };
+            int i;
+            double dblSByte = bytes;
+            for (i = 0; i < Suffix.Length && bytes >= 1024; i++, bytes /= 1024)
+            {
+                dblSByte = bytes / 1024.0;
+            }
+
+            return String.Format("{0:0.##} {1}", dblSByte, Suffix[i]);
         }
     }
 }

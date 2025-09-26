@@ -36,6 +36,8 @@
             statusStrip = new System.Windows.Forms.StatusStrip();
             statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             panel1 = new System.Windows.Forms.Panel();
+            memoryLabel = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
             changeFpsNUD = new System.Windows.Forms.NumericUpDown();
             changeFpsCB = new System.Windows.Forms.CheckBox();
             maxSideLengthNUD = new System.Windows.Forms.NumericUpDown();
@@ -137,6 +139,8 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(memoryLabel);
+            panel1.Controls.Add(label1);
             panel1.Controls.Add(changeFpsNUD);
             panel1.Controls.Add(changeFpsCB);
             panel1.Controls.Add(maxSideLengthNUD);
@@ -147,9 +151,29 @@
             panel1.Size = new System.Drawing.Size(144, 277);
             panel1.TabIndex = 5;
             // 
+            // memoryLabel
+            // 
+            memoryLabel.AutoSize = true;
+            memoryLabel.Location = new System.Drawing.Point(3, 188);
+            memoryLabel.Name = "memoryLabel";
+            memoryLabel.Size = new System.Drawing.Size(13, 15);
+            memoryLabel.TabIndex = 5;
+            memoryLabel.Text = "0";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(3, 147);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(94, 30);
+            label1.TabIndex = 4;
+            label1.Text = "Memory needed\r\nfor this import:";
+            // 
             // changeFpsNUD
             // 
+            changeFpsNUD.DecimalPlaces = 2;
             changeFpsNUD.Enabled = false;
+            changeFpsNUD.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             changeFpsNUD.Location = new System.Drawing.Point(3, 88);
             changeFpsNUD.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
             changeFpsNUD.Minimum = new decimal(new int[] { 1, 0, 0, 131072 });
@@ -174,7 +198,7 @@
             maxSideLengthNUD.Increment = new decimal(new int[] { 50, 0, 0, 0 });
             maxSideLengthNUD.Location = new System.Drawing.Point(3, 34);
             maxSideLengthNUD.Maximum = new decimal(new int[] { 5000, 0, 0, 0 });
-            maxSideLengthNUD.Minimum = new decimal(new int[] { 100, 0, 0, 0 });
+            maxSideLengthNUD.Minimum = new decimal(new int[] { 50, 0, 0, 0 });
             maxSideLengthNUD.Name = "maxSideLengthNUD";
             maxSideLengthNUD.Size = new System.Drawing.Size(120, 23);
             maxSideLengthNUD.TabIndex = 1;
@@ -225,5 +249,7 @@
         private System.Windows.Forms.NumericUpDown maxSideLengthNUD;
         private System.Windows.Forms.CheckBox maxSideLengthCB;
         private System.Windows.Forms.Button importBTN;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label memoryLabel;
     }
 }

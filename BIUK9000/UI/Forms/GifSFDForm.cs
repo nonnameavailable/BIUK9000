@@ -39,9 +39,10 @@ namespace BIUK9000.UI.CustomControls
         public int ImageExportJpegQuality { get => (int)ImageExportJpegQualNUD.Value; }
         public double NewFramerate { get => (double)newFramerateNUD.Value; }
         private double _currentFramerate;
-        public double CurrentFramerate {
+        public double CurrentFramerate
+        {
             get
-            { 
+            {
                 return _currentFramerate;
             }
             set
@@ -51,7 +52,7 @@ namespace BIUK9000.UI.CustomControls
                 newFramerateNUD.Value = (decimal)value;
             }
         }
-        public bool ChangeFramerate { get =>  changeFramerateCB.Checked; set => changeFramerateCB.Checked = value; }
+        public bool ChangeFramerate { get => changeFramerateCB.Checked; set => changeFramerateCB.Checked = value; }
         public GifSFDForm()
         {
             InitializeComponent();
@@ -82,6 +83,11 @@ namespace BIUK9000.UI.CustomControls
             {
                 animatedGifOptionsGB.Enabled = false;
             }
+        }
+
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
         public enum ExportLibrary

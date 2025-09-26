@@ -56,8 +56,11 @@
             flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             createGifCB = new System.Windows.Forms.CheckBox();
             gifOptionsPanel = new System.Windows.Forms.Panel();
+            groupBox2 = new System.Windows.Forms.GroupBox();
             framesOptionsPanel = new System.Windows.Forms.Panel();
+            groupBox3 = new System.Windows.Forms.GroupBox();
             changeFramerateOptionsPanel = new System.Windows.Forms.Panel();
+            groupBox4 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)newFramerateNUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ImageExportJpegQualNUD).BeginInit();
             groupBox1.SuspendLayout();
@@ -67,14 +70,17 @@
             ((System.ComponentModel.ISupportInitialize)GifExportColorsNUD).BeginInit();
             flowLayoutPanel1.SuspendLayout();
             gifOptionsPanel.SuspendLayout();
+            groupBox2.SuspendLayout();
             framesOptionsPanel.SuspendLayout();
+            groupBox3.SuspendLayout();
             changeFramerateOptionsPanel.SuspendLayout();
+            groupBox4.SuspendLayout();
             SuspendLayout();
             // 
             // createVideoCB
             // 
             createVideoCB.AutoSize = true;
-            createVideoCB.Location = new System.Drawing.Point(3, 295);
+            createVideoCB.Location = new System.Drawing.Point(3, 345);
             createVideoCB.Name = "createVideoCB";
             createVideoCB.Size = new System.Drawing.Size(92, 19);
             createVideoCB.TabIndex = 0;
@@ -84,7 +90,7 @@
             // currentFramerateLabel
             // 
             currentFramerateLabel.AutoSize = true;
-            currentFramerateLabel.Location = new System.Drawing.Point(64, 9);
+            currentFramerateLabel.Location = new System.Drawing.Point(70, 18);
             currentFramerateLabel.Name = "currentFramerateLabel";
             currentFramerateLabel.Size = new System.Drawing.Size(0, 15);
             currentFramerateLabel.TabIndex = 16;
@@ -92,7 +98,7 @@
             // newFramerateNUD
             // 
             newFramerateNUD.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            newFramerateNUD.Location = new System.Drawing.Point(64, 33);
+            newFramerateNUD.Location = new System.Drawing.Point(70, 42);
             newFramerateNUD.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             newFramerateNUD.Minimum = new decimal(new int[] { 1, 0, 0, 65536 });
             newFramerateNUD.Name = "newFramerateNUD";
@@ -103,7 +109,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(16, 35);
+            label6.Location = new System.Drawing.Point(22, 44);
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(37, 15);
             label6.TabIndex = 14;
@@ -112,7 +118,7 @@
             // changeFramerateCB
             // 
             changeFramerateCB.AutoSize = true;
-            changeFramerateCB.Location = new System.Drawing.Point(3, 320);
+            changeFramerateCB.Location = new System.Drawing.Point(3, 370);
             changeFramerateCB.Name = "changeFramerateCB";
             changeFramerateCB.Size = new System.Drawing.Size(121, 19);
             changeFramerateCB.TabIndex = 13;
@@ -122,7 +128,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(3, 10);
+            label5.Location = new System.Drawing.Point(9, 19);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(50, 15);
             label5.TabIndex = 0;
@@ -131,7 +137,7 @@
             // ImageExportJpegQualNUD
             // 
             ImageExportJpegQualNUD.Increment = new decimal(new int[] { 10, 0, 0, 0 });
-            ImageExportJpegQualNUD.Location = new System.Drawing.Point(77, 32);
+            ImageExportJpegQualNUD.Location = new System.Drawing.Point(75, 46);
             ImageExportJpegQualNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             ImageExportJpegQualNUD.Name = "ImageExportJpegQualNUD";
             ImageExportJpegQualNUD.Size = new System.Drawing.Size(41, 23);
@@ -141,7 +147,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(8, 34);
+            label3.Location = new System.Drawing.Point(6, 48);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(54, 15);
             label3.TabIndex = 4;
@@ -153,7 +159,7 @@
             ImageExportFormatCBB.FormattingEnabled = true;
             ImageExportFormatCBB.IntegralHeight = false;
             ImageExportFormatCBB.Items.AddRange(new object[] { ".jpeg", ".png", ".gif" });
-            ImageExportFormatCBB.Location = new System.Drawing.Point(8, 8);
+            ImageExportFormatCBB.Location = new System.Drawing.Point(6, 22);
             ImageExportFormatCBB.Name = "ImageExportFormatCBB";
             ImageExportFormatCBB.Size = new System.Drawing.Size(120, 23);
             ImageExportFormatCBB.TabIndex = 0;
@@ -161,7 +167,7 @@
             // createFramesCB
             // 
             createFramesCB.AutoSize = true;
-            createFramesCB.Location = new System.Drawing.Point(3, 202);
+            createFramesCB.Location = new System.Drawing.Point(3, 227);
             createFramesCB.Name = "createFramesCB";
             createFramesCB.Size = new System.Drawing.Size(99, 19);
             createFramesCB.TabIndex = 12;
@@ -171,9 +177,9 @@
             // saveBTN
             // 
             saveBTN.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            saveBTN.Location = new System.Drawing.Point(3, 410);
+            saveBTN.Location = new System.Drawing.Point(3, 511);
             saveBTN.Name = "saveBTN";
-            saveBTN.Size = new System.Drawing.Size(280, 102);
+            saveBTN.Size = new System.Drawing.Size(292, 102);
             saveBTN.TabIndex = 18;
             saveBTN.Text = "Save";
             saveBTN.UseVisualStyleBackColor = true;
@@ -182,9 +188,9 @@
             // 
             groupBox1.Controls.Add(gifskiRB);
             groupBox1.Controls.Add(animatedGifRB);
-            groupBox1.Location = new System.Drawing.Point(3, 3);
+            groupBox1.Location = new System.Drawing.Point(16, 22);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(132, 159);
+            groupBox1.Size = new System.Drawing.Size(120, 159);
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Export library";
@@ -193,10 +199,12 @@
             // 
             gifskiRB.AutoSize = true;
             gifskiRB.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            gifskiRB.Checked = true;
             gifskiRB.Location = new System.Drawing.Point(6, 26);
             gifskiRB.Name = "gifskiRB";
             gifskiRB.Size = new System.Drawing.Size(90, 49);
             gifskiRB.TabIndex = 14;
+            gifskiRB.TabStop = true;
             gifskiRB.Text = "Gifski\r\n- best colors\r\n- large files";
             gifskiRB.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             gifskiRB.UseVisualStyleBackColor = true;
@@ -217,9 +225,9 @@
             animatedGifOptionsGB.Controls.Add(label4);
             animatedGifOptionsGB.Controls.Add(groupBox5);
             animatedGifOptionsGB.Controls.Add(gifExportModeCBB);
-            animatedGifOptionsGB.Location = new System.Drawing.Point(141, 12);
+            animatedGifOptionsGB.Location = new System.Drawing.Point(142, 22);
             animatedGifOptionsGB.Name = "animatedGifOptionsGB";
-            animatedGifOptionsGB.Size = new System.Drawing.Size(134, 150);
+            animatedGifOptionsGB.Size = new System.Drawing.Size(132, 159);
             animatedGifOptionsGB.TabIndex = 16;
             animatedGifOptionsGB.TabStop = false;
             animatedGifOptionsGB.Text = "AnimatedGif options";
@@ -320,8 +328,9 @@
             flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new System.Drawing.Size(314, 545);
+            flowLayoutPanel1.Size = new System.Drawing.Size(302, 623);
             flowLayoutPanel1.TabIndex = 22;
+            flowLayoutPanel1.Paint += flowLayoutPanel1_Paint;
             // 
             // createGifCB
             // 
@@ -335,38 +344,67 @@
             // 
             // gifOptionsPanel
             // 
-            gifOptionsPanel.Controls.Add(groupBox1);
-            gifOptionsPanel.Controls.Add(animatedGifOptionsGB);
+            gifOptionsPanel.Controls.Add(groupBox2);
             gifOptionsPanel.Location = new System.Drawing.Point(3, 28);
             gifOptionsPanel.Name = "gifOptionsPanel";
-            gifOptionsPanel.Size = new System.Drawing.Size(280, 168);
+            gifOptionsPanel.Size = new System.Drawing.Size(292, 193);
             gifOptionsPanel.TabIndex = 1;
             gifOptionsPanel.Visible = false;
             // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(groupBox1);
+            groupBox2.Controls.Add(animatedGifOptionsGB);
+            groupBox2.Location = new System.Drawing.Point(3, 3);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new System.Drawing.Size(280, 185);
+            groupBox2.TabIndex = 19;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "GIF Export Options";
+            // 
             // framesOptionsPanel
             // 
-            framesOptionsPanel.Controls.Add(ImageExportJpegQualNUD);
-            framesOptionsPanel.Controls.Add(ImageExportFormatCBB);
-            framesOptionsPanel.Controls.Add(label3);
-            framesOptionsPanel.Location = new System.Drawing.Point(3, 227);
+            framesOptionsPanel.Controls.Add(groupBox3);
+            framesOptionsPanel.Location = new System.Drawing.Point(3, 252);
             framesOptionsPanel.Name = "framesOptionsPanel";
-            framesOptionsPanel.Size = new System.Drawing.Size(280, 62);
+            framesOptionsPanel.Size = new System.Drawing.Size(292, 87);
             framesOptionsPanel.TabIndex = 13;
             framesOptionsPanel.Visible = false;
             // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(ImageExportJpegQualNUD);
+            groupBox3.Controls.Add(ImageExportFormatCBB);
+            groupBox3.Controls.Add(label3);
+            groupBox3.Location = new System.Drawing.Point(3, 3);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new System.Drawing.Size(280, 78);
+            groupBox3.TabIndex = 19;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "Frames Export Options";
+            // 
             // changeFramerateOptionsPanel
             // 
-            changeFramerateOptionsPanel.AutoSize = true;
             changeFramerateOptionsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            changeFramerateOptionsPanel.Controls.Add(currentFramerateLabel);
-            changeFramerateOptionsPanel.Controls.Add(label5);
-            changeFramerateOptionsPanel.Controls.Add(newFramerateNUD);
-            changeFramerateOptionsPanel.Controls.Add(label6);
-            changeFramerateOptionsPanel.Location = new System.Drawing.Point(3, 345);
+            changeFramerateOptionsPanel.Controls.Add(groupBox4);
+            changeFramerateOptionsPanel.Location = new System.Drawing.Point(3, 395);
             changeFramerateOptionsPanel.Name = "changeFramerateOptionsPanel";
-            changeFramerateOptionsPanel.Size = new System.Drawing.Size(124, 59);
+            changeFramerateOptionsPanel.Size = new System.Drawing.Size(292, 110);
             changeFramerateOptionsPanel.TabIndex = 14;
             changeFramerateOptionsPanel.Visible = false;
+            // 
+            // groupBox4
+            // 
+            groupBox4.Controls.Add(currentFramerateLabel);
+            groupBox4.Controls.Add(label5);
+            groupBox4.Controls.Add(label6);
+            groupBox4.Controls.Add(newFramerateNUD);
+            groupBox4.Location = new System.Drawing.Point(3, 3);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new System.Drawing.Size(280, 101);
+            groupBox4.TabIndex = 19;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Change FPS Options";
             // 
             // GifSFDForm
             // 
@@ -374,7 +412,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            ClientSize = new System.Drawing.Size(314, 545);
+            ClientSize = new System.Drawing.Size(302, 623);
             Controls.Add(flowLayoutPanel1);
             Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "GifSFDForm";
@@ -392,10 +430,13 @@
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel1.PerformLayout();
             gifOptionsPanel.ResumeLayout(false);
+            groupBox2.ResumeLayout(false);
             framesOptionsPanel.ResumeLayout(false);
-            framesOptionsPanel.PerformLayout();
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
             changeFramerateOptionsPanel.ResumeLayout(false);
-            changeFramerateOptionsPanel.PerformLayout();
+            groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -430,5 +471,8 @@
         private System.Windows.Forms.Panel gifOptionsPanel;
         private System.Windows.Forms.Panel framesOptionsPanel;
         private System.Windows.Forms.Panel changeFramerateOptionsPanel;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBox4;
     }
 }
