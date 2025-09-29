@@ -57,15 +57,24 @@ namespace BIUK9000.IO
         }
         private static List<Bitmap> VideoFromPath(string path)
         {
-            using VideoImportForm vif = new();
-            vif.LoadVideo(path);
-            if (vif.ShowDialog() == DialogResult.OK)
+            VideoInfo vi = VideoFrameExtractor.GetVideoInfo(path);
+            Debug.Print(vi.ToString());
+            if(vi.DurationSeconds > 0 && vi.EstimatedMemoryUsageBytes < 1024 * 1024 * 1024)
             {
-                var feo = vif.FrameExtractOptions();
-                return VideoFrameExtractor.ExtractFrames(path, feo);
+                return VideoFrameExtractor.ExtractFrames(path, new FrameExtractOptions());
             } else
             {
-                throw new Exception("User closed form");
+                using VideoImportForm vif = new();
+                vif.LoadVideo(path);
+                if (vif.ShowDialog() == DialogResult.OK)
+                {
+                    var feo = vif.FrameExtractOptions();
+                    return VideoFrameExtractor.ExtractFrames(path, feo);
+                }
+                else
+                {
+                    throw new Exception("User closed form");
+                }
             }
             //return VideoFrameExtractor.ExtractFrames(path);
         }

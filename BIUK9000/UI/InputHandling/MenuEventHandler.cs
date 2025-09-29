@@ -15,21 +15,22 @@ namespace BIUK9000.UI.InputHandling
         {
             _mf = mainForm;
             _menu = _mf.MainMenu;
-            var framesReverseMI = FindMenuItemByName("framesReverseMI");
-            var framesAddReversedMI = FindMenuItemByName("framesAddReversedMI");
-            var framesDeleteBetweenMarksMI = FindMenuItemByName("framesDeleteBetweenMarksMI");
-            var framesDeleteOutsideOfMarksMI = FindMenuItemByName("framesDeleteOutsideOfMarksMI");
-            var framesDeleteDuplicatesMI = FindMenuItemByName("framesDeleteDuplicatesMI");
+            var framesReverseMI = _menu.Items.Find("framesReverseMI", true)[0];
+            var framesAddReversedMI = _menu.Items.Find("framesAddReversedMI", true)[0];
+            var framesDeleteBetweenMarksMI = _menu.Items.Find("framesDeleteBetweenMarksMI", true)[0];
+            var framesDeleteOutsideOfMarksMI = _menu.Items.Find("framesDeleteOutsideOfMarksMI", true)[0];
+            var framesDeleteDuplicatesMI = _menu.Items.Find("framesDeleteDuplicatesMI", true)[0];
 
-            var layerAddTextMI = FindMenuItemByName("layerAddTextMI");
-            var layerAddShapeMI = FindMenuItemByName("layerAddShapeMI");
-            var layerFlattenMI = FindMenuItemByName("layerFlattenMI");
-            var layerSnapToFrameMI = FindMenuItemByName("layerSnapToFrameMI");
-            var layerRestoreRatioMI = FindMenuItemByName("layerRestoreRatioMI");
-            var layerShiftHereMI = FindMenuItemByName("layerShiftHereMI");
-            var layerMirrorMI = FindMenuItemByName("layerMirrorMI");
-            var layerMakePreviousInvisibleMI = FindMenuItemByName("layerMakePreviousInvisibleMI");
-            var layerConvertToBitmapMI = FindMenuItemByName("layerConvertToBitmapMI");
+            //var layerAddTextMI = _menu.Items.Find("layerAddTextMI", true)[0];
+            var layerAddTextMI = _menu.Items.Find("layerAddTextMI", true)[0];
+            var layerAddShapeMI = _menu.Items.Find("layerAddShapeMI", true)[0];
+            var layerFlattenMI = _menu.Items.Find("layerFlattenMI", true)[0];
+            var layerSnapToFrameMI = _menu.Items.Find("layerSnapToFrameMI", true)[0];
+            var layerRestoreRatioMI = _menu.Items.Find("layerRestoreRatioMI", true)[0];
+            var layerShiftHereMI = _menu.Items.Find("layerShiftHereMI", true)[0];
+            var layerMirrorMI = _menu.Items.Find("layerMirrorMI", true)[0];
+            var layerMakePreviousInvisibleMI = _menu.Items.Find("layerMakePreviousInvisibleMI", true)[0];
+            var layerConvertToBitmapMI = _menu.Items.Find("layerConvertToBitmapMI", true)[0];
 
 
             framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames(_mf.Marks));
@@ -87,28 +88,6 @@ namespace BIUK9000.UI.InputHandling
             int shiftValue = _mf.Marks[0] - _mf.SFI ;
             _mf.GifferC.ShiftLayer(_mf.SFI, _mf.SLI, shiftValue);
             _mf.CompleteUIUpdate();
-        }
-
-        private ToolStripMenuItem FindMenuItemByName(string name)
-        {
-            return FindMenuItemByName(_menu.Items, name);
-        }
-
-        private ToolStripMenuItem FindMenuItemByName(ToolStripItemCollection items, string name)
-        {
-            foreach (ToolStripItem item in items)
-            {
-                if (item is ToolStripMenuItem menuItem)
-                {
-                    if (menuItem.Name == name)
-                        return menuItem;
-
-                    var foundItem = FindMenuItemByName(menuItem.DropDownItems, name);
-                    if (foundItem != null)
-                        return foundItem;
-                }
-            }
-            return null;
         }
 
         private void CheckNullActionUpdate(Action action)

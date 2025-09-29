@@ -14,7 +14,7 @@ namespace BIUK9000.UI.Forms
 {
     public partial class VideoImportForm : Form
     {
-        private const int MaxPreviewFrames = 50;
+        private const int MaxPreviewFrames = 100;
         private const int MaxPreviewSideLength = 300;
         private double PreviewFPS
         {
@@ -110,23 +110,19 @@ namespace BIUK9000.UI.Forms
         public void LoadVideo(string path)
         {
             _vi = VideoFrameExtractor.GetVideoInfo(path);
+            var feo = new FrameExtractOptions
+            {
+                MaxSideLength = MaxPreviewSideLength,
+                TargetFPS = PreviewFPS
+            };
             if (_vi.DurationSeconds < 0)
             {
                 PutDurationNotFoundImage();
                 timelineSlider1.Enabled = false;
                 return;
-            } else if (VI.DurationSeconds < 60)
+            } else
             {
-                var feo = new FrameExtractOptions
-                {
-                    MaxSideLength = MaxPreviewSideLength,
-                    TargetFPS = PreviewFPS
-                };
                 _previewFrames = VideoFrameExtractor.ExtractFrames(path, feo);
-            }
-            else
-            {
-                _previewFrames = VideoFrameExtractor.ExtractFramesFast(path, MaxPreviewSideLength, MaxPreviewFrames);
             }
             timelineSlider1.Maximum = _previewFrames.Count - 1;
             Report(_vi.ToString());

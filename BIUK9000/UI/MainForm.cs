@@ -595,8 +595,10 @@ namespace BIUK9000.UI
             }
             else
             {
-                mainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay;
+                DateTime beforeUpdate = DateTime.Now;
                 UpdateMainPictureBox();
+                TimeSpan duration = DateTime.Now - beforeUpdate;
+                mainTimelineSlider.FrameDelay = SelectedFrame.FrameDelay - duration.Milliseconds;
             }
         }
         private void mainTimelineSlider_FrameDelayChanged(object sender, EventArgs e)

@@ -40,8 +40,8 @@ namespace BIUK9000.UI
             set
             {
                 _isCodeFrameDelayChange = true;
-                if(playTimer.Interval != value) playTimer.Interval = value;
-                if(frameDelayNUD.Value != value)frameDelayNUD.Value = value;
+                if(playTimer.Interval != value) playTimer.Interval = Math.Max(value, 1);
+                if(frameDelayNUD.Value != value)frameDelayNUD.Value = Math.Max(value, 1);
                 _isCodeFrameDelayChange = false;
             }
         }
