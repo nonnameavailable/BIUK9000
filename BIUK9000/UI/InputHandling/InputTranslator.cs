@@ -15,13 +15,15 @@ namespace BIUK9000.UI.InputHandling
 {
     public class InputTranslator
     {
-        public event EventHandler NextFrame, PreviousFrame;
+        public event EventHandler NextFrame, PreviousFrame, NextMark, PreviousMark;
         public event EventHandler SaveGif, LoadGif;
         public event EventHandler AddTextLayer, AddShapeLayer;
         public event EventHandler MoveAll, ResizeLayerKeepRatio, ResizeLayerFree, ResizeFrame, RotateLayer;
         public event MouseEventHandler DrawLine, ReplaceColor, FloodFill, LassoPointAdded, Pipette, OverrideLayerCenter, MoveLayer;
         public event MouseEventHandler LassoCompleted, DrawLineCompleted;
         public event EventHandler StartTimer, StopTimer, ApplyLayerParams;
+        public event EventHandler DeleteFramesBetweenMarksOrSelected, DeleteFramesOutsideOfMarks;
+        public event EventHandler PlaceMark;
         private bool IsShiftDown { get; set; }
         private bool IsCtrlDown { get; set; }
         private bool IsLMBDown { get; set; }
@@ -45,12 +47,26 @@ namespace BIUK9000.UI.InputHandling
             {
                 if (keyData == Keys.D)
                 {
-                    NextFrame?.Invoke(this, null);
+                    if (IsShiftDown)
+                    {
+                        NextMark?.Invoke(this, null);
+                    }
+                    else
+                    {
+                        NextFrame?.Invoke(this, null);
+                    }
                     return true;
                 }
                 else if (keyData == Keys.A)
                 {
-                    PreviousFrame?.Invoke(this, null);
+                    if (IsShiftDown)
+                    {
+                        PreviousMark?.Invoke(this, null);
+                    }
+                    else
+                    {
+                        PreviousFrame?.Invoke(this, null);
+                    }
                     return true;
                 }
                 else if (keyData == Keys.ShiftKey)
@@ -106,6 +122,23 @@ namespace BIUK9000.UI.InputHandling
                     int moveValue = IsShiftDown ? 2 : 1;
                     MoveLayer?.Invoke(this, DefaultMouseEventArgs(0, moveValue));
                     return true;
+                }
+                else if(keyData == Keys.Delete)
+                {
+                    if (IsShiftDown)
+                    {
+                        DeleteFramesOutsideOfMarks?.Invoke(this, null);
+                        IsShiftDown = false;
+                    }
+                    else
+                    {
+                        DeleteFramesBetweenMarksOrSelected?.Invoke(this, null);
+                    }
+                    return true;
+                }
+                else if(keyData == Keys.M)
+                {
+                    PlaceMark?.Invoke(this, null);
                 }
             }
             else if (m.Msg == WM_KEYUP)

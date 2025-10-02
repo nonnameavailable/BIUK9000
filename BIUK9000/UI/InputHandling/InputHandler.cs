@@ -35,6 +35,8 @@ namespace BIUK9000.UI.InputHandling
             _translator.LoadGif += (sender, args) => _mainForm.LoadGiffer();
             _translator.NextFrame += OnNextFrame;
             _translator.PreviousFrame += OnPreviousFrame;
+            _translator.NextMark += OnNextMark;
+            _translator.PreviousMark += OnPreviousMark;
 
             _translator.LassoCompleted += OnLassoCompleted;
             _translator.DrawLineCompleted += OnDrawLineCompleted;
@@ -55,6 +57,45 @@ namespace BIUK9000.UI.InputHandling
             _translator.ResizeFrame += OnResizeFrame;
             _translator.ResizeLayerKeepRatio += OnResizeLayerKeepRatio;
             _translator.ResizeLayerFree += OnResizeLayerFree;
+
+            _translator.DeleteFramesBetweenMarksOrSelected += _translator_DeleteFrames;
+            _translator.DeleteFramesOutsideOfMarks += _translator_DeleteFramesOutsideOfMarks;
+
+            _translator.PlaceMark += (sender, args) => _mainForm.MainTimelineSlider.AddMark(_controller.SFI);
+        }
+
+        private void _translator_DeleteFramesOutsideOfMarks(object sender, EventArgs e)
+        {
+            if (_controller.FrameCount > 2)
+            {
+                _controller.DeleteFramesOutsideOfMarks(_mainForm.Marks, _mainForm.AskBeforeFrameDelete);
+                _controller.SFI = _mainForm.MainTimelineSlider.SelectedFrameIndex;
+                _mainForm.Marks.Clear();
+                CompleteUIUpdate();
+            }
+        }
+
+        private void _translator_DeleteFrames(object sender, EventArgs e)
+        {
+            if(_controller.FrameCount > 2)
+            {
+                _controller.DeleteFramesBetweenMarksOrSelected(_mainForm.Marks, _mainForm.AskBeforeFrameDelete);
+                _controller.SFI = _mainForm.MainTimelineSlider.SelectedFrameIndex;
+                _mainForm.Marks.Clear();
+                CompleteUIUpdate();
+            }
+        }
+
+        private void OnPreviousMark(object sender, EventArgs e)
+        {
+            _controller.SFI = _mainForm.PreviousMark();
+            CompleteUIUpdate();
+        }
+
+        private void OnNextMark(object sender, EventArgs e)
+        {
+            _controller.SFI = _mainForm.NextMark();
+            CompleteUIUpdate();
         }
 
         private void OnPreviousFrame(object sender, EventArgs e)

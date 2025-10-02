@@ -16,7 +16,6 @@ namespace BIUK9000.UI.ExtendedControls
         {
             get
             {
-                marks.Sort();
                 return marks;
             }
         }
@@ -45,7 +44,7 @@ namespace BIUK9000.UI.ExtendedControls
                 e.Graphics.DrawLine(Pens.Red, mp, 0, mp, Height);
             }
         }
-        public bool AddMark(int mark)
+        public bool AddMark(int mark, bool sort = true)
         {
             if (mark <= Maximum && Maximum > 0 && mark >= Minimum)
             {
@@ -56,6 +55,7 @@ namespace BIUK9000.UI.ExtendedControls
                 else
                 {
                     marks.Add(mark);
+                    if(sort)marks.Sort();
                 }
                 Invalidate();
                 return true;

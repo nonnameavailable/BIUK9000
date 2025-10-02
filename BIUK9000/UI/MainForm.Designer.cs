@@ -68,8 +68,13 @@ namespace BIUK9000.UI
             layerMirrorMI = new System.Windows.Forms.ToolStripMenuItem();
             layerMakePreviousInvisibleMI = new System.Windows.Forms.ToolStripMenuItem();
             layerConvertToBitmapMI = new System.Windows.Forms.ToolStripMenuItem();
+            animationMI = new System.Windows.Forms.ToolStripMenuItem();
+            animationLerpMI = new System.Windows.Forms.ToolStripMenuItem();
+            animationMarkMI = new System.Windows.Forms.ToolStripMenuItem();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            animationLerpLineMI = new System.Windows.Forms.ToolStripMenuItem();
+            animationLerpTraceMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -290,7 +295,7 @@ namespace BIUK9000.UI
             // 
             tableLayoutPanel1.SetColumnSpan(mainMenuStrip, 3);
             mainMenuStrip.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { framesMI, layersMI });
+            mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { framesMI, layersMI, animationMI });
             mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             mainMenuStrip.Name = "mainMenuStrip";
             mainMenuStrip.Size = new System.Drawing.Size(975, 30);
@@ -302,58 +307,58 @@ namespace BIUK9000.UI
             framesMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { framesReverseMI, framesAddReversedMI, deleteToolStripMenuItem });
             framesMI.Name = "framesMI";
             framesMI.Size = new System.Drawing.Size(57, 26);
-            framesMI.Text = "Frames";
+            framesMI.Text = "&Frames";
             // 
             // framesReverseMI
             // 
             framesReverseMI.Name = "framesReverseMI";
             framesReverseMI.Size = new System.Drawing.Size(146, 22);
-            framesReverseMI.Text = "Reverse";
+            framesReverseMI.Text = "&Reverse";
             // 
             // framesAddReversedMI
             // 
             framesAddReversedMI.Name = "framesAddReversedMI";
             framesAddReversedMI.Size = new System.Drawing.Size(146, 22);
-            framesAddReversedMI.Text = "Add Reversed";
+            framesAddReversedMI.Text = "&Add Reversed";
             // 
             // deleteToolStripMenuItem
             // 
             deleteToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { framesDeleteBetweenMarksMI, framesDeleteOutsideOfMarksMI, framesDeleteDuplicatesMI });
             deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             deleteToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            deleteToolStripMenuItem.Text = "Delete";
+            deleteToolStripMenuItem.Text = "&Delete";
             // 
             // framesDeleteBetweenMarksMI
             // 
             framesDeleteBetweenMarksMI.Name = "framesDeleteBetweenMarksMI";
             framesDeleteBetweenMarksMI.Size = new System.Drawing.Size(164, 22);
-            framesDeleteBetweenMarksMI.Text = "Between marks";
+            framesDeleteBetweenMarksMI.Text = "&Between marks";
             // 
             // framesDeleteOutsideOfMarksMI
             // 
             framesDeleteOutsideOfMarksMI.Name = "framesDeleteOutsideOfMarksMI";
             framesDeleteOutsideOfMarksMI.Size = new System.Drawing.Size(164, 22);
-            framesDeleteOutsideOfMarksMI.Text = "Outside of marks";
+            framesDeleteOutsideOfMarksMI.Text = "&Outside of marks";
             // 
             // framesDeleteDuplicatesMI
             // 
             framesDeleteDuplicatesMI.Name = "framesDeleteDuplicatesMI";
             framesDeleteDuplicatesMI.Size = new System.Drawing.Size(164, 22);
-            framesDeleteDuplicatesMI.Text = "Duplicates";
+            framesDeleteDuplicatesMI.Text = "&Duplicates";
             // 
             // layersMI
             // 
             layersMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddMI, layerFlattenMI, layerSnapToFrameMI, layerRestoreRatioMI, layerShiftHereMI, layerMirrorMI, layerMakePreviousInvisibleMI, layerConvertToBitmapMI });
             layersMI.Name = "layersMI";
             layersMI.Size = new System.Drawing.Size(52, 26);
-            layersMI.Text = "Layers";
+            layersMI.Text = "&Layers";
             // 
             // layerAddMI
             // 
             layerAddMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { layerAddTextMI, layerAddShapeMI });
             layerAddMI.Name = "layerAddMI";
             layerAddMI.Size = new System.Drawing.Size(197, 22);
-            layerAddMI.Text = "Add";
+            layerAddMI.Text = "&Add";
             // 
             // layerAddTextMI
             // 
@@ -371,43 +376,75 @@ namespace BIUK9000.UI
             // 
             layerFlattenMI.Name = "layerFlattenMI";
             layerFlattenMI.Size = new System.Drawing.Size(197, 22);
-            layerFlattenMI.Text = "Flatten";
+            layerFlattenMI.Text = "&Flatten";
             // 
             // layerSnapToFrameMI
             // 
             layerSnapToFrameMI.Name = "layerSnapToFrameMI";
             layerSnapToFrameMI.Size = new System.Drawing.Size(197, 22);
-            layerSnapToFrameMI.Text = "Snap to frame";
+            layerSnapToFrameMI.Text = "&Snap to frame";
             // 
             // layerRestoreRatioMI
             // 
             layerRestoreRatioMI.Name = "layerRestoreRatioMI";
             layerRestoreRatioMI.Size = new System.Drawing.Size(197, 22);
-            layerRestoreRatioMI.Text = "Restore ratio";
+            layerRestoreRatioMI.Text = "&Restore ratio";
             // 
             // layerShiftHereMI
             // 
             layerShiftHereMI.Name = "layerShiftHereMI";
             layerShiftHereMI.Size = new System.Drawing.Size(197, 22);
-            layerShiftHereMI.Text = "Shift here";
+            layerShiftHereMI.Text = "S&hift here";
             // 
             // layerMirrorMI
             // 
             layerMirrorMI.Name = "layerMirrorMI";
             layerMirrorMI.Size = new System.Drawing.Size(197, 22);
-            layerMirrorMI.Text = "Mirror";
+            layerMirrorMI.Text = "&Mirror";
             // 
             // layerMakePreviousInvisibleMI
             // 
             layerMakePreviousInvisibleMI.Name = "layerMakePreviousInvisibleMI";
             layerMakePreviousInvisibleMI.Size = new System.Drawing.Size(197, 22);
-            layerMakePreviousInvisibleMI.Text = "Make previous invisible";
+            layerMakePreviousInvisibleMI.Text = "Make previous &invisible";
             // 
             // layerConvertToBitmapMI
             // 
             layerConvertToBitmapMI.Name = "layerConvertToBitmapMI";
             layerConvertToBitmapMI.Size = new System.Drawing.Size(197, 22);
-            layerConvertToBitmapMI.Text = "Convert to bitmap";
+            layerConvertToBitmapMI.Text = "Convert to &bitmap";
+            // 
+            // animationMI
+            // 
+            animationMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { animationLerpMI, animationMarkMI });
+            animationMI.Name = "animationMI";
+            animationMI.Size = new System.Drawing.Size(75, 26);
+            animationMI.Text = "&Animation";
+            // 
+            // animationLerpMI
+            // 
+            animationLerpMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { animationLerpLineMI, animationLerpTraceMI });
+            animationLerpMI.Name = "animationLerpMI";
+            animationLerpMI.Size = new System.Drawing.Size(189, 22);
+            animationLerpMI.Text = "Interpo&late";
+            // 
+            // animationMarkMI
+            // 
+            animationMarkMI.Name = "animationMarkMI";
+            animationMarkMI.Size = new System.Drawing.Size(189, 22);
+            animationMarkMI.Text = "&Mark every Nth frame";
+            // 
+            // animationLerpLineMI
+            // 
+            animationLerpLineMI.Name = "animationLerpLineMI";
+            animationLerpLineMI.Size = new System.Drawing.Size(180, 22);
+            animationLerpLineMI.Text = "&Line";
+            // 
+            // animationLerpTraceMI
+            // 
+            animationLerpTraceMI.Name = "animationLerpTraceMI";
+            animationLerpTraceMI.Size = new System.Drawing.Size(180, 22);
+            animationLerpTraceMI.Text = "&Trace";
             // 
             // MainForm
             // 
@@ -475,6 +512,11 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem framesDeleteOutsideOfMarksMI;
         private System.Windows.Forms.ToolStripMenuItem layerConvertToBitmapMI;
         private System.Windows.Forms.ToolStripMenuItem framesDeleteDuplicatesMI;
+        private System.Windows.Forms.ToolStripMenuItem animationMI;
+        private System.Windows.Forms.ToolStripMenuItem animationLerpMI;
+        private System.Windows.Forms.ToolStripMenuItem animationMarkMI;
+        private System.Windows.Forms.ToolStripMenuItem animationLerpLineMI;
+        private System.Windows.Forms.ToolStripMenuItem animationLerpTraceMI;
     }
 }
 

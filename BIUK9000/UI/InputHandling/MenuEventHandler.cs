@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BIUK9000.UI.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,6 @@ namespace BIUK9000.UI.InputHandling
             var framesDeleteOutsideOfMarksMI = _menu.Items.Find("framesDeleteOutsideOfMarksMI", true)[0];
             var framesDeleteDuplicatesMI = _menu.Items.Find("framesDeleteDuplicatesMI", true)[0];
 
-            //var layerAddTextMI = _menu.Items.Find("layerAddTextMI", true)[0];
             var layerAddTextMI = _menu.Items.Find("layerAddTextMI", true)[0];
             var layerAddShapeMI = _menu.Items.Find("layerAddShapeMI", true)[0];
             var layerFlattenMI = _menu.Items.Find("layerFlattenMI", true)[0];
@@ -31,6 +31,9 @@ namespace BIUK9000.UI.InputHandling
             var layerMirrorMI = _menu.Items.Find("layerMirrorMI", true)[0];
             var layerMakePreviousInvisibleMI = _menu.Items.Find("layerMakePreviousInvisibleMI", true)[0];
             var layerConvertToBitmapMI = _menu.Items.Find("layerConvertToBitmapMI", true)[0];
+            var animationLerpLineMI = _menu.Items.Find("animationLerpLineMI", true)[0];
+            var animationLerpTraceMI = _menu.Items.Find("animationLerpTraceMI", true)[0];
+            var animationMarkMI = _menu.Items.Find("animationMarkMI", true)[0];
 
 
             framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames(_mf.Marks));
@@ -48,6 +51,35 @@ namespace BIUK9000.UI.InputHandling
             layerMirrorMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.Mirror(_mf.SFI, _mf.SLI, _mf.PaintOnSubsequentFrames));
             layerMakePreviousInvisibleMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.MakePreviousLayersInvisible(_mf.SFI, _mf.SLI));
             layerConvertToBitmapMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ConvertLayerToBitmap(_mf.SFI, _mf.SLI));
+
+            animationMarkMI.Click += AnimationMarkMI_Click;
+            animationLerpLineMI.Click += AnimationLerpLineMI_Click;
+            animationLerpTraceMI.Click += AnimationLerpTraceMI_Click;
+        }
+
+        private void AnimationLerpLineMI_Click(object sender, EventArgs e)
+        {
+            _mf.GifferC.LerpExecute(_mf.Marks, _mf.SLI);
+            _mf.MouseTrace().Clear();
+        }
+        private void AnimationLerpTraceMI_Click(object sender, EventArgs e)
+        {
+            _mf.GifferC.LerpExecute(_mf.Marks, _mf.SLI, _mf.MouseTrace());
+            _mf.MouseTrace().Clear();
+        }
+
+        private void AnimationMarkMI_Click(object sender, EventArgs e)
+        {
+            if (CheckNull()) return;
+            PromptForm pf = new()
+            {
+                NudDescription = "Mark spacing"
+            };
+            pf.ShowDialog();
+            if (pf.DialogResult == DialogResult.OK)
+            {
+                _mf.MarkEveryNthFrame((int)pf.NudValue);
+            }
         }
 
         private void FramesDeleteOutsideOfMarksMI_Click(object sender, EventArgs e)
@@ -63,7 +95,7 @@ namespace BIUK9000.UI.InputHandling
         private void FramesDeleteBetweenMarksMI_Click(object sender, EventArgs e)
         {
             if (CheckNull()) return;
-            if(_mf.GifferC.DeleteFramesBetweenMarks(_mf.Marks, _mf.AskBeforeFrameDelete))
+            if(_mf.GifferC.DeleteFramesBetweenMarksOrSelected(_mf.Marks, _mf.AskBeforeFrameDelete))
             {
                 _mf.MainTimelineSlider.ClearMarks();
                 _mf.CompleteUIUpdate();
@@ -74,7 +106,7 @@ namespace BIUK9000.UI.InputHandling
         {
             if (CheckNull()) return;
             _mf.GifferC.Flatten();
-            _mf.CompleteUIUpdate(false, true);
+            _mf.CompleteUIUpdate();
         }
 
         private void LayerShiftHereMI_Click(object sender, EventArgs e)

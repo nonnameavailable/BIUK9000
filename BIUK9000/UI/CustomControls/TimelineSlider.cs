@@ -101,5 +101,43 @@ namespace BIUK9000.UI
         {
             timeLineTrackBar.ClearMarks();
         }
+        public int NextMark()
+        {
+            foreach (int mark in Marks)
+            {
+                if(mark > SelectedFrameIndex)
+                {
+                    return mark;
+                }
+            }
+            if(SelectedFrameIndex == Maximum)
+            {
+                return 0;
+            } else
+            {
+                return Maximum;
+            }
+        }
+        public int PreviousMark()
+        {
+            for(int i = Marks.Count - 1; i >=0; i--)
+            {
+                if (Marks[i] < SelectedFrameIndex)
+                {
+                    return Marks[i];
+                }
+            }
+            if(SelectedFrameIndex == 0)
+            {
+                return Maximum;
+            } else
+            {
+                return 0;
+            }
+        }
+        public void AddMark(int mark)
+        {
+            timeLineTrackBar.AddMark(mark);
+        }
     }
 }

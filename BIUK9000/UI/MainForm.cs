@@ -57,10 +57,11 @@ namespace BIUK9000.UI
         {
             get
             {
-                if(topPanel.Controls.Count > 0)
+                if (topPanel.Controls.Count > 0)
                 {
                     return topPanel.Controls[0];
-                } else
+                }
+                else
                 {
                     return null;
                 }
@@ -68,7 +69,7 @@ namespace BIUK9000.UI
             set
             {
                 topPanel.Controls.Clear();
-                if(value != null)topPanel.Controls.Add(value);
+                if (value != null) topPanel.Controls.Add(value);
             }
         }
         public Mode Mode { get => controlsPanel.SelectedMode; }
@@ -165,7 +166,7 @@ namespace BIUK9000.UI
         {
             if (MainGiffer == null) return;
             GifferHistory.Add(MainGiffer.Clone());
-            if(GifferHistory.Count > 1) //temporary, until I make it so that going further into history is possible
+            if (GifferHistory.Count > 1) //temporary, until I make it so that going further into history is possible
             {
                 GifferHistory[0].Dispose();
                 GifferHistory.RemoveAt(0);
@@ -174,7 +175,7 @@ namespace BIUK9000.UI
         }
         public void LoadGiffer()
         {
-            if(GifferHistory.Count == 0)
+            if (GifferHistory.Count == 0)
             {
                 Report("No saved giffers!");
                 return;
@@ -190,20 +191,21 @@ namespace BIUK9000.UI
         private void ControlsPanel_ModeChanged(object sender, EventArgs e)
         {
             Mode m = controlsPanel.SelectedMode;
-            if(m == Mode.Move)
+            if (m == Mode.Move)
             {
                 SetRecordMode(false);
                 if (GifferC != null) UpdateMainPictureBox();
                 ControlsEnable(true);
             }
-            else if(m == Mode.Paint)
+            else if (m == Mode.Paint)
             {
                 SetRecordMode(false);
                 if (GifferC == null)
                 {
                     controlsPanel.SelectedMode = Mode.Move;
                     ControlsEnable(true);
-                } else
+                }
+                else
                 {
                     if (SelectedLayer is not BitmapGFL)
                     {
@@ -218,7 +220,7 @@ namespace BIUK9000.UI
                 }
                 if (GifferC != null) UpdateMainPictureBox();
             }
-            else if(m == Mode.Record)
+            else if (m == Mode.Record)
             {
                 SetRecordMode(true);
                 ControlsEnable(false);
@@ -251,11 +253,13 @@ namespace BIUK9000.UI
             {
                 TransparencyKey = Color.LimeGreen;
                 mainPictureBox.BackColor = Color.LimeGreen;
-                if(MainImage != null){
+                if (MainImage != null)
+                {
                     using Graphics g = Graphics.FromImage(MainImage);
                     g.Clear(Color.Transparent);
                 }
-            } else
+            }
+            else
             {
                 mainPictureBox.BackColor = default;
                 TransparencyKey = default;
@@ -299,13 +303,14 @@ namespace BIUK9000.UI
             if (GifferC == null)
             {
                 SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
-            } else
+            }
+            else
             {
                 GifferIO.GifImport(this, new Giffer(_ssl.Frames, _ssl.FPS));
             }
             ControlsEnable(true);
             SetRecordMode(false);
-            if(_recordControl.RecordSound) MainGiffer.SoundPath = AudioRecorder.Path;
+            if (_recordControl.RecordSound) MainGiffer.SoundPath = AudioRecorder.Path;
             controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate();
             _ssl.ClearFrames();
@@ -323,7 +328,7 @@ namespace BIUK9000.UI
         private void _recordControl_Start(object sender, EventArgs e)
         {
             Point p = mainPictureBox.PointToScreen(Point.Empty);
-            if(!CanRecord())
+            if (!CanRecord())
             {
                 MessageBox.Show("You are either off screen or the recording area is too small!");
                 _recordControl.RecMode(false);
@@ -345,7 +350,8 @@ namespace BIUK9000.UI
                     AudioRecorder.StartRecording();
                 }
                 Report("Now recording.");
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _recordControl.RecMode(false);
                 MessageBox.Show(ex.Message);
@@ -411,15 +417,9 @@ namespace BIUK9000.UI
         private void DeleteFramesButton_Click(object sender, EventArgs e)
         {
             if (MainGiffer == null || MainGiffer.FrameCount < 2) return;
-            if (Marks.Count > 0)
+            if (GifferC.DeleteFramesBetweenMarksOrSelected(mainTimelineSlider.Marks, askDeleteCB.Checked))
             {
-                if(GifferC.DeleteFramesBetweenMarks(mainTimelineSlider.Marks, askDeleteCB.Checked))
-                {
-                    mainTimelineSlider.ClearMarks();
-                }
-            } else
-            {
-                MainGiffer.Frames.RemoveAt(SFI);
+                mainTimelineSlider.ClearMarks();
             }
             SFI = mainTimelineSlider.SelectedFrameIndex;
             CompleteUIUpdate();
@@ -429,14 +429,14 @@ namespace BIUK9000.UI
         {
             if (GifferC == null) return;
             string lerpMode = lerpModeCBB.SelectedItem.ToString();
-            if(lerpMode == "trace")
+            if (lerpMode == "trace")
             {
                 GifferC.LerpExecute(mainTimelineSlider.Marks, SLI, mainPictureBox.MouseTrace);
-            } else if(lerpMode == "line")
+            }
+            else if (lerpMode == "line")
             {
                 GifferC.LerpExecute(mainTimelineSlider.Marks, SLI);
             }
-            mainTimelineSlider.ClearMarks();
             mainPictureBox.MouseTrace.Clear();
         }
         public void ApplyLayerParamsToSubsequentLayers(int index = -1)
@@ -474,9 +474,9 @@ namespace BIUK9000.UI
 
         public void SetNewGiffer(Giffer newGiffer, bool preserveMode = false)
         {
-            if(MainGiffer != null && preserveMode)
+            if (MainGiffer != null && preserveMode)
             {
-                if(newGiffer.FrameCount < MainGiffer.FrameCount ||
+                if (newGiffer.FrameCount < MainGiffer.FrameCount ||
                     newGiffer.Frames[SFI].Layers.Count != MainGiffer.Frames[SFI].Layers.Count ||
                     newGiffer.Frames[SFI].Layers[SLI] is not BitmapGFL)
                 {
@@ -487,24 +487,26 @@ namespace BIUK9000.UI
 
             MainGiffer = newGiffer;
             GifferC = new GifferController(newGiffer);
-            if(topPanel.Controls.Count > 0)
+            if (topPanel.Controls.Count > 0)
             {
                 //layerParamsPanel.Controls[0].Dispose();
                 if (topPanel.Controls[0] is IGFLParamControl)
                 {
                     topPanel.Controls[0].Dispose();
-                } else
+                }
+                else
                 {
                     topPanel.Controls.Clear();
                 }
             }
-            if(!preserveMode)controlsPanel.SelectedMode = Mode.Move;
-            CompleteUIUpdate(false, false);
+            if (!preserveMode) controlsPanel.SelectedMode = Mode.Move;
+            CompleteUIUpdate();
             GifferC.SaveLayerStateForApply(0, 0);
-            if(InputBinder == null)
+            if (InputBinder == null)
             {
                 InputBinder = new(InputTranslator, GifferC, this);
-            } else
+            }
+            else
             {
                 InputBinder.SetNewController(GifferC);
             }
@@ -518,7 +520,7 @@ namespace BIUK9000.UI
         }
         protected override bool ProcessKeyPreview(ref Message m)
         {
-            if(ShouldIgnoreKeyPresses()) return base.ProcessKeyPreview(ref m);
+            if (ShouldIgnoreKeyPresses()) return base.ProcessKeyPreview(ref m);
             return InputTranslator.HandleKey(m);
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -621,7 +623,8 @@ namespace BIUK9000.UI
                 cp.DraggingFileForExport = true;
                 GifferIO.FrameExportDragDrop(this);
                 cp.DraggingFileForExport = false;
-            } else if (cp.IsRMBDown)
+            }
+            else if (cp.IsRMBDown)
             {
                 cp.DraggingFileForExport = true;
                 GifferIO.LayerExportDragDrop(this);
@@ -667,7 +670,7 @@ namespace BIUK9000.UI
             MainImage?.Dispose();
             MainImage = MainGiffer.FrameAsBitmap(SelectedFrame, controlsPanel.DrawHelp, controlsPanel.InterpolationMode);
         }
-        public void CompleteUIUpdate(bool keepSelectedLayer = true, bool keepsSelectedFrame = true)
+        public void CompleteUIUpdate()
         {
             UpdateLayersPanel();
             UpdateTimeline();
@@ -715,6 +718,15 @@ namespace BIUK9000.UI
         {
             rightPanel.SelectNewestLayer();
             GifferC.SLI = rightPanel.SelectedLayerIndex;
+        }
+        public int NextMark() => mainTimelineSlider.NextMark();
+        public int PreviousMark() => mainTimelineSlider.PreviousMark();
+        public void MarkEveryNthFrame(int n)
+        {
+            for (int i = 0; i <= mainTimelineSlider.Maximum; i += n)
+            {
+                MainTimelineSlider.AddMark(i);
+            }
         }
     }
 }

@@ -80,7 +80,7 @@
             // createVideoCB
             // 
             createVideoCB.AutoSize = true;
-            createVideoCB.Location = new System.Drawing.Point(3, 345);
+            createVideoCB.Location = new System.Drawing.Point(3, 322);
             createVideoCB.Name = "createVideoCB";
             createVideoCB.Size = new System.Drawing.Size(92, 19);
             createVideoCB.TabIndex = 0;
@@ -118,7 +118,7 @@
             // changeFramerateCB
             // 
             changeFramerateCB.AutoSize = true;
-            changeFramerateCB.Location = new System.Drawing.Point(3, 370);
+            changeFramerateCB.Location = new System.Drawing.Point(3, 347);
             changeFramerateCB.Name = "changeFramerateCB";
             changeFramerateCB.Size = new System.Drawing.Size(121, 19);
             changeFramerateCB.TabIndex = 13;
@@ -137,7 +137,7 @@
             // ImageExportJpegQualNUD
             // 
             ImageExportJpegQualNUD.Increment = new decimal(new int[] { 10, 0, 0, 0 });
-            ImageExportJpegQualNUD.Location = new System.Drawing.Point(75, 46);
+            ImageExportJpegQualNUD.Location = new System.Drawing.Point(192, 23);
             ImageExportJpegQualNUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             ImageExportJpegQualNUD.Name = "ImageExportJpegQualNUD";
             ImageExportJpegQualNUD.Size = new System.Drawing.Size(41, 23);
@@ -147,7 +147,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(6, 48);
+            label3.Location = new System.Drawing.Point(132, 25);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(54, 15);
             label3.TabIndex = 4;
@@ -177,7 +177,7 @@
             // saveBTN
             // 
             saveBTN.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 238);
-            saveBTN.Location = new System.Drawing.Point(3, 511);
+            saveBTN.Location = new System.Drawing.Point(3, 465);
             saveBTN.Name = "saveBTN";
             saveBTN.Size = new System.Drawing.Size(292, 102);
             saveBTN.TabIndex = 18;
@@ -328,7 +328,7 @@
             flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new System.Drawing.Size(302, 623);
+            flowLayoutPanel1.Size = new System.Drawing.Size(302, 573);
             flowLayoutPanel1.TabIndex = 22;
             flowLayoutPanel1.Paint += flowLayoutPanel1_Paint;
             // 
@@ -367,7 +367,7 @@
             framesOptionsPanel.Controls.Add(groupBox3);
             framesOptionsPanel.Location = new System.Drawing.Point(3, 252);
             framesOptionsPanel.Name = "framesOptionsPanel";
-            framesOptionsPanel.Size = new System.Drawing.Size(292, 87);
+            framesOptionsPanel.Size = new System.Drawing.Size(292, 64);
             framesOptionsPanel.TabIndex = 13;
             framesOptionsPanel.Visible = false;
             // 
@@ -378,7 +378,7 @@
             groupBox3.Controls.Add(label3);
             groupBox3.Location = new System.Drawing.Point(3, 3);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(280, 78);
+            groupBox3.Size = new System.Drawing.Size(280, 58);
             groupBox3.TabIndex = 19;
             groupBox3.TabStop = false;
             groupBox3.Text = "Frames Export Options";
@@ -387,9 +387,9 @@
             // 
             changeFramerateOptionsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             changeFramerateOptionsPanel.Controls.Add(groupBox4);
-            changeFramerateOptionsPanel.Location = new System.Drawing.Point(3, 395);
+            changeFramerateOptionsPanel.Location = new System.Drawing.Point(3, 372);
             changeFramerateOptionsPanel.Name = "changeFramerateOptionsPanel";
-            changeFramerateOptionsPanel.Size = new System.Drawing.Size(292, 110);
+            changeFramerateOptionsPanel.Size = new System.Drawing.Size(292, 87);
             changeFramerateOptionsPanel.TabIndex = 14;
             changeFramerateOptionsPanel.Visible = false;
             // 
@@ -401,7 +401,7 @@
             groupBox4.Controls.Add(newFramerateNUD);
             groupBox4.Location = new System.Drawing.Point(3, 3);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new System.Drawing.Size(280, 101);
+            groupBox4.Size = new System.Drawing.Size(280, 79);
             groupBox4.TabIndex = 19;
             groupBox4.TabStop = false;
             groupBox4.Text = "Change FPS Options";
@@ -412,7 +412,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            ClientSize = new System.Drawing.Size(302, 623);
+            ClientSize = new System.Drawing.Size(302, 573);
             Controls.Add(flowLayoutPanel1);
             Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "GifSFDForm";

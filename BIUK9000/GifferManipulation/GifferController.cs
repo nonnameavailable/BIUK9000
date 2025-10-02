@@ -96,7 +96,6 @@ namespace BIUK9000.GifferManipulation
                 MessageBox.Show("You must add at least 2 marks");
                 return;
             }
-            marks.Sort();
             for (int i = 0; i < marks.Count - 1; i++)
             {
                 int startFrameIndex = marks[i];
@@ -534,7 +533,6 @@ namespace BIUK9000.GifferManipulation
         {
             int startIndex = 0;
             int endIndex = FrameCount - 1;
-            marks.Sort();
             if(marks.Count >= 2)
             {
                 startIndex = marks[0];
@@ -564,7 +562,6 @@ namespace BIUK9000.GifferManipulation
                 MessageBox.Show("Mark count must be even and larger or equal to 2");
                 return;
             }
-            marks.Sort();
             for (int i = 0; i < marks.Count; i += 2)
             {
                 int startFrameIndex = marks[i];
@@ -642,16 +639,16 @@ namespace BIUK9000.GifferManipulation
                 if (layer != null) layer.Visible = false;
             }
         }
-        public bool DeleteFramesBetweenMarks(List<int> marks, bool ask)
+        public bool DeleteFramesBetweenMarksOrSelected(List<int> marks, bool ask)
         {
-            if (marks.Count != 2)
-            {
-                MessageBox.Show("Exactly 2 frames must be marked!");
-                return false;
-            }
             if (ask)
             {
                 if (MessageBox.Show("Do you really want to delete these frames?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return false;
+            }
+            if(marks.Count < 2)
+            {
+                giffer.Frames[SFI].Dispose();
+                giffer.Frames.RemoveAt(SFI);
             }
             giffer.RemoveFrames(marks);
             return true;
@@ -663,14 +660,21 @@ namespace BIUK9000.GifferManipulation
                 MessageBox.Show("Exactly 2 frames must be marked!");
                 return false;
             }
+            if (marks[0] == 0 && marks[1] == FrameCount - 1)
+            {
+                MessageBox.Show("No frames outside of marks.");
+                return false;
+            }
             if (ask)
             {
                 if (MessageBox.Show("Do you really want to delete these frames?", "Careful!", MessageBoxButtons.YesNo) == DialogResult.No) return false;
             }
-            int secondIndex = Math.Clamp(Math.Max(marks[1], marks[0]) + 1, 0, FrameCount - 1);
-            int firstIndex = Math.Clamp(Math.Min(marks[0], marks[1]) - 1, 0, FrameCount - 1);
-            if (secondIndex < FrameCount - 1) DeleteFramesBetweenMarks([secondIndex, FrameCount - 1], false);
-            if (firstIndex > 0) DeleteFramesBetweenMarks([0, firstIndex], false);
+            //int secondIndex = Math.Clamp(Math.Max(marks[1], marks[0]) + 1, 0, FrameCount - 1);
+            //int firstIndex = Math.Clamp(Math.Min(marks[0], marks[1]) - 1, 0, FrameCount - 1);
+            int secondIndex = marks[1];
+            int firstIndex = marks[0];
+            if (secondIndex < FrameCount - 1) DeleteFramesBetweenMarksOrSelected([secondIndex + 1, FrameCount - 1], false);
+            if (firstIndex > 0) DeleteFramesBetweenMarksOrSelected([0, firstIndex - 1], false);
             if(SFI >= FrameCount) SFI = FrameCount - 1;
             return true;
         }
