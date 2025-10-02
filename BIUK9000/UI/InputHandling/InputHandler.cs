@@ -171,6 +171,10 @@ namespace BIUK9000.UI.InputHandling
                gfl.Move(e.X, e.Y);
                 _mainForm.UpdateMainPictureBox();
             }
+            if(_mainForm.ApplyParamsMode != ApplyParamsMode.applyNone)
+            {
+                _mainForm.ApplyLayerParams();
+            }
         }
 
         private void OnMoveAll(object sender, EventArgs e)
@@ -217,7 +221,10 @@ namespace BIUK9000.UI.InputHandling
         private void OnDrawLineCompleted(object sender, MouseEventArgs e)
         {
             List<Point> points = _mainForm.TraceToMPOL().ToList();
-            _controller.DrawLineOnSubsequentFrames(SFI, SLI, points, _mainForm.PaintParams());
+            if(_mainForm.ApplyParamsMode != ApplyParamsMode.applyNone)
+            {
+                _controller.DrawLineOnSubsequentFrames(SFI, SLI, points, _mainForm.PaintParams());
+            }
             _mainForm.UpdateMainPictureBox();
         }
 
