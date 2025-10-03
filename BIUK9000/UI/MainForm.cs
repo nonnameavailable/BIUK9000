@@ -83,6 +83,7 @@ namespace BIUK9000.UI
         private InputTranslator InputTranslator { get; }
         private InputHandler InputBinder { get; set; }
         private AudioRecorder AudioRecorder { get; set; }
+        public ApplyParamsMode ApplyParamsMode { get => controlsPanel.SelectedApplyParamsMode; }
         public MainForm()
         {
             InitializeComponent();

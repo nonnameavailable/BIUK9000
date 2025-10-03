@@ -171,6 +171,10 @@ namespace BIUK9000.UI.InputHandling
                gfl.Move(e.X, e.Y);
                 _mainForm.UpdateMainPictureBox();
             }
+            if(_mainForm.ApplyParamsMode != ApplyParamsMode.applyNone)
+            {
+                _mainForm.ApplyLayerParams();
+            }
         }
 
         private void OnMoveAll(object sender, EventArgs e)

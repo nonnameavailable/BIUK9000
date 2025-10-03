@@ -107,6 +107,10 @@ namespace BIUK9000.UI
             toolMoveRB.CheckedChanged += ToolMoveRB_CheckedChanged;
             toolPaintRB.CheckedChanged += ToolPaintRB_CheckedChanged;
             toolRecordRB.CheckedChanged += ToolRecordRB_CheckedChanged;
+
+            applyParamsCBB.KeyPress += (sender, args) => args.Handled = true;
+            ImageExportFormatCBB.KeyPress += (sender, args) => args.Handled = true;
+            mpbAAModeCBB.KeyPress += (sender, args) => args.Handled = true;
         }
 
         private void ToolRecordRB_CheckedChanged(object sender, EventArgs e)
