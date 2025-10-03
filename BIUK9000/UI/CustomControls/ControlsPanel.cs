@@ -184,15 +184,12 @@ namespace BIUK9000.UI
     }
     public enum ApplyParamsMode
     {
-        applyChanged,
-        applyAll,
-        applyNone
-    }
-    public enum Tools
-    {
-        Move,
-        Paint,
-        Record
+        ChangedToAllFollowing,
+        AllToAllFollowing,
+        None,
+        ChangedToOneFollowing,
+        ChangedToOnePrevious,
+        ChangedToAllPrevious
     }
     public enum Mode
     {

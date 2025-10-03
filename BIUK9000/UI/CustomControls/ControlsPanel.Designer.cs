@@ -213,6 +213,7 @@
             // applyParamsCBB
             // 
             applyParamsCBB.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            applyParamsCBB.DropDownWidth = 150;
             applyParamsCBB.FormattingEnabled = true;
             applyParamsCBB.Location = new System.Drawing.Point(6, 87);
             applyParamsCBB.Name = "applyParamsCBB";

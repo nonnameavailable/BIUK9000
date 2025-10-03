@@ -78,7 +78,7 @@ namespace BIUK9000.UI
         private MenuEventHandler _menuEventHandler;
         public List<int> Marks { get => mainTimelineSlider.Marks; }
         public bool AskBeforeFrameDelete { get => askDeleteCB.Checked; }
-        public bool PaintOnSubsequentFrames { get => controlsPanel.SelectedApplyParamsMode != ApplyParamsMode.applyNone; }
+        public ApplyParamsMode ApplyParamsMode { get => controlsPanel.SelectedApplyParamsMode; }
         public List<Giffer> GifferHistory { get; }
         private InputTranslator InputTranslator { get; }
         private InputHandler InputBinder { get; set; }
@@ -608,7 +608,7 @@ namespace BIUK9000.UI
             if (MainGiffer == null) return;
             TimelineSlider ts = sender as TimelineSlider;
             SelectedFrame.FrameDelay = ts.FrameDelay;
-            if (controlsPanel.SelectedApplyParamsMode == ApplyParamsMode.applyNone) return;
+            if (controlsPanel.SelectedApplyParamsMode == ApplyParamsMode.None) return;
             for (int i = mainTimelineSlider.SelectedFrameIndex + 1; i < MainGiffer.FrameCount; i++)
             {
                 MainGiffer.Frames[i].FrameDelay = SelectedFrame.FrameDelay;

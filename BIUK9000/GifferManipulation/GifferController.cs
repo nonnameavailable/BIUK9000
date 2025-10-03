@@ -132,38 +132,41 @@ namespace BIUK9000.GifferManipulation
                 }
             }
         }
-
+        public (int startFrame, int endFrame, int increment) LoopParamsFromApm(ApplyParamsMode apm)
+        {
+            int startFrame = SFI;
+            int endFrame = apm switch
+            {
+                ApplyParamsMode.ChangedToAllFollowing or ApplyParamsMode.AllToAllFollowing => FrameCount - 1,
+                ApplyParamsMode.ChangedToAllPrevious => 0,
+                ApplyParamsMode.ChangedToOneFollowing => Math.Min(startFrame + 1, FrameCount - 1),
+                ApplyParamsMode.ChangedToOnePrevious => Math.Max(startFrame - 1, 0),
+                _ => startFrame
+            };
+            int increment = apm switch
+            {
+                ApplyParamsMode.ChangedToOneFollowing or ApplyParamsMode.ChangedToAllFollowing or ApplyParamsMode.AllToAllFollowing => 1,
+                _ => -1
+            };
+            return (startFrame + increment, endFrame, increment);
+        }
         public void ApplyLayerParams(int currentFrameIndex, int currentLayerIndex, ApplyParamsMode apm)
         {
-            if (apm == ApplyParamsMode.applyNone) return;
+            if (apm == ApplyParamsMode.None) return;
             int cli = currentLayerIndex;
             GFL startLayer = GetLayer(currentFrameIndex, cli);
             int lid = startLayer.LayerID;
-            for (int i = currentFrameIndex + 1; i < giffer.FrameCount; i++)
+            (int startFrameIndex, int endFrameIndex, int increment) = LoopParamsFromApm(apm);
+            for(int i = startFrameIndex; increment > 0 ? i <= endFrameIndex : i >= endFrameIndex; i += increment)
             {
-                GifFrame gf = giffer.Frames[i];
-                if (cli >= 0 && cli < gf.Layers.Count)
+                GFL layerToUpdate = TryGetLayerById(i, lid);
+                if(apm == ApplyParamsMode.AllToAllFollowing)
                 {
-                    GFL layerToUpdate;
-                    if (gf.Layers[cli].LayerID != lid)
-                    {
-                        layerToUpdate = TryGetLayerById(i, lid);
-                    }
-                    else
-                    {
-                        layerToUpdate = gf.Layers[cli];
-                    }
-                    if (layerToUpdate != null)
-                    {
-                        if (apm == ApplyParamsMode.applyChanged)
-                        {
-                            layerToUpdate.CopyDifferingParams(SavedLayerForApply, startLayer);
-                        }
-                        else
-                        {
-                            layerToUpdate.CopyParameters(startLayer);
-                        }
-                    }
+                    layerToUpdate.CopyParameters(SavedLayerForApply);
+                }
+                else
+                {
+                    layerToUpdate.CopyDifferingParams(SavedLayerForApply, startLayer);
                 }
             }
         }
@@ -321,27 +324,27 @@ namespace BIUK9000.GifferManipulation
                 MessageBox.Show("First layer on the first frame must be an image layer for this to work!");
             }
         }
-        public void ReplaceColor(int sfi, int sli, Point p, PaintParams pm, bool subsequent)
+        public void ReplaceColor(int sfi, int sli, Point p, PaintParams pm, ApplyParamsMode apm)
         {
             BitmapGFL currentLayer = GetLayer(sfi, sli) as BitmapGFL;
             int layerID = currentLayer.LayerID;
             Bitmap obm = currentLayer.OriginalBitmap;
             if (p.X < 0 || p.X > obm.Width || p.Y < 0 || p.Y > obm.Height) return;
             Color c = obm.GetPixel(p.X, p.Y);
-            int endFrameIndex = subsequent ? FrameCount : sfi + 1;
-            for (int i = sfi; i < endFrameIndex; i++)
+            (int startFrame, int endFrame, int increment) = LoopParamsFromApm(apm);
+            for (int i = startFrame; increment > 0 ? i <= endFrame : i >= endFrame; i += increment)
             {
                 BitmapGFL gfl = (BitmapGFL)TryGetLayerById(i, layerID);
                 using Bitmap newBitmap = Painter.ReplaceColor(gfl.OriginalBitmap, c, pm.Color, pm.Tolerance);
                 gfl.ReplaceOriginalBitmap(newBitmap);
             }
         }
-        public void FloodFill(int sfi, int sli, Point p, PaintParams pm, bool subsequent)
+        public void FloodFill(int sfi, int sli, Point p, PaintParams pm, ApplyParamsMode apm)
         {
             int lid = GetLayer(sfi, sli).LayerID;
-            int endFrameIndex = subsequent ? FrameCount : sfi + 1;
             Color firstColor = ((BitmapGFL)TryGetLayerById(sfi, lid)).OriginalBitmap.GetPixel(p.X, p.Y);
-            for (int i = sfi; i < endFrameIndex; i++)
+            (int startFrame, int endFrame, int increment) = LoopParamsFromApm(apm);
+            for (int i = startFrame; increment > 0 ? i <= endFrame : i >= endFrame; i += increment)
             {
                 BitmapGFL currentLayer = (BitmapGFL)TryGetLayerById(i, lid);
                 Bitmap obm = currentLayer.OriginalBitmap;
@@ -354,11 +357,12 @@ namespace BIUK9000.GifferManipulation
                 }
             }
         }
-        public void Mirror(int sfi, int sli, bool subsequent)
+        public void Mirror(int sfi, int sli, ApplyParamsMode apm)
         {
             int layerID = GetLayer(sfi, sli).LayerID;
-            int endFrameIndex = subsequent ? FrameCount : sfi + 1;
-            for (int i = sfi; i < endFrameIndex; i++)
+
+            (int startFrame, int endFrame, int increment) = LoopParamsFromApm(apm);
+            for (int i = startFrame; increment > 0 ? i <= endFrame : i >= endFrame; i += increment)
             {
                 GFL layer = TryGetLayerById(i, layerID);
                 if (layer is BitmapGFL bgfl)
@@ -719,13 +723,14 @@ namespace BIUK9000.GifferManipulation
             }
             if (SFI >= FrameCount) SFI = FrameCount - 1;
         }
-        public void DrawLineOnSubsequentFrames(int sfi, int sli, List<Point> points, PaintParams pm)
+        public void DrawLineOnSubsequentFrames(int sfi, int sli, List<Point> points, PaintParams pm, ApplyParamsMode apm)
         {
             GFL gfl = GetLayer(sfi, sli);
             if (gfl is BitmapGFL bgfl)
             {
                 int lid = bgfl.LayerID;
-                for (int i = sfi + 1; i < FrameCount; i++)
+                (int startFrame, int endFrame, int increment) = LoopParamsFromApm(apm);
+                for (int i = startFrame; increment > 0 ? i <= endFrame : i >= endFrame; i += increment)
                 {
                     using Graphics g = Graphics.FromImage(((BitmapGFL)TryGetLayerById(i, lid)).OriginalBitmap);
                     Painter.DrawLinesFromPoints(g, points, pm);

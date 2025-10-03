@@ -198,13 +198,13 @@ namespace BIUK9000.UI.InputHandling
 
         private void OnFloodFill(object sender, MouseEventArgs e)
         {
-            _controller.FloodFill(SFI, SLI, _mainForm.MousePositionOnLayer(), _mainForm.PaintParams(), _mainForm.PaintOnSubsequentFrames);
+            _controller.FloodFill(SFI, SLI, _mainForm.MousePositionOnLayer(), _mainForm.PaintParams(), _mainForm.ApplyParamsMode);
             _mainForm.UpdateMainPictureBox();
         }
 
         private void OnReplaceColor(object sender, MouseEventArgs e)
         {
-            _controller.ReplaceColor(SFI, SLI, _mainForm.MousePositionOnLayer(), _mainForm.PaintParams(), _mainForm.PaintOnSubsequentFrames);
+            _controller.ReplaceColor(SFI, SLI, _mainForm.MousePositionOnLayer(), _mainForm.PaintParams(), _mainForm.ApplyParamsMode);
             _mainForm.UpdateMainPictureBox();
         }
 
@@ -217,7 +217,7 @@ namespace BIUK9000.UI.InputHandling
         private void OnDrawLineCompleted(object sender, MouseEventArgs e)
         {
             List<Point> points = _mainForm.TraceToMPOL().ToList();
-            _controller.DrawLineOnSubsequentFrames(SFI, SLI, points, _mainForm.PaintParams());
+            _controller.DrawLineOnSubsequentFrames(SFI, SLI, points, _mainForm.PaintParams(), _mainForm.ApplyParamsMode);
             _mainForm.UpdateMainPictureBox();
         }
 
