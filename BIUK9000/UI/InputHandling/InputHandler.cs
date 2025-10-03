@@ -171,7 +171,7 @@ namespace BIUK9000.UI.InputHandling
                gfl.Move(e.X, e.Y);
                 _mainForm.UpdateMainPictureBox();
             }
-            if(_mainForm.ApplyParamsMode != ApplyParamsMode.applyNone)
+            if(_mainForm.ApplyParamsMode != ApplyParamsMode.None)
             {
                 _mainForm.ApplyLayerParams();
             }

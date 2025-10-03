@@ -148,7 +148,7 @@ namespace BIUK9000.GifferManipulation
                 ApplyParamsMode.ChangedToOneFollowing or ApplyParamsMode.ChangedToAllFollowing or ApplyParamsMode.AllToAllFollowing => 1,
                 _ => -1
             };
-            return (startFrame + increment, endFrame, increment);
+            return (startFrame, endFrame, increment);
         }
         public void ApplyLayerParams(int currentFrameIndex, int currentLayerIndex, ApplyParamsMode apm)
         {
@@ -157,7 +157,7 @@ namespace BIUK9000.GifferManipulation
             GFL startLayer = GetLayer(currentFrameIndex, cli);
             int lid = startLayer.LayerID;
             (int startFrameIndex, int endFrameIndex, int increment) = LoopParamsFromApm(apm);
-            for(int i = startFrameIndex; increment > 0 ? i <= endFrameIndex : i >= endFrameIndex; i += increment)
+            for(int i = startFrameIndex + increment; increment > 0 ? i <= endFrameIndex : i >= endFrameIndex; i += increment)
             {
                 GFL layerToUpdate = TryGetLayerById(i, lid);
                 if(apm == ApplyParamsMode.AllToAllFollowing)
