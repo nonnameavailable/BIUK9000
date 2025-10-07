@@ -604,7 +604,8 @@ namespace BIUK9000.GifferManipulation
             int nextId = giffer.NextLayerID();
             foreach (GifFrame gf in giffer.Frames)
             {
-                BitmapGFL flatGfl = new BitmapGFL(gf.CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.HighQualityBicubic), nextId);
+                using Bitmap bitmap = gf.CompleteBitmap(giffer.Width, giffer.Height, false, InterpolationMode.HighQualityBicubic);
+                BitmapGFL flatGfl = new BitmapGFL(bitmap, nextId);
                 gf.Layers.ForEach(layer => layer.Dispose());
                 gf.Layers.Clear();
                 gf.AddLayer(flatGfl);
