@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BIUK9000.MyGraphics.Effects;
 
 namespace BIUK9000.UI.InputHandling
 {
@@ -35,6 +36,8 @@ namespace BIUK9000.UI.InputHandling
             var animationLerpTraceMI = _menu.Items.Find("animationLerpTraceMI", true)[0];
             var animationMarkMI = _menu.Items.Find("animationMarkMI", true)[0];
 
+            var effectsHalftoneMI = _menu.Items.Find("effectsHalftoneMI", true)[0];
+
 
             framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames(_mf.Marks));
             framesAddReversedMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddReversedFrames());
@@ -55,6 +58,8 @@ namespace BIUK9000.UI.InputHandling
             animationMarkMI.Click += AnimationMarkMI_Click;
             animationLerpLineMI.Click += AnimationLerpLineMI_Click;
             animationLerpTraceMI.Click += AnimationLerpTraceMI_Click;
+
+            effectsHalftoneMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ApplyEffect(EffectType.Halftone));
         }
 
         private void AnimationLerpLineMI_Click(object sender, EventArgs e)

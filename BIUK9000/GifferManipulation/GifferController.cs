@@ -16,6 +16,7 @@ using BIUK9000.MyGraphics;
 using BIUK9000.MyGraphics.Dithering;
 using BIUK9000.Helpers;
 using BIUK9000.GifferComponents;
+using BIUK9000.MyGraphics.Effects;
 
 namespace BIUK9000.GifferManipulation
 {
@@ -757,6 +758,12 @@ namespace BIUK9000.GifferManipulation
         public void ResizeFrame(int x, int y)
         {
             giffer.Resize(x, y);
+        }
+
+        public void ApplyEffect(EffectType effectType)
+        {
+            Flatten();
+            giffer.Frames.ForEach(frame => ((BitmapGFL)frame.Layers[0]).ReplaceOriginalBitmap(EffectApplicator.BitmapWithEffect(((BitmapGFL)frame.Layers[0]).OriginalBitmap, effectType)));
         }
     }
 }

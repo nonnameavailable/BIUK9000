@@ -70,11 +70,13 @@ namespace BIUK9000.UI
             layerConvertToBitmapMI = new System.Windows.Forms.ToolStripMenuItem();
             animationMI = new System.Windows.Forms.ToolStripMenuItem();
             animationLerpMI = new System.Windows.Forms.ToolStripMenuItem();
+            animationLerpLineMI = new System.Windows.Forms.ToolStripMenuItem();
+            animationLerpTraceMI = new System.Windows.Forms.ToolStripMenuItem();
             animationMarkMI = new System.Windows.Forms.ToolStripMenuItem();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            animationLerpLineMI = new System.Windows.Forms.ToolStripMenuItem();
-            animationLerpTraceMI = new System.Windows.Forms.ToolStripMenuItem();
+            effectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            effectsHalftoneMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -295,7 +297,7 @@ namespace BIUK9000.UI
             // 
             tableLayoutPanel1.SetColumnSpan(mainMenuStrip, 3);
             mainMenuStrip.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { framesMI, layersMI, animationMI });
+            mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { framesMI, layersMI, animationMI, effectsToolStripMenuItem });
             mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             mainMenuStrip.Name = "mainMenuStrip";
             mainMenuStrip.Size = new System.Drawing.Size(975, 30);
@@ -428,23 +430,36 @@ namespace BIUK9000.UI
             animationLerpMI.Size = new System.Drawing.Size(189, 22);
             animationLerpMI.Text = "Interpo&late";
             // 
+            // animationLerpLineMI
+            // 
+            animationLerpLineMI.Name = "animationLerpLineMI";
+            animationLerpLineMI.Size = new System.Drawing.Size(102, 22);
+            animationLerpLineMI.Text = "&Line";
+            // 
+            // animationLerpTraceMI
+            // 
+            animationLerpTraceMI.Name = "animationLerpTraceMI";
+            animationLerpTraceMI.Size = new System.Drawing.Size(102, 22);
+            animationLerpTraceMI.Text = "&Trace";
+            // 
             // animationMarkMI
             // 
             animationMarkMI.Name = "animationMarkMI";
             animationMarkMI.Size = new System.Drawing.Size(189, 22);
             animationMarkMI.Text = "&Mark every Nth frame";
             // 
-            // animationLerpLineMI
+            // effectsToolStripMenuItem
             // 
-            animationLerpLineMI.Name = "animationLerpLineMI";
-            animationLerpLineMI.Size = new System.Drawing.Size(180, 22);
-            animationLerpLineMI.Text = "&Line";
+            effectsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { effectsHalftoneMI });
+            effectsToolStripMenuItem.Name = "effectsToolStripMenuItem";
+            effectsToolStripMenuItem.Size = new System.Drawing.Size(54, 26);
+            effectsToolStripMenuItem.Text = "Effects";
             // 
-            // animationLerpTraceMI
+            // effectsHalftoneMI
             // 
-            animationLerpTraceMI.Name = "animationLerpTraceMI";
-            animationLerpTraceMI.Size = new System.Drawing.Size(180, 22);
-            animationLerpTraceMI.Text = "&Trace";
+            effectsHalftoneMI.Name = "effectsHalftoneMI";
+            effectsHalftoneMI.Size = new System.Drawing.Size(180, 22);
+            effectsHalftoneMI.Text = "Halftone";
             // 
             // MainForm
             // 
@@ -517,6 +532,8 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem animationMarkMI;
         private System.Windows.Forms.ToolStripMenuItem animationLerpLineMI;
         private System.Windows.Forms.ToolStripMenuItem animationLerpTraceMI;
+        private System.Windows.Forms.ToolStripMenuItem effectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem effectsHalftoneMI;
     }
 }
 

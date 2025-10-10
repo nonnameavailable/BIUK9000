@@ -23,6 +23,7 @@ using BIUK9000.Helpers;
 using BIUK9000.GifferComponents;
 using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.GifferManipulation;
+using BIUK9000.MyGraphics.Effects.OrderedDithering;
 
 namespace BIUK9000.UI
 {

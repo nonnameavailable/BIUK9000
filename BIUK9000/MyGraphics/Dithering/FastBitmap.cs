@@ -30,7 +30,14 @@ namespace BIUK9000.MyGraphics.Dithering
             using Graphics g = Graphics.FromImage(Bitmap);
             g.DrawImage(bitmap, 0, 0);
         }
-
+        public FastBitmap(int width, int height)
+        {
+            Width = width;
+            Height = height;
+            Bits = new int[Width * Height];
+            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
+            Bitmap = new Bitmap(Width, Height, Width * 4, PixelFormat.Format32bppArgb, BitsHandle.AddrOfPinnedObject());
+        }
         public void SetPixel(int x, int y, Color colour)
         {
             int index = x + y * Width;
@@ -63,7 +70,7 @@ namespace BIUK9000.MyGraphics.Dithering
         {
             if (Disposed) return;
             Disposed = true;
-            Bitmap.Dispose();
+            Bitmap?.Dispose();
             BitsHandle.Free();
         }
     }
