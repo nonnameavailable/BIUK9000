@@ -70,6 +70,7 @@ namespace BIUK9000.UI.Forms
             maxSideLengthNUD.ValueChanged += (sender, args) => UpdateMemoryLabel();
             changeFpsNUD.ValueChanged += (sender, args) => UpdateMemoryLabel();
             _previewFrames = new();
+            timelineSlider1.MarkAdded += (sender, args) => UpdateMemoryLabel();
         }
         private void UpdateMemoryLabel()
         {
@@ -120,10 +121,14 @@ namespace BIUK9000.UI.Forms
                 PutDurationNotFoundImage();
                 timelineSlider1.Enabled = false;
                 return;
-            } else
+            } else if(_vi.DurationSeconds < 60)
             {
                 _previewFrames = VideoFrameExtractor.ExtractFrames(path, feo);
             }
+            else
+            {
+                _previewFrames = VideoFrameExtractor.ExtractFramesFast(path, (int)feo.MaxSideLength, MaxPreviewFrames);
+            } 
             timelineSlider1.Maximum = _previewFrames.Count - 1;
             Report(_vi.ToString());
             memoryLabel.Text = EstimatedMemoryConsumption();
@@ -156,8 +161,8 @@ namespace BIUK9000.UI.Forms
             Bitmap bmp = new(myPictureBox1.Width, myPictureBox1.Height);
             using Graphics g = Graphics.FromImage(bmp);
             g.Clear(Color.Black);
-            using Font f = new Font("Arial", myPictureBox1.Height * 0.1f);
-            g.DrawString($"Duration could not be determined{Environment.NewLine}Preview will not be loaded", f, Brushes.Black, 10, 10);
+            using Font f = new Font("Arial", myPictureBox1.Height * 0.07f);
+            g.DrawString($"Duration could not be determined{Environment.NewLine}Preview will not be loaded", f, Brushes.White, 10, 10);
             myPictureBox1.Image = bmp;
         }
         private string EstimatedMemoryConsumption()
@@ -173,16 +178,21 @@ namespace BIUK9000.UI.Forms
                 tvi.Width = s.Width;
                 tvi.Height = s.Height;
             }
+            if(Marks.Count >= 2)
+            {
+                double durationRatio = (Marks[1] - Marks[0]) / (_previewFrames.Count - 1d);
+                tvi.DurationSeconds *= durationRatio;
+            }
             long bytes = tvi.EstimatedMemoryUsageBytes;
-            string[] Suffix = { "B", "KB", "MB", "GB", "TB" };
+            string[] suffix = { "B", "KB", "MB", "GB", "TB" };
             int i;
             double dblSByte = bytes;
-            for (i = 0; i < Suffix.Length && bytes >= 1024; i++, bytes /= 1024)
+            for (i = 0; i < suffix.Length && bytes >= 1024; i++, bytes /= 1024)
             {
                 dblSByte = bytes / 1024.0;
             }
 
-            return String.Format("{0:0.##} {1}", dblSByte, Suffix[i]);
+            return String.Format("{0:0.##} {1}", dblSByte, suffix[i]);
         }
     }
 }

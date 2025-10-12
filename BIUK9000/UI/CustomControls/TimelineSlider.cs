@@ -13,6 +13,7 @@ namespace BIUK9000.UI
 {
     public partial class TimelineSlider : UserControl
     {
+        public event EventHandler MarkAdded;
         private Timer playTimer;
         public int SelectedFrameIndex {
             get
@@ -67,7 +68,11 @@ namespace BIUK9000.UI
                 MouseButtonIsDown = false;
                 SelectedFrameChanged?.Invoke(this, EventArgs.Empty);
             };
-            addMarkButton.Click += (sender, args) => timeLineTrackBar.AddMark(SelectedFrameIndex);
+            addMarkButton.Click += (sender, args) =>
+            {
+                timeLineTrackBar.AddMark(SelectedFrameIndex);
+                MarkAdded?.Invoke(this, EventArgs.Empty);
+            };
             clearMarksBTN.Click += (sender, args) => timeLineTrackBar.ClearMarks();
         }
 
