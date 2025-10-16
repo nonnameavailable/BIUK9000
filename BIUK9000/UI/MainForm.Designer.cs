@@ -73,10 +73,11 @@ namespace BIUK9000.UI
             animationLerpLineMI = new System.Windows.Forms.ToolStripMenuItem();
             animationLerpTraceMI = new System.Windows.Forms.ToolStripMenuItem();
             animationMarkMI = new System.Windows.Forms.ToolStripMenuItem();
-            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            toolTip = new System.Windows.Forms.ToolTip(components);
             effectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             effectsHalftoneMI = new System.Windows.Forms.ToolStripMenuItem();
+            saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            toolTip = new System.Windows.Forms.ToolTip(components);
+            effectsFloydSteinbergMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -450,7 +451,7 @@ namespace BIUK9000.UI
             // 
             // effectsToolStripMenuItem
             // 
-            effectsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { effectsHalftoneMI });
+            effectsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { effectsHalftoneMI, effectsFloydSteinbergMI });
             effectsToolStripMenuItem.Name = "effectsToolStripMenuItem";
             effectsToolStripMenuItem.Size = new System.Drawing.Size(54, 26);
             effectsToolStripMenuItem.Text = "Effects";
@@ -458,8 +459,14 @@ namespace BIUK9000.UI
             // effectsHalftoneMI
             // 
             effectsHalftoneMI.Name = "effectsHalftoneMI";
-            effectsHalftoneMI.Size = new System.Drawing.Size(180, 22);
+            effectsHalftoneMI.Size = new System.Drawing.Size(209, 22);
             effectsHalftoneMI.Text = "Halftone";
+            // 
+            // effectsFloydSteinbergMI
+            // 
+            effectsFloydSteinbergMI.Name = "effectsFloydSteinbergMI";
+            effectsFloydSteinbergMI.Size = new System.Drawing.Size(209, 22);
+            effectsFloydSteinbergMI.Text = "Floyd-Steinberg dithernig";
             // 
             // MainForm
             // 
@@ -534,6 +541,7 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem animationLerpTraceMI;
         private System.Windows.Forms.ToolStripMenuItem effectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem effectsHalftoneMI;
+        private System.Windows.Forms.ToolStripMenuItem effectsFloydSteinbergMI;
     }
 }
 

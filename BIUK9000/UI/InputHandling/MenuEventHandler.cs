@@ -37,6 +37,7 @@ namespace BIUK9000.UI.InputHandling
             var animationMarkMI = _menu.Items.Find("animationMarkMI", true)[0];
 
             var effectsHalftoneMI = _menu.Items.Find("effectsHalftoneMI", true)[0];
+            var effectsFloydSteinbergMI = _menu.Items.Find("effectsFloydSteinbergMI", true)[0];
 
 
             framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames(_mf.Marks));
@@ -60,6 +61,7 @@ namespace BIUK9000.UI.InputHandling
             animationLerpTraceMI.Click += AnimationLerpTraceMI_Click;
 
             effectsHalftoneMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ApplyEffect(EffectType.Halftone));
+            effectsFloydSteinbergMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ApplyEffect(EffectType.FloydSteinberg));
         }
 
         private void AnimationLerpLineMI_Click(object sender, EventArgs e)

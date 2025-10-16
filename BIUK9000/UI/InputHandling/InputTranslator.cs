@@ -19,7 +19,7 @@ namespace BIUK9000.UI.InputHandling
         public event EventHandler SaveGif, LoadGif;
         public event EventHandler AddTextLayer, AddShapeLayer;
         public event EventHandler MoveAll, ResizeLayerKeepRatio, ResizeLayerFree, ResizeFrame, RotateLayer;
-        public event MouseEventHandler DrawLine, ReplaceColor, FloodFill, LassoPointAdded, Pipette, OverrideLayerCenter, MoveLayer;
+        public event MouseEventHandler DrawLine, ReplaceColor, FloodFill, LassoPointAdded, Pipette, OverrideLayerCenter, MoveLayer, ShiftLayer;
         public event MouseEventHandler LassoCompleted, DrawLineCompleted;
         public event EventHandler StartTimer, StopTimer, ApplyLayerParams;
         public event EventHandler DeleteFramesBetweenMarksOrSelected, DeleteFramesOutsideOfMarks;
@@ -203,6 +203,13 @@ namespace BIUK9000.UI.InputHandling
         }
         public void HandleMouseUp(MouseEventArgs e, Mode mode, PaintControl.PaintTool tool)
         {
+            if(e.Button == MouseButtons.Left)
+            {
+                if (IsShiftDown)
+                {
+                    ShiftLayer?.Invoke(this, e);
+                }
+            }
             if (e.Button == MouseButtons.Left)
             {
                 IsLMBDown = false;
@@ -247,7 +254,7 @@ namespace BIUK9000.UI.InputHandling
                             //MOVE WHOLE GIF (ALL LAYERS, ALL FRAMES)
                             MoveAll?.Invoke(this, null);
                         }
-                        else if (!(IsCtrlDown || IsShiftDown))
+                        else
                         {
                             //MOVE JUST LAYER
                             MoveLayer?.Invoke(this, null);

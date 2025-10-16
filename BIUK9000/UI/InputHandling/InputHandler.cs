@@ -53,6 +53,7 @@ namespace BIUK9000.UI.InputHandling
             _translator.LassoPointAdded += OnLassoPointAdded;
             _translator.MoveAll += OnMoveAll;
             _translator.MoveLayer += OnMoveLayer;
+            _translator.ShiftLayer += OnShiftLayer;
             _translator.RotateLayer += OnRotateLayer;
             _translator.ResizeFrame += OnResizeFrame;
             _translator.ResizeLayerKeepRatio += OnResizeLayerKeepRatio;
@@ -62,6 +63,13 @@ namespace BIUK9000.UI.InputHandling
             _translator.DeleteFramesOutsideOfMarks += _translator_DeleteFramesOutsideOfMarks;
 
             _translator.PlaceMark += (sender, args) => _mainForm.MainTimelineSlider.AddMark(_controller.SFI);
+        }
+
+        private void OnShiftLayer(object sender, MouseEventArgs e)
+        {
+            Point drag = _mainForm.ScaledDragVector();
+            _controller.ShiftLayer(_controller.SFI, _controller.SLI, drag.X, drag.Y);
+            _mainForm.UpdateMainPictureBox();
         }
 
         private void _translator_DeleteFramesOutsideOfMarks(object sender, EventArgs e)

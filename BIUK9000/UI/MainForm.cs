@@ -569,7 +569,7 @@ namespace BIUK9000.UI
         }
         private void mainLayersPanel_LayerOrderChanged(object sender, LayersPanel.LayerOrderEventArgs e)
         {
-            GifferC.MoveLayer(SFI, e.OriginalIndex, e.TargetIndex);
+            GifferC.ChangeLayerOrder(SFI, e.OriginalIndex, e.TargetIndex);
             CompleteUIUpdate();
         }
         private void mainLayersPanel_LayerDeleteButtonClicked(object sender, LayersPanel.IndexEventArgs e)

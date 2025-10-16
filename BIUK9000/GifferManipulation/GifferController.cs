@@ -3,12 +3,9 @@ using BIUK9000.UI;
 using BIUK9000.UI.CustomControls;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,6 +14,7 @@ using BIUK9000.MyGraphics.Dithering;
 using BIUK9000.Helpers;
 using BIUK9000.GifferComponents;
 using BIUK9000.MyGraphics.Effects;
+using SharpDX.Direct3D11;
 
 namespace BIUK9000.GifferManipulation
 {
@@ -71,7 +69,7 @@ namespace BIUK9000.GifferManipulation
             }
             return null;
         }
-        public void MoveLayer(int frameIndex, int startLayerIndex, int targetLayerIndex)
+        public void ChangeLayerOrder(int frameIndex, int startLayerIndex, int targetLayerIndex)
         {
             for (int i = frameIndex; i < giffer.FrameCount; i++)
             {
@@ -688,12 +686,19 @@ namespace BIUK9000.GifferManipulation
         {
             GFL gfl = GetLayer(sfi, sli);
             if (gfl == null || gfl is BitmapGFL) return;
-            int lid = giffer.NextLayerID();
-            GFL bgfl = new BitmapGFL(gfl.MorphedBitmap(InterpolationMode.HighQualityBicubic), lid);
-            bgfl.Rotation = gfl.Rotation;
-            bgfl.Position = gfl.Position;
-            AddLayer(bgfl);
-            DeleteLayerByID(gfl.LayerID);
+            int lid = gfl.LayerID;
+            for(int i = 0; i < FrameCount; i++)
+            {
+                GifFrame gf = GetFrame(i);
+                gfl = TryGetLayerById(i, lid);
+                int index = gf.Layers.IndexOf(gfl);
+                GFL bgfl = new BitmapGFL(gfl.MorphedBitmap(InterpolationMode.HighQualityBicubic), lid);
+                bgfl.Rotation = gfl.Rotation;
+                bgfl.Position = gfl.Position;
+                gf.Layers.Remove(gfl);
+                gfl.Dispose();
+                gf.Layers.Insert(index, bgfl);
+            }
         }
 
         public void DeleteDuplicateFrames()
@@ -762,8 +767,37 @@ namespace BIUK9000.GifferManipulation
 
         public void ApplyEffect(EffectType effectType)
         {
-            Flatten();
-            giffer.Frames.ForEach(frame => ((BitmapGFL)frame.Layers[0]).ReplaceOriginalBitmap(EffectApplicator.BitmapWithEffect(((BitmapGFL)frame.Layers[0]).OriginalBitmap, effectType)));
+            GFL gfl = GetLayer(SFI, SLI);
+            int lid = gfl.LayerID;
+            if (gfl is not BitmapGFL)
+            {
+                if (MessageBox.Show("This will convert the layer to a Bitmap layer. Is this ok?","", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
+                ConvertLayerToBitmap(SFI, SLI);
+            }
+            //TimeSpan oneFrameTime = EffectApplicator.OneBitmapProcessingTime(((BitmapGFL)TryGetLayerById(0, lid)).OriginalBitmap, effectType);
+            //if (MessageBox.Show("This will take about " + (oneFrameTime * FrameCount).ToString("h'h 'm'm 's's'") + ". Is this ok?", "", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
+            using EffectPreviewForm epf = new();
+            epf.LoadPreview(((BitmapGFL)TryGetLayerById(0, lid)).OriginalBitmap, effectType, FrameCount);
+            if(epf.ShowDialog() == DialogResult.Cancel)
+            {
+                return;
+            }
+            for(int i = 0; i < FrameCount; i++)
+            {
+                BitmapGFL bgfl = (BitmapGFL)TryGetLayerById(i, lid);
+                using Bitmap effectBitmap = EffectApplicator.BitmapWithEffect(bgfl.OriginalBitmap, effectType);
+                bgfl.ReplaceOriginalBitmap(effectBitmap);
+            }
+        }
+        public void ShiftLayer(int sfi, int sli, int x, int y)
+        {
+            GFL gfl = GetLayer(sfi, sli);
+            for(int i = 0; i < FrameCount; i++)
+            {
+                if (i == sfi) continue;
+                GFL layerToMove = TryGetLayerById(i, gfl.LayerID);
+                layerToMove.MoveFromOBR(x, y);
+            }
         }
     }
 }

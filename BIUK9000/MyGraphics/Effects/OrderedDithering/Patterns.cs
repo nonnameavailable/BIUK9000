@@ -63,6 +63,11 @@ namespace BIUK9000.MyGraphics.Effects.OrderedDithering
                 for (int j = 0; j < bmp.Height; j++)
                 {
                     Color c = fbm.GetPixel(i, j);
+                    if(c.A == 0)
+                    {
+                        fbm.SetPixel(i, j, Color.FromArgb(0, 0, 0, 0));
+                        continue;
+                    }
                     int patternIndex = (int)((c.R + c.G + c.B) / 765d * (patterns.Length - 1));
                     int[] pattern = patterns[patternIndex];
                     int val = pattern[(i % 4) + (j % 4 * 4)];
