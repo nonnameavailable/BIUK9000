@@ -203,15 +203,12 @@ namespace BIUK9000.UI.InputHandling
         }
         public void HandleMouseUp(MouseEventArgs e, Mode mode, PaintControl.PaintTool tool)
         {
-            if(e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 if (IsShiftDown)
                 {
                     ShiftLayer?.Invoke(this, e);
                 }
-            }
-            if (e.Button == MouseButtons.Left)
-            {
                 IsLMBDown = false;
             }
             else if (e.Button == MouseButtons.Right)

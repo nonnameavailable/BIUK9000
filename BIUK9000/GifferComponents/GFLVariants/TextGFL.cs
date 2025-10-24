@@ -81,12 +81,24 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             //DO NOTHING, NOT IMPLEMENTED AND PROBABLY WILL NEVER BE
         }
+        //public Size TextSize()
+        //{
+        //    using Font font = new Font(FontName, FontSize);
+        //    return TextRenderer.MeasureText(Text, font);
+        //}
         public Size TextSize()
         {
             using Font font = new Font(FontName, FontSize);
-            return TextRenderer.MeasureText(Text, font);
-        }
 
+            using GraphicsPath path = new();
+            path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
+            using GraphicsPath pathForAdd = new();
+            pathForAdd.AddString("A", font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
+            RectangleF bounds = path.GetBounds();
+            RectangleF boundsForAdd = pathForAdd.GetBounds();
+            return new Size((int)(Math.Ceiling(bounds.Width + boundsForAdd.Width * 0.6)),
+                            (int)(Math.Ceiling(bounds.Height + boundsForAdd.Height * 0.5)));
+        }
         public override OVector Center()
         {
             SizeF textSize = TextSize();
@@ -111,10 +123,8 @@ namespace BIUK9000.GifferComponents.GFLVariants
             Size ts = TextSize();
             Bitmap bitmap = new Bitmap(Math.Max(ts.Width, 1), Math.Max(ts.Height, 1));
             using Graphics g = Graphics.FromImage(bitmap);
-
-            float scaledFs = FontSize * g.DpiY / 72f; //FUCKING FINALLY FUCK THIS FUCKING SHIT WHY??
             // Font and brush for the text
-            using Font font = new Font(FontName, scaledFs);
+            using Font font = new Font(FontName, FontSize);
             using Brush textBrush = new SolidBrush(FontColor);
 
             using GraphicsPath path = new GraphicsPath();
