@@ -66,11 +66,13 @@ namespace BIUK9000.UI.InputHandling
 
         private void AnimationLerpLineMI_Click(object sender, EventArgs e)
         {
+            if (CheckNull()) return;
             _mf.GifferC.LerpExecute(_mf.Marks, _mf.SLI);
             _mf.MouseTrace().Clear();
         }
         private void AnimationLerpTraceMI_Click(object sender, EventArgs e)
         {
+            if (CheckNull()) return;
             _mf.GifferC.LerpExecute(_mf.Marks, _mf.SLI, _mf.MouseTrace());
             _mf.MouseTrace().Clear();
         }
