@@ -24,6 +24,7 @@ using BIUK9000.GifferComponents;
 using BIUK9000.GifferComponents.GFLVariants;
 using BIUK9000.GifferManipulation;
 using BIUK9000.MyGraphics.Effects.OrderedDithering;
+using BIUK9000.UI.Forms;
 
 namespace BIUK9000.UI
 {
@@ -84,6 +85,7 @@ namespace BIUK9000.UI
         private InputTranslator InputTranslator { get; }
         private InputHandler InputBinder { get; set; }
         private AudioRecorder AudioRecorder { get; set; }
+        private RecordForm _recordForm;
         public MainForm()
         {
             InitializeComponent();
@@ -155,14 +157,27 @@ namespace BIUK9000.UI
             _recordControl.Stop += _recordControl_Stop;
             _recordControl.Screenshot += (sender, args) => CaptureSingleFrame();
 
-            Move += MainForm_Move;
             _menuEventHandler = new MenuEventHandler(this);
             GifferHistory = new();
 
             InputTranslator = new();
 
             KeyPreview = true;
+
+            _recordForm = new();
+            _recordForm.Move += _recordForm_Move;
         }
+
+        private void _recordForm_Move(object sender, EventArgs e)
+        {
+            Point p = _recordForm.TopLeft;
+            if (CanRecord())
+            {
+                _ssl.X = p.X;
+                _ssl.Y = p.Y;
+            }
+        }
+
         public void SaveGiffer()
         {
             if (MainGiffer == null) return;
@@ -194,13 +209,15 @@ namespace BIUK9000.UI
             Mode m = controlsPanel.SelectedMode;
             if (m == Mode.Move)
             {
-                SetRecordMode(false);
+                //SetRecordMode(false);
+                _recordForm.Hide();
                 if (GifferC != null) UpdateMainPictureBox();
                 ControlsEnable(true);
             }
             else if (m == Mode.Paint)
             {
-                SetRecordMode(false);
+                //SetRecordMode(false);
+                _recordForm.Hide();
                 if (GifferC == null)
                 {
                     controlsPanel.SelectedMode = Mode.Move;
@@ -223,7 +240,8 @@ namespace BIUK9000.UI
             }
             else if (m == Mode.Record)
             {
-                SetRecordMode(true);
+                //SetRecordMode(true);
+                _recordForm.Show();
                 ControlsEnable(false);
             }
             _ucm.UpdateUpperControl(this);
@@ -238,37 +256,9 @@ namespace BIUK9000.UI
             }
             return totalBounds;
         }
-        private void MainForm_Move(object sender, EventArgs e)
-        {
-            Point p = mainPictureBox.PointToScreen(Point.Empty);
-            if (CanRecord())
-            {
-                _ssl.X = p.X;
-                _ssl.Y = p.Y;
-            }
-        }
-
-        private void SetRecordMode(bool val)
-        {
-            if (val)
-            {
-                TransparencyKey = Color.LimeGreen;
-                mainPictureBox.BackColor = Color.LimeGreen;
-                if (MainImage != null)
-                {
-                    using Graphics g = Graphics.FromImage(MainImage);
-                    g.Clear(Color.Transparent);
-                }
-            }
-            else
-            {
-                mainPictureBox.BackColor = default;
-                TransparencyKey = default;
-            }
-        }
         private void CaptureSingleFrame()
         {
-            Point p = mainPictureBox.PointToScreen(Point.Empty);
+            Point p = _recordForm.TopLeft;
             if (!CanRecord())
             {
                 MessageBox.Show("You are either off screen or the recording area is too small!");
@@ -277,9 +267,8 @@ namespace BIUK9000.UI
             }
             _ssl.X = p.X;
             _ssl.Y = p.Y;
-            //MessageBox.Show("X: " + p.X.ToString() + "  Y: " + p.Y.ToString());
-            _ssl.Width = mainPictureBox.Width - 3;
-            _ssl.Height = mainPictureBox.Height - 3;
+            _ssl.Width = _recordForm.RecordWidth - 3;
+            _ssl.Height = _recordForm.RecordHeight - 3;
             _ssl.Screenshot();
             if (GifferC == null)
             {
@@ -289,9 +278,6 @@ namespace BIUK9000.UI
             {
                 GifferIO.GifImport(this, new Giffer(_ssl.Frames, _ssl.FPS));
             }
-            ControlsEnable(true);
-            SetRecordMode(false);
-            controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate();
             _ssl.ClearFrames();
             Report("Screenshot captured.");
@@ -303,43 +289,38 @@ namespace BIUK9000.UI
             if (_ssl.Frames.Count == 0) return;
             if (GifferC == null)
             {
-                SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
+                SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS), true);
             }
             else
             {
                 GifferIO.GifImport(this, new Giffer(_ssl.Frames, _ssl.FPS));
             }
-            ControlsEnable(true);
-            SetRecordMode(false);
             if (_recordControl.RecordSound) MainGiffer.SoundPath = AudioRecorder.Path;
-            controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate();
             _ssl.ClearFrames();
             Report("Recording stopped.");
         }
         private bool CanRecord()
         {
-            bool minwhCheck = mainPictureBox.Width < 5 || mainPictureBox.Height < 5;
             Rectangle totalScreenBounds = GetTotalScreenBounds();
-            Point screenLocation = mainPictureBox.PointToScreen(Point.Empty);
-            Rectangle pictureBoxBounds = new Rectangle(screenLocation, mainPictureBox.Size);
+            Point screenLocation = _recordForm.TopLeft;
+            Rectangle pictureBoxBounds = new Rectangle(screenLocation, new Size(_recordForm.RecordWidth, _recordForm.RecordHeight));
 
-            return totalScreenBounds.Contains(pictureBoxBounds) && !minwhCheck;
+            return totalScreenBounds.Contains(pictureBoxBounds);
         }
         private void _recordControl_Start(object sender, EventArgs e)
         {
-            Point p = mainPictureBox.PointToScreen(Point.Empty);
+            Point p = _recordForm.TopLeft;
             if (!CanRecord())
             {
-                MessageBox.Show("You are either off screen or the recording area is too small!");
+                MessageBox.Show("The recording window is off screen!");
                 _recordControl.RecMode(false);
                 return;
             }
             _ssl.X = p.X;
             _ssl.Y = p.Y;
-            //MessageBox.Show("X: " + p.X.ToString() + "  Y: " + p.Y.ToString());
-            _ssl.Width = mainPictureBox.Width - 3;
-            _ssl.Height = mainPictureBox.Height - 3;
+            _ssl.Width = _recordForm.RecordWidth - 3;
+            _ssl.Height = _recordForm.RecordHeight - 3;
             _ssl.FPS = _recordControl.FPS;
             try
             {
@@ -364,7 +345,7 @@ namespace BIUK9000.UI
             topPanel.Controls.Clear();
             topPanel.Controls.Add(_recordControl);
             ControlsEnable(false);
-            SetRecordMode(true);
+            _recordForm.Show();
         }
         public void ApplyLayerParams()
         {
@@ -475,15 +456,15 @@ namespace BIUK9000.UI
 
         public void SetNewGiffer(Giffer newGiffer, bool preserveMode = false)
         {
-            if (MainGiffer != null && preserveMode)
-            {
-                if (newGiffer.FrameCount < MainGiffer.FrameCount ||
-                    newGiffer.Frames[SFI].Layers.Count != MainGiffer.Frames[SFI].Layers.Count ||
-                    newGiffer.Frames[SFI].Layers[SLI] is not BitmapGFL)
-                {
-                    preserveMode = false;
-                }
-            }
+            //if (MainGiffer != null && preserveMode)
+            //{
+            //    if ((newGiffer.FrameCount < MainGiffer.FrameCount ||
+            //        newGiffer.Frames[SFI].Layers.Count != MainGiffer.Frames[SFI].Layers.Count ||
+            //        newGiffer.Frames[SFI].Layers[SLI] is not BitmapGFL) && controlsPanel.SelectedMode != Mode.Record)
+            //    {
+            //        preserveMode = false;
+            //    }
+            //}
             MainGiffer?.Dispose();
 
             MainGiffer = newGiffer;
@@ -500,7 +481,7 @@ namespace BIUK9000.UI
                     topPanel.Controls.Clear();
                 }
             }
-            if (!preserveMode) controlsPanel.SelectedMode = Mode.Move;
+            //if (!preserveMode) controlsPanel.SelectedMode = Mode.Move;
             CompleteUIUpdate();
             GifferC.SaveLayerStateForApply(0, 0);
             if (InputBinder == null)
