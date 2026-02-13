@@ -153,8 +153,16 @@ namespace BIUK9000.UI
             };
             _ssl = new ScreenStateLogger();
 
-            _recordControl.Start += _recordControl_Start;
-            _recordControl.Stop += _recordControl_Stop;
+            _recordControl.Start += (sender, args) =>
+            {
+                _recordControl_Start(sender, args);
+                _recordForm.SetRecordMode(true);
+            };
+            _recordControl.Stop += (sender, args) =>
+            {
+                _recordControl_Stop(sender, args);
+                _recordForm.SetRecordMode(false);
+            };
             _recordControl.Screenshot += (sender, args) => CaptureSingleFrame();
 
             _menuEventHandler = new MenuEventHandler(this);
@@ -166,12 +174,28 @@ namespace BIUK9000.UI
 
             _recordForm = new();
             _recordForm.Move += _recordForm_Move;
+            _recordForm.StartRecording += (sender, args) =>
+            {
+                this.Enabled = false;
+                this.WindowState = FormWindowState.Minimized;
+                _recordControl_Start(sender, args);
+            };
+            _recordForm.StopRecording += (sender, args) =>
+            {
+                this.Enabled = true;
+                this.WindowState = FormWindowState.Normal;
+                _recordControl_Stop(sender, args);
+            };
+            _recordForm.Screenshot += (sender, args) =>
+            {
+                CaptureSingleFrame();
+            };
         }
 
         private void _recordForm_Move(object sender, EventArgs e)
         {
             Point p = _recordForm.TopLeft;
-            if (CanRecord())
+            if (_recordForm.CanRecord())
             {
                 _ssl.X = p.X;
                 _ssl.Y = p.Y;
@@ -246,20 +270,10 @@ namespace BIUK9000.UI
             }
             _ucm.UpdateUpperControl(this);
         }
-
-        private Rectangle GetTotalScreenBounds()
-        {
-            Rectangle totalBounds = Screen.AllScreens[0].Bounds;
-            foreach (Screen screen in Screen.AllScreens)
-            {
-                totalBounds = Rectangle.Union(totalBounds, screen.Bounds);
-            }
-            return totalBounds;
-        }
         private void CaptureSingleFrame()
         {
             Point p = _recordForm.TopLeft;
-            if (!CanRecord())
+            if (!_recordForm.CanRecord())
             {
                 MessageBox.Show("You are either off screen or the recording area is too small!");
                 _recordControl.RecMode(false);
@@ -300,18 +314,10 @@ namespace BIUK9000.UI
             _ssl.ClearFrames();
             Report("Recording stopped.");
         }
-        private bool CanRecord()
-        {
-            Rectangle totalScreenBounds = GetTotalScreenBounds();
-            Point screenLocation = _recordForm.TopLeft;
-            Rectangle pictureBoxBounds = new Rectangle(screenLocation, new Size(_recordForm.RecordWidth, _recordForm.RecordHeight));
-
-            return totalScreenBounds.Contains(pictureBoxBounds);
-        }
         private void _recordControl_Start(object sender, EventArgs e)
         {
             Point p = _recordForm.TopLeft;
-            if (!CanRecord())
+            if (!_recordForm.CanRecord())
             {
                 MessageBox.Show("The recording window is off screen!");
                 _recordControl.RecMode(false);
