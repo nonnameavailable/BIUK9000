@@ -17,7 +17,7 @@ namespace BIUK9000.GifferComponents
         private bool _disposed;
 
         public int FrameDelay {  get; set; }
-        public List<GFL> Layers { get; private set; } = new List<GFL>();
+        public List<GFL> Layers { get; set; } = new List<GFL>();
 
         public GifFrame(Bitmap bitmap, int frameDelay, int firstLayerID)
         {

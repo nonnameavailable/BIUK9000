@@ -1,4 +1,5 @@
-﻿using BIUK9000.Helpers;
+﻿using BIUK9000.GifferComponents.GFLVariants;
+using BIUK9000.Helpers;
 using BIUK9000.MyGraphics;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,15 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace BIUK9000.GifferComponents
 {
+    [JsonDerivedType(typeof(TextGFL), "text")]
+    [JsonDerivedType(typeof(BitmapGFL), "bitmap")]
+    [JsonDerivedType(typeof(ShapeGFL), "shape")]
     public abstract class GFL : IDisposable
     {
         protected bool _disposed;
@@ -45,6 +51,20 @@ namespace BIUK9000.GifferComponents
             {
                 _height = Math.Max(1, value);
             }
+        }
+        public GFL()//for serialization
+        {
+            Position = new OVector(0, 0);
+            Visible = true;
+            Width = 50;
+            Height = 50;
+            Rotation = 0;
+            Saturation = 1;
+            Brightness = 1;
+            Transparency = 1;
+            _xMult = 0.5;
+            _yMult = 0.5;
+            Hue = 0;
         }
         public GFL (int layerID)
         {

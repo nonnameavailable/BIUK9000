@@ -376,6 +376,7 @@ namespace BIUK9000.UI
             SLI = e.Index;
             _ucm.UpdateUpperControl(this);
             _selectedLayerID = SelectedLayer.LayerID;
+            UpdateHSBPanel();
             GifferC.SaveLayerStateForApply(SFI, SLI);
         }
 
@@ -502,8 +503,8 @@ namespace BIUK9000.UI
         }
         private bool ShouldIgnoreKeyPresses()
         {
-            return (MainGiffer == null ||
-                SelectedLayer is TextGFL && ((TextGFLParamControl)UpperControl).TextBoxHasFocus()
+            return (Mode == Mode.Record || MainGiffer == null ||
+                (SelectedLayer is TextGFL && UpperControl is TextGFLParamControl && ((TextGFLParamControl)UpperControl).TextBoxHasFocus())
                 );
         }
         protected override bool ProcessKeyPreview(ref Message m)
@@ -652,6 +653,7 @@ namespace BIUK9000.UI
             hsbPanel.Saturation = SelectedLayer.Saturation;
             hsbPanel.Brightness = SelectedLayer.Brightness;
             hsbPanel.Transparency = SelectedLayer.Transparency;
+            hsbPanel.Hue = SelectedLayer.Hue;
         }
         public void UpdateMainPictureBox()
         {

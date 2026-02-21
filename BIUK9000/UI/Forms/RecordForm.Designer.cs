@@ -83,7 +83,7 @@
             KeyPreview = true;
             Name = "RecordForm";
             Padding = new System.Windows.Forms.Padding(3);
-            Text = "Recording window - press Enter to start and stop recording or S to capture single frame";
+            Text = "Enter - start / stop recording, S - capture single frame";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             statusStrip1.ResumeLayout(false);

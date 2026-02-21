@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,7 +16,23 @@ namespace BIUK9000.GifferComponents.GFLVariants
 {
     public class BitmapGFL : GFL
     {
+        [JsonIgnore]
         public Bitmap OriginalBitmap { get; set; }
+        public string ImageData //for serialization
+        {
+            get
+            {
+                using var ms = new MemoryStream();
+                OriginalBitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                return Convert.ToBase64String(ms.ToArray());
+            }
+            set
+            {
+                var bytes = Convert.FromBase64String(value);
+                using var ms = new MemoryStream(bytes);
+                OriginalBitmap = new Bitmap(ms);
+            }
+        }
         //private Bitmap cachedMorphedBitmap;
         public double HRatio { get => Width / (double)OriginalBitmap.Width; }
         public double VRatio { get => Height / (double)OriginalBitmap.Height; }
@@ -39,6 +57,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
             g.DrawImage(OriginalBitmap, 0, 0, Width, Height);
             return result;
         }
+        public BitmapGFL() : base() { }//for serialization
         public BitmapGFL(Bitmap bitmap, int layerID) : base(layerID)
         {
             OriginalBitmap = new Bitmap(bitmap);

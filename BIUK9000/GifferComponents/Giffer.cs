@@ -19,6 +19,7 @@ namespace BIUK9000.GifferComponents
         public int SLI { get; set; }
         private bool _disposed;
         private int _nextLayerID;
+        public int NLID { get => _nextLayerID; set => _nextLayerID = value;  }
         private int _width, _height;
         public int Width 
         {
@@ -72,6 +73,7 @@ namespace BIUK9000.GifferComponents
                 Height = 8;
             }
         }
+        public Giffer() { } //for serialization
         public Giffer(List<Bitmap> bitmapList, int fps)
         {
             Frames = new List<GifFrame>();

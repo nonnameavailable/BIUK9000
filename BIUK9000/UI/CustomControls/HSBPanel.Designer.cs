@@ -98,7 +98,6 @@
             hueTrackBar.TabIndex = 9;
             hueTrackBar.TickFrequency = 10;
             toolTip.SetToolTip(hueTrackBar, "Transparency");
-            hueTrackBar.Scroll += hueTrackBar_Scroll;
             // 
             // label1
             // 

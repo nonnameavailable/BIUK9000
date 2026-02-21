@@ -37,6 +37,7 @@ namespace BIUK9000.GifferManipulation
             set
             {
                 _sli = Math.Clamp(value, 0, SelectedFrame.Layers.Count - 1);
+                //_sli = value;//changed for serialization
             }
         }
         public int Width { get => giffer.Width; }

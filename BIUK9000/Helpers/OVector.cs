@@ -36,6 +36,11 @@ namespace BIUK9000.Helpers
         {
             return X * vector.X + Y * vector.Y;
         }
+        public OVector() //for serialization
+        {
+            X = 1;
+            Y = 1;
+        }
         public OVector(double x, double y)
         {
             X = x;

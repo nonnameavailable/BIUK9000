@@ -6,6 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BIUK9000.MyGraphics.Effects;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using BIUK9000.GifferComponents;
+using System.IO;
 
 namespace BIUK9000.UI.InputHandling
 {
@@ -13,6 +17,8 @@ namespace BIUK9000.UI.InputHandling
     {
         private MainForm _mf;
         private MenuStrip _menu;
+        private OpenFileDialog _openFileDialog;
+        private SaveFileDialog _saveFileDialog;
         public MenuEventHandler(MainForm mainForm)
         {
             _mf = mainForm;
@@ -39,6 +45,9 @@ namespace BIUK9000.UI.InputHandling
             var effectsHalftoneMI = _menu.Items.Find("effectsHalftoneMI", true)[0];
             var effectsFloydSteinbergMI = _menu.Items.Find("effectsFloydSteinbergMI", true)[0];
 
+            var fileSaveMI = _menu.Items.Find("fileSaveMI", true)[0];
+            var fileOpenMI = _menu.Items.Find("fileOpenMI", true)[0];
+            var fileSaveAsMI = _menu.Items.Find("fileSaveAsMI", true)[0];
 
             framesReverseMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ReverseFrames(_mf.Marks));
             framesAddReversedMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.AddReversedFrames());
@@ -62,6 +71,64 @@ namespace BIUK9000.UI.InputHandling
 
             effectsHalftoneMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ApplyEffect(EffectType.Halftone));
             effectsFloydSteinbergMI.Click += (sender, args) => CheckNullActionUpdate(() => _mf.GifferC.ApplyEffect(EffectType.FloydSteinberg));
+
+            fileSaveMI.Click += FileSaveMI_Click;
+            fileOpenMI.Click += FileLoadMI_Click;
+            fileSaveAsMI.Click += FileSaveAsMI_Click;
+
+            _openFileDialog = new();
+            _openFileDialog.Filter = "json files|*.json";
+            _saveFileDialog = new();
+            _saveFileDialog.Filter = "json files|*.json";
+        }
+
+        private void FileSaveAsMI_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = _saveFileDialog;
+            if(sfd.ShowDialog() == DialogResult.OK)
+            {
+                _mf.Report("Now saving, please wait");
+                _mf.Enabled = false;
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                string json = JsonSerializer.Serialize(_mf.MainGiffer, options);
+                File.WriteAllText(sfd.FileName, json);
+                _mf.Enabled = true;
+                _mf.Report("File saved successfully as " + sfd.FileName);
+            }
+        }
+
+        private void FileLoadMI_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = _openFileDialog;
+            if(ofd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    Giffer loadedGiffer = JsonSerializer.Deserialize<Giffer>(File.ReadAllText(ofd.FileName));
+                    _mf.SetNewGiffer(loadedGiffer);
+                } catch(Exception ex)
+                {
+                    MessageBox.Show("JSON deserialization failed because: " + ex.Message);
+                }
+            }
+        }
+
+        private void FileSaveMI_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_saveFileDialog.FileName))
+            {
+                FileSaveAsMI_Click(sender, e);
+            }
+            else
+            {
+                _mf.Report("Now saving, please wait");
+                _mf.Enabled = false;
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                string json = JsonSerializer.Serialize(_mf.MainGiffer, options);
+                File.WriteAllText(_saveFileDialog.FileName, json);
+                _mf.Enabled = true;
+                _mf.Report(_saveFileDialog.FileName + " successfully overwritten!");
+            }
         }
 
         private void AnimationLerpLineMI_Click(object sender, EventArgs e)

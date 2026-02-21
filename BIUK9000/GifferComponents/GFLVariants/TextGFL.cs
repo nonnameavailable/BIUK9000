@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,8 +17,20 @@ namespace BIUK9000.GifferComponents.GFLVariants
     {
         public string Text { get; set; }
         public string FontName { get; set; }
+        [JsonIgnore]
         public Color FontColor { get; set; }
+        [JsonIgnore]
         public Color FontBorderColor { get; set; }
+        public int FontColorInt
+        {
+            get => FontColor.ToArgb();
+            set => FontColor = Color.FromArgb(value);
+        }
+        public int BorderColorInt
+        {
+            get => FontBorderColor.ToArgb();
+            set => FontBorderColor = Color.FromArgb(value);
+        }
         public float FontBorderWidth { get; set; }
         public float _savedFontSize;
         public float FontSize
@@ -159,14 +172,15 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             Text = "YOUR TEXT";
             FontName = "Impact";
-            FontBorderColor = Color.Black;
-            FontColor = Color.White;
+            FontBorderColor = Color.FromArgb(0, 0, 0);
+            FontColor = Color.FromArgb(255, 255, 255);
             FontBorderWidth = 5;
             FontSize = 20;
             Size s = TextSize();
             Width = s.Width;
             Height = s.Height;
         }
+        public TextGFL() : base(){ }//for serialization
         public override void Lerp(GFL start, GFL end, double distance, OVector position = null)
         {
             base.Lerp(start, end, distance, position);

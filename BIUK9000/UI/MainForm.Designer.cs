@@ -50,6 +50,10 @@ namespace BIUK9000.UI
             topPanel = new System.Windows.Forms.Panel();
             hsbPanel = new BIUK9000.UI.CustomControls.HSBPanel();
             mainMenuStrip = new System.Windows.Forms.MenuStrip();
+            fileMI = new System.Windows.Forms.ToolStripMenuItem();
+            fileSaveMI = new System.Windows.Forms.ToolStripMenuItem();
+            fileOpenMI = new System.Windows.Forms.ToolStripMenuItem();
+            fileSaveAsMI = new System.Windows.Forms.ToolStripMenuItem();
             framesMI = new System.Windows.Forms.ToolStripMenuItem();
             framesReverseMI = new System.Windows.Forms.ToolStripMenuItem();
             framesAddReversedMI = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,9 +79,9 @@ namespace BIUK9000.UI
             animationMarkMI = new System.Windows.Forms.ToolStripMenuItem();
             effectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             effectsHalftoneMI = new System.Windows.Forms.ToolStripMenuItem();
+            effectsFloydSteinbergMI = new System.Windows.Forms.ToolStripMenuItem();
             saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            effectsFloydSteinbergMI = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             markLerpPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)frameDupeCountNUD).BeginInit();
@@ -298,12 +302,37 @@ namespace BIUK9000.UI
             // 
             tableLayoutPanel1.SetColumnSpan(mainMenuStrip, 3);
             mainMenuStrip.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { framesMI, layersMI, animationMI, effectsToolStripMenuItem });
+            mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { fileMI, framesMI, layersMI, animationMI, effectsToolStripMenuItem });
             mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             mainMenuStrip.Name = "mainMenuStrip";
             mainMenuStrip.Size = new System.Drawing.Size(975, 30);
             mainMenuStrip.TabIndex = 12;
             mainMenuStrip.Text = "menuStrip1";
+            // 
+            // fileMI
+            // 
+            fileMI.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { fileOpenMI, fileSaveMI, fileSaveAsMI });
+            fileMI.Name = "fileMI";
+            fileMI.Size = new System.Drawing.Size(37, 26);
+            fileMI.Text = "File";
+            // 
+            // fileSaveMI
+            // 
+            fileSaveMI.Name = "fileSaveMI";
+            fileSaveMI.Size = new System.Drawing.Size(180, 22);
+            fileSaveMI.Text = "Save";
+            // 
+            // fileOpenMI
+            // 
+            fileOpenMI.Name = "fileOpenMI";
+            fileOpenMI.Size = new System.Drawing.Size(180, 22);
+            fileOpenMI.Text = "Open";
+            // 
+            // fileSaveAsMI
+            // 
+            fileSaveAsMI.Name = "fileSaveAsMI";
+            fileSaveAsMI.Size = new System.Drawing.Size(180, 22);
+            fileSaveAsMI.Text = "Save as";
             // 
             // framesMI
             // 
@@ -542,6 +571,10 @@ namespace BIUK9000.UI
         private System.Windows.Forms.ToolStripMenuItem effectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem effectsHalftoneMI;
         private System.Windows.Forms.ToolStripMenuItem effectsFloydSteinbergMI;
+        private System.Windows.Forms.ToolStripMenuItem fileMI;
+        private System.Windows.Forms.ToolStripMenuItem fileSaveMI;
+        private System.Windows.Forms.ToolStripMenuItem fileOpenMI;
+        private System.Windows.Forms.ToolStripMenuItem fileSaveAsMI;
     }
 }
 

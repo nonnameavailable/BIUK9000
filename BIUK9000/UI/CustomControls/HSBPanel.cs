@@ -115,7 +115,7 @@ namespace BIUK9000.UI.CustomControls
             if (_isCodeValueChange) return;
             float newValue = (float)hueNUD.Value;
             _isCodeValueChange = true;
-            hueTrackBar.Value = (int)(newValue);
+            hueTrackBar.Value = (int)newValue;
             _isCodeValueChange = false;
             ShouldUpdate?.Invoke(this, EventArgs.Empty);
         }
@@ -183,11 +183,6 @@ namespace BIUK9000.UI.CustomControls
             {
                 HueSatChanged?.Invoke(this, EventArgs.Empty);
             }
-        }
-
-        private void hueTrackBar_Scroll(object sender, EventArgs e)
-        {
-
         }
     }
 }

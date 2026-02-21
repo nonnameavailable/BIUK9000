@@ -6,17 +6,29 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BIUK9000.GifferComponents.GFLVariants
 {
     internal class ShapeGFL : GFL
     {
+        [JsonIgnore]
         public Color Color { get; set; }
+        public int ColorInt
+        {
+            get => Color.ToArgb();
+            set => Color = Color.FromArgb(value);
+        }
         public DrawShape Shape { get; set; }
         public ShapeGFL(int layerID) : base(layerID)
         {
             Color = Color.White;
+            Shape = DrawShape.Rectangle;
+        }
+        public ShapeGFL() : base() //for serialization
+        {
+            Color = Color.FromArgb(255, 255, 255);
             Shape = DrawShape.Rectangle;
         }
         public override GFL Clone()
