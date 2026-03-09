@@ -55,6 +55,8 @@ namespace BIUK9000.UI
         public GifferController GifferC { get; private set; }
         private ScreenStateLogger _ssl;
         private int _selectedLayerID;
+        private List<string> _tempFilePaths = new();
+        public string FormTitle { get => Text; set => Text = value; }
         public Control UpperControl
         {
             get
@@ -190,6 +192,26 @@ namespace BIUK9000.UI
             {
                 CaptureSingleFrame();
             };
+            FormClosed += MainForm_FormClosed;
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (_tempFilePaths.Count == 0) return;
+            int failedCount = 0;
+            foreach(string path in _tempFilePaths)
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                } else
+                {
+                    failedCount++;
+                }
+            }
+            MessageBox.Show("Successfully deleted " + (_tempFilePaths.Count - failedCount) +
+                " temporary files." + Environment.NewLine + "Failed to find " + failedCount + " files.");
+
         }
 
         private void _recordForm_Move(object sender, EventArgs e)
@@ -220,7 +242,7 @@ namespace BIUK9000.UI
                 Report("No saved giffers!");
                 return;
             }
-            SetNewGiffer(GifferHistory[GifferHistory.Count - 1].Clone(), true);
+            SetNewGiffer(GifferHistory[GifferHistory.Count - 1].Clone());
             Report("Giffer loaded!");
         }
         public void Report(string message)
@@ -303,7 +325,7 @@ namespace BIUK9000.UI
             if (_ssl.Frames.Count == 0) return;
             if (GifferC == null)
             {
-                SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS), true);
+                SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
             }
             else
             {
@@ -461,17 +483,8 @@ namespace BIUK9000.UI
             }
         }
 
-        public void SetNewGiffer(Giffer newGiffer, bool preserveMode = false)
+        public void SetNewGiffer(Giffer newGiffer)
         {
-            //if (MainGiffer != null && preserveMode)
-            //{
-            //    if ((newGiffer.FrameCount < MainGiffer.FrameCount ||
-            //        newGiffer.Frames[SFI].Layers.Count != MainGiffer.Frames[SFI].Layers.Count ||
-            //        newGiffer.Frames[SFI].Layers[SLI] is not BitmapGFL) && controlsPanel.SelectedMode != Mode.Record)
-            //    {
-            //        preserveMode = false;
-            //    }
-            //}
             MainGiffer?.Dispose();
 
             MainGiffer = newGiffer;
@@ -489,6 +502,8 @@ namespace BIUK9000.UI
                 }
             }
             //if (!preserveMode) controlsPanel.SelectedMode = Mode.Move;
+            SFI = 0;
+            SLI = 0;
             CompleteUIUpdate();
             GifferC.SaveLayerStateForApply(0, 0);
             if (InputBinder == null)
@@ -526,7 +541,16 @@ namespace BIUK9000.UI
         private void MainPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
             if (MainGiffer == null) return;
-            InputTranslator.HandleMouseUp(e, Mode, _paintControl.SelectedPaintTool);
+            try
+            {
+                InputTranslator.HandleMouseUp(e, Mode, _paintControl.SelectedPaintTool);
+            }
+            catch(Exception ex)
+            {
+                Report("Error: " + ex.Message);
+                return;
+            }
+            
             MainGiffer.MakeSizeDivisible4();
             Report($"New gif Width: {MainGiffer.Width}, Height: {MainGiffer.Height}");
             UpdateMainPictureBox();
@@ -717,6 +741,10 @@ namespace BIUK9000.UI
             {
                 MainTimelineSlider.AddMark(i);
             }
+        }
+        public void AddTempFilePath(string path)
+        {
+            _tempFilePaths.Add(path);
         }
     }
 }

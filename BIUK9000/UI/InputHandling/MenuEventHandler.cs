@@ -1,15 +1,16 @@
-﻿using BIUK9000.UI.Forms;
+﻿using BIUK9000.GifferComponents;
+using BIUK9000.MyGraphics.Effects;
+using BIUK9000.UI.Forms;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using BIUK9000.MyGraphics.Effects;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BIUK9000.GifferComponents;
-using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BIUK9000.UI.InputHandling
 {
@@ -76,10 +77,15 @@ namespace BIUK9000.UI.InputHandling
             fileOpenMI.Click += FileLoadMI_Click;
             fileSaveAsMI.Click += FileSaveAsMI_Click;
 
+            //_openFileDialog = new();
+            //_openFileDialog.Filter = "json files|*.json";
+            //_saveFileDialog = new();
+            //_saveFileDialog.Filter = "json files|*.json";
+
             _openFileDialog = new();
-            _openFileDialog.Filter = "json files|*.json";
+            _openFileDialog.Filter = ".gz files|*.gz|.json files|*.json";
             _saveFileDialog = new();
-            _saveFileDialog.Filter = "json files|*.json";
+            _saveFileDialog.Filter = ".gz files|*.gz";
         }
 
         private void FileSaveAsMI_Click(object sender, EventArgs e)
@@ -91,8 +97,10 @@ namespace BIUK9000.UI.InputHandling
                 _mf.Enabled = false;
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 string json = JsonSerializer.Serialize(_mf.MainGiffer, options);
-                File.WriteAllText(sfd.FileName, json);
+                byte[] compressed = CompressString(json);
+                File.WriteAllBytes(sfd.FileName, compressed);
                 _mf.Enabled = true;
+                _mf.FormTitle = sfd.FileName;
                 _mf.Report("File saved successfully as " + sfd.FileName);
             }
         }
@@ -104,8 +112,19 @@ namespace BIUK9000.UI.InputHandling
             {
                 try
                 {
-                    Giffer loadedGiffer = JsonSerializer.Deserialize<Giffer>(File.ReadAllText(ofd.FileName));
+                    string json;
+                    if(Path.GetExtension(ofd.FileName).ToLower() == ".gz")
+                    {
+                        byte[] data = File.ReadAllBytes(ofd.FileName);
+                        json = DecompressToString(data);
+                    } else
+                    {
+                        json = File.ReadAllText(ofd.FileName);
+                    }
+                    Giffer loadedGiffer = JsonSerializer.Deserialize<Giffer>(json);
                     _mf.SetNewGiffer(loadedGiffer);
+                    _mf.FormTitle = ofd.FileName;
+                    _saveFileDialog.FileName = ofd.FileName;
                 } catch(Exception ex)
                 {
                     MessageBox.Show("JSON deserialization failed because: " + ex.Message);
@@ -126,11 +145,28 @@ namespace BIUK9000.UI.InputHandling
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 string json = JsonSerializer.Serialize(_mf.MainGiffer, options);
                 File.WriteAllText(_saveFileDialog.FileName, json);
+                byte[] compressed = CompressString(json);
+                File.WriteAllBytes(_saveFileDialog.FileName, compressed);
                 _mf.Enabled = true;
                 _mf.Report(_saveFileDialog.FileName + " successfully overwritten!");
             }
         }
+        private byte[] CompressString(string text)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(text);
+            using var output = new MemoryStream();
+            using (var gzip = new GZipStream(output, CompressionLevel.SmallestSize))
+                gzip.Write(bytes, 0, bytes.Length);
+            return output.ToArray();
+        }
 
+        private string DecompressToString(byte[] compressed)
+        {
+            using var input = new MemoryStream(compressed);
+            using var gzip = new GZipStream(input, CompressionMode.Decompress);
+            using var reader = new StreamReader(gzip, Encoding.UTF8);
+            return reader.ReadToEnd();
+        }
         private void AnimationLerpLineMI_Click(object sender, EventArgs e)
         {
             if (CheckNull()) return;

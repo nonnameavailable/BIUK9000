@@ -99,13 +99,7 @@ namespace BIUK9000.GifferManipulation
         {
             Bitmap bitmap = mf.SelectedFrameAsBitmap;
             ControlsPanel cp = mf.MainControlsPanel;
-            //if (cp.UseDithering)
-            //{
-            //    Bitmap bitmapRefBackup = bitmap;
-            //    using Ditherer dtr = new Ditherer(bitmap);
-            //    bitmap = dtr.DitheredBitmap(KMeans.Palette(bitmap, cp.GifExportColors, false));
-            //    bitmapRefBackup.Dispose();
-            //}
+
             string tempPath = Path.ChangeExtension(Path.GetTempFileName(), cp.ImageExportFormat);
             switch (cp.ImageExportFormat)
             {
@@ -125,10 +119,7 @@ namespace BIUK9000.GifferManipulation
             DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
             mf.DoDragDrop(data, DragDropEffects.Copy);
             cp.IsLMBDown = false;
-            if (File.Exists(tempPath))
-            {
-                File.Delete(tempPath);
-            }
+            mf.AddTempFilePath(tempPath);
         }
         public static void LayerExportDragDrop(MainForm mf)
         {
@@ -160,10 +151,7 @@ namespace BIUK9000.GifferManipulation
             DataObject data = new DataObject(DataFormats.FileDrop, new string[] { tempPath });
             mf.DoDragDrop(data, DragDropEffects.Copy);
             cp.IsRMBDown = false;
-            if (File.Exists(tempPath))
-            {
-                File.Delete(tempPath);
-            }
+            mf.AddTempFilePath(tempPath);
         }
         public static bool FileImport(string[] filePaths, MainForm mf)
         {
