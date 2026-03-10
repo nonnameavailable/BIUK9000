@@ -97,7 +97,7 @@
             hueTrackBar.Size = new System.Drawing.Size(126, 45);
             hueTrackBar.TabIndex = 9;
             hueTrackBar.TickFrequency = 10;
-            toolTip.SetToolTip(hueTrackBar, "Transparency");
+            toolTip.SetToolTip(hueTrackBar, "Hue");
             // 
             // label1
             // 

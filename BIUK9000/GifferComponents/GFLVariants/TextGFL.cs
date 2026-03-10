@@ -94,11 +94,6 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             //DO NOTHING, NOT IMPLEMENTED AND PROBABLY WILL NEVER BE
         }
-        //public Size TextSize()
-        //{
-        //    using Font font = new Font(FontName, FontSize);
-        //    return TextRenderer.MeasureText(Text, font);
-        //}
         public Size TextSize()
         {
             using Font font = new Font(FontName, FontSize);
@@ -106,12 +101,14 @@ namespace BIUK9000.GifferComponents.GFLVariants
             using GraphicsPath path = new();
             path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
             using GraphicsPath pathForAdd = new();
-            pathForAdd.AddString("A", font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
+            pathForAdd.AddString("Agdjb", font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
             RectangleF bounds = path.GetBounds();
             RectangleF boundsForAdd = pathForAdd.GetBounds();
-            return new Size((int)(Math.Ceiling(bounds.Width + boundsForAdd.Width * 0.6)),
-                            (int)(Math.Ceiling(bounds.Height + boundsForAdd.Height * 0.5)));
+            float height = Text.Split(Environment.NewLine).Length * boundsForAdd.Height;
+            return new Size((int)(Math.Ceiling(bounds.Width + boundsForAdd.Width * 0.3)),
+                            (int)(Math.Ceiling(height + boundsForAdd.Height * 0.5)));
         }
+
         public override OVector Center()
         {
             SizeF textSize = TextSize();

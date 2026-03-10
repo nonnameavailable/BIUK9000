@@ -193,6 +193,7 @@ namespace BIUK9000.UI
                 CaptureSingleFrame();
             };
             FormClosed += MainForm_FormClosed;
+            _recordForm.FormHidden += (sender, args) => controlsPanel.SelectedMode = Mode.Move;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

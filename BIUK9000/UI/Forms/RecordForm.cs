@@ -17,7 +17,7 @@ namespace BIUK9000.UI.Forms
         public int RecordWidth { get => recordPanel.Width; }
         public int RecordHeight { get => recordPanel.Height; }
         public bool IsRecording { get; private set; }
-        public event EventHandler StartRecording, StopRecording, Screenshot;
+        public event EventHandler StartRecording, StopRecording, Screenshot, FormHidden;
         public RecordForm()
         {
             InitializeComponent();
@@ -31,6 +31,8 @@ namespace BIUK9000.UI.Forms
         private void RecordForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
+            Hide();
+            FormHidden?.Invoke(this, EventArgs.Empty);
         }
         public void SetRecordMode(bool recording)
         {
