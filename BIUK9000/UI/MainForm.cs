@@ -193,7 +193,11 @@ namespace BIUK9000.UI
                 CaptureSingleFrame();
             };
             FormClosed += MainForm_FormClosed;
-            _recordForm.FormHidden += (sender, args) => controlsPanel.SelectedMode = Mode.Move;
+            _recordForm.FormHidden += (sender, args) =>
+            {
+                controlsPanel.SelectedMode = Mode.Move;
+                ControlsPanel_ModeChanged(null, null);
+            };
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -210,9 +214,6 @@ namespace BIUK9000.UI
                     failedCount++;
                 }
             }
-            MessageBox.Show("Successfully deleted " + (_tempFilePaths.Count - failedCount) +
-                " temporary files." + Environment.NewLine + "Failed to find " + failedCount + " files.");
-
         }
 
         private void _recordForm_Move(object sender, EventArgs e)

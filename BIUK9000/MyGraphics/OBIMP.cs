@@ -47,7 +47,7 @@ namespace BIUK9000.MyGraphics
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
-                    CreateNoWindow = false // Set to false if you want to see the CMD window
+                    CreateNoWindow = true // Set to false if you want to see the CMD window
                 }
             };
 
