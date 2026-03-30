@@ -16,9 +16,12 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -156,19 +159,35 @@ namespace BIUK9000.GifferManipulation
         public static bool FileImport(string[] filePaths, MainForm mf)
         {
             bool result = false;
-            try
+            Giffer giffer;
+            if (Path.GetExtension(filePaths[0]).ToLower() is ".gz" or ".json")
             {
-                List<Bitmap> bitmaps = FileToBitmapConvertor.FilesToBitmapList(filePaths);
-                int delay = FileToBitmapConvertor.FrameDelayFromFile(filePaths[0]);
-                Giffer giffer = new Giffer(bitmaps, 1000 / delay);
-                bitmaps.ForEach(bitmap => bitmap.Dispose());
-                bitmaps.Clear();
-                result = GifImport(mf, giffer);
-            }
-            catch (Exception ex)
+                try
+                {
+                    giffer = GifferFromFile(filePaths[0]);
+                    result = GifImport(mf, giffer);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    result = false;
+                }
+            } else
             {
-                MessageBox.Show(ex.Message);
-                result = false;
+                try
+                {
+                    List<Bitmap> bitmaps = FileToBitmapConvertor.FilesToBitmapList(filePaths);
+                    int delay = FileToBitmapConvertor.FrameDelayFromFile(filePaths[0]);
+                    giffer = new Giffer(bitmaps, 1000 / delay);
+                    bitmaps.ForEach(bitmap => bitmap.Dispose());
+                    bitmaps.Clear();
+                    result = GifImport(mf, giffer);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    result = false;
+                }
             }
             return result;
         }
@@ -429,6 +448,28 @@ namespace BIUK9000.GifferManipulation
                 // If an exception occurs, ffmpeg is likely not in the PATH
                 return false;
             }
+        }
+        public static Giffer GifferFromFile(string path)
+        {
+            string json;
+            if (Path.GetExtension(path).ToLower() == ".gz")
+            {
+                byte[] data = File.ReadAllBytes(path);
+                json = DecompressToString(data);
+            }
+            else
+            {
+                json = File.ReadAllText(path);
+            }
+            Giffer giffer = JsonSerializer.Deserialize<Giffer>(json);
+            return giffer;
+        }
+        private static string DecompressToString(byte[] compressed)
+        {
+            using var input = new MemoryStream(compressed);
+            using var gzip = new GZipStream(input, CompressionMode.Decompress);
+            using var reader = new StreamReader(gzip, Encoding.UTF8);
+            return reader.ReadToEnd();
         }
     }
 }

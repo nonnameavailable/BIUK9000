@@ -79,7 +79,7 @@
             saveButton.Name = "saveButton";
             saveButton.Size = new System.Drawing.Size(137, 134);
             saveButton.TabIndex = 8;
-            saveButton.Text = "Save";
+            saveButton.Text = "Export";
             toolTip.SetToolTip(saveButton, "Left click - save dialog will open, allowing you to save the gif\r\n\r\nLeft mouse down and drag to desktop / explorer - export current frame as jpeg / png\r\nRight mouse down + drag - export current layer");
             saveButton.UseVisualStyleBackColor = true;
             // 

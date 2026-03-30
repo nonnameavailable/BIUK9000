@@ -1,4 +1,5 @@
 ﻿using BIUK9000.GifferComponents;
+using BIUK9000.GifferManipulation;
 using BIUK9000.MyGraphics.Effects;
 using BIUK9000.UI.Forms;
 using System;
@@ -83,7 +84,7 @@ namespace BIUK9000.UI.InputHandling
             //_saveFileDialog.Filter = "json files|*.json";
 
             _openFileDialog = new();
-            _openFileDialog.Filter = ".gz files|*.gz|.json files|*.json";
+            _openFileDialog.Filter = "Supported files|*.gz;*.json|.gz files|*.gz|.json files|*.json";
             _saveFileDialog = new();
             _saveFileDialog.Filter = ".gz files|*.gz";
         }
@@ -110,25 +111,17 @@ namespace BIUK9000.UI.InputHandling
             OpenFileDialog ofd = _openFileDialog;
             if(ofd.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    string json;
-                    if(Path.GetExtension(ofd.FileName).ToLower() == ".gz")
-                    {
-                        byte[] data = File.ReadAllBytes(ofd.FileName);
-                        json = DecompressToString(data);
-                    } else
-                    {
-                        json = File.ReadAllText(ofd.FileName);
-                    }
-                    Giffer loadedGiffer = JsonSerializer.Deserialize<Giffer>(json);
-                    _mf.SetNewGiffer(loadedGiffer);
-                    _mf.FormTitle = ofd.FileName;
-                    _saveFileDialog.FileName = ofd.FileName;
-                } catch(Exception ex)
-                {
-                    MessageBox.Show("JSON deserialization failed because: " + ex.Message);
-                }
+                //try
+                //{
+                //    Giffer loadedGiffer = GifferIO.GifferFromFile(ofd.FileName);
+                //    _mf.SetNewGiffer(loadedGiffer);
+                //    _mf.FormTitle = ofd.FileName;
+                //    _saveFileDialog.FileName = ofd.FileName;
+                //} catch(Exception ex)
+                //{
+                //    MessageBox.Show("JSON deserialization failed because: " + ex.Message);
+                //}
+                if(GifferIO.FileImport([ofd.FileName], _mf))_mf.CompleteUIUpdate();
             }
         }
 
@@ -158,14 +151,6 @@ namespace BIUK9000.UI.InputHandling
             using (var gzip = new GZipStream(output, CompressionLevel.SmallestSize))
                 gzip.Write(bytes, 0, bytes.Length);
             return output.ToArray();
-        }
-
-        private string DecompressToString(byte[] compressed)
-        {
-            using var input = new MemoryStream(compressed);
-            using var gzip = new GZipStream(input, CompressionMode.Decompress);
-            using var reader = new StreamReader(gzip, Encoding.UTF8);
-            return reader.ReadToEnd();
         }
         private void AnimationLerpLineMI_Click(object sender, EventArgs e)
         {

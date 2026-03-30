@@ -106,7 +106,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
             RectangleF boundsForAdd = pathForAdd.GetBounds();
             float height = Text.Split(Environment.NewLine).Length * boundsForAdd.Height;
             return new Size((int)(Math.Ceiling(bounds.Width + boundsForAdd.Width * 0.3)),
-                            (int)(Math.Ceiling(height + boundsForAdd.Height * 0.5)));
+                            (int)(Math.Ceiling(height + boundsForAdd.Height * 0.8)));
         }
 
         public override OVector Center()

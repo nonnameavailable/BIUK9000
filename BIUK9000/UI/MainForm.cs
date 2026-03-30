@@ -235,17 +235,17 @@ namespace BIUK9000.UI
                 GifferHistory[0].Dispose();
                 GifferHistory.RemoveAt(0);
             }
-            Report("Giffer saved");
+            Report("Temporary backup created! Control + L to restore.");
         }
         public void LoadGiffer()
         {
             if (GifferHistory.Count == 0)
             {
-                Report("No saved giffers!");
+                Report("No backup to restore!");
                 return;
             }
             SetNewGiffer(GifferHistory[GifferHistory.Count - 1].Clone());
-            Report("Giffer loaded!");
+            Report("Temporary backup restored!");
         }
         public void Report(string message)
         {
