@@ -166,6 +166,7 @@ namespace BIUK9000.UI
                 _recordForm.SetRecordMode(false);
             };
             _recordControl.Screenshot += (sender, args) => CaptureSingleFrame();
+            _recordControl.FramerateChanged += (sender, args) => _recordForm.Framerate = _recordControl.FPS;
 
             _menuEventHandler = new MenuEventHandler(this);
             GifferHistory = new();
@@ -175,6 +176,7 @@ namespace BIUK9000.UI
             KeyPreview = true;
 
             _recordForm = new();
+            _recordForm.Framerate = _recordControl.FPS;
             _recordForm.Move += _recordForm_Move;
             _recordForm.StartRecording += (sender, args) =>
             {
@@ -198,6 +200,7 @@ namespace BIUK9000.UI
                 controlsPanel.SelectedMode = Mode.Move;
                 ControlsPanel_ModeChanged(null, null);
             };
+            _recordForm.FramerateChanged += (sender, args) => _recordControl.FPS = _recordForm.Framerate;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

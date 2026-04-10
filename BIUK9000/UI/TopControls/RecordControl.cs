@@ -12,9 +12,7 @@ namespace BIUK9000.UI.CustomControls
 {
     public partial class RecordControl : UserControl
     {
-        public event EventHandler Start;
-        public event EventHandler Stop;
-        public event EventHandler Screenshot;
+        public event EventHandler Start, Stop, Screenshot, FramerateChanged;
 
         public bool RecordSound { get => recordSoundCB.Checked; }
         public int FPS { get => (int)fpsNUD.Value; set => fpsNUD.Value = value; }
@@ -33,6 +31,7 @@ namespace BIUK9000.UI.CustomControls
             };
             screenshotBTN.Click += (sender, args) => Screenshot?.Invoke(sender, args);
             RecMode(false);
+            fpsNUD.ValueChanged += (sender, args) => FramerateChanged?.Invoke(this, EventArgs.Empty);
         }
         public void RecMode(bool val)
         {

@@ -17,7 +17,24 @@ namespace BIUK9000.UI.Forms
         public int RecordWidth { get => recordPanel.Width; }
         public int RecordHeight { get => recordPanel.Height; }
         public bool IsRecording { get; private set; }
-        public event EventHandler StartRecording, StopRecording, Screenshot, FormHidden;
+        public event EventHandler StartRecording, StopRecording, Screenshot, FormHidden, FramerateChanged;
+        private int _framerate;
+        public int Framerate
+        {
+            get
+            {
+                return _framerate;
+            }
+            set
+            {
+                if(value <= 60 && value >= 1)
+                {
+                    _framerate = value;
+                    SetText(value);
+                }
+                
+            }
+        }
         public RecordForm()
         {
             InitializeComponent();
@@ -82,6 +99,16 @@ namespace BIUK9000.UI.Forms
                     Screenshot?.Invoke(this, EventArgs.Empty);
                     return true;
                 }
+                else if((keyData == Keys.Oemplus || keyData == Keys.Add) && !IsRecording)
+                {
+                    Framerate++;
+                    FramerateChanged?.Invoke(this, EventArgs.Empty);
+                }
+                else if((keyData == Keys.OemMinus || keyData == Keys.Subtract) && !IsRecording)
+                {
+                    Framerate--;
+                    FramerateChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
             return base.ProcessCmdKey(ref m, keyData);
         }
@@ -105,6 +132,10 @@ namespace BIUK9000.UI.Forms
         private void Report(string message)
         {
             statusLabel.Text = message;
+        }
+        private void SetText(int framerate)
+        {
+            Text = "Enter - start / stop, S - one frame, +- adjust framerate (" + framerate.ToString() + ")";
         }
     }
 }
