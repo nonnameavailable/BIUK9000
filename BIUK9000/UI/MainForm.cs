@@ -48,7 +48,6 @@ namespace BIUK9000.UI
         private OVector _previousLRCtM;
         private float _rotationChange;
         private PaintControl _paintControl;
-        private RecordControl _recordControl;
         private Timer _updateTimer;
         private Point _prevMousePos;
         public OVector ClickedLRCtM { get; set; }
@@ -139,8 +138,7 @@ namespace BIUK9000.UI
             dupeFrameButton.Click += DupeFrameButton_Click;
 
             _paintControl = new PaintControl();
-            _recordControl = new RecordControl();
-            _ucm = new UpperControlManager(_paintControl, _recordControl);
+            _ucm = new UpperControlManager(_paintControl);
             lerpModeCBB.SelectedIndex = 0;
             mainPictureBox.InterpolationMode = controlsPanel.InterpolationMode;
 
@@ -155,19 +153,6 @@ namespace BIUK9000.UI
             };
             _ssl = new ScreenStateLogger();
 
-            _recordControl.Start += (sender, args) =>
-            {
-                _recordControl_Start(sender, args);
-                _recordForm.SetRecordMode(true);
-            };
-            _recordControl.Stop += (sender, args) =>
-            {
-                _recordControl_Stop(sender, args);
-                _recordForm.SetRecordMode(false);
-            };
-            _recordControl.Screenshot += (sender, args) => CaptureSingleFrame();
-            _recordControl.FramerateChanged += (sender, args) => _recordForm.Framerate = _recordControl.FPS;
-
             _menuEventHandler = new MenuEventHandler(this);
             GifferHistory = new();
 
@@ -176,19 +161,17 @@ namespace BIUK9000.UI
             KeyPreview = true;
 
             _recordForm = new();
-            _recordForm.Framerate = _recordControl.FPS;
+            _recordForm.Framerate = 10;
             _recordForm.Move += _recordForm_Move;
             _recordForm.StartRecording += (sender, args) =>
             {
                 this.Enabled = false;
-                this.WindowState = FormWindowState.Minimized;
-                _recordControl_Start(sender, args);
+                RecordingStarted();
             };
             _recordForm.StopRecording += (sender, args) =>
             {
                 this.Enabled = true;
-                this.WindowState = FormWindowState.Normal;
-                _recordControl_Stop(sender, args);
+                RecordingStopped();
             };
             _recordForm.Screenshot += (sender, args) =>
             {
@@ -199,8 +182,8 @@ namespace BIUK9000.UI
             {
                 controlsPanel.SelectedMode = Mode.Move;
                 ControlsPanel_ModeChanged(null, null);
+                
             };
-            _recordForm.FramerateChanged += (sender, args) => _recordControl.FPS = _recordForm.Framerate;
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -260,15 +243,13 @@ namespace BIUK9000.UI
             Mode m = controlsPanel.SelectedMode;
             if (m == Mode.Move)
             {
-                //SetRecordMode(false);
                 _recordForm.Hide();
                 if (GifferC != null) UpdateMainPictureBox();
                 ControlsEnable(true);
+                this.Show();
             }
             else if (m == Mode.Paint)
             {
-                //SetRecordMode(false);
-                _recordForm.Hide();
                 if (GifferC == null)
                 {
                     controlsPanel.SelectedMode = Mode.Move;
@@ -291,21 +272,15 @@ namespace BIUK9000.UI
             }
             else if (m == Mode.Record)
             {
-                //SetRecordMode(true);
                 _recordForm.Show();
                 ControlsEnable(false);
+                this.Hide();
             }
             _ucm.UpdateUpperControl(this);
         }
         private void CaptureSingleFrame()
         {
             Point p = _recordForm.TopLeft;
-            if (!_recordForm.CanRecord())
-            {
-                MessageBox.Show("You are either off screen or the recording area is too small!");
-                _recordControl.RecMode(false);
-                return;
-            }
             _ssl.X = p.X;
             _ssl.Y = p.Y;
             _ssl.Width = _recordForm.RecordWidth - 3;
@@ -323,11 +298,13 @@ namespace BIUK9000.UI
             _ssl.ClearFrames();
             Report("Screenshot captured.");
         }
-        private void _recordControl_Stop(object sender, EventArgs e)
+        private void RecordingStopped()
         {
             _ssl.Stop();
-            if (_recordControl.RecordSound) AudioRecorder.StopRecording();
             if (_ssl.Frames.Count == 0) return;
+
+            if (_recordForm.RecordAudio) AudioRecorder.StopRecording();
+
             if (GifferC == null)
             {
                 SetNewGiffer(new Giffer(_ssl.Frames, _ssl.FPS));
@@ -336,49 +313,34 @@ namespace BIUK9000.UI
             {
                 GifferIO.GifImport(this, new Giffer(_ssl.Frames, _ssl.FPS));
             }
-            if (_recordControl.RecordSound) MainGiffer.SoundPath = AudioRecorder.Path;
+
+            if (_recordForm.RecordAudio) MainGiffer.SoundPath = AudioRecorder.Path;
+
             CompleteUIUpdate();
             _ssl.ClearFrames();
-            Report("Recording stopped.");
         }
-        private void _recordControl_Start(object sender, EventArgs e)
+        private void RecordingStarted()
         {
             Point p = _recordForm.TopLeft;
-            if (!_recordForm.CanRecord())
-            {
-                MessageBox.Show("The recording window is off screen!");
-                _recordControl.RecMode(false);
-                return;
-            }
             _ssl.X = p.X;
             _ssl.Y = p.Y;
             _ssl.Width = _recordForm.RecordWidth - 3;
             _ssl.Height = _recordForm.RecordHeight - 3;
-            _ssl.FPS = _recordControl.FPS;
+            _ssl.FPS = _recordForm.Framerate;
             try
             {
                 _ssl.Start();
-                if (_recordControl.RecordSound)
+                if (_recordForm.RecordAudio)
                 {
                     AudioRecorder?.Dispose();
                     AudioRecorder = new AudioRecorder(Path.ChangeExtension(Path.GetTempFileName(), ".wav"));
                     AudioRecorder.StartRecording();
                 }
-                Report("Now recording.");
             }
             catch (Exception ex)
             {
-                _recordControl.RecMode(false);
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void ControlsPanel_ToolRecordSelected(object sender, EventArgs e)
-        {
-            topPanel.Controls.Clear();
-            topPanel.Controls.Add(_recordControl);
-            ControlsEnable(false);
-            _recordForm.Show();
         }
         public void ApplyLayerParams()
         {

@@ -13,11 +13,9 @@ namespace BIUK9000.UI.TopControls.LayerParamControls
 {
     public class UpperControlManager
     {
-        private RecordControl _recordC;
         private PaintControl _paintC;
-        public UpperControlManager(PaintControl pc, RecordControl rc)
+        public UpperControlManager(PaintControl pc)
         {
-            _recordC = rc;
             _paintC = pc;
         }
         private static IGFLParamControl GFLParamControl(GFL gfl)
@@ -59,9 +57,6 @@ namespace BIUK9000.UI.TopControls.LayerParamControls
             } else if(mf.Mode == Mode.Paint)
             {
                 mf.UpperControl = _paintC;
-            } else if(mf.Mode == Mode.Record)
-            {
-                mf.UpperControl = _recordC;
             }
         }
     }
