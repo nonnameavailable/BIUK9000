@@ -361,7 +361,7 @@ namespace BIUK9000.GifferManipulation
         }
         public static void SaveGifAsMp4(Giffer giffer, string path, GifSFDForm sfdf, InterpolationMode interpolationMode)
         {
-            if (!IsFFInPath("ffmpeg"))
+            if (!IsFFInPath())
             {
                 MessageBox.Show("ffmpeg must be in PATH for this to work!");
                 return;
@@ -419,7 +419,7 @@ namespace BIUK9000.GifferManipulation
             stream.Close();
             ffmpeg.WaitForExit();
         }
-        public static bool IsFFInPath(string fileName)
+        public static bool IsFFInPath()
         {
             try
             {
@@ -428,7 +428,7 @@ namespace BIUK9000.GifferManipulation
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = fileName,
+                        FileName = "ffmpeg",
                         Arguments = "-version", // Check ffmpeg version
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,

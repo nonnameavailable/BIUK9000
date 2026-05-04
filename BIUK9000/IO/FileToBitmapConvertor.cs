@@ -1,8 +1,10 @@
 ﻿using BIUK9000.UI.Forms;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection.Metadata.Ecma335;
@@ -13,6 +15,26 @@ namespace BIUK9000.IO
 {
     public static class FileToBitmapConvertor
     {
+        public static List<string> SupportedImageFormats = [".jpg", "jpeg", ".bmp", ".tiff", ".png"];
+        //public static List<string> SupportedVideoFormats = [".mp4", ".mov", ".avi", ".mkv", ".wmv"];
+        public static List<string> SupportedVideoFormats =
+            [
+                ".mp4", ".m4v",
+                ".mkv",
+                ".avi",
+                ".mov", ".qt",
+                ".wmv", ".asf",
+                ".flv", ".f4v",
+                ".webm",
+                ".mpeg", ".mpg", ".mpe", ".m2v",
+                ".ts", ".m2ts", ".mts",
+                ".ogv", ".ogg",
+                ".3gp", ".3g2",
+                ".rmvb", ".rm",
+                ".vob",
+                ".divx",
+                ".mxf",
+            ];
         public static List<Bitmap> FilesToBitmapList(string[] paths)
         {
             List<Bitmap> result = new();
@@ -47,13 +69,33 @@ namespace BIUK9000.IO
         private static List<Bitmap> BitmapListFromFile(string path)
         {
             string extension = Path.GetExtension(path).ToLowerInvariant();
-            return extension switch
+            if (SupportedImageFormats.Contains(extension))
             {
-                ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => VideoFromPath(path),
-                ".gif" => FramesFromGif(Image.FromFile(path)),
-                ".bmp" or ".jpeg" or ".png" or ".tiff" => [(Bitmap)Image.FromFile(path)],
-                _ => throw new Exception("Unsupported file format.")
-            };
+                return [(Bitmap)Image.FromFile(path)];
+            }
+            else if (SupportedVideoFormats.Contains(extension))
+            {
+                return VideoFromPath(path);
+            }
+            else if(extension == ".gif")
+            {
+                return FramesFromGif(Image.FromFile(path));
+            }
+            else if(extension is ".wmf" or ".emf")
+            {
+                return [BitmapFromMetafile(path)];
+            }
+            else
+            {
+                throw new Exception("Unsupported file format.");
+            }
+            //return extension switch
+            //{
+            //    ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => VideoFromPath(path),
+            //    ".gif" => FramesFromGif(Image.FromFile(path)),
+            //    ".bmp" or ".jpeg" or ".png" or ".tiff" or ".jpg" => [(Bitmap)Image.FromFile(path)],
+            //    _ => throw new Exception("Unsupported file format.")
+            //};
         }
         private static List<Bitmap> VideoFromPath(string path)
         {
@@ -81,13 +123,22 @@ namespace BIUK9000.IO
         public static int FrameDelayFromFile(string path)
         {
             string extension = Path.GetExtension(path).ToLowerInvariant();
-            return extension switch
+            if (SupportedImageFormats.Contains(extension) || extension is ".wmf" or ".emf")
             {
-                ".mp4" or ".mov" or ".avi" or ".mkv" or ".wmv" => (int)VideoFrameExtractor.GetVideoInfo(path).FrameDelay,
-                ".gif" => GifFrameDelay(path),
-                ".bmp" or ".jpeg" or ".png" or ".tiff" => 100,
-                _ => throw new Exception("Unsupported file format.")
-            };
+                return 100;
+            }
+            else if (SupportedVideoFormats.Contains(extension))
+            {
+                return (int)VideoFrameExtractor.GetVideoInfo(path).FrameDelay;
+            }
+            else if (extension == ".gif")
+            {
+                return GifFrameDelay(path);
+            }
+            else
+            {
+                throw new Exception("Unsupported file format.");
+            }
         }
         //public static (List<Bitmap> bitmaps, int delay) 
         private static List<Bitmap> FramesFromGif(Image gif)
@@ -128,6 +179,28 @@ namespace BIUK9000.IO
                 frameCount = 1;
             }
             return frameCount;
+        }
+        private static Bitmap BitmapFromMetafile(string path, int width = 0, int height = 0)
+        {
+            using var metafile = new Metafile(path);
+
+            // Use the metafile's native resolution if no size specified
+            if (width == 0 || height == 0)
+            {
+                var size = metafile.Size;
+                width = size.Width > 0 ? size.Width : 800;
+                height = size.Height > 0 ? size.Height : 600;
+            }
+
+            var bitmap = new Bitmap(width, height);
+            using var graphics = Graphics.FromImage(bitmap);
+
+            graphics.Clear(Color.Transparent);
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.DrawImage(metafile, new Rectangle(0, 0, width, height));
+
+            return bitmap;
         }
     }
 }

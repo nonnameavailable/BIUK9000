@@ -82,9 +82,60 @@ namespace BIUK9000.UI.InputHandling
             //_openFileDialog.Filter = "json files|*.json";
             //_saveFileDialog = new();
             //_saveFileDialog.Filter = "json files|*.json";
-
+            bool ffmpegIsInPath = GifferIO.IsFFInPath();
             _openFileDialog = new();
-            _openFileDialog.Filter = "Supported files|*.gz;*.json|.gz files|*.gz|.json files|*.json";
+            if (ffmpegIsInPath)
+            {
+                //_openFileDialog.Filter = "Supported files|*.gz;*.json|.gz files|*.gz|.json files|*.json";
+                _openFileDialog.Filter =
+                    "Supported files|*.gz;*.json;" +
+                    // Image formats (System.Drawing.Image.FromFile / GDI+)
+                    "*.bmp;*.dib;" +
+                    "*.jpg;*.jpeg;*.jpe;*.jfif;" +
+                    "*.png;" +
+                    "*.gif;" +
+                    "*.tif;*.tiff;" +
+                    "*.ico;" +
+                    "*.emf;*.wmf;" +
+                    // Video formats (FFmpeg)
+                    "*.mp4;*.m4v;" +
+                    "*.mkv;" +
+                    "*.avi;" +
+                    "*.mov;*.qt;" +
+                    "*.wmv;*.asf;" +
+                    "*.flv;*.f4v;" +
+                    "*.webm;" +
+                    "*.mpeg;*.mpg;*.mpe;*.m2v;" +
+                    "*.ts;*.m2ts;*.mts;" +
+                    "*.ogv;*.ogg;" +
+                    "*.3gp;*.3g2;" +
+                    "*.rmvb;*.rm;" +
+                    "*.vob;" +
+                    "*.divx;" +
+                    "*.mxf|" +
+                    // Individual groups
+                    ".gz files|*.gz|" +
+                    ".json files|*.json|" +
+                    "Image files|*.bmp;*.dib;*.jpg;*.jpeg;*.jpe;*.jfif;*.png;*.gif;*.tif;*.tiff;*.ico;*.emf;*.wmf|" +
+                    "Video files|*.mp4;*.m4v;*.mkv;*.avi;*.mov;*.qt;*.wmv;*.asf;*.flv;*.f4v;*.webm;*.mpeg;*.mpg;*.mpe;*.m2v;*.ts;*.m2ts;*.mts;*.ogv;*.ogg;*.3gp;*.3g2;*.rmvb;*.rm;*.vob;*.divx;*.mxf";
+            } else
+            {
+                _openFileDialog.Filter =
+                    "Supported files|*.gz;*.json;" +
+                    // Image formats (System.Drawing.Image.FromFile / GDI+)
+                    "*.bmp;*.dib;" +
+                    "*.jpg;*.jpeg;*.jpe;*.jfif;" +
+                    "*.png;" +
+                    "*.gif;" +
+                    "*.tif;*.tiff;" +
+                    "*.ico;" +
+                    "*.emf;*.wmf;" +
+                    // Individual groups
+                    ".gz files|*.gz|" +
+                    ".json files|*.json|" +
+                    "Image files|*.bmp;*.dib;*.jpg;*.jpeg;*.jpe;*.jfif;*.png;*.gif;*.tif;*.tiff;*.ico;*.emf;*.wmf|";
+            }
+            
             _saveFileDialog = new();
             _saveFileDialog.Filter = ".gz files|*.gz";
         }
