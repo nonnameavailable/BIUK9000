@@ -1,4 +1,5 @@
-﻿using BIUK9000.UI.InputHandling;
+﻿using BIUK9000.GifferManipulation;
+using BIUK9000.UI.InputHandling;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +21,8 @@ namespace BIUK9000.UI.Forms
         public bool RecordAudio { get; set; }
         public event EventHandler StartRecording, StopRecording, Screenshot, FormHidden, FramerateChanged;
         private int _framerate;
+        private Random _rnd;
+        private bool _ffmpegIsInPath;
         public int Framerate
         {
             get
@@ -46,6 +49,8 @@ namespace BIUK9000.UI.Forms
             IsRecording = false;
             this.MouseWheel += RecordForm_MouseWheel;
             RecordAudio = false;
+            _rnd = new();
+            _ffmpegIsInPath = GifferIO.IsFFInPath();
         }
 
         private void RecordForm_MouseWheel(object sender, MouseEventArgs e)
@@ -77,7 +82,7 @@ namespace BIUK9000.UI.Forms
             else
             {
                 IsRecording = false;
-                Report("Now NOT recording.");
+                Report("Now NOT recording. Close this window to go back to editing.");
                 BackColor = SystemColors.Control;
             }
         }
@@ -117,20 +122,36 @@ namespace BIUK9000.UI.Forms
                             return false;
                         }
                         Screenshot?.Invoke(this, EventArgs.Empty);
+                        BackColor = Color.FromArgb(50, _rnd.Next(150, 256), 120);
+                        Report("Screenshot taken! Close this window to go back to editing.");
                         return true;
                     }
                     else if (keyData == Keys.Oemplus || keyData == Keys.Add)
                     {
                         Framerate++;
+                        return true;
                     }
                     else if (keyData == Keys.OemMinus || keyData == Keys.Subtract)
                     {
                         Framerate--;
+                        return true;
                     }
                     else if(keyData == Keys.A)
                     {
-                        RecordAudio = !RecordAudio;
-                        SetText();
+                        if (_ffmpegIsInPath)
+                        {
+                            RecordAudio = !RecordAudio;
+                            if (RecordAudio)
+                            {
+                                MessageBox.Show("Warning! This feature is very poorly implemented and doesn't work well.");
+                            }
+                            SetText();
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
             }
@@ -161,7 +182,15 @@ namespace BIUK9000.UI.Forms
         private void SetText()
         {
             //Text = "Enter: start / stop, S: one frame, +-: adjust framerate (" + Framerate.ToString() + ")" ;
-            Text = "Enter: start / stop, S: one frame, +-: adjust framerate (" + Framerate.ToString() + "); A: record audio(" + RecordAudio.ToString() + ")";
+            if (_ffmpegIsInPath)
+            {
+                Text = "Enter: start / stop, S: one frame, +-: adjust framerate (" + Framerate.ToString() + "); A: record audio(" + RecordAudio.ToString() + ")";
+            }
+            else
+            {
+                Text = "Enter: start / stop, S: one frame, +-: adjust framerate (" + Framerate.ToString() + ")";
+            }
+            
         }
     }
 }

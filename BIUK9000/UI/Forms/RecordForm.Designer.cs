@@ -71,8 +71,8 @@
             // statusLabel
             // 
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new System.Drawing.Size(116, 25);
-            statusLabel.Text = "Now NOT recording.";
+            statusLabel.Size = new System.Drawing.Size(331, 25);
+            statusLabel.Text = "Now NOT recording. Close this window to go back to editing.";
             // 
             // RecordForm
             // 
