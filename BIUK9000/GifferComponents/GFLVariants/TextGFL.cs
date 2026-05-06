@@ -94,19 +94,21 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             //DO NOTHING, NOT IMPLEMENTED AND PROBABLY WILL NEVER BE
         }
-        public Size TextSize()
+
+        private Size TextSize()
         {
             using Font font = new Font(FontName, FontSize);
-
-            using GraphicsPath path = new();
+            using GraphicsPath path = new GraphicsPath();
             path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
-            using GraphicsPath pathForAdd = new();
-            pathForAdd.AddString("Agdjb", font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
+
             RectangleF bounds = path.GetBounds();
-            RectangleF boundsForAdd = pathForAdd.GetBounds();
-            float height = Text.Split(Environment.NewLine).Length * boundsForAdd.Height;
-            return new Size((int)(Math.Ceiling(bounds.Width + boundsForAdd.Width * 0.3)),
-                            (int)(Math.Ceiling(height + boundsForAdd.Height * 0.8)));
+
+            float bleed = FontBorderWidth / 2f;
+
+            int width = (int)Math.Ceiling(bounds.Right + bleed);
+            int height = (int)Math.Ceiling(bounds.Bottom + bleed);
+
+            return new Size(Math.Max(width, 1), Math.Max(height, 1));
         }
 
         public override OVector Center()
