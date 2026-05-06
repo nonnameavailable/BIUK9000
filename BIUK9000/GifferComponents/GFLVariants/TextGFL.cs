@@ -47,6 +47,14 @@ namespace BIUK9000.GifferComponents.GFLVariants
                 }
             }
         }
+        private PointF TextDrawPoint
+        {
+            get
+            {
+                float val = FontBorderWidth / 2f;
+                return new PointF(val, val);
+            }
+        }
         private float _fontSize;
         public override void CopyParameters(GFL layer)
         {
@@ -99,11 +107,11 @@ namespace BIUK9000.GifferComponents.GFLVariants
         {
             using Font font = new Font(FontName, FontSize);
             using GraphicsPath path = new GraphicsPath();
-            path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
+            path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, TextDrawPoint, StringFormat.GenericDefault);
 
             RectangleF bounds = path.GetBounds();
 
-            float bleed = FontBorderWidth / 2f;
+            float bleed = FontBorderWidth;
 
             int width = (int)Math.Ceiling(bounds.Right + bleed);
             int height = (int)Math.Ceiling(bounds.Bottom + bleed);
@@ -140,7 +148,7 @@ namespace BIUK9000.GifferComponents.GFLVariants
             using Brush textBrush = new SolidBrush(FontColor);
 
             using GraphicsPath path = new GraphicsPath();
-            path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, new Point(0, 0), StringFormat.GenericDefault);
+            path.AddString(Text, font.FontFamily, (int)font.Style, font.Size, TextDrawPoint, StringFormat.GenericDefault);
 
             //if(interpolationMode != InterpolationMode.NearestNeighbor) g.SmoothingMode = SmoothingMode.AntiAlias;
             g.SmoothingMode = SmoothingMode.AntiAlias;
